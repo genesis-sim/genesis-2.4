@@ -1,0 +1,224 @@
+  19.  The XODUS Graphical Interface
+
+  19.1.  Introduction and Overview of XODUS
+
+  The graphical interface to GENESIS is provided by XODUS, the X-windows
+  Output and Display Utility for Simulations.  This interface is
+  provided by graphical objects (called ``widgets'') which can be used
+  to create elements that are treated like other GENESIS elements.
+  These are discussed in detail in ``The Book of GENESIS'' and in the
+  documentation for the individual XODUS objects and commands, so we
+  will give only a brief overview here.
+
+  19.2.  Basic Widgets
+
+  The table below lists the basic XODUS widgets used to create labels,
+  buttons, toggles, dialog boxes, and for the display of bitmapped
+  images and text.
+
+  ______________________________________________________________________
+  Object      Description
+  ______________________________________________________________________
+  xbutton     A button which executes script actions from mouse clicks.
+  xdialog     A dialog box containing a text string.
+  xform       The window containing other graphical elements.
+  ximage      Displays a GIF format bitmapped image inside a form.
+  xlabel      A rectangular label containing a text string.
+  xtext       A widget for the display and editing of text.
+  xtoggle     Maintains toggle state and executes actions from mouse clicks.
+  ______________________________________________________________________
+
+  The form, created from the xform object, is the container for all
+  other graphical elements.   Although the position of an element in the
+  element hierarchy is arbitrary for other GENESIS elements, widgets
+  which are to be displayed in a form must be children of the parent
+  form.  The following example creates a graph and three buttons within
+  a form:
+
+       create xform /data
+       create xgraph /data/voltage
+       create xbutton /data/RESET -script reset
+       create xbutton /data/RUN -script "step 100"
+       create xbutton /data/QUIT -script quit
+
+  As described in ``Messages'' (Messages.txt), a message from another
+  element would be used to send values to the graph for plotting.
+
+  Note the use of the ``-script'' option to set the ``script'' field of
+  the xbutton to the string representing the statement to be executed
+  when the button is clicked upon.  Most of the XODUS widgets (except
+  for xform) also execute script actions in response to mouse clicks.
+  These are described under ``XODUS Mouse Clicks'' (Clicks.txt).
+
+  Other fields (described in the documentation for the particular widget
+  or listed with the showobject command) are used for setting background
+  and foreground colors, label strings, fonts, and other properties of
+  the widget.  In addition, there are fields for specifying the geometry
+  of the widget, i.e. its location and size.  In the example above, the
+  default values were used.
+
+  19.3.  Specifying Widget Geometries
+
+  The horizontal and vertical positions and the width and height of an
+  XODUS widget are specified by the four geometry fields ``xgeom'',
+  ``ygeom'', ``wgeom'' and ``hgeom''.  These fields may be set at any
+  time with the setfield command.  You may also set them when the widget
+  is created, by using the options ``-xgeom'', ``-ygeom'', ``-wgeom''
+  and ``-hgeom''.  As a shorthand notation, and for backwards
+  compatibility with previous versions of GENESIS, these four geometry
+  values may be given in square brackets as
+  ``[xgeom,ygeom,wgeom,hgeom]'' at the time the widget is created.  For
+  example,
+
+     create xform /form [10,10,400,100]
+     create xbutton /form/QUIT [0,20,,50] -script quit // use default wgeom
+
+  When given as numbers, these values represent the (x,y) coordinates
+  and the width and height of the widget, measured in pixels.  For
+  forms, the coordinates are measured relative to the upper left-hand
+  corner of the screen.  For other widgets, they are measured relative
+  to the interior upper left-hand corner of the form which contains
+  them.  The ``ygeom'' coordinate is measured downwards.  A percent sign
+  may be used after a number to indicate that it represents a percentage
+  of the screen or form dimension, instead of a pixel value.
+
+  These conventions are used for the basic widgets described above, as
+  well as for the draw widget varieties described below.
+
+  19.3.1.  Reference Edges
+
+  It is also possible to specify the geometry of a widget with respect
+  to that of the parent form or another sibling widget using a notation
+  of the form ``offset:reference.edge''.  Here, ``offset'' is a pixel
+  value or percentage, as before.  ``reference'' may be ``parent''
+  (meaning the parent element -- usually the form), ``last'' (the most
+  recently created widget), or the name of a sibling widget.  The
+  ``edge'' may be ``left'', ``right'', ``top'', ``bottom'', ``width'',
+  or ``height''.
+
+  When used with ``xgeom'' or ``ygeom'' and a parent reference, left,
+  right, top and bottom will place the child's corresponding edge a
+  given distance in from the given edge of the parent.  For a sibling,
+  the child's opposite edge is placed a given distance away from the
+  given edge of the sibling.
+
+  When specifying a ``wgeom'' or ``hgeom'', and giving a parent
+  reference, left, right, top and bottom will set the dimension of the
+  child such that the widget right or bottom edge will be the given
+  distance from the given edge of the parent.  A width edge sets the
+  dimension to the value given while a height edge sets it to the parent
+  height less the given value.  For a sibling, left, right, top and
+  bottom will set the dimension of the child such that the opposite edge
+  of the widget will be a given distance from the given edge of the
+  sibling.  For width and height edges the dimension is set to the sum
+  of the siblings width/height and the given value.
+
+  Note that some combinations of references and edges result in
+  nonsensical geometry specifications which may cause errors.
+
+  In cases where a complete geometry value is not given, default values
+  are assumed.  When no geometry is present the defaults are:
+
+                  xgeom     0:parent.left
+                  ygeom     0:last.bottom
+                  wgeom     100%:parent.width
+                  hgeom     <default height for widget>
+
+  When a value is given, then the reference widget defaults to parent
+  and the reference edge defaults to:
+         xgeom     left for a parent ref, right for a sibling ref
+         ygeom     top for a parent ref, bottom for a sibling ref
+         wgeom     width
+         hgeom     height
+
+  These combinations are best explained with some examples:
+
+     create xform /form [10,10,400,200]
+     xshow /form   // make it visible
+
+     // make a 100 x 50 pixel label, 100 pixels from the form left edge
+     create xlabel /form/label -xgeom 100:parent.left -wgeom 100 -hgeom 50
+
+     create xbutton /form/button // full width button below the label (default)
+     // put button's right edge 10 pixels left of the label and reduce width
+     setfield /form/button xgeom 10:label.left wgeom 70
+     // increase the height of the button to 80% of the label height
+     setfield /form/button hgeom 80%:label  // ".height" is assumed
+     // change the button height to 30% of the label width
+     setfield /form/button hgeom 30%:label.width
+     // put bottom of button 50 pixels below top of label
+     setfield /form/button ygeom -50:label.top
+
+     // add a toggle 5 pixels to the right of the button
+     create xtoggle /form/toggle -xgeom 5:last.right -wgeom 100
+
+  19.4.  The Draw Widget Family
+
+  In addition to the basic widgets described above, XODUS provides a set
+  of more advanced graphical objects based upon the draw widget.  A draw
+  widget may be thought of as a window into a three dimensional space
+  for the display of graphical objects called pixes.  Draw widgets are
+  displayed inside of forms, and pixes are displayed inside of draws,
+  using the element hierarchy ``form/draw/pix''.  The draw widget
+  provides for coordinate transformations of the pixes, including pan,
+  zoom, two dimensional projections into a given plane, orthographic and
+  perspective projections.  These transformations may be controlled by
+  keyboard commands as well as by setting fields of the draw widget.
+  Further details are given in the documentation for xdraw.
+
+  The graph widget (described in the documentation for xgraph) is a
+  specialized form of draw widget for the display of plots and axes.  In
+  addition to the transformations provided for draw widgets, it allows
+  additional transformations for rescaling axes and the displayed plots.
+
+  The table below summarizes the varieties of draws and pixes that are
+  currently available.
+
+  ______________________________________________________________________
+  Object       Description
+  ______________________________________________________________________
+  xaxis       Makes axis for plots -- automatically created by xgraph.
+  xcell       Similar to xview, but specialized for compartmental cell display.
+  xcoredraw   The core class from which other draw widgets are subclassed.
+  xdraw       Main object class for the display of pixes, with transforms.
+  xdumbdraw   Simple example window for the display of pixes.
+  xfastplot   High-speed graphic display similar to an oscilloscope
+  xgif        Draws GIF format images as a pix inside a draw.
+  xgraph      Specialized draw widget for the display of plots.
+  xpix        Basic object for drawing graphical objects (pixes) in 3-D space.
+  xplot       Displays plots within a graph -- created by messages to xgraph.
+  xshape      Pix used for drawing shapes -- often used for icons.
+  xsphere     Example pix which draws a filled circle.
+  xtree       Displays and manipulates elements and their messages.
+  xvar        Uses shapes to display numerical values with color, size, etc.
+  xview       Like an array of xvars, displaying multiple points in 3-D space.
+  ______________________________________________________________________
+
+  19.5.  XODUS Commands
+
+  When a form is first created, it is not visible.  GENESIS has several
+  commands affecting the display of forms.  Other commands are specific
+  to certain XODUS widgets.  The table below lists the commands used
+  with XODUS.
+
+  ______________________________________________________________________
+  Routine         Description
+  ______________________________________________________________________
+  pixflags        Alias for xpixflags.
+  setpostscript   Alias for xps.
+  xcolorscale     Sets the color scale for mapping numerical values to color.
+  xflushevents    Forces XODUS to go through the queue of pending events.
+  xgetstat        Returns 0 if XODUS has not been initialized.
+  xhide           Hides a form and its contents.
+  xinit           No longer necessary in GENESIS 2 (does nothing).
+  xlower          Moves a form below any other forms or windows.
+  xmap            Like xshow, but does not put form on top if it is not hidden.
+  xpixflags       Describes set of flags which determine properties of pixes.
+  xps             Sets parameters for postscript output of widgets.
+  xraise          Moves a form on top of any other forms or windows.
+  xshow           Shows (displays) a form and its contents.
+  xshowontop      Alias for xshow (for backwards compatibility).
+  xsimplot        Plots data from a file to a graph.
+  xtextload       Loads muliple lines of text into a text widget.
+  xupdate         Forces an update of the display of pixes within a draw.
+  ______________________________________________________________________

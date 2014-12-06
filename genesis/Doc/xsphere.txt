@@ -1,0 +1,54 @@
+Object Type:	xsphere
+
+Description:	Example pix which draws a filled circle.
+
+Author:		Upi Bhalla Caltech Apr/93	
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xsphere_type  [in src/Xodus/draw/xsphere_struct.h]
+
+Size:        104 bytes
+
+Fields:
+             fg         Color of sphere.
+             script     Script operation(s) to perform on a mouse
+                        click.
+             tx         Transposition distance in the x dimension. The
+                        pix is transposed (ie, displaced, offset) by this
+                        amount.
+             ty         Transposition in y.
+             tz         Transposition in z.
+             value           
+             pixflags   Set of flags specifying visibility,
+                        refreshes, mouse sensitivity and many other options.
+             r          Radius of the sphere.
+
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XSphere  [in src/Xodus/draw/xsphere.c]
+
+Classes:	output, gadget
+
+Actions:
+
+	XOWASDROPPED XODRAG XOCOMMAND XODROP XUPDATE B3ENTER B2ENTER B1ENTER
+	B3DOUBLE B2DOUBLE B1DOUBLE ANYBDOWN B3DOWN B2DOWN B1DOWN DELETE COPY
+	SET CREATE RESET PROCESS
+
+
+Messages:	none
+
+------------------------------------------------------------------------------
+
+Notes:
+
+Example:	Scripts/examples/XODUS/draws.g
+
+See also:	xpix, Clicks
+

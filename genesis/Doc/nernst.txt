@@ -1,0 +1,95 @@
+Object Type:	nernst
+
+Description:	Calculates the Nernst potential for the given
+		ionic concentrations and temperature.
+
+Author:		M. Wilson, Caltech (3/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	nernst_type  [in src/device/dev_struct.h]
+
+Size:		96 bytes
+
+Fields:		E		equilibrium (Nernst) potential
+		T		temperature in degrees Celsius
+		valency		ionic valency z
+		scale		voltage scale factor
+		Cin		internal ionic concentration
+		Cout		external ionic concentration
+		constant	scale*(R/zF)*(T + 273.15)
+				This is set by the element,
+				and should not be set by the user.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Nernst  [in src/device/nernst.c]
+
+Classes:	device
+		channel
+
+Actions:	PROCESS		sets the fields from incoming messages
+				and calculates constant and E.
+		RESET		similar to a single PROCESS step.
+		CHECK		checks for valid messages and parameters.
+
+Messages:	CIN Cin		sets the Cin field.
+		COUT Cout	sets the Cout field.
+		TEMP T		sets the T field, and calculates constant.
+
+------------------------------------------------------------------------------
+
+Notes:		A nernst element calculates E = constant * ln(Cout/Cin)
+		= scale*(R/zF)*(T + 273.15)*ln(Cout/Cin), where R is the
+		universal gas constant (1.9872 cal/mol deg) and F is Faraday's
+		constant (23061 cal/volt mol).  Note that the temperature in
+		degrees Celsius is internally converted to degrees Kelvin.  A
+		scale factor of 1 gives E in volts, and a scale factor of
+		1e3 gives E in millivolts.
+
+		A nernst element is usually used with a channel and a
+		Ca_concen element to calculate the channel equilibrium
+		potential (Ek) from the internal ionic concentration in a
+		shell near the compartment surface.  The equilibrium potential
+		is sent from the nernst element to the channel with an EK
+		message, and the nernst element receives the concentration
+		from the Ca_concen element with a Cin message.  The Ca_concen
+		element calculates this concentration from ionic currents
+		delivered with an I_k message.
+
+                It is also possible to perform a "one-time" calculation of E
+                with fixed values of the ionic concentrations by setting these
+                fields instead of setting up messages, and performing a reset.
+                If this is done, the nernst element should be disabled to
+                avoid wasting time performing the PROCESS action.
+
+Example:	
+	// assume that a  tabchannel `Ca' has been set up
+	create Ca_concen conc
+	setfield  conc                          \
+	    B       {5.2e-6/(area*shell_thick)} \
+	    Ca_base 4.0e-5                      \
+	    tau     1e-4                        \
+	    thick   {shell_thick}
+
+	create nernst nernst
+	setfield nernst \ 
+	    Cout    4.0 \   // external Ca concentration of 4 mM.
+	    T       21  \   // near room temperature
+	    valency 2   \   // Ca++
+	    scale   1       // E in volts
+
+	addmsg Ca       conc        I_Ca    Ik
+	addmsg conc     nernst      CIN     Ca
+	addmsg nernst   Ca          EK      E
+
+        function reset_nernst // Insure that resets are done in proper order
+            call Ca RESET
+            call conc RESET   // Ca_concen must be reset before nernst
+            reset             // reset everything
+        end
+See also:	Ca_concen

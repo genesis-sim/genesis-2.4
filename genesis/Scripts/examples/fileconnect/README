@@ -1,0 +1,55 @@
+fileconnect example
+
+Upinder S. Bhalla	NCBS Bangalore		July 2000
+
+
+This little example sets up a complex weights matrix from a connection file
+useing the fileconnect command in GENESIS. The files here are
+
+README: this file
+testfileconn.g:	The file which does the connections
+testfileconn.wts: The weights file
+cellproto.g	: Prototype cells, very similar to the ones in the BoG
+		example but with larger K currents to prevent spontaneous
+		spiking.
+
+The actual example is embarassingly simple: there is a 'make_network'
+function in testfileconn.g which is reproduced here in toto:
+
+function make_network
+	createmap /proto/cell /lgn {nx} {ny} -delta 1 1 -origin 0 0
+	createmap /proto/cell /v1 {destx} {desty} -delta 1 1 -origin 0 0
+	fileconnect /lgn/##[TYPE=spikegen] /v1/cell[]/glu  \
+		{filename} -wtscale {wt}
+	useclock /lgn/## 0
+	useclock /v1/## 0
+end
+
+It takes all of 3 lines to create the source and destination cell layers,
+and to set up the network using the fileconnect command.
+
+The weights matrix is structured as a series of  5x5 arrays in the
+testfileconn.wts. Each array represents the receptive field of a cell in
+the V1 layer.  There are 25 arrays, for the 5x5 cells in the V1 layer.
+
+To run the example hit the green 'start' button.
+
+To deliver a stimulus, click on a cell in the LGN window. You can click
+on any number of cells to generate a complex stimulus.
+To remove a stimulus, click on the cell again.
+
+Try to work out what the receptive fields are, and match them with the
+weights matrix.
+
+
+-----------------------------------------------------------------------------
+
+This example is made available under the terms of the Gnu Public Licence.
+It is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version. This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+for more details.
+

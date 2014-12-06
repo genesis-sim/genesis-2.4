@@ -1,0 +1,229 @@
+#!/usr/local/bin/perl -w
+# =================================================================
+# crop_ppm	V1.1	Mike Wijnants	08 SEP 2000
+# program to crop a def. part from a ppm-file
+# =================================================================
+use File::Basename;
+use File::stat;
+
+if ( !$ARGV[0] ) { usage() }
+
+# Body
+
+&ParseOptions;
+
+# each time glob is accessed, it returns te next value;
+# successive filenames that match the patern
+
+while ( defined ($in_file = glob("$in_folder/*.ppm")) ) {
+  $file = basename ($in_file);
+  if ($qwer) {
+    print "$in_file";
+    &size; 
+  } else { 
+    if ($verb) { print "** Cropping : $in_file\n" }
+    &crop; 
+  }
+  if ($single) { last }
+}
+
+# -----------------------------------------------------------------
+sub crop {
+  open (IN,"$in_file")  || die "Can't open file: $in_file, $!" ;
+  unless (-s IN) {print "ERROR : Zero file size, skipping $in_file !\n"; return}
+
+  open (OUT,">$out_folder/$file") || die "Can't open file: $out_folder/$file, $!" ;
+  #############
+  # first the header
+  #
+  foreach (1..4) {
+    $line = <IN>;
+    print OUT $line;
+  }
+  ($col_ori, $row_ori) = (<IN> =~ m/(\d*) (\d*)/);
+  if ($no_end_col) { $end_col = $col_ori-1 }
+  if ($no_end_row) { $end_row = $row_ori-1 }
+  if ($vverb) { print "    SIZE : ORIG (col,row) $col_ori $row_ori " }
+  $col=$end_col-$start_col+1;
+  $row=$end_row-$start_row+1;
+  if ($vverb) { print "NEW (col,row) $col $row\n" }
+  print OUT "$col $row\n";
+  ($max_grey_ori) = (<IN> =~ m/(\d*)/);
+  if (!defined($max_grey)) { $max_grey=$max_grey_ori }
+  if ($vverb) { print "    MAXGRAY : ORIG $max_grey_ori NEW $max_grey\n" }
+  print OUT "$max_grey\n";
+
+  #############
+  # find start ROW
+  #
+  $icol=-1;
+  $irow=0;
+  while ($irow < $start_row ) {
+      &readline;
+  }
+
+  #############
+  # start cp from here
+  #
+  while ( $irow < $end_row ) {
+      if (($icol >= $start_col) and ($icol <= $end_col)) { &writeline }
+      &readline;
+  }
+  while ( $icol < $end_col ) {
+      if (($icol >= $start_col) and ($icol <= $end_col)) { &writeline }
+      &readline;
+  }
+  &writeline;
+  close (IN);
+  close (OUT);
+}
+
+# -----------------------------------------------------------------
+
+sub readline {
+  $line = <IN>;
+  if (!defined($line)) {die "Out of data at read (col,row) $icol, $irow\n"}
+  if  ($line =~ /^(\d*) (\d*) (\d*)/) {
+    $icol++;
+    if ($icol == $col_ori) {$icol=0; $irow++}
+  }
+  return $line;
+}
+
+# -----------------------------------------------------------------
+
+sub writeline {
+  if ($co && ($icol <= $start_col + $sq_len) && ($irow <= $start_row + $sq_len)) {print OUT $sqc}
+  elsif ($cc) {
+      if ($line eq $oc) { print OUT $nc } else { print OUT $line } 
+  } 
+  else {
+      print OUT $line; 
+  }
+}
+  
+# -----------------------------------------------------------------
+
+sub ParseOptions {
+  $verb=$vverb=$qwer=$single=$cc="";
+  while ($ARGV[0] =~/^\-./) {
+       if ($ARGV[0] eq '-sc') { shift @ARGV; $start_col=$ARGV[0]; shift @ARGV }
+    elsif ($ARGV[0] eq '-sr') { shift @ARGV; $start_row=$ARGV[0]; shift @ARGV }
+    elsif ($ARGV[0] eq '-ec') { shift @ARGV; $end_col=$ARGV[0]; shift @ARGV }
+    elsif ($ARGV[0] eq '-er') { shift @ARGV; $end_row=$ARGV[0]; shift @ARGV }
+    elsif ($ARGV[0] eq '-co') { shift @ARGV; $sq_len=$ARGV[0]; shift @ARGV ; $sqc=$ARGV[0]; shift @ARGV; $co=1}
+    elsif ($ARGV[0] eq '-mg') { shift @ARGV; $max_grey=$ARGV[0]; shift @ARGV }
+    elsif ($ARGV[0] eq '-cc') { shift @ARGV; $oc=$ARGV[0]; shift @ARGV; $nc=$ARGV[0]; shift @ARGV; $cc=1}
+    elsif ($ARGV[0] eq '-v') { $verb=1; shift @ARGV }
+    elsif ($ARGV[0] eq '-V') { $verb=1; $vverb=1; shift @ARGV }
+    elsif ($ARGV[0] eq '-q') { $verb=1; $qwer=1; shift @ARGV }
+    elsif ($ARGV[0] eq '-s') { $single=1; shift @ARGV }
+    else  { die "Unknown option : $ARGV[0]\n"}
+  }
+  $in_folder = $ARGV[0];
+  if (!defined($in_folder)) {die "No input-directory set"}
+  shift @ARGV;
+  if (!$qwer) {
+    $out_folder = $ARGV[0];
+    if (!defined($out_folder)) {die "No output-directory set"}
+    shift @ARGV;
+  }
+  $no_end_col=$no_end_row="";
+  if (!defined($start_col)) { $start_col=0 }
+  if (!defined($start_row)) { $start_row=0 }
+  if (!defined($end_col)) { $no_end_col=1 }
+  if (!defined($end_row)) { $no_end_row=1 }
+
+  if ($cc) {
+    if (!defined($oc)) {die "No target color set"}
+    if (!defined($nc)) {die "No new color set"}
+    if  ($oc =~ /(\d*),(\d*),(\d*)/) {} else { die "Wrong format for color (rr,gg,bb)" }
+    @rgb  = ($oc =~ m/(\d*),(\d*),(\d*)/);
+    $oc=join(" ",@rgb)."\n";
+    if  ($nc =~ /(\d*),(\d*),(\d*)/) {} else { die "Wrong format for color (rr,gg,bb)" }
+    @rgb  = ($nc =~ m/(\d*),(\d*),(\d*)/);
+    $nc=join(" ",@rgb)."\n";
+  }
+  if ($co) {
+    if (!defined($sqc)) {die "No square color given"}
+    if  ($sqc =~ /(\d*),(\d*),(\d*)/) {} else { die "Wrong format for color (rr,gg,bb)" }
+    @rgb  = ($sqc =~ m/(\d*),(\d*),(\d*)/);
+    $sqc=join(" ",@rgb)."\n";
+  }
+}
+
+# -----------------------------------------------------------------
+
+sub usage {
+  die <<HELP;
+
+DESCRIPTION
+     Reads a ppm as input. Extracts the specified rectangle,  
+     and produces a ppm as output.
+     The maximum color-component value can be set to a new value.
+     A specified RGB value can be changed to a new value.
+
+     $0 will crop all files in the <in-directory>. The resulting 
+     files are written in the <out-directory>. 
+
+
+Usage: $0 [options] [-c config-file] <in-directory> <out-directory>
+       $0 -cc <old color> <new color> <in-directory> <out-directory>
+       $0 -q <in-directory>
+       $0 -co <length> <color>
+
+Options:
+  -sc value : start column (default set to 0)
+  -sr value : start row (default set to 0)
+  -ec value : end column (default set to last column in file)
+  -er value : end row (default set to last row in file)
+      value integer from 0 to n
+
+  -co value R,G,B : add square with length = value and color = R,G,B to upper left corner
+
+  -mg value : maxgrey, maximum color-component value
+  -cc old_R,old_G,old_B new_R,new_G,new_B : change old color to new color
+
+  -v : verbose
+  -V : be very verbose
+  -q : query files only
+  -s : single, process first file only and stop
+HELP
+}
+
+# -----------------------------------------------------------------
+
+sub size {
+  open (IN,"$in_file")  || die "Can't open file: $!" ;
+  unless (-s IN) {print " ERROR : Zero file size, skipping !\n"; return} 
+
+  #############
+  # first the header
+  #
+  $inode=stat("$in_file");
+  $size=$inode->size;
+  ($size, $u)=scale_bin($size);
+  $s=int($size*100)/100;
+  print " $s $u","byte";
+  foreach (1..4) { $line = <IN>; }
+  ($col_ori, $row_ori) = (<IN> =~ m/(\d*) (\d*)/);
+  ($max_grey_ori) = (<IN> =~ m/(\d*)/);
+  print "  SIZE (col,row) $col_ori $row_ori ";
+  print "MAXGREY $max_grey_ori\n";
+
+  close (IN);
+}
+
+# -----------------------------------------------------------------
+
+sub scale_bin {
+  my ($val) = @_;
+  my @units = (" ","k","M","G","T");
+  my $i=1;
+  while (int($val/1024**$i) >0) { ++$i }
+  --$i;
+  return $val/1024**$i,$units[$i];
+}
+
+
+

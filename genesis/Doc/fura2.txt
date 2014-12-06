@@ -1,0 +1,61 @@
+Object Type:    fura2
+
+Description:	Computes fura2 fluorescence in a single difshell.
+
+Author:         E. De Schutter BBF-UIA 1/95
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	fura2_type [in src/concen/conc_struct.h]
+
+Size:           104 bytes
+
+Fields:         F340            F340 fluorescence
+                F380            F380 fluorescence
+                ratio           F340/F380
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	FuraRatio [in src/concen/fura2.c]
+
+Classes:        concentration  segment
+
+Actions:        RESET  PROCESS
+
+Messages:       CONCEN  Bfree Bbound vol    (from all fura2 difbuffers)
+
+------------------------------------------------------------------------------
+
+Notes:          Computes the fluorescence signal of the fura-2 calcium
+                indicator dye by adding together information from a series of
+                difbuffers (representing the fura2 in shells).
+
+                In order to use the fura2 object, create difbuffers to model
+                the diffusion of the fura-2 dye and Ca buffering for each
+                difshell that is associated with a compartment.  The Btot, D,
+                kBf, and kBb fields for the difbuffers should be set to values
+                that are typical of the ionic environment of the dye.  The
+                difbuffers are linked to their difshells with the usual
+                messages.
+
+                Then send "CONCEN Bfree Bbound vol" messages to a single fura2
+                element from each difbuffer that corresponds to the
+                compartment for which you wish to calculate the fura-2
+                fluorescence signal.
+                
+                For a general description of buffered calcium diffusion see:
+                De Schutter E., and Smolen P., "Calcium dynamics in large
+                neuronal models", in Methods in neuronal modeling: From ions
+                to networks (2nd edition), C. Koch and I. Segev editors, pp.
+                211-250 (1998).  Details of the GENESIS implementation of the
+                fura2 object are given in Sec. 6.6.4.  Also see Blumenfeld et.
+                al., Biophys. J. 63: 1146-1164 (1992) for additional
+                discussion of fura-2 parameters.
+
+Example:
+
+See also:	difshell, difbuffer

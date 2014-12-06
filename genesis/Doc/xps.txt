@@ -1,0 +1,72 @@
+Routine Name:	xps
+
+Description:	Sets parameters used to generate postscript output of widgets.
+
+Usage:		xps [-maxgray maxgray] [-mingray mingray]
+			[-inverse inverse-flag] [-dpi screendpi]
+			[-filename name] [-printer]
+
+		maxgray		integer between 0 and 256 (with mingray,
+                                sets the range of black to white)
+
+		mingray		integer between 0 and 256 (threshold for
+                                a pixel to be black)
+
+		inverse-flag	0 to leave image as is; 1 to reverse
+				image
+
+		screendpi	screen resolution in dots per inch
+
+		name		name of the file to which output will be
+                                directed
+
+		-printer	flag indicating that print commands should be
+				sent directly to printer rather than to file
+
+Examples:       genesis > xps -inverse 0 -filename dump.ps
+		genesis >  xps
+
+                usage: xps [-maxgray maxgray(0-256)][-mingray mingray]
+                [-inverse 0/1] [-dpi screendpi][-filename name][-printer]
+                [-help][-usage]
+                status : maxgray = 256, mingray = 0, inverse = 0, dpi = 100
+                output to file 'dump.ps'
+
+Notes:          The xgraph and xdraw widgets are able to output their contents
+                to a postscript printer or file when ctrl-p is typed while the
+                cursor is within the widget.  xps is used to set some relevant
+                parameters.  Called with no arguments, the routine displays a
+                usage message plus the current settings for output parameters
+                that you can set with the routine.
+
+                The default is to send the output to the postscript printer
+                that is specified by the PRINTER environment variable.  The
+                filename option may be used to specify a filename to which the
+                output may be sent instead.  Use the printer option to restore
+                output to the printer.  Note that this is NOT used to set the
+                printer name.
+
+                The inverse flag should normally be set to 0 for dark colors
+                plotted on a light background, such as the default gray
+                background provided by XODUS.  However, you will generally get
+                better results by setting the bg field of the widget to
+                "white".  If you make light plots on a black background, set
+                inverse to 1.  The dots per inch of the display (specified
+                with the dpi option) is used for setting the line width of
+                plotted lines.  A larger dpi will make a narrower line.
+
+                mingray is subtracted from the pixel value to define the pixel
+                value at which the color is black.  Reducing the range
+                (maxgray - mingray) increases the contrast, scaling the pixel
+                value by 1/(maxgray - mingray).
+
+                This method of producing graphical output has the advantage of
+                being independent of the screen resolution.  To produce an
+                exact bit-mapped replica of the image on the screen, it is
+                best to use one of the screen capture utilities such as xv or
+                import (from the ImageMagick package), available at the usual
+                X windows archive sites.  For publication quality graphs, it
+                is best to use an asc_file object to write data to a file that
+                can be processed with a plotting package such as gnuplot.
+
+                setpostscript is an alias for xps.

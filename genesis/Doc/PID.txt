@@ -1,0 +1,64 @@
+Object Type:	PID
+
+Description:	PID (proportional, integral, derivative) feedback controller
+
+Author:		M. Nelson, Caltech (4/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	PID_type  [in src/user/user_struct.h]
+
+Size:		144 bytes
+
+Fields:		cmd          inputs the command (desired) value of sns
+		sns          inputs the sensed (measured) value
+		output       = gain*(e + tau_d*de/dt + 1/tau_i * e_integral)
+                gain         determines the sensitivity of the controller
+		tau_i        integration time constant, typically = dt
+		tau_d        derivative time constant, typically = dt/4
+		saturation   sets permissible range of output
+		e            internal variable (error = cmd-sns)
+		e_integral   internal variable (integral of e dt)
+		e_deriv      internal variable
+		e_previous   internal variable
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	PIDcontroller  [in src/user/PID.c]
+
+Classes:	device
+
+Actions:	INIT
+		PROCESS 
+		RESET
+
+Messages:	CMD command
+		SNS sense
+		GAIN gain
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The PID is used for feedback control of dynamical systems.  For example, in
+a voltage clamp circuit it is used with a pulsegen, RC, and diffamp device
+to provide the required injection current to maintain the membrane voltage
+at the desired level.  The RC-filtered command voltage is scaled by the
+diffamp and then presented to the PID with a CMD message.  The output is
+sent to a compartment with an INJECT message, and the resulting Vm in the
+compartment is fed back to the PID with a SNS message.  A higher gain gives
+a better clamp, but requires a smaller integration time step to avoid
+numerical instability.
+
+For more information on PID controllers see: Franklin, Powel, Emami-Naeini
+(1986) "Feedback Control of Dynamic Systems", Addison-Wesley, pp. 99-106.
+
+Example:	Scripts/squid/squid_electronics.g
+
+See also:	
+
+

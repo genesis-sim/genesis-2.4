@@ -1,0 +1,71 @@
+Object Type:	xbutton
+
+Description:	Executes script actions from button presses
+
+Author:		Maneesh Sahani / Upi Bhalla  Caltech Feb/93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xbutton_type [in src/Xodus/widg/xbutton_struct.h]
+
+Size:		132 bytes
+
+Fields:		fg	Foreground color of text in button
+		bg	Background color.
+		onfg	Foreground color of text in button,
+			for on (pressed) state.
+		onbg	Foreground color for on (pressed) state.
+		offfg	Background color of text in button,
+			for off (unpressed) state.
+		offbg	Background color for off (unpressed) state.
+		xgeom	Position of left edge of button.
+		ygeom	Position of upper edge of button.
+		wgeom	Width of button.
+		hgeom	Height of button.
+		onlabel	optional text string to display in on state
+			Defaults to widget name in the GENESIS hierarchy.
+		offlabel optional text string to display in off state
+			Defaults to widget name in the GENESIS hierarchy.
+		onfont	optional font for text in on state.
+		offfont	optional font for text in on state.
+		script  string representing actions to be performed
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XButton [in src/Xodus/widg/xbutton.c]
+
+Classes:	widget output
+
+Actions:	
+		B1DOWN:	Button 1 pressed (left button)
+		B2DOWN:	Button 2 pressed (middle button on 3 button mouse)
+		B3DOWN:	Button 3 pressed (right button on 3 button mouse)
+		ANYBDOWN: Any button pressed.
+		XUPDATE: update internal fields when
+			displayed widget is changed.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+		The xbutton does not perbutton any computational operations.
+		It issues script calls depending on button presses.
+
+Example: 
+
+  create xform /form [0,0,500,100]
+  create xbutton /form/button1 [0,0,100%,100%] \
+    -onlabel "This button widget is on" \
+    -offlabel "This button widget is off" \
+    -onfg red \
+    -offfg blue \
+    -onfont 12x24 \
+    -script "echo.d1 left button; echo.d3 right button; echo any button"
+  xshow /form
+
+See also:	Widget documentation. Mouse events documentation (Clicks.txt),
+		Scripts/examples/XODUS/widgets.g.

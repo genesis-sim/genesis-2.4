@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
+<title>genesis/contrib/README</title>
+
+<p>The genesis/contrib directory contains utilities, scripts, and other
+files that have been contributed by users. It may also used in a personal
+GENESIS installation for storing downloaded patches, updates, and other
+material that has become available since the last GENESIS release.</p>
+<p><em>genesis-mode.el</em> - A useful emacs/xemacs macro for editing GENESIS SLI
+scripts, contributed by Cengiz Gunay. It provides syntax highlighting
+for GENESIS keywords, functions, and objects. It also gives automatic
+indentation with the tab key, and a function index menu item. To use it:</p>
+<blockquote>
+<ul>
+<li><p class="first">copy the file into your ~/.emacs.d directory.</p>
+</li>
+<li><p class="first">If it is not autoloaded when Emacs starts, place the following lines
+in your ~/.emacs file:</p>
+<pre class="literal-block">
+(add-to-list 'load-path &quot;~/.emacs.d/&quot;)
+(require 'genesis-mode)
+</pre>
+</li>
+<li><p class="first">If the '.emacs' file does't exist, create one containing just these two
+lines.</p>
+</li>
+</ul>
+</blockquote>
+<p>For XEmacs:</p>
+<blockquote>
+<ul>
+<li><p class="first">place genesis-mode.el under ~/.xemacs</p>
+</li>
+<li><p class="first">add the following in your ~/.xemacs/init.el file:</p>
+<pre class="literal-block">
+(load-file &quot;~/.xemacs/genesis-mode.el&quot;)
+</pre>
+</li>
+</ul>
+</blockquote>
+<p><em>xemacs-mode</em> - An older set of emacs or xemacs macros by Hugo Cornelis.
+This replaces the version in the GENESIS 2.3 release, and may have some
+functionality that has not been incorporated into the new genesis-mode.el.
+To use it:</p>
+<ol class="arabic simple">
+<li>Put the files in the genesis mode package somewhere in your
+home directory, e.g. in the directory &quot;~/genesis/xemacs-mode/&quot;.</li>
+<li>Put in your emacs initialization file::
+(load-file &quot;~/genesis/xemacs-mode/genesis-vars.el&quot;)
+(load-file &quot;~/genesis/xemacs-mode/genesis-langs.el&quot;)
+(load-file &quot;~/genesis/xemacs-mode/genesis-mode.el&quot;)
+(load-file &quot;~/genesis/xemacs-mode/genesis-files.el&quot;)</li>
+</ol>
+<p>Alternatively, these can refer to the location within the contrib
+directory, e.g.:</p>
+<pre class="literal-block">
+(load-file &quot;/usr/local/genesis/contrib/xemacs-mode/genesis-vars.el&quot;)
+</pre>
+<p>The xemacs-mode files are currently being incorporated into
+genesis-mode.el. Later versions of genesis-mode.el may be
+available at <a class="reference external" href="https://github.com/cengique/emacs-genesis-mode">https://github.com/cengique/emacs-genesis-mode</a>.</p>
+</div>
+
+<P>
+<HR>
+<P>
+<a href="../index.html"><img src="../images/back2.gif" align="middle"
+ hspace=12>Return to the GENESIS main index</a>
+</body>
+</html>

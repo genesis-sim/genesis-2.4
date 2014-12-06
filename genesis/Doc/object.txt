@@ -1,0 +1,92 @@
+Command Name:	object
+
+Description:	Defines the attributes of a GENESIS element type ("object").
+
+Usage:		object name datatype function class [class] ...
+			-actions names
+			-messages name type case-num arg-names
+			-readwrite field-name field-desc [default-value]
+	                -readonly field-name field-desc [default-value]
+        	        -hidden field-name field-desc [default-value]
+			-fields names
+			-defaults args
+			-description text
+			-author text
+
+		name		object name (must be unique)
+
+		datatype	name of the object data structure defining
+				object fields (must be the same name as that
+				used in the structure definition;
+				see example_struct.h)
+
+		function	default object function (must be the same name
+				used for the function in the code definition;
+				see example.c)
+
+		class		class to which this object belongs; can be
+				one or more of existing classes
+				(see listclasses)
+
+		-actions	flag indicating that following arguments are
+				actions that the object can perform; action
+				names must correspond to predefined or newly
+				added actions (see addaction); actions listed
+				must be consistent with actions defined in
+				code definition (see SELECT_ACTION in
+				example.c)
+
+		-messages	flag indicating that following arguments are
+				messages for object, in the following order:
+
+				1. name of message (any string), as can be 
+				   used by 'addmsg' routine
+				2. case number of message type, must
+				   correspond to value defined in code
+				   definition (see MSGLOOP of example.c)
+				   If omitted, one will be automatically
+				   generated.
+				3. number of arguments to message
+				4. names of arguments (arbitrary, used for
+				   documentation purposes, but there MUST be
+				   as many names as there are arguments
+				   defined in 3)
+
+                -readwrite	make field-name both readable and setable
+                -readonly	make field-name readable, but not setable
+                -hidden		hide field-name from view by showfield
+
+		The remaining fields are added for the purpose of documenting
+		the object and are optional.
+
+Example:	object	nernst		nernst_type Nernst  device channel \
+			-author		"M.Wilson Caltech 3/89" \
+			-actions 	PROCESS RESET CHECK \
+			-messages	CIN 0		1 Cin \
+					COUT 1		1 Cout \
+					TEMP 2		1 T \
+			-fields		"E = equilibrium potential" \
+					"T = temperature in degrees celsius" \
+					"valency = ionic valency z" \
+					"scale = voltage scale factor" \
+			-description \
+			    "Calculates Nernst potential for the given" \
+			    "ionic concentrations and temperature." \
+			    "E = scale*(RT/zF)*ln(Cout/Cin)" \
+			    "A scale factor of 1 gives E in volts." \
+			    "A scale factor of 1e3 gives E in millivolts."
+
+Notes:		The object command is used to define the attributes of a
+		GENESIS object.  An object command is executed for each type
+		of GENESIS element and defines the function associated with
+		that element, the actions which are valid to perform on the
+		element, any special GENESIS environment variables tagged to
+		the element, any messages which can be passed to or from the
+		element, and a brief description of that element.
+
+		This initialization command is used when compiling new
+		GENESIS libraries, and is not recognized by the SLI when
+		GENESIS is running.
+
+See also:	listobjects, addaction, newclass, showobject
+

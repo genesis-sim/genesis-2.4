@@ -1,0 +1,55 @@
+Object Type:	xtext
+
+Description:	Display and optional editor for text.
+
+Author:		Maneesh Sahani Caltech/ Jason Leigh U Illinois@Chicago July 93
+		
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xtext_type [in src/Xodus/widg/xtext_struct.h]
+
+Size:		?
+
+Fields:		fg	Foreground color of text in text
+		bg	Background color.
+		xgeom	Position of left edge of xtext.
+		ygeom	Position of upper edge of xtext.
+		wgeom	Width of text
+		hgeom	Height of text
+		font	optional font for text.
+		initialtext	optional text string to display.
+		editable	Flag determining if text can be altered.
+		filename	Optional name of an ascii file for widget
+				to display. 
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XText [in src/Xodus/widg/xtext.c]
+
+Classes:	widget
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+		The xtext does not perform any computational operations.
+
+Example
+		create xform /form [0,0,500,500]
+		create xtext /form/text1 [0,0,100%,100%] \
+			-initialtext "I am a text widget" \
+			-fg red \
+			-font r24 \
+			-bg green
+		xshow /form
+
+See also:	Scripts/examples/XODUS/widgets.g, XODUS documentation.
+

@@ -1,0 +1,198 @@
+                                SQUID
+
+An Introductory Tutorial for GENESIS, XODUS, and the HODGKIN-HUXLEY model
+
+By M. Nelson, Caltech, April 1989
+    - Modified by D. Beeman, June 1991, Dec 1994, Feb 2006
+    - Modified by E. Vigmond, September 1993
+    - Modified by Upi Bhalla, March 1999 (forms resized for 1024x768 display)
+
+Installment 1 - The Basics
+
+As an introduction to the general neural simulation system (GENESIS) and the
+x-based online display utility for simulations (XODUS), we have put together
+a demonstration simulation and tutorial (SQUID) which will help you learn
+how to use these tools for constructing your own simulations and for
+customizing your user interface.  In the process of working through this
+tutorial, you will also learn something about the Hodgkin-Huxley model.
+This program may serve as a good starting point for those of you who plan to
+work on single-cell models for a course project.
+
+The Model
+=========
+For the time being, we are going to simulate a single axon compartment with
+active Na and K conductances, as described by Hodgkin and Huxley for the
+squid giant axon.  In other tutorials we will link compartments together to
+form a simple model of an entire neuron with a soma and dendrites (the
+Neuron tutorial), model a cable with many compartments (the cable tutorial),
+and build neural circuits with connected neurons (MultiCell and tritonia).
+For now, we confine ourselves to a single axon compartment.
+ 
+Running the Simulation
+======================
+The model has already been initialized with some reasonable parameter values,
+so all you have to do to run the simulation is:
+
+click on the ``RUN'' button in the ``Simulation Control'' panel 
+
+The simulation which you just observed was for a constant current pulse,
+which is shown in the lower left graph panel.  The upper left graph shows
+the membrane potential.  You can see that 3 action potentials were generated
+during this 50 msec simulation.  Now let's change the injection current and
+see what happens. At the bottom of the screen is a control panel labeled
+`Current Clamp Mode'' and below it is a panel with five dialog-buttons.
+They have both the properties of a dialog box, which accepts input from the
+keyboard, and a button that executes a command script when it is pressed. In
+order to change the injection current:
+
+position the cursor to the right of the last digit in the "Pulse 1 Current"
+field and click in the dialog box with the left mouse button
+
+You should see the little ``^'' symbol move to the new cursor location.
+Let's change the peak injection current from 0.1 to 1.0.
+
+type <DELETE> to backspace over the 0.1 and then type 1.0
+
+The value in the dialog field should now be 1.0.  At this point we need to
+activate the dialog button to send this new value to the simulator. There
+are two ways to do this; you can either hit <RETURN> when the mouse is
+within the dialog field or you can click on the button with the left
+left-mouse button.  We will now try both techniques.  First, make sure the
+cursor is somewhere in the "Pulse 1 Current" field (it will be a vertical
+bar, not an X), and then
+
+hit <RETURN> anywhere in the dialog field
+
+If this successfully actived the button, you should see a message appear in
+the GENESIS command window.  The message should say something like "Setting
+/pulsegen level1 1".  
+
+You also could have activated the dialog-button by clicking on the box at the
+left.  Do this now:
+
+click on the "Pulse 1 Current"  button at the left of the dialog area
+
+again you should see a message appear in the command window.  Note that you
+normally only have to do one of these two things to activate the button.
+The important point, however, is to make sure that you always do at least
+one of them, either hit <RETURN > or click on the button.  Otherwise the
+simulator will not know about the changes you make to the dialog.
+
+Now we'll run the simulation again.
+
+click the "RESET"  button on the control form
+click the "RUN" button on the control form
+
+There should be a dramatic change in the time-course of the membrane
+potential at this higher current injection level.  Experiment with the
+injection level to see what happens to the axon at higher injection
+currents.  Also try decreasing the injection level until an action potential
+is no longer elicited by the stimulus.  What is the threshold for producing
+an action potential in this compartment?
+
+You may also experiment with trains of short pulses.  Set the "Pulse 1 Width"
+dialog field to 1 msec and click on the "Single Pulse" toggle so that it
+reads "Pulse Train".  Now vary "Onset Delay 1".  What is the minimum
+interval between action potentials that you can achieve?
+
+Voltage Clamping
+================
+You can also perform voltage clamp experiments in this simulation.
+
+click on  the "Toggle Vclamp/Iclamp Mode"  button at the bottom of the 
+control form.
+
+You should notice several things changing on the screen.  All the
+changes are being controlled by the script attached to the "Toggle"
+button.  The integration time step has been reduced from 0.1 msec to
+0.01 msec, and a new "Voltage Clamp " form has appeared in place of the
+"Current Clamp" form.  Again, reasonable default values have been
+selected , so all you have to do to run the voltage clamp simulation
+is:
+
+click the "RESET"  button on the control form
+click the "RUN" button on the control form
+
+Changing Extracellular Concentrations
+=====================================
+You can alter the extracellular concentrations of the ions through the
+"External Concentration" form".  Any changes in concentration will cause
+the reversal potentials to be recalculated.  To reset the values back to 
+the initial ones, just click on the "Default Values" button.
+
+Controlling Graphs
+==================
+The graph of the clamp current (lower left panel) has gone off scale.  In 
+order to rescale the graph:
+
+click on the "scale" button in the upper left corner of the graph
+
+A form containing dialog buttons for the coordinate range should appear.
+Adjust ymin and ymax to bring the graph into range.  Remember to activate the
+dialog buttons by either hitting <RETURN> in the dialog field or by clicking
+on the button after you've made your changes. The x-axes of all graphs are
+automatically scaled to the time of the simulation.
+
+click on the "DONE" button to hide the "Graph Scale" form
+
+It is often convenient to leave the "Graph Scale" form visible if you are
+going to be making alot of scale changes.  Just drag the form to a
+convenient place on the screen and leave it there. 
+
+The "Graph Scale" form also has an "overlay" dialog button.
+When overlay = 1, any existing plots in the graph will be held and new
+simulation results will be overlayed. Try this now.
+
+Set overlay = 1 for the graph of membrane voltage and run the simulation at
+several values of the clamp voltage (remember to RESET between runs). To
+clear all the graphs, click on the "Clear Graphs" button. This will not
+RESET the graphs; you must do that yourself.
+
+State Plots
+===========
+One can learn a great deal by studying plots in which one of the
+Hodgkin-Huxley channel activation parameters (the K activation "n", the Na
+activation "m", or the Na inactivation "h") is plotted as a function of the
+membrane potential, V.  (See, for example, Chapter 5 of "Methods in
+Neuronal Modeling", by Koch and Segev.)
+
+In order to view such a plot, click the left mouse button on the "toggle"
+button labeled "State Plot Hidden".  The label will change to "State Plot
+Visible", and a state plot graph will appear.  Clicking the button again
+will hide the graph.  The default plot is to show the K channel "n"
+parameter on the y-axis and the membrane potential on the x-axis.  The
+dialog boxes at the bottom of the graph allow you to change these defaults.
+
+Channel Blocking
+================
+In order to explore the effects of blocking one of the channels, you may
+click on one of the toggle buttons for blocking and unblocking a channel.
+When a channel is blocked, its conductance is set to zero.  Activation
+parameters for a blocked channel are still calculated and may be plotted,
+but are relatively meaningless because they will have no effect on the
+membrane potential.
+
+Printing Graphs
+===============
+You can get a printout of a graph by positioning your cursor withing the
+graph area and typing <CTRL-p>.  (You should check with your system
+administrator to be sure that your workstation has been set up to print
+the postscript output produced by this command.)  An even better way to
+capture a portion of the screen is to use a screen-grabbing utility like
+"xv" or "xgrabscr" from your favorite X-windows archive site.
+
+Units used in the simulation
+============================
+
+Units:  time            msec 
+        length          um (microns)
+        potential       mV 
+        conductance     mS (mmho)
+        resistance      kohm
+        capacitance     uF
+
+        specific axial resistance       kohm-cm
+        specific membrane conductance   mS/cm^2
+        specific membrance capacitance  uF/cm^2
+
+------------------------------------------------------------------------------

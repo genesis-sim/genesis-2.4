@@ -1,0 +1,77 @@
+Object Type:    calculator
+
+Description:    Adds, subtracts, multiplies, and divides using messages.
+
+Author:         Erik De Schutter, BBF-UIA 6/98
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	calc_type [in src/device/dev_struct.h]
+
+Size:           100 bytes
+
+Fields:         output          computed value
+                resetclock      clock # used to reset output value (default 0)
+                output_init     value of output after reset (default 0)
+                
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	CalculatorFunc [in src/device/calculator.c]
+
+Classes:        device
+
+Actions:        RESET  PROCESS  DELETE  CREATE
+
+Messages:       SUM         number
+                SUBTRACT    number
+                MULTIPLY    number
+                DIVIDE      number
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The calculator is often used to sum multiple inputs.  For example, the
+total channel current in a cell could be calculated with:
+
+    foreach s ({el /cell/##[CLASS=channel]})
+        addmsg {s} /calculator_element SUM Ik
+    end
+
+With the resetclock default of clock 0, the calculator is reinitialized to
+output_init (default 0) at every time step, so that it may calculate a new
+value of the sum from incoming messages at each time step.  If resetclock is
+set to a clock with a longer time step, then operations are performed on
+the previous output, until it is time to reset the output to output_init.
+The example below uses a resetclock with a longer time step in order to
+generate a periodic ramp output.
+
+Example:
+
+create xform /data
+create xgraph /data/calculator
+create xbutton /data/RESET -script reset
+create xbutton /data/RUN -script "step 100"
+create xbutton /data/QUIT -script quit
+xshow /data
+
+// Create a ramp generator by summing a constant input
+// The length of the ramp is given by the resetclock
+
+setclock 0 1.0
+setclock 1 25.0
+create neutral /source
+setfield /source x 4
+create calculator /source/ramp
+setfield /source/ramp resetclock 1
+
+addmsg /source /source/ramp SUM x
+addmsg /source/ramp /data/calculator PLOT output *output *red
+addmsg /source /data/calculator PLOT x *input *blue
+reset
+
+See also:	

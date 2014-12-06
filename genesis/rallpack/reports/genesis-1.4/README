@@ -1,0 +1,29 @@
+This directory contains the script files for performing the
+Rallpack simulations using Genesis 1.4
+
+The vanilla, 1000 compartment simulations at 50 usec are performed by
+rallpack1/cable.g
+rallpack2/branch.g
+rallpack3/axon.g
+
+The files for investigating scaling properties of the simulations are :
+rallpack1/scale_cable.g
+rallpack2/scale_branch.g
+rallpack3/scale_axon.g
+In order to run these files, the commands 'rms' and 'srms' must be in your
+path, and the reference files must be copied into the directory where the
+simulation is being run. If these things are not done the simulations
+will run anyway, but will not perform the comparisons automatically for you. 
+
+There is an extra simulation
+rallpack2/endinj.g 
+which models a current injection into a terminal branch of the model.
+This model is described in the README for rallpack2.
+
+Each directory has an additional file, schedule.g
+This is used to override the default setting in which the output is
+generated at the end of each timestep. The reference files
+assume that this is done at the beginning of each timestep.
+
+
+These simulations were carried out by U.S. Bhalla at Caltech, July 1992.

@@ -1,0 +1,117 @@
+Routine Name:   setupalpha
+
+Description:    Sets up A and B tables of voltage-dependent gates based on
+                generic equations describing the form of the alpha and beta
+                rate functions.
+
+Usage:          setupalpha channel-element gate AA AB AC AD AF BA BB BC BD BF \
+                   -size n -range min max
+
+                channel-element   This must be a tabgate or a tabchannel i.e.
+                                  a voltage-dependent gate or channel with
+                                  tabulated activation functions.
+
+                gate              The name of the gate (must be X, Y, or Z).
+
+                AA-AF             Coefficients A to F of the alpha table 
+                                  (see below).
+
+                BA-BF             Coefficients A to F of the beta table 
+                                  (see below).
+
+                -size n           Number of divisions in the table 
+                                  (default = 3000).
+
+                -range min max    Range of the table (default: min = -0.100; 
+                                  max = 0.050).
+
+                
+                This routine makes it easy to set up the A and B tables of 
+                tabulated channels or gates (tabchannel or tabgate objects) 
+                when the equations describing the rate constants alpha and 
+                beta are of the form:
+
+                y(x) = (A + B * x) / (C + exp((x + D) / F))
+
+                Many standard channels have alpha and beta parameters that can
+		be cast into this form.  In these cases to set up the tables
+		we can simply call setupalpha with the parameter values as
+		arguments to the function.  Since there are both alpha and
+		beta variables, we use the coefficients AA-AF to refer to the
+		alpha variable and BA-BF to refer to the beta variable.
+
+		setupalpha calls the TABCREATE action of the tabchannel or
+		tabgate to allocate tables with n divisions (n + 1 entries)
+		representing x values from min to max.  It then evalutes the
+		functions at these points to fill the tables.
+
+                tabgates have tables for the alpha and beta rate variables, so
+                these alpha and beta values are used to directly fill the
+                tables.  The gates of a tabchannel each have an A table that
+                holds alpha values, and a B table that contains alpha + beta.
+                These tables are filled with A = alpha and B = alpha + beta.
+
+                The tables are by default set up in "no interpolation" mode, 
+                which means that the process of finding the correct table
+                value is simply a lookup operation.  With 3000 divisions in 
+                the table (i.e. the table size is 3001) the lookup usually
+                provides sufficient accuracy.  If not, you can override this 
+                behavior; see the tabchannel documentation.  The range of the
+                activation variable is between -0.100 and 0.050 by default.
+                This is adequate for most voltage-dependent channels, but 
+                can be overridden using the -range option.
+
+Example:        from Scripts/neurokit/prototypes/traub91chan.g:
+
+                create  tabchannel      Kdr_hip_traub91
+                        setfield        ^       \
+                        Ek              {EK}    \                  //      V
+                        Gbar            { 150 * SOMA_A }    \      //      S
+                        Ik              0       \                  //      A
+                        Gk              0       \                  //      S
+                        Xpower  1       \
+                        Ypower  0       \
+                        Zpower  0
+ 
+                setupalpha Kdr_hip_traub91 X               \
+                           {16e3 * (0.0351 + EREST_ACT)}   \  // AA
+                           -16e3                           \  // AB
+                           -1.0                            \  // AC
+                           {-1.0 * (0.0351 + EREST_ACT) }  \  // AD
+                           -0.005                          \  // AF
+                           250                             \  // BA
+                           0.0                             \  // BB
+                           0.0                             \  // BC 
+                           {-1.0 * (0.02 + EREST_ACT)}     \  // BD
+                           0.04                               // BF
+                
+                This command sets up the X gate (activation gate) of Traub's
+                delayed-rectifier potassium channel (Kdr_hip_traub91).
+                SOMA_A and EREST_ACT are constants defined in the script
+                file.  Note that the C value for the A table (AC) is -1; this
+                can cause problems in general but does not cause any problems
+                here (see below).
+
+Notes:		For tabgate elements, which represent only a single gate, the
+		 "gate" argument is ignored, but it should still be given as
+		X, Y, or Z.  The setuptau command is similar to setupalpha,
+		but uses the state variables tau and minf instead.
+
+          	If the alpha and beta rate constant of your channel cannot be
+		described using the above equation, you must fill the tables
+		with one of the other methods described in the tabchannel
+		documentation, or The Book of GENESIS, Chapter 19 (2nd ed.).
+
+                The rate equation described above has a removable singularity
+                when C = -1 at the point x = -D (which is, unfortunately, a
+                common case).  In this case the routine may generate
+                inaccurate results due to roundoff errors.  We STRONGLY
+                RECOMMEND that if you must use a C value of -1 you check the
+                resulting activation curves by using Neurokit (in the "Edit
+                Channel" mode) to see if they look reasonable.  If they do
+                not then you will have to define the channel using a script
+                function as mentioned above.  Such a function will result in
+                a slower setup time for the channel but will be much more
+                accurate.
+
+See also:       tabchannel, tabgate, setuptau, tweakalpha, tweaktau, Tables

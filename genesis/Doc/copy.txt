@@ -1,0 +1,40 @@
+Routine Name:	copy
+
+Description:	Copies an element (and its children, if any) from one portion
+		of the element tree to another.
+
+Usage:		copy src-element dest-element -repeat # -autoindex
+
+		src-element	element to copy (if this element has
+				subelements, they too are copied)
+		
+		dst-element	location into which to copy src-element (if
+				dst-element already exists, src-element is
+				copied beneath it with original name; if
+				dst-element does not exist, copy of
+				src-element is given that name as new name)
+
+		-repeat		is followed by an integer specifying how
+				many duplicates of src-element to make
+
+                -autoindex	automatically assigns the first free element
+				index to the newly created element.
+
+Example:	copy /cell1 /cell2
+
+		// create 5 cells, cell[0-4]
+		copy /library/protocell /cell[0] -repeat 5
+
+Notes:		This routine copies an element and its children, without
+		changing the original.
+
+		Simulation messages and connections between elements within
+		the copied subtree will be copied, but messages and
+		connections to elements outside of the copied subtree will not
+		be copied.
+
+		After it has copied the object, the copy routine issues the
+		COPY action for that element type, if any.
+
+See also:	create, createmap, move
+

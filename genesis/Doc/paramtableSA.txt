@@ -1,0 +1,182 @@
+Object Type:    paramtableSA
+
+Description:    This object implements a continuous version of simulated
+                annealing as part of a parameter search process, and also
+                stores the parameter tables and various bookkeeping
+                information relating to the parameter search process.
+
+Author:         Mike Vanier, Caltech
+
+-------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+Data structure: paramtableSA_type  [in src/param/param_struct.h]
+
+Size:       276 bytes (more when tables are loaded)
+
+Fields:     iteration_number        iteration number
+            num_params              total number of parameters
+            num_params_to_search    number of parameters to search over
+            search                  array of flags:
+                                    0 = don't search this parameter,
+                                    1 = do search this parameter
+            type                    type of parameter:
+                                    0 = additive,
+                                    1 = multiplicative
+            center                  of parameter values in range
+            range                   of parameter values
+            min                     of parameter values
+            max                     of parameter values
+            label                   label of parameter,
+                                    for documentation purposes only
+            current                 array of parameter values
+                                    to be simulated next
+            current_match           match value of current parameter set
+                                    being simulated
+            best                    array of parameter values
+                                    giving best match so far
+            best_match              best match value
+            new_best_match          flag: 1 if last match was the best so far
+            done                    flag: 1 when the simulation is finished
+            filename                where parameter information is
+                                    stored/saved as a binary file
+            alloced                 flag: 1 means tables are allocated
+            iterations_per_temp     number of iterations per temperature level
+            temperature             of annealing process
+            inittemp                initial temperature of annealing process
+            annealing_method        0 = manual,
+                                    1 = linear decay,
+                                    2 = exponential decay
+            max_iterations          maximum number of iterations;
+                                    for linear decay only
+            annealing_rate          how fast the temperature drops;
+                                    for proportional decay only
+            testtemp                test for whether simulation is finished
+                                    when temperature is below this value
+            tolerance               if matches are within this distance
+                                    of each other we're done
+            stop_after              if best match hasn't changed after
+                                    this many iterations then stop
+            restart_every           call RESTART action every x iterations
+            state                   of search process (0-5)
+            simplex_init_noise      proportion of initial noise in
+                                    simplex; a number in (0,1); default = 0
+            simplex                 points on the simplex:
+                                    (num_params + 1) x (num_params)
+            simplex_match           match values for each point in the simplex
+            scale                   "typical" length scale of starting points
+            scalemod                modifiers of length scales in
+                                    (num_params) dimensions; default: all = 1
+
+
+-------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:   ParamtableSA  [in src/param/paramtableSA.c]
+
+Classes:    param
+
+Actions:    Note: required arguments to actions are in <angle brackets>;
+                  optional arguments are in [square brackets].
+
+            CREATE      Creates the object (not invoked directly).
+
+            TABCREATE <num_params>
+                        Initializes the object for a given number of
+                        parameters.
+
+            DELETE      Deletes all allocated memory.
+
+            TABDELETE   Same as DELETE.
+
+            INITSEARCH [random]
+                        Initializes the search process; sets up initial
+                        simplex values (see below); if "random" is given as
+                        the argument then the simplex is populated by
+                        random points in the parameter space; otherwise one
+                        point on the simplex represents the original model.
+
+            EVALUATE <match>
+                        Copies the match value into the current_match field.
+                        If this match is the best match so far, this action
+                        copies the current parameter set into the best
+                        parameter set and the current_match field into the
+                        best_match field.
+
+            UPDATE_PARAMS
+                        Chooses the next set of parameters to
+                        simulate based on past results.
+
+            RECENTER    Moves the center points of the parameter
+                        ranges to correspond to the best parameter
+                        set obtained so far.
+
+            RESTART     Replaces the worst point on simplex with the
+                        point corresponding to the best match.
+
+            RESTART2    Like INITSEARCH, but preserves the best
+                        match obtained so far.
+
+            SAVE [filename]
+                        Saves the object as a binary file.  If no
+                        argument given, use the "filename" field
+                        of the element.
+
+            SAVEBEST <filename>
+                        Save the best parameter set to an ascii file.
+
+            RESTORE [filename]
+                        Restores the object from a binary file.  If no
+                        argument given, use the "filename" field of the
+                        element.
+
+            DISPLAY     Displays the best parameter set obtained so
+                        far on stdout.
+
+            DISPLAY2    Same as DISPLAY, but also prints the current
+                        parameters.
+
+            CHECK       Runs a series of self-check diagnostics on this
+                        object.
+
+Messages:   none
+
+-------------------------------------------------------------------------
+
+Notes:      This object stores parameter tables and calculates new tables
+            to be simulated in a parameter search process using a
+            continuous-space simulated annealing algorithm.  The algorithm
+            is taken from Press et. al., Numerical Recipes in C,
+            2nd. edition, chapter 10, pp. 451-455.  This algorithm is much
+            too complex to describe in detail here, but here is the
+            two-second summary:
+
+            The algorithm constructs a geometrical object called a simplex.
+            If there are N parameters, the simplex has N+1 points
+            (vertices) and conceptually occupies a volume in parameter
+            space.  For instance, a triangle is a 3-simplex in 2 dimensions
+            and a tetrahedron is a 4-simplex in three dimensions.
+            Confused?  There's more :-) Each vertex of the simplex
+            corresponds to a particular parameter set in parameter space.
+            Each vertex's corresponding parameter set is simulated and its
+            match value is calculated.  Depending on the state of the
+            algorithm, several different things can happen, but typically
+            the worst point is discarded and a new point is selected.  By
+            itself, this describes a gradient-descent algorithm; the
+            simulated annealing process comes in by adding noise to the
+            match values based on a temperature parameter (the higher the
+            temperature, the more noise).  At high temperatures, the
+            simplex performs essentially a random walk in parameter space,
+            but as the temperature lowers, the simplex spends more and more
+            time exploring areas of the space which correspond to good
+            match values.  As the temperature drops to zero, the simplex
+            will perform a gradient descent in the parameter space and find
+            a local minimum (which is hopefully close to the global minimum
+            as well).
+
+Example:    See Scripts/param/SA for demo scripts.
+
+See also:   Parameter Search (Param), Paramtable, setsearch, initparamSA,
+            paramtableBF, paramtableCG, paramtableGA, paramtableSS

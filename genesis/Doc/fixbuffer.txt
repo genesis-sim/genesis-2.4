@@ -1,0 +1,70 @@
+Object Type:    fixbuffer
+
+Description:    Implementation of a first-order fixed (non-mobile) buffer.
+                Should be coupled to a difshell or concpool, where the change
+                in the concentration of the buffered ion is computed.
+
+Author:         E. De Schutter BBF-UIA 8/94 - 9/95
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	fixbuffer_type [in src/concen/conc_struct.h]
+
+Size:           124 bytes
+
+Fields:         activation     ion concentration from incoming CONCEN message
+                Bfree          free buffer concentration (calculated) in mM
+                Bbound         bound buffer concentration (calculated) in mM
+                prev_free      Bfree at previous time step
+                prev_bound     Bbound at previous time step
+                Btot           total buffer concentration in mM (free + bound)
+                kBf            forward rate constant in 1/(mM*sec)
+                kBb            backward rate constant in 1/sec
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	FixBuffer [in src/concen/fixbuffer.c]
+
+Classes:        concbuffer segment
+
+Actions:        RESTORE2  SAVE2  CHECK  RESET  PROCESS  INIT
+
+Messages:       CONCEN  C   (buffered ion concentration, sent from a
+                            difshell or concpool)
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The fixbuffer interacts with a difshell or concpool to model the binding of
+calcium to buffer molecules and to calculate the concentrations of free and
+bound buffer molecules using a kinetic scheme with forward and backward rate
+constants for the binding and release of calcium:
+
+    dBfree/dt = kBb*Bbound - kBf*Bfree*C
+    Bbound = Btot - Bfree, where Btot == constant
+
+The rate constants kBf and kBb are set by the user, and the concentration C is
+sent with a CONCEN message from the difshell or concpool.  The BUFFER message
+to a difshell or concpool from a buffer passes on the rate constants and the
+calculated free and bound buffer concentrations.
+
+For a general description of buffered calcium diffusion see:  De Schutter E.,
+and Smolen P., "Calcium dynamics in large neuronal models", in Methods in
+neuronal modeling: From ions to networks (2nd edition), C. Koch and I. Segev
+editors, pp. 211-250 (1998).  The spinedemo simulation gives a detailed
+example of the use of the difshell, taupump, and fixbuffer objects for
+modeling calcium diffusion in dendritic spines.
+
+Example:	create fixbuffer headbuf0
+                setfield headbuf0 Btot 0.2 \ // Total buffer conc in mM
+                                  kBf 5.0e5 \// Forward binding rate 1/(mM*sec)
+                                  kBb 500    // Backward rate, 1/sec
+                addmsg headbuf0 headshell0 BUFFER kBf kBb Bfree Bbound
+                addmsg headshell0 headbuf0 CONCEN C
+
+See also:	difshell, taupump, Scripts/examples/spinedemo

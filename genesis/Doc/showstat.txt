@@ -1,0 +1,51 @@
+Routine Name:	showstat
+
+Description:	Reports statistics about current simulation time
+		or memory use
+
+Usage:		showstat [-process] [-element [element-name]]
+
+                -process    prints statistics of time and memory used
+		-element    prints simulation status of all elements,
+                            or the specified element
+
+Example:
+
+genesis > showstat
+current simulation time = 0.100050 ; step = 2001; dt = 5.000000e-05
+
+genesis > showstat -process
+process status:  0:0.79  user  0:0.09  sys   0:39 real    3.70 Mbytes
+
+genesis > showstat -element /cell/soma
+'/cell/soma' element count:
+         2 hh_channel             384 bytes (  0.00 Mbytes)
+         2 messages                96 bytes (  0.00 Mbytes)
+----------------------------------------------------------
+         4                        480 bytes (  0.00 Mbytes)
+
+total memory usage : 3032324 bytes   (   3.03 Mbytes )
+
+genesis > showstat -element
+'/' element count:
+         3 neutral                228 bytes (  0.00 Mbytes)
+         5 messages               316 bytes (  0.00 Mbytes)
+         1 compartment            144 bytes (  0.00 Mbytes)
+         2 hh_channel             384 bytes (  0.00 Mbytes)
+         2 xform                  272 bytes (  0.00 Mbytes)
+         2 xlabel                 224 bytes (  0.00 Mbytes)
+         3 xbutton                420 bytes (  0.00 Mbytes)
+         1 xdialog                124 bytes (  0.00 Mbytes)
+         1 xgraph                 188 bytes (  0.00 Mbytes)
+         2 xaxis                  416 bytes (  0.00 Mbytes)
+         1 xshape                 168 bytes (  0.00 Mbytes)
+         1 xplot                  204 bytes (  0.00 Mbytes)
+----------------------------------------------------------
+        24                       3088 bytes (  0.00 Mbytes)
+
+total memory usage : 3032324 bytes   (   3.03 Mbytes )
+
+Notes:		
+
+See also:	getstat
+

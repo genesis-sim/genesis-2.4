@@ -1,0 +1,181 @@
+Object Type:	metadata
+
+Description:
+
+File formats such as netcdf allow the inclusion of descriptive content in
+addition to actual data. This is extremely useful from the perspective of 
+having important documentation, such as time of creation, author, purpose 
+or critical information about individual variables or the file as a whole, 
+alongside the actual data in the same file. 
+The genesis metadata object allows the user to manipulate this descriptive 
+data that is in an existing file or write new metadata content into it. As
+already mentioned, descriptive data can describe individual variables in 
+the file (local metadata) or the file as a whole (global metadata). This 
+distinction is replicated well, through the hierarchical element structure
+in genesis. So a metadata object will be identified as a local attribute if
+the immediate parent is a 'variable' object and global if the 'diskio' object
+is the immediate parent.
+
+FMT1 files do not support the notion of metadata and hence arbitrary
+creation of metadata objects in this case will not be allowed. For the sake
+of consistency, however, when SAVE messages are sent to the diskio object,
+automatically created metadata elements (auto3-DPosSAVE_diskio[]) store
+relevant information for inspection. The fields are made readonly in the
+case of FMT1. 
+
+Author:		V.Jagadish (9/96)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS:
+
+DataStructure:	Gen_Metadata_Type [in src/diskio/diskio_struct.h]
+
+Size:		92 bytes
+
+Fields:		datatype	The type of the value(s) held in the metadata
+				- The list of valid types are given in the
+				  notes section of this document.
+				- Defaults to 'char8' (8-bit char)
+				- readonly for FMT1 files.
+
+		size		The maximum number of descriptive values the 
+				object can hold.
+				- Like variables, metadata objects can hold 
+				  an array of descriptive values the size of 
+				  which is limited by the value of this field.
+				- If the datatype is 'char8' (default) the 
+				  user could provide a string as an argument 
+				  to the value field without 
+				  specifying a size or index, and the size 
+				  (which is the number of chars in the string 
+				   including the '/0' character) is 
+			  	  internally calculated and set in this field. 
+				- The default value is 1.
+				- readonly for FMT1 files.
+		
+		value		The value(s) held by the metadata. 
+				- Since metadata can hold an array of
+                                  values or a single one, an index (with
+                                  the genesis style indexing syntax) needs
+                                  to be specified while setting or showing
+                                  this field. The index defaults to 0 if
+                                  not specified, the exception to it being
+                                  the case that the datatype is 'char8'. 
+				- Not specifying the index for a 'char8' type
+				  metadata will translate to mean the entire 
+				  string and individual indices will mean the 
+                                  character in that position.
+				- As in the case of the variable object,
+                                  multiple argument values can be specified
+                                  for this field (see examples) and the values
+                                  will be accessed starting with index 0.
+				- The default value is 0 for numerical
+                                  datatypes and ''(blank) for character types 
+				- readonly for FMT1 files.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Gen_Metadata [in src/diskio/gen_metadata.c]
+
+Classes:	output
+
+Actions:	CREATE PROCESS RESET SET SHOW ADDMSGIN
+
+		FLUSH:
+		UPDATE: the object commits the underlying metadata values 
+			to the file on disk.
+
+		DELETE: commits any changes to disk if necessary and then
+			deletes the object but does not remove the
+			underlying attribute on file.
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The default metadata is an 8-bit single blank character (char8) 
+The datatype field stores the type of the variable as a string. The types
+are chosen to be as generic as possible. They are not based on the usual
+'C' data types but rather on the user's perspective.
+Table 1.2 shows the valid datatype names and what they mean to the user.
+Please note that not all these types are supported by all file formats. 
+An error to that effect will be printed if a metadata obeject of an 
+unsupported type is attempted to be created. 
+
+
+As opposed to variables, the size and datatype fields of metadata objects 
+can be reset within netcdf. 
+
+A smaller size setting than the original truncates values and a larger size
+does not disturb the old values but adds the appropriate number of default 
+values (0 or ''). 
+
+Changing the datatype for a metadata object defaults all the values 
+(as specified by the size field) to the new type. The old values will be lost.
+
+Table 1.2 - Valid datatypes 
+
+Name                            Description
+____            |               ___________
+                |
+                |
+uint8           |               8-bit unsigned int
+                |
+int8            |               8-bit signed int
+                |
+uint16          |               16-bit unsigned int
+                |
+int16           |               16-bit signed int
+                |
+uint32          |               32-bit unsigned int
+                |
+int32           |               32-bit signed int
+                |
+uint64          |               64-bit unsigned int
+                |
+int64           |               64-bit signed int
+                |
+float32         |               32-bit float
+                |
+float64         |               64-bit float
+                |
+uchar8          |               8-bit unsigned char
+                |
+char8           |               8-bit signed char
+                |
+char16          |               16-bit (unicode) char
+                |
+string          |               string type (i.e not an array of chars)
+                |
+________________+______________________________________________________
+
+
+Examples:
+
+create diskio /dout -filename "testfile.nc" -accessmode w
+
+create metadata /dout/author -value "Venkat Jagadish"
+
+showfield /dout/author value // This will print out the entire string
+showfield /dout/author value[2] // This will print the 3rd char - 'n'
+
+create variable /dout/Vmtrace -datatype float32 
+create metadata /dout/Vmtrace/starttimes -datatype float32 -size 3  \
+-value "5 45 65"
+create metadata /dout/Vmtrace/stoptimes -datatype float32 -size 3 \
+-value "20 60 80"
+setfield /dout/Vmtrace/starttimes value[1] 55
+setfield /dout/Vmtrace/stoptimes value[1] 70
+
+
+setfield /dout/Vmtrace/starttimes datatype float64 
+showfield /dout/Vmtrace/starttimes value[1] // Setting datatype resets
+					    // values to default - 0 
+					    // (in this case)
+
+_______________________________________________________________________
+
+See also:	diskio, variable  

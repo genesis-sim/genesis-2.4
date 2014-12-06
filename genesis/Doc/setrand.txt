@@ -1,0 +1,32 @@
+Routine Name:   setrand
+
+Description:    Selects Numerical Recipes or SPRNG random number generator
+
+Usage:          setrand -nr -sprng
+
+                -nr     Use the Numerical Recipes generator (default)
+                -sprng  Use the SPRNG random number generator
+
+Example:        genesis > setrand
+                Using Numerical Recipes random number generator
+                genesis > setrand -sprng
+                Using SPRNG random number generator
+
+Notes:
+
+As of GENESIS version 2.2, SPRNG (the scalable portable random number
+generator) has been incorporated into GENESIS to provide faster and higher
+quality random numbers, which will be the same across all hardware platforms.
+We continue to support use of the Numerical Recipes generator, which is used
+by default.  In order to use the SPRNG generator, GENESIS must be compiled
+with the appropriate lines uncommented in genesis/src/Makefile.  (This is done
+by default, but the use of SPRNG may be disabled for some platforms on which
+it refuses to compile.)  This allows you to choose among several algorithms
+for random number generation.  Lagged Fibonacci is the default, as it is the
+fastest and has the longest number sequence.
+
+The setrand command is used to select between the NR or SPRNG generators.
+When used with no options, setrand reports the currently used random number
+generator.
+
+See also:       randseed, rand

@@ -1,0 +1,95 @@
+Object Type:	enz
+
+Description:	Enzyme activity for a pre-existing pool. An enz does two
+		things: it handles the reactions in the Michaelis-Menten (MM)
+		scheme below, and it also acts as a pool to represent the
+		enzyme-substrate complex. It can only be
+		created on a pool, it is not an independent object.
+
+		The MM scheme is modeled as:
+					k1		k3
+ 		Substrate + Enzyme  <-----> EnzComplex ----> Enz + Prd
+   				    	k2
+
+		The enz is really a utility object, as it replaces
+		two reacs and a pool, but does not add anything extra.
+		
+Author:		U. S. Bhalla, National Centre for Biological Sciences,
+		Bangalore, India. (1993).
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	enz_type  [in src/kinetics/kin_struct.h]
+
+Size:		bytes
+
+Fields:		CoComplex		Concentration of enz-substrate complex.
+					CoComplex = nComplex/vol
+		CoComplexInit		Initial concentration of enz-substrate
+					complex.
+					CoComplex gets set to this value on
+					RESET.
+                nComplex		Number of molecules of complex.
+		nComplexInit		Initial number of molecules of complex.
+					'nComplex'gets set to this value on
+					RESET.
+		vol			Volume occupied by enzyme. Often
+					involves scale factor so as to have
+					direct conversion from 'n' to some
+					sensible units of Co, such as
+					micromolar.
+		sA			A state variable to pass to substrate
+					in messages.
+		pA			A state variable to pass to products
+					in messages.
+		eA			A state variable to pass to parent
+					enzyme pool in messages.
+		B			B state variable to pass to substrate
+					and parent enzyme pool in messages
+		k1,k2,k3		Michaelis-Menten parameters. 
+
+
+		keepconc		Flag determining whether to change
+					concs or n when volume changes
+		usecomplex		Flag. Determines whether the enzyme
+					complex is used when the parent enzyme
+					is involved in other reactions.
+					Consider:
+
+					E + A <----> E.A
+					
+					where E is a pool reacting with A.
+					Suppose E has an enzyme site. Then,
+					whenever some of the enzyme is complexed
+					with a substrate, the conc of E
+					decreases unless 'usecomplex' is true.
+		ksum			Internal variable. ksum = k2 + k3.
+		
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	EnzFunc  [in src/kinetics/enz.c]
+
+Classes:	segment
+
+Actions:	PROCESS
+		RESET
+		SET
+
+Messages: 	ENZYME		n	[n is number of molecules of enzyme
+					pool to which this site is attached]
+                SUBSTRATE  	n     	[Number of molecules of substrate]
+                VOL		vol	[volume of enzyme pool]
+                INTRAMOL	n	[Total number of molecules in an
+					intramolecular reaction]
+
+
+------------------------------------------------------------------------------
+
+Notes: See pool documentation for example of use.
+
+------------------------------------------------------------------------------

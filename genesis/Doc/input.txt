@@ -1,0 +1,30 @@
+Routine Name:	input
+
+Description:	Obtains input from the user at the GENESIS prompt.
+
+Usage:		value = input [ prompt-string [ default-value]  ]
+
+		value		value entered by user
+
+		prompt-string	string to use to prompt user for input
+				(default: "?"; to use a string that includes
+				spaces, include the string in quotation marks;
+				in any case, two blank spaces are always
+				automatically shown after the prompt string)
+
+		default-value	value to use if user responds by just pressing
+				the RETURN key (to use a string that includes
+				spaces, include the string in quotation marks)
+
+Example:	genesis >  int x = {input "Value for x:" 3}
+		(def = 3) Value for x:  666
+		genesis >  echo { x }
+		666
+
+Notes:		The input routine can be used to get input from the keyboard.
+		If supplied, the default-value is displayed before the
+		prompt-string, in the form:
+		
+		    (def = <default-value>) prompt-string
+
+

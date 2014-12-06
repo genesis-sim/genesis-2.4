@@ -1,0 +1,13 @@
+Routine Name:	sin
+
+Description:	Returns sine for given angle (specified in radians).
+
+Usage:		sine = {sin angle-in-radians}
+
+Example:	float s
+		s = {sin {3.14159/4}}
+
+Notes:		
+
+See also:	asin
+

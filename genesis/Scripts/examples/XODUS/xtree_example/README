@@ -1,0 +1,80 @@
+xtree example
+Upi Bhalla Mount Sinai June 1995.
+
+This is an example of using the xtree for displaying and manipulating
+the hierarchy of GENESIS elements. This mode of use is very similar
+to the xtree in the old Xodus, but there are many more facilities.
+
+RUNNING:
+cd into this directory
+start GENESIS
+type tree
+
+
+You will see a window with lots of funny looking icons.  (Some of these
+will be out of view, to the right.  Remember that you may pan the draw
+window by using the cursor arrow keys.)
+- The triangles represent neutrals
+- The cylinders represent compartments
+- The funny shapes that look like a voltage gated channels are
+	voltage gated channels. This won't be much help unless you already
+	know what a voltage gated channel looks like.
+- The christmas-tree like object represents an xtree
+- Anything which the xtree has no explicit icon for is represented
+	by a rectangle. This includes the tables
+- The arrows represent messages
+
+THINGS TO DO:
+1. Click on any icon. The name of the element should
+	be printed in the genesis console.
+2. Double-click on an icon which has children. The children will
+	vanish and the icon will now be 'stacked' to indicate that
+	it has children but they are shy.
+3. Double click on the icon again.  The children will reappear.
+4. Look at the hierarchy of the /cell element on the xtree.
+	It is a flat hierarchy, which is the convention. In other words,
+	all compartments are children of the /cell element. Verify this
+	by doing
+
+		le /cell
+
+5. Let us change this to a hierarchy based on the tree structure of
+	the cell itself. Click on dend1 and drag it onto the soma.
+	Poof ! The tree changes to reflect this new hierarchy.
+	Do 
+		le /cell/soma
+
+	to verify that the same change was done to the genesis element
+	hierarchy.
+
+6. Lets change the hierarchy from the command line. Do
+
+		move /cell/dend2 /cell/soma
+
+	from the command line. Funny. Nothing happens. This is because the
+	xtree has not been told about the change. You can force an update
+	in two ways:
+	- Double click on the cell, twice. The clicks force an update.
+	- Call the RESET action for the tree:
+		call /form/draw/tree RESET
+
+7. Some strange people believe that a tree should grow upside down,
+	with the root on top and the leaves below. I have found it
+	is much easier to give them what they want, rather than argue
+	with such people. To allay whatever childhood trauma they underwent
+	from the fact that the leaves of the tree are at the top (and
+	hence a longer fall to the ground), you can turn the tree upside
+	down:
+		setfield /form/draw/tree orientation down
+		call /form/draw/tree RESET
+		setfield /form/draw ymin -6
+
+	For the severely emotionally stricken, you can even turn the tree
+	on its side:
+		setfield /form/draw/tree orientation left
+		call /form/draw/tree RESET
+		setfield /form/draw/tree orientation right
+		call /form/draw/tree RESET
+
+	of course, you may have to adjust the dimensions of the draw
+	window to be able to see the tree in this configuration.

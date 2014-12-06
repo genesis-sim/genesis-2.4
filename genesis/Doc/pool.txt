@@ -1,0 +1,230 @@
+Object Type:	pool
+
+Description:	Pool of molecules involved in chemical reactions and
+		transport between cellular compartments. Keeps track of the
+		number of molecules resulting from forward and backward
+		reactions. Uses mean-rate theory which assumes large numbers
+		of molecules, not probabilities of transitions of individual
+		molecules.
+
+		Does Michaelis-Menten enzyme kinetics when hooked to the 'enz'
+		object, and standard kinetic reactions with the 'reac' object.
+		The MM scheme is modeled as:
+					k1		k3
+ 		Substrate + Enzyme  <-----> EnzComplex ----> Enz + Prd
+   				    	k2
+		The generic reaction scheme is:
+					kf
+ 		Substrate1 + S2 + ..  <----> Prd1 + Prd2 + ...
+   					kb
+
+		Note that vol, n and Co are interdependent. vol is never
+                changed except by the user or by messages. n changes if Co is
+                changed.  Co changes if either vol or n is changed.  Volume is
+                typically scaled by the Avogadro number, so that Co is in
+                convenient units such as micromolar. 
+		
+		During integration, all calculations are done in terms of
+		n, and, where needed, vol. Co is calculated as n / vol on
+		each timestep.
+		
+Author:		U. S. Bhalla, National Centre for Biological Sciences,
+		Bangalore, India. (1993).
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	pool_type  [in src/kinetics/kin_struct.h]
+
+Size:		bytes
+
+Fields:		Co			Concentration of molecule. Calculated
+					from 'n' as n/vol.
+		CoInit			Initial concentration of molecule.
+					Co gets set to this value on RESET.
+		CoTotal			Total concentration of molecule. Used
+					when applying conservation rules.
+		CoRemaining		CoTotal - Co.
+                n			Number of molecules. This is the 
+					value used for all calcultions.
+		nInit			Initial number of molecules.
+					'n 'gets set to this value on RESET.
+		nTotal			Total number of molecules. Used
+					when applying conservation rules.
+		nRemaining		nTotal - n
+		nMin			Minimum allowed number of molecules.
+					Normally zero.
+		vol			Volume occupied by pool. Often involves
+					extra units so as to have direct
+					conversion from 'n' to some sensible
+					units of Co, such as micromolar.
+		slave_enable		Flag used to control buffering and
+					other overrides. Values:
+					1 - Obey slave message, representing n
+					2 - Obey slave message, representing Co
+					4 - Buffering on: n is set to nInit,
+						Co to CoInit, every timestep.
+					See below for details.
+		keepconc		Flag determining whether to change
+					concs or n when volume changes
+		consv_flag		Internal flag keeping track of presence
+					of CONSERVE and SUMTOTAL msgs
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	PoolFunc  [in src/kinetics/pool.c]
+
+Classes:	segment, concentration
+
+Actions:	CREATE
+		PROCESS
+		RESET
+		SET
+
+Messages: 	REAC		A B	[A is increment to n,
+					B is decrement to n,
+					where n is number of molecules in pool.
+					This message is used for hooking up
+					all reactions and enzymes.]
+                MM_PRD  	A     	[increment n by A. This message is
+					used for the product of enzymes.
+					We assume it is irreversible, so there
+					is no B term]
+                SLAVE   	number	[Sets n or Co to this command number 
+					depending on the slave_enable status,
+					described below. This message is 
+					used to make concentrations in the pool
+					follow an external signal.]
+                REMAINING	n	[decrement to nRemaining]
+                CONSERVE	n nInit [This message is used for setting up
+					conservation relationships.
+					n from all derived molecules is summed
+					to do the conservation. nInit is used
+					during RESET to calculate the total
+					number of molecules. See notes.]
+                VOL		vol	[volume of pool]
+                SUMTOTAL	n nInit [This message is used to make a pool
+					whose n is the sum of that of several
+					other pools. nInit is used at
+					RESET to get the initial levels]
+
+
+------------------------------------------------------------------------------
+
+Notes:
+
+	The pool has numerous extras used in practical simulations.
+	Most of these are readily accessed from within kinetikit, which is
+	the recommended way of developing kinetic simulations. For
+	completeness, here is a list of features of the pool:
+
+	1. Buffering. When slave_enable is set to 4, then all the pool
+	does is assign n to nInit and Co to CoInit every timestep.
+
+	2. Following an external signal. This works when the SLAVE
+	message is passing in the external number. if slave_enable is
+	1 then the external number represents n. If it is 2 the
+	external number represents Co.
+
+	3. Conservation relationships. In some cases it helps stability
+	and accuracy to apply explicit conservation relationships,
+	rather than rely on the implicit ones that arise from the
+	numerical integrations. Warning: in some cases explicit
+	conservation relationships actually worsen stability ! So
+	try it for each case before relying on it. Conservation
+	relationships are set up in two phases:
+	- identify the pool whose value you want to be calculated
+	from conservation.
+	- Send CONSERVE messages from all pools to which this molecule
+	gets converted. Be sure you have found ALL the pools: this is
+	a very common source of error. For example, you may need to
+	send a CONSERVE message from enzyme intermediates, which
+	are represented by 'enz' objects.
+
+	4. Summation. In some cases the final amount of an active
+	species recieves contributions from several independent pathways.
+	An example is an enzyme whose active site always has the same 
+	activity regardless of the means of activation. The total amount
+	of the active enzyme could then be represented as the sum of
+	the active forms from several independent activation pathways.
+	The SUMTOTAL message is used for such cases.
+
+	5. Calculating the amount of the molecule that has reacted, and is
+	no longer in this pool.
+	The nRemaining field plus the REMAINING message are used for this.
+	Again, the REMAINING message must come in from all other molecules
+	into which this pool may convert. This is mainly useful for checking
+	accuracy and stability.
+
+
+	The combination of pools, reacs, and tables is capable in principle of 
+	implementing very complicated ODEs, not restricted to
+	chemical reactions. The pools represent the variables, reacs represent
+	processes increasing and decreasing variables, and the tables can
+	twiddle the rate constants of the reacs according to arbitrary
+	complicated functions. It should be stressed that this is an
+	extremely inefficient but reasonably general way of doing this.
+
+Example:
+				
+Message setup between pools, reacs and enzymes:
+	
+	For the reaction 
+
+		  kf
+	2X + Y <======> Z
+		  kb
+	
+	we would have 3 pools, and 1 reac. The messaging would be as follows:
+	
+		addmsg	X	reac	SUBSTRATE	n
+		addmsg	X	reac	SUBSTRATE	n
+		addmsg	reac	X	REAC		A B
+		addmsg	reac	X	REAC		A B
+
+		addmsg	Y	reac	SUBSTRATE n
+		addmsg	reac	Y	REAC		A B
+	
+		addmsg	Z	reac	SUBSTRATE	n
+		addmsg	reac	Z	REAC		B A
+
+	Some points about this messaging scheme:
+	1. We need N sets of SUBSTRATE and REAC messages between a pool and
+	a reac, where the order of the reaction for that pool is N.
+	2. The Z pool, which is the product, has the A and B state variables
+	reversed in the message. This is because any decrease in X or Y is an
+	_increase_ in Z.
+	
+
+	Setting up the enzymatic reaction:
+
+		Sub + X --> Prd
+
+	We normally put the enzyme site enz as a child of the pool which
+	represents the enzyme.
+
+		create enz X/enz
+	
+	A given pool can have any number of enzyme
+	'sites'. This is required when an enzyme has different levels
+	of activity for different substrates, as each of the enzyme 'sites'
+	can then be given different rates. The messaging would look like this:
+
+		addmsg	X	X/enz	ENZYME		n
+		addmsg	X/enz	X	REAC		eA B
+
+		addmsg	sub	X/enz	SUBSTRATE	n
+		addmsg	X/enz	sub	REAC		sA B
+
+		addmsg	X/enz	prd	MM_PRD		pA
+
+	Some points about this messaging scheme:
+	1. In the irreversible Michaelis-Menten model we are using, the
+	enzyme cannot reduce the level of the product. So there is only one
+	term required in the outgoing message, and no incoming message from 
+	the product to the enzyem
+	2. If this scheme doesn't suit you, you can always build better
+	enzyme models using combinations of reacs and intermediate pools.

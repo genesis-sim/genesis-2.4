@@ -1,0 +1,152 @@
+Routine Name:	volumedelay3
+
+Description: Sets the delay fields on groups of synapses between
+		specified lists of elements.  Most often used to set
+		delays on groups of synapses that have been set up by
+		calling the "volumeconnect" or "volumeconnect3"
+		command.  This function can assign groups of synapses
+		to a fixed delay, can assign delays in proportion to
+		the distances between pre- and postsynaptic elements,
+		and can add various types of randomness to delay
+		values.
+
+Usage:		volumedelay3 sourcepath destination_path  \
+		-fixed delay                               \
+		-radial conduction_velocity		   \
+		-add					   \
+		-uniform scale                             \
+		-gaussian stdev maxdev                     \
+		-exponential mid max                       \
+		-absoluterandom	 			   \
+		-pbc xlen ylen zlen			   \
+		-planar
+
+		sourcepath  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages connecting the
+			pre- and postsynaptic elements (i.e. the presynaptic
+			elements).  These must be of class "spiking" and are 
+			usually spikegen or randomspike objects.
+
+		destination_path  A wildcarded list of elements which must be
+			synchans or objects derived from synchan.
+
+		-fixed delay  -- This option sets all the synaptic delays in
+		        question to be equal to "delay".
+
+		-radial conduction_velocity  -- This option sets the synaptic 
+			delays in question to be proportional to
+			the distance between the source and destination 
+			elements according to the equation:
+
+			delay = radial_distance / conduction_velocity
+
+			Where conduction_velocity is usually measured in
+			meters/sec (SI units).	"conduction_velocity"
+			represents the conduction velocity of the 
+			(hypothetical) axon that the spikes travel down.
+			For volumedelay variants, the distance is measured as:
+ 
+                        distance = sqrt((x_src - x_dest)^2 + 
+                               (y_src - y_dest)^2 + (z_src - z_dest)^2)
+ 
+                        where x_src is the x component of the source element,
+                        x_dest is the x component of the destination element,
+                        and so on. 
+
+		-add  This option causes the computed delays to be added to 
+		        the preexisting delays in the synapses instead of
+			overwriting them.  This is useful when adding small 
+			synaptic delays, among other uses.  
+
+		-pbc xlen ylen zlen -- Applies periodic boundary
+		     conditions to a box of dimensions (xlen, ylen,
+		     zlen). This is used when a network has been
+		     connected with volumeconnect3, and the "-pbc xlen
+		     ylen zlen" option was used, so that an edge cell
+		     will be connected to one on the opposite side.
+		     Then if pbc is specified, a cell at a distance >
+		     xlen/2.0 is considered to be at distance - xlen,
+		     and likewise for ylen and zlen. If the "-radial"
+		     option is used with the volumedelay variants,
+		     then the delay will be proportional to the
+		     distance between the source (typically a
+		     spikegen) and the destination (typically a
+		     synchan in another cell). If the network has
+		     periodic bounary conditions, then a cell at one
+		     edge of the network might have a nearest neighbor
+		     that is a distance xlen, ylen, or zlen away. The
+		     "-pbc" option was introduced in volumedelay3 in
+		     order to correct for this translation when
+		     calculating the distance between connected cells.
+
+	     -planar -- restricts distances to lie in the x-y plane,
+     	     	     as in planardelay2. If the -pbc option is also
+     	     	     used, a'zlen' parameter must be given, although
+     	     	     it will be ignored.
+
+		The next four options are used to add random components to the
+		delays established using the -fixed or -decay options.  How
+		these random components are added to the delays is explained
+		below.
+
+		-uniform scale  -- This option gives a random number taken 
+			from a uniform distribution in the range 
+			{-scale, scale}.
+
+		-gaussian stdev maxdev  -- This option gives a random number
+			taken from a gaussian distribution centered on zero,
+			with a standard deviation equal to "stdev" and with
+			a maximum value of "maxdev".  The maximum value is
+			used to limit the random component to a given range.
+
+		-exponential mid max  -- This option gives a random number
+			taken from an exponential distribution with a 
+			minimum value of zero, a 1/e point of "mid" and a 
+			maximum value of "max".  This is mainly for backwards
+			compatibility with genesis 1.4.
+
+		-absoluterandom  This option alters the way the random number
+			is combined with the nominal delay to give the actual
+			delay, as described below.
+
+		Once a random component has been created for a given delay, 
+		it is used to set the delay as follows.  If the 
+		-absoluterandom option has not been selected the delay is set 
+		to be:
+
+		final_delay = delay + (delay * random_number)
+
+		Whereas if the -absoluterandom option has been selected then
+		we have
+
+		final_delay = delay + random_number
+
+		Thus the default is to have the amount of randomness as a 
+		constant proportion of the delay value.
+
+Notes:		volumedelay3 is similar to volumedelay2, except that it has
+		the added '-pbc' and '-planar' options. The '-planar'
+		option makes it unnecessary to have a 'planardelay3'
+		command.
+
+		The delays are never allowed to go negative even if a large
+		negative random component is added.  Negative delays are set
+		to zero.
+
+		If the -add option is chosen, the random component modifies 
+		only the delay added and not the total delay.
+
+Example:	
+
+Create delays between connected cells in a plane that are proportional
+to their separations. Correct the distances to account that periodic
+boundary conditions were used, and that cells on opposite sides of the
+network are actually near neighbors.  Here, SEP_Z has been set to 1 meter.
+
+   volumedelay3 /network/cell[]/soma/spike /network/cell[]/soma/Ex_channel \
+   		-radial {cond_vel} -pbc  {NX*SEP_X} {NY*SEP_Y} {SEP_Z}
+
+See also:	volumedelay, volumeconnect, volumeweight, syndelay,
+    		volumeconnect3, volumeweight3; Chapter 18 of the Book
+                of GENESIS (2nd ed.) has a lengthy discussion on this
+                and related commands.

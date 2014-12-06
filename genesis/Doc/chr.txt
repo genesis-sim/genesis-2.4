@@ -1,0 +1,15 @@
+Routine Name:	chr
+
+Description:	Returns ASCII character specified by number code.
+
+Usage:		character = {chr ASCII-number}
+
+Example:	genesis >  echo { chr 64 }
+		@
+		genesis > echo {chr 65}
+		A
+		genesis > echo {chr 97}
+		a
+
+Notes:		
+

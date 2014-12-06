@@ -1,0 +1,23 @@
+# $Id: Makefile.FreeBSD,v 1.2 2005/07/29 15:47:11 svitak Exp $
+#
+# GENESIS/XODUS : network simulator
+#
+# YOU MUST NOT EDIT THIS MAKEFILE TO CONFIGURE GENESIS!
+# All configuration is in the file Makefile.
+#
+
+# To use this makefile on FreeBSD, set MACHINE=FreeBSD and
+# check the MACHINE specific settings in src/Makefile.
+
+#----------------------------------------------------------------
+
+LLIBS		=	$(LIBS) $(EXTRALIBS)
+CFLAGS		=	$(CFLAGS_IN)
+
+##
+## sprng may need different flags in order to compile.
+## In general, it can be optimized at a higher level than genesis code.
+##
+RNG_CFLAGS = -O3 -DLittleEndian -D$(MACHINE)
+
+include Makefile.BASE

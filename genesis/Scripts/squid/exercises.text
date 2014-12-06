@@ -1,0 +1,22 @@
+            SOME EXERCISES TO ACCOMPANY THE SQUID TUTORIAL
+
+1) Perform a simulation of a voltage clamp experiment using the default
+   parameters for the voltage clamp mode.  Explain the features in the plot
+   of total injection current and relate them to the channel current plots.
+
+2) Perform a voltage clamp experiment to estimate the sodium reversal
+   potential.
+
+3) In their experiments on the giant squid axon, Hodgkin and Huxley found
+   that the sodium inactivation was completely removed for voltages more
+   than 40 mV below the resting potential and that the sodium channels were
+   completely inactivated for voltages 40 mV above the resting potential.
+   At the resting potential, the steady-state inactivation parameter, h, is
+   about 0.6.  Perform a two-step voltage clamp experiment using pre-pulses
+   (conditioning pulses) of -40, 0, and +40 mV to reproduce these results.
+
+4) In Current Clamp mode, set the injection current (Pulse 1 Current) to
+   zero.  Now increase the external potassium concentration [K] until
+   spontaneous oscillations occur.  Why does the increased level of [K]
+   cause oscillations?  Do you expect similar results to occur when [Na]
+   is varied?

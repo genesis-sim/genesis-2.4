@@ -1,0 +1,13 @@
+Routine Name:	addalias
+
+Description:	Associates alternative name with existing GENESIS command.
+
+Usage:		addalias alias-name command-name
+
+Example:	addalias set setfield
+
+Notes:		You may put a number of addalias statements in a file and
+		use an include statement in the .simrc file to include the
+		file when GENESIS is started.
+
+See also:	addescape

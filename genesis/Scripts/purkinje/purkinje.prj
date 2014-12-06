@@ -1,0 +1,361 @@
+;; -*- Prcs -*-
+;;
+;; Purkinje tutorial
+;;
+;; $ProjectVersion$
+;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;'
+;;' Purkinje tutorial
+;;'
+;;' (C) 1998-2002 BBF-UIA
+;;' (C) 2005-2006 UTHSCSA
+;;'
+;;' see our site at http://www.tnb.ua.ac.be/ for more information regarding
+;;' the Purkinje cell and genesis simulation software.
+;;'
+;;'
+;;' functional ideas ... Erik De Schutter, erik@tnb.ua.ac.be
+;;' genesis coding ..... Hugo Cornelis, hugo.cornelis@gmail.com
+;;'
+;;' general feedback ... Reinoud Maex, Erik De Schutter, Dave Beeman, Volker Steuber, Dieter Jaeger, James Bower
+;;'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(Created-By-Prcs-Version 1 3 3)
+(Project-Description "")
+(Project-Version purkinje Release2-2 17)
+(Parent-Version purkinje Release2-2 16)
+(Version-Log "
+	1. Modified settings of parallel fiber synapses, not sure how
+		got those values.  Change commented out.
+	2. Some comments on the relation of some channel coefficients
+		with heccer.
+")
+(New-Version-Log 
+"")
+(Checkin-Time "Wed, 14 Mar 2007 22:13:17 -0500")
+(Checkin-Login hugo)
+(Populate-Ignore ("\\.a$"
+                  "core$"
+                  "Templates.DB"
+                  "~$"
+                  "\\.tab$"
+                  "\\(\\(^#\\)\\|\\(/#\\)\\).*#$"
+                  "simulation.status"
+                  "\\.emacs\\.desktop"
+                  "\\.deps"
+                  "obsolete"
+                  "\\.o$"
+                  "TAGS"
+                  "\\.gz$"
+                  ".simrc"
+                  "^simulation_sequences"))
+(Project-Keywords)
+(Files
+;; This is a comment.  Fill in files here.
+;; For example:  (prcs/checkout.cc ())
+
+;; Files added by populate at Mon, 25 Jan 1999 15:22:00 +0000,
+;; to version 0.0(w), by hugo:
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  (ArchMake (purkinje/1_ArchMake 1.2 755))
+  
+  (ArchCopy (purkinje/2_ArchCopy 1.3.2.5 755))
+  
+  
+  
+  
+  
+  
+  (library/cells/purkinje_eds1994/Purk2M9s.p.config (purkinje/5_Purk2M9s.p 1.1.1.1 644))
+  (XCLib.s (purkinje/6_XCLib.s 1.1.2.6 644))
+  (library/cells/purkinje_eds1994/psmall.p.config (purkinje/7_psmall.p.c 1.1 644))
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  (library/cells/purkinje_eds1994/Purkinje4M9.p (purkinje/19_Purkinje4M 1.1 644))
+  (xgraph.g (purkinje/20_xgraph.g 1.13.1.1.1.1.2.1.2.1.2.1.1.2.1.2.1.17 644))
+  (xcell.g (purkinje/21_xcell.g 1.1.1.6.1.5.2.6.1.1.2.1.2.2.1.25 644))
+  (utility.g (purkinje/22_utility.g 1.13 644))
+  (settings.g (purkinje/23_settings.g 1.8.2.2.1.1.1.1.1.1.3.4.1.1.1.1.1.13 644))
+  (rainbow3 (purkinje/24_rainbow3 1.1 644))
+  (library/cells/purkinje_eds1994/psmall.p (purkinje/25_psmall.p 1.3 644))
+  (mapping.g (purkinje/26_mapping.g 1.13 644))
+  
+  (info.g (purkinje/28_info.g 1.4.2.1.2.1.1.1.1.5 644))
+  (library/cells/purkinje_eds1994/small.p (purkinje/29_small.p 1.1 644))
+  (credits.txt (purkinje/30_credits.tx 1.1.2.4 644))
+  (control.g (purkinje/31_control.g 1.14.1.1.2.1.1.1.1.1.1.1.1.2.2.3.1.1.1.14 644))
+  (config.g (purkinje/32_config.g 1.7.1.2.1.6 644))
+  (library/cells/purkinje_eds1994/purkinje_eds1994.g (purkinje/33_cell.g 1.10.1.3.2.4.1.2.1.12 644))
+  (bounds.txt (purkinje/34_bounds.txt 1.3.2.1.1.3.1.5 644))
+  (actions.g (purkinje/35_actions.g 1.13.1.1.1.5.1.10 644))
+  (TUTORIAL.g (purkinje/36_TUTORIAL.g 1.1.1.3.1.6.3.1.1.1.3.1.1.1.1.1.2.4.1.19 640))
+  (README (purkinje/37_README 1.2.1.1.2.8 644))
+  (library/channels/Purk_syn.g (purkinje/38_Purk_syn.g 1.3.1.3 644))
+  (Purk_const.g (purkinje/39_Purk_const 1.3 644))
+  (library/segments/Purk_cicomp.g (purkinje/40_Purk_cicom 1.2.1.2 644))
+  (library/channels/Purk_chansave.g (purkinje/41_Purk_chans 1.2.1.2 644))
+  (library/channels/Purk_chanload.g (purkinje/42_Purk_chanl 1.2.1.2 644))
+  (XCLib.u (purkinje/43_XCLib.u 1.1 644))
+  (help.txt (purkinje/44_help.txt 1.2.1.1.2.12 644))
+  
+  (library/cells/purkinje_eds1994/Purk2M9s.p (purkinje/45_Purk2M9s.p 1.3 644))
+
+;; Files deleted by depopulate at Mon, 25 Jan 1999 15:22:51 +0000,
+;; from version 0.0(w), by hugo:
+
+  ; (cell.g~ ())
+  ; (psmall.p~ ())
+  ; (TUTORIAL.g~ ())
+  ; (actions.g~ ())
+  ; (small.p~ ())
+  ; (settings.g~ ())
+  ; (xcell.g~ ())
+  ; (credits.txt~ ())
+  ; (info.g~ ())
+  ; (help.txt~ ())
+
+;; Files deleted by depopulate at Mon, 25 Jan 1999 15:23:10 +0000,
+;; from version 0.0(w), by hugo:
+
+  ; (Purkinje_tutorial/xgraph.g ())
+  ; (Purkinje_tutorial/xcell.g ())
+  ; (Purkinje_tutorial/utility.g ())
+  ; (Purkinje_tutorial/settings.g ())
+  ; (Purkinje_tutorial/rainbow3 ())
+  ; (Purkinje_tutorial/psmall.p ())
+  ; (Purkinje_tutorial/mapping.g ())
+  ; (Purkinje_tutorial/makeconfig.g ())
+  ; (Purkinje_tutorial/info.g ())
+  ; (Purkinje_tutorial/help.txt ())
+  ; (Purkinje_tutorial/credits.txt ())
+  ; (Purkinje_tutorial/control.g ())
+  ; (Purkinje_tutorial/config.g ())
+  ; (Purkinje_tutorial/cell.g ())
+  ; (Purkinje_tutorial/bounds.txt ())
+  ; (Purkinje_tutorial/actions.g ())
+  ; (Purkinje_tutorial/TUTORIAL.g ())
+  ; (Purkinje_tutorial/README ())
+  ; (Purkinje_tutorial/Purk_syn.g ())
+  ; (Purkinje_tutorial/Purk_const.g ())
+  ; (Purkinje_tutorial/Purk_cicomp.g ())
+  ; (Purkinje_tutorial/Purk_chansave.g ())
+  ; (Purkinje_tutorial/Purk_chanload.g ())
+  ; (Purkinje_tutorial/Purk2M9s.p ())
+
+;; Files deleted by depopulate at Mon, 25 Jan 1999 15:23:18 +0000,
+;; from version 0.0(w), by hugo:
+
+  ; (Tar () :symlink)
+
+;; Files deleted by depopulate at Mon, 25 Jan 1999 15:24:38 +0000,
+;; from version 0.0(w), by hugo:
+
+  ; (.simrc~ ())
+
+;; Files deleted by depopulate at Mon, 25 Jan 1999 15:26:34 +0000,
+;; from version 0.0(w), by hugo:
+
+  ; (purk.tar.gz () :no-keywords)
+
+;; Files deleted by depopulate at Mon, 25 Jan 1999 15:31:37 +0000,
+;; from version 0.1(w), by hugo:
+
+  ; (.\ .bashrc ())
+
+;; Files deleted by depopulate at Thu, 25 Feb 1999 17:24:52 +0000,
+;; from version 0.18(w), by hugo:
+
+  ; (Purk_h2.tab () :no-keywords)
+  ; (Purk_h1.tab () :no-keywords)
+  ; (Purk_KM.tab () :no-keywords)
+  ; (Purk_Kdr.tab () :no-keywords)
+  ; (Purk_K2.tab () :no-keywords)
+  ; (Purk_KC.tab () :no-keywords)
+  ; (Purk_KA.tab () :no-keywords)
+  ; (Purk_CaT.tab () :no-keywords)
+  ; (Purk_CaP.tab () :no-keywords)
+  ; (Purk_NaP.tab () :no-keywords)
+  ; (Purk_NaF.tab () :no-keywords)
+
+;; Files added by populate at Fri, 26 Feb 1999 16:46:00 +0000,
+;; to version 0.19(w), by hugo:
+
+  
+
+;; Files added by populate at Fri, 26 Feb 1999 17:32:48 +0000,
+;; to version 0.19(w), by hugo:
+
+  (bounds.g (purkinje/47_bounds.g 1.3.1.6 644))
+
+;; Files added by populate at Fri, 05 Mar 1999 23:00:45 +0000,
+;; to version 0.26(w), by hugo:
+
+  
+
+
+  
+;; Files added by populate at Mon, 27 Dec 1999 19:22:38 +0000,
+;; to version Release1.0.5(w), by hugo:
+
+  
+  
+
+;; Files deleted by depopulate at Mon, 27 Dec 1999 19:22:45 +0000,
+;; from version Release1.0.5(w), by hugo:
+
+  ; (prcs.info ())
+  ; (prcs.merge ())
+
+;; Files added by populate at Mon, 27 Dec 1999 19:23:08 +0000,
+;; to version Release1.0.5(w), by hugo:
+
+  
+  
+  
+
+;; Files deleted by depopulate at Tue, 28 Dec 1999 09:31:24 +0000,
+;; from version Release1.0.7(w), by hugo:
+
+  ; (prcs.diff ())
+  ; (prcs.info ())
+  ; (prcs.merge ())
+
+;; Files added by populate at Tue, 04 Jan 2000 19:49:42 +0000,
+;; to version Release1.0.11(w), by hugo:
+
+  
+  
+
+;; Files deleted by depopulate at Tue, 04 Jan 2000 19:56:35 +0000,
+;; from version Release1.1.1(w), by hugo:
+
+  ; (prcs.merge ())
+  ; (purkinje.log ())
+
+;; Files added by populate at Wed, 05 Jan 2000 11:03:02 +0000,
+;; to version Release1.1.2(w), by hugo:
+
+  
+
+;; Files added by populate at Wed, 05 Jan 2000 11:03:16 +0000,
+;; to version Release1.1.2(w), by hugo:
+
+  
+
+;; Files deleted by depopulate at Wed, 05 Jan 2000 11:04:54 +0000,
+;; from version Release1.1.3(w), by hugo:
+
+  ; (prcs.merge ())
+  ; (purkinje.log ())
+
+;; Files deleted by depopulate at Wed, 05 Jan 2000 11:11:13 +0000,
+;; from version Release1.1.4(w), by hugo:
+
+  ; (.simrc ())
+
+;; Files added by populate at Mon, 24 Jul 2000 17:12:21 +0200,
+;; to version Release1.1.6(w), by hugo:
+
+  (prcs.merge (purkinje/b/7_prcs.merge 1.18 644))
+
+
+  (stack.g (purkinje/b/9_stack.g 1.8 644))
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  (perl/scrop_ppm (purkinje/b/37_scrop_ppm 1.1 644))
+  (perl/merge_ppm (purkinje/b/38_merge_ppm 1.1 644))
+  (perl/label_ppm (purkinje/b/39_label_ppm 1.1 644))
+  (perl/krop_ppm (purkinje/b/40_krop_ppm 1.1 644))
+  (perl/crop_ppm (purkinje/b/41_crop_ppm 1.1 644))
+
+  (library/segments/axon.g (purkinje/b/42_axon.g 1.1 644))
+  (library/segments/dendrite.g (purkinje/b/43_dendrite.g 1.3 644))
+  (library/segments/soma.g (purkinje/b/44_soma.g 1.3 644))
+  (library/segments/compartment.g (purkinje/c/8_compartmen 1.3 644))
+  (xcell_name_requester.g (purkinje/c/35_xcellnamer 1.7 644))
+  (library/channels/Purk_chan.g (purkinje/c/37_Purk_chan. 1.4 644))
+;; Files added by populate at Fri, 06 Jan 2006 20:37:54 -0600,
+;; to version Release1.3.2(w), by hugo:
+
+  (purkinje.log (purkinje/c/40_purkinje.l 1.13 644))
+
+;; Files added by populate at Fri, 06 Jan 2006 20:40:16 -0600,
+;; to version Release1.3.2(w), by hugo:
+
+  (cell.g (library/cells/purkinje_eds1994/purkinje_eds1994.g) :symlink)
+
+
+  (library/cells/example/example.p.config (purkinje/c/41_example.p. 1.1 644))
+  (library/cells/example/passive.g (purkinje/c/42_passive.g 1.5 644))
+  (library/cells/example/example.p (purkinje/c/43_example.p 1.1 644))
+
+  (output.g (purkinje/c/44_output.g 1.19 644))
+  (simulation_sequence.g (purkinje/c/45_simulation 1.3.1.4 644))
+  (input.g (purkinje/c/46_input.g 1.9 644))
+  (cell_path.g (purkinje/c/47_cell_path. 1.8 644))
+
+  (configuration/main.g (purkinje/e/45_main.g 1.2 644))
+  (configuration/pf_beam.g (purkinje/e/46_pf_beam.g 1.1 644))
+  (configuration/background.g (purkinje/e/47_background 1.3 644))
+  (configuration/excitation_demo.g (purkinje/e/48_ascending. 1.8 644))
+  (license.txt (purkinje/e/49_license.tx 1.1 644))
+  (TUTORIAL_excitation_demo.g (purkinje/e/50_TUTORIAL_e 1.2 640)))
+(Merge-Parents)
+(New-Merge-Parents)

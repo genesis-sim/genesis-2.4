@@ -1,0 +1,25 @@
+Routine Name:	strcmp
+
+Description:	Compares two strings.
+
+Usage:		compare-flag = {strcmp s1 s2}
+
+		compare-flag	returned as 0 if strings are identical; 1 if
+				s1 is "greater than" s2; -1 if s1 is "less
+				than" s2
+
+
+Example:	genesis >  echo { strcmp "hi" "hi" }
+		0
+		genesis >  echo { strcmp "hi" "he"}
+		1
+		genesis >  echo { strcmp "hi" "ho"}
+		-1
+
+Notes:		"Greater than" means "later in the standard ASCII sequence".
+
+		You can compare strings up to a specified character using the
+		strncmp routine.
+
+See also:	strcat, strlen, substring, findchar
+

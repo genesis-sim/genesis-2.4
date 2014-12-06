@@ -1,0 +1,29 @@
+                            USING HELP
+
+Many of the topics on the help menu use text windows like this one.  If
+there is more than one screen full of text, move the cursor into the scroll
+bar at the left edge of the window, hold the left mouse button down, and
+drag the mouse downwards to scroll through the text.  When you have
+finished, click the left button on the "DONE" box.
+
+The Help Menu selections are:
+
+Using Help - gives this message.
+
+Introduction - describes the linear cable model implemented in this
+     simulation, and the notation used.
+     
+Running the Simulation - tells how to use the various "buttons" and "dialog
+     boxes" which are used to control the simulation and change parameters.
+     It also tells how to set the injection current pulses to the
+     compartments and how to modify the soma and and cable compartment
+     parameters.
+
+Integration Methods - describes the differential equations used to model the
+     cable and discuses the various techniques which may be used to solve
+     them numerically.
+
+Things to Try - suggests some exercises and experiments to try.
+
+Quit Help - makes the Help Menu disappear.
+

@@ -1,0 +1,57 @@
+Routine Name:	createmap
+
+Description:	Copies an element multiple times to form a two-dimensional
+		array.
+
+Usage:		createmap source dest Nx Ny -delta dx dy -origin x y -object
+
+                source          path to the element that will be copied
+
+                dest            pathname of the parent of the array of copies
+
+		Nx,Ny		number of elements in the x and y dimensions
+				of resulting array
+
+		dx,dy		distance between adjacent elements in the
+				array in x and y dimensions, in world or
+				actual coordinates (default: 1,1)
+
+		x,y 	        position of first element of array (i.e.,
+				corner of array, in world coordinates
+				(default: 0,0)
+
+                -object         indicates that the source is the name of
+                                an object, rather than the path to an element
+
+Example:	createmap /prototypes/cell /map 10 10
+		createmap mycell  /network 3 5 -delta 0.1 0.2 -object
+
+		[from /usr/genesis/Scripts/orient_tut/retina.g:]
+
+		genesis > createmap /library/rec /retina/recplane \
+                    {REC_NX}   {REC_NY} \
+                    -delta  {REC_SEPX} {REC_SEPY}   \
+                    -origin {-REC_NX * REC_SEPX / 2} {-REC_NY * REC_SEPY / 2}
+		genesis > le /retina/recplane
+		rec[0-99]/
+
+Notes:		The createmap routine creates a two-dimensional array of the
+		specified source element by making copies of the source
+                element and assigning the copies x,y coordinates within the
+                specified bounds.  The resulting array is placed under the
+                specified destination path.  As with the copy command, the
+                entire tree of child elements and messages is copied along
+                with the source element.  When the "-object" option is
+                used, the source is the name of a GENESIS object, instead of
+                the path to an element tree.  This is most useful when a
+                prototype cell is created as an extended object composed from
+                a combination of basic objects with added fields and default
+                values.
+
+		The resulting array coordinates can be used by routines such
+		as planarconnect, planarweight, and planardelay to assign
+		connections, synaptic weights and propagation delays for
+		simulation-oriented elements.  The coordinates can also be
+		used to display the cells in a draw widget.
+
+See also:	copy, planarconnect, planarweight, planardelay, Extended

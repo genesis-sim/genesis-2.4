@@ -1,0 +1,64 @@
+REAME file for directory rallpacks/theor.
+==================================================================
+Contents
+README : this file.
+Makefile : for compilation of the currinj  file
+.c files : source files for compilation.
+
+==================================================================
+Currinj : Laplace transform solution for linear cables.
+
+The currinj program iteratively calculates V(x,t);  the voltage on
+the cable at point x and time t. It generates a time series of these
+values in two data files : one for x=0 and the other for any specified
+x. The output data file format is ascii, with one data point with the fields
+time	value
+on every line. Two files are generated, v0 for the current injection end
+of the cable and vx for a point at distant x from this end. By default
+vx corresponds to the far end of the cable.
+The output times start at 0.0 and end at the specified T value (0.25 by
+default).
+
+==================================================================
+
+The solution is from "Electrical current flow in excitable cells",
+OUP, 1983; Jack, Noble and Tsien, pp 79,80, also pp 68. This solution is
+a sum of a series, and therefore its accuracy depends on the number of
+terms used in the sum. The use 10 terms gives at least six figure accuracy
+for a cable of electrotonic length 1.0. For length 0.08, six fig accuracy
+may be obtained with 200 terms.
+
+==================================================================
+
+The currinj options are :
+-t tau0 	: Membrane time constant of cable = Rm * Cm
+-T runTime	: Length of simulation.
+-D dt		: Time step for output.
+-v vrest	: Resting potential of cable.
+-r RA		: Axial resistivity, Resistance * length units
+-L lambda	: Length constant in length units.
+-x dist		: Point on cable at which voltage is to be sampled,
+				in length units.
+-l length	: Length of cable, in length units.
+-d dia		: diameter of cable, in length units.
+-i inj		: injected current, in length units.
+-n nterms	: Number of terms to use for the solution.	
+-h help		: print a brief list of options.
+
+
+==================================================================
+
+source files : The file inj.c is the main file which sets up and
+	calculates the Laplace transform solution.
+	The remaining files compute the error function erfc and
+	are from Numerical Recipes in C, by Press et al. Users
+	should take the responsibility for ensuring that they have
+	fulfilled the copyright conditions for making copies of these
+	files.
+
+==================================================================
+
+compilation :
+To compile the currinj program, just type 'make' in this directory.
+
+==================================================================

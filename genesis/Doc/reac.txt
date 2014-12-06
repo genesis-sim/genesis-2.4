@@ -1,0 +1,62 @@
+Object Type:	reac
+
+Description:	Chemical reaction object. Works with pools to provide kf and
+		kb. Reacs calculate the changes in concs for each pool hooked
+		into them. The pool is responsible for adding up all the
+		up and down changes resulting from various reactions it is
+		involved in. Each reac can handle any number of substrates
+		and products, though reactions of order greater than 2 are
+		rare. Any number of reacs can be hooked up to a given pool.
+
+		The generic reaction scheme is:
+					kf
+ 		Substrate1 + S2 + ..  <----> Prd1 + Prd2 + ...
+   					kb
+
+Author:		U. S. Bhalla, National Centre for Biological Sciences,
+		Bangalore, India. (1996).
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	reac_type  [in src/kinetics/kin_struct.h]
+
+Size:		bytes
+
+Fields:		kf			Forward rate constant. Units depend
+					on the order of the reaction, ie,
+					the number of molecules on the
+					left hand side. First
+					order is sec^-1, second order is
+					sec^-1.num^-1, etc.
+		kb			Backward rate constant. Units depend
+					on the number of molecules on the
+					right hand side, in a similar way.
+		A, B			Internal state variables, used to
+					communicate with pools. A represents
+					increase in the pool n, B is the
+					decrease.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	ReacFunc  [in src/kinetics/reac.c]
+
+Classes:	segment
+
+Actions:	PROCESS
+		RESET
+		SET
+
+Messages: 	SUBSTRATE	n	[Number of molecules in substrate pool]
+                PRODUCT  	n     	[Number of molecules in product pool]
+		KF		kf	[Forward rate constant]
+		KB		kb	[Backward rate constant]
+
+------------------------------------------------------------------------------
+
+Notes:		See pool documentation for complete example.
+
+------------------------------------------------------------------------------

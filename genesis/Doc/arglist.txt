@@ -1,0 +1,22 @@
+Routine Name:	arglist
+
+Description:	Converts list of items into an argument list.
+
+Usage:		arglist string
+
+Example:
+		genesis >  str s ="a b c d"
+		genesis >  echo { getarg {arglist {s}} -arg 3}
+		c
+
+                str s
+                str thingys = "foo bar baz"
+                foreach s ({arglist {thingys}})
+                    echo {s}
+                end
+
+Notes:          In each of these examples, a single string consisting of
+                items separated by spaces has been converted into a list.
+                
+
+See also:	argc, argv, getarg, printargs

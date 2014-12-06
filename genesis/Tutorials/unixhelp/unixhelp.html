@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<HTML>
+<BODY BGCOLOR="#ffffff" TEXT="#000000">
+
+<H1>Introduction to UNIX or Linux and the graphical desktop</H1>
+
+<P> After you have logged in, you will be presented with a desktop showing
+several icons and a panel that is similar to the Windows taskbar.  It is
+usually located at the bottom of the screen, but could also be located at
+the top, or even one of the sides.  Linux and its graphical interface, the X
+window system, give a lot of choices and configuration options for the
+desktop environment.  The most commonly used desktops are the KDE desktop
+and the GNOME desktop.  The panel images that are shown below are from older
+Linux versions, but illustrate the main features.
+
+<P>For KDE, the panel may look something like:
+
+<P><img src="images/kde-gnxbar.png">
+
+<P>With GNOME, it might look like:
+
+<P><img src="images/gnomebar-term.gif">
+
+<P>
+Some of the more important icons that you can click on are:
+
+<UL>
+
+<LI><img src="images/redhat-main-menu32.gif"> <b>The Red Hat main
+menu</b>,or <img src="images/kmenu.png"> <b>The KDE main menu</b>, or <img
+src="images/gnome-logo-icon32.gif"> <b>The GNOME main menu</b> - Like the MS
+Windows start menu, it is used to logout, and to select programs to run,
+some of which are in sub-menus.  It is usually located at the left end of
+the panel.
+
+<P>
+
+<LI> <img src="images/konsole.png"> or <img src="images/gnome-term.png">
+<b>Terminal window</b> - A console window that allows you to type commands
+to the UNIX shell.  In UNIX, this is one of the most important applications.
+Once you get used to it, you will find that after learning a few cryptic
+two-letter UNIX commands, you will get things done much faster than going
+through many levels of sub-menus with a GUI.  You will create and run
+GENESIS simulations by giving commands in a terminal window.
+<P>
+<P>If your taskbar doesn't have an icon for a terminal window, look for it
+in the <b>System Tools</b> sub-menu of the Main Menu.
+
+<P> <LI> <img src="images/redhat-web-browser32.gif"> <b>Web browser</b>, often
+Mozilla.  The bookmark feature of the browser can be used to set bookmarks
+for GENESIS and other documentation.
+
+<P> <LI> <img src="images/konqueror.png"> <b>Konqueror</b> - A fast and
+  light-weight web browser provided wth KDE that is good for reading
+  documentation. 
+
+<P>
+  <LI> <img src="images/khelpcenter.png"> <b>KDE help center</b> - Provides
+  links to information about the KDE desktop environment, KDE applications
+  on the KDE start menu, the UNIX manual ("man") pages, and GNU "info"
+  documentation.
+<P>
+  <LI> <img src="images/kcontrol.png"> <b>KDE control center</b> - Used for
+  changing the configuration of the KDE desktop environment.
+
+< P>
+  <LI> <img src="images/desktops.png"> <b>Desktops display</b> - Most Linux
+   desktop environments allow you to switch between multiple desktops, so
+   that your screen doesn't become too cluttered with applications and
+   terminal windows.  For example, you could be running a GENESIS simulation
+   on one desktop, a couple of of browser windows open on another, and be
+   editing two or three files on a third.  Here, the taskbar has been
+   configured to let you switch between four desktops by clicking with the
+   mouse.
+</UL>
+
+<P>
+
+<A NAME="section-1.1"><H2>Getting around in UNIX and Linux</H2></A>
+
+<P> The commands that you type within a terminal window are interpreted by
+a <i>UNIX shell</i>.  Your account will have been set up to use a
+particular default shell.  The most common shell used with Linux is
+<i>bash</i>, a variation of the Bourne shell <i>sh</i>.  Some prefer to use
+<i>tcsh</i>, a variation of the Berkeley C shell <i>csh</i>.  All of these
+shells recognize the same common commands described below for creating,
+navigating, or copying files between directories (in Windows-speak, "folders").
+
+<P> When you first bring up a terminal window, you are placed in your home
+directory.  A few default configuration files with names starting with "."
+have been set up for you, but otherwise your directory is empty.  You can
+get a listing of the current directory by using the <i>ls</i> command
+(short for 'list').  This is like the DOS <i>dir</i> command, but you need
+to specify some options (followed by a dash) to get details.  To get a more
+detailed listing including the "dot files", type "<tt>ls -lags</tt>".
+
+<P>
+To traverse to another directory you use the <i>cd</i> (change directory)
+command.  This command takes an argument of the directory you wish to
+change to.  Either an absolute or relative path argument can be specified.
+Absolute paths begin at the "root" of the unix file system (/).  Relative
+paths begin from the currect working directory.  For example, if you are in
+your home directory, you can get to the next lower directory <i>mail</i> by
+typing "<tt>cd mail</tt>".  Typing "<tt>cd</tt>" by itself gets you to your
+home directory.  These shorthand symbols can be used to refer to commonly
+used directories:
+
+<UL>
+<LI><b>~ </b> Your home directory.
+
+<LI><b>. </b> The directory that you are currently in ("current working
+directory").
+
+<LI><b>.. </b> The directory immmediately above the current working directory.
+
+</UL>
+
+<P>
+To create a directory, use the <i>mkdir</i> command, e.g. "<tt>mkdir
+myScripts</tt>".  Note that file and directory names in UNIX are
+case-sensitive.  "myScripts" is not the same as "myscripts".
+
+<P>
+To print the name of the current working directory you can use the
+<i>pwd</i> (Print Working Directory) command.
+
+<P> You can examine text files (such as all of our README files) using the
+<i>more</i> command.  This command will display a screenful of a lines at a
+time.  Pressing space bar displays the next bunch of lines, and pressing
+"b" takes you back a screenful.  Pressing "Enter" displays one additional
+line.  Pressing " ' " (apostrophe) returns you to the top of the file and
+"q" will exit the more.  For example, "<tt>more tutorial1.g</tt>" will
+display the contents of the file "tutorial1.g", if it exists in the current
+working directory.  The "pipe" symbol " <tt>|</tt> " can be used to send
+the output of one command into another.  For example, try the command
+"<tt>ls -lags ~ | more</tt>".
+
+
+<P> Other useful commands are <i>rm</i>, meaning remove or delete, as in
+"<tt>rm junk.mail</tt>", and <i>cp</i> to copy one file into another, as in
+"<tt>cp tutorial3.g ~/myScripts/tutorials</tt>".  The "-r" option lets you
+recursively copy a directory with its contents, including any subdirectories.
+For example, if GENESIS is installed in /usr/local/genesis, to make your copy
+of the <i>genesis/Scripts/tutorials</i> directory, you would type
+
+<pre>
+  cd /usr/local/genesis/Scripts
+  cp -r tutorials ~/myScripts
+</pre>
+
+<P>The <i>mv</i> command is used to rename a file or move it to a different
+directory, instead of copying it.
+
+<P>
+The two most common text editors for UNIX are <i>vi</i> and <i>emacs</i>.
+If you are not familiar with either editor, you may find it easier to learn
+emacs. <A HREF="emacs.txt">Here</A> is a quick guide to using emacs.
+For an even simpler text editor with built-in help, try <i>pico</i>
+if it is installed.  If you are using Linux with the KDE or GNOME desktop,
+try <i>kedit</i> or <i>gedit</i>.
+
+<P>
+Documentation for most UNIX commands can be obtained with the <i>man</i>
+command.  For example "<tt>man ls</tt>" will tell you about all the options
+for the <i>ls</i> command.
+
+<P>
+
+Most modern Linux distributions provide a variety of graphical email
+clients. The standard command line program for reading email on UNIX
+is called <i>mail</i>. You can find more about it with "<tt>man
+mail</tt>".  The <i>pine</i> program is much more user-friendly and
+has built in help.  The Firefox/Mozilla browser is also good for
+reading mail.
+
+<P><A HREF="http://www.linux.org/">http://www.linux.org/</A> is a good
+source for information about Linux, with a collection of tutorials for
+beginners. The Linux Documentation Project, <A HREF="http://www.tldp.org/">
+http://www.tldp.org/</A> is another good source for Linux documentation.
+
+<P>If most of this is new to you, now would be a good time to open a
+terminal window and try out some of the commands described above.
+
+</BODY>
+</HTML>

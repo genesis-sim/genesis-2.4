@@ -1,0 +1,67 @@
+Object Type:	xdialog
+
+Description:	Maintains dialog state and executes script actions
+		from mouse button presses.
+
+Author:		Maneesh Sahani / Upi Bhalla  Caltech May/93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xdialog_type [in src/Xodus/widg/xdialog_struct.h]
+
+Size:		116 bytes
+
+Fields:		fg	Foreground color of text in dialog
+		bg	Background color.
+		xgeom	Position of left edge of dialog.
+		ygeom	Position of upper edge of dialog.
+		wgeom	Width of dialog.
+		hgeom	Height of dialog.
+		label	optional text string to display in button.
+			Defaults to widget name in the GENESIS hierarchy.
+		font	optional font for text in on state.
+		value	Maintains character string displayed in widget.
+		fvalue	Maintains float containing converted value of
+			widget.
+		script  string representing operations to be performed
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XDialog [in src/Xodus/widg/xdialog.c]
+
+Classes:	widget output
+
+Actions:	
+		B1DOWN:	Button 1 pressed to turn on dialog (left mouse button)
+		B2DOWN:	Button 2 pressed to turn on dialog
+			(middle button on 3 button mouse)
+		B3DOWN:	Button 3 pressed to turn on dialog
+			(right button on 3 button mouse)
+		ANYBDOWN: Any button pressed.
+		KEYPRESS: Any key pressed.
+		XPDATE: update internal fields when widget is changed.
+
+Messages:	INPUT.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+		The xdialog does not perform any computational operations.
+		It issues script calls depending on button presses and
+		'returns'. It can also display the value of incoming messages.
+
+Example
+		create xform /form [0,0,500,100]
+		create xdialog /form/dialog1 [0,0,100%,100%] \
+			-label "dialog" \
+			-fg green \
+			-bg black \
+			-font r24 \
+			-script "echo The value on <widget> is: <value>"
+		xshow /form
+
+See also:	Widget documentation. Mouse events documentation (Clicks.txt)
+

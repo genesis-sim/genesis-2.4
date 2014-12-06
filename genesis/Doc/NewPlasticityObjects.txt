@@ -1,0 +1,152 @@
+
+21.1.4 Creating new synaptic plasticity objects
+===============================================
+
+This documentation describes the implementation of the 'stdp_rules'
+object, and how it may be used as a model for implementing synaptic
+plasticity in a manner that is compatible with hsolve.
+
+Background - synaptic plasticity and hsolve
+-------------------------------------------
+
+The object-oriented paradigm for scripting simulations in GENESIS 2 is
+one of its most attractive features.  By isolating cell variables and
+parameters into separate objects that communicate with 'messages' it
+is easy to modify, share, and reuse pieces of simulation scripts
+without needing to understand most details of the simulation from
+which they were taken.  This modularity has also made it possible for
+users with a little programming expertise to easily add new commands
+or objects to GENESIS for different types of synaptic plasticity.
+
+In order to avoid the inefficiency of this message-based approach at
+the implementation level. The GENESIS 2 'hsolve' object was developed
+to bypass the object-oriented implementation and allow fast cable
+model solutions, as well as much more efficient delivery of spike
+events to synaptically activated channels.  The computational speed
+increases when highly connected network models are simulated with
+hsolve are impressive, typically a factor of 10 to 20.  However, the
+price for this efficiency is that only a subset of the GENESIS objects
+can be used with hsolve, and it is not possible to modify these
+objects without major changes to the simulator code.
+
+As a result, it is not possible to use hsolve with cells that contain
+a facsynchan, hebbsynchan, or a new variety of synchan that is created
+by following the procedure givem in Doc/NewSynapticObjects.txt.
+However, the synapse (which is a substructure of the synchan) is not
+directly used by hsolve, so it is possible to modify the weights of a
+synaptic connection, and even to add extra fields in addition to the
+weight and delay.
+
+The concept behind the 'stdp_rules' object is very general, but this
+particular implementation is specific to the Song, Miller, and Abbott
+(2000) (SMA) phenomenological model of spike timing dependent
+plasticity (STDP). Rather than using a more biologically based model
+that depends on calcium influx to the cell, the weight modification
+rules are based on experimentally observed relationships between the
+timing of pre and postsynaptic spikes, e.g. Dan and Poo (2004). It has
+been adapted for compartmental models with continous conductance
+changes, Hodgkin-Huxley channels, and axonal delays, rather than for
+'point neuron' integrate and fire (IF) cells.
+
+How to create a new synaptic plasticity object
+----------------------------------------------
+
+The commented simulation code in src/newconn/stdp_rules.c can be used
+as a model for implementing other types of synaptic plasticity.  For
+example, a reimplementation of the facsynchan to be hsolvable would
+use another algorithm and variables to modify the standard synchan,
+but will have much in common with the code used for 'stdp_rules'.
+
+In order to create another plasticity 'rules' object to modify synchan
+weights, begin with by studying the notes below on 'stdp_rules', and
+the demonstration scripts in Scripts/stdp_rules. The README file in
+that directory describes a script function 'apply_stdp_rules' that can
+be called with a clocked 'script_out' object to perform the same
+synaptic weight modifications as 'stdp_rules'. It will be slower, of
+course, but it can be modfied as a prototype for a new variety of
+hsolvable plasticity rules. After testing and refinement, the
+prototyped plasticity model can be compiled into an object in a new
+GENESIS library, by following the instructions in Doc/NewObjects.txt.
+
+You will want to study these files in src/newconn in order to understand
+the relationship between the SLI script and the C code implementation::
+
+  Makefile   -- adds stdp_rules.o to OBJECTS
+  newconnlib.g -- adds section for 'object stdp_rules stdp_rules_type StdpRules'
+  newconn_struct.h -- added '#include "stdp_rules_struct.h"'; changed SYNAPSE_TYPE
+  stdp_rules_struct.h -- defines struct stdp_rules_type for the object fields
+  stdp_rules.c -- the source code for StdpRules() and functions
+  synchan.c -- has additions to the 'EVENT' and 'RESET' cases
+
+Modifications to synchan.c should be restricted to those that do not
+affect the hsolvability of the synchan. In particular, no new messages
+should be added, nor any changes to the PROCESS action. In this case,
+synchan.c was modified to add the 'last_spike_time' field to each
+synapse and set it to the time of the last presynaptic spike plus
+delay in order to get the arrival time. This was done within the
+'EVENT' case, where spike events are processed outside of hsolve.
+
+Aplus and Aminus fields were added for use by stdp_rules or another
+synapse modification object. The added field 'lastupdate' can be used
+to store the time that the synapse weight, Aplus, and Aminus
+fields were last updated. Other than initialization on RESET, these
+three fields are not directly used by the synchan.
+
+Overview of stdp_rules
+----------------------
+
+The 'stdp_rules' object (see Doc/stdp_rules.txt) is a clocked object
+(usually with a step of about 1 msec) that examines pre and post
+synaptic spike times of a cell or list of cells, and changes the
+weight of each synapse accordingly.
+
+At each clock step, for the cell (or in turn for each cell):
+
+It gets the 'lastevent' field of the cell's spikegen to find when
+it last spiked.  Comparing it with the current time tells if it has
+spiked since the last clocked call of the function, or when it last
+spiked.  The same thing is done for each of the synaptic connections
+to this synapse, by examining the 'last_spike_time' field of the
+synapse, in order to find the most recent presynaptic spike arrival
+time. For example:
+
+``getfield /cell[5]/dend/Ex_channel synapse[0].last_spike_time``
+
+The relative timing of the pre- and post-synaptic spikes is used in
+the STDP algorithm to adjust the weights.  In this implementation it
+involves an exponential time window with a small number of parameters.
+This gives higher negative or positive weight changes when the time
+difference is small. (The change is negative if the pre-synaptic cell
+fired later). For more details, see the Methods section of Song et
+al. (2000).  
+
+In particular, note that the SMA algorithm adds each weight change to
+an ongoing exponentially decaying change from previous spike events,
+rather than adding it directly to the current weight.  This provides a
+type of 'momentum' term to keep weight changes moving in the same
+direction. Using this approach instead of using a simple increase of
+weight by a fixed increment required the addition of the 'Aplus' and
+'Aminus' fields to the synapse.  The differences between these
+approaches to weight modification is discussed in the paper by
+Morrison, et al. (2008) For a description of an implementation of the
+SMA rules in Python using the Brian simulator, see Stimberg et
+al. (2104)
+
+See also: synchan, spikegen, NewObjects, NewSynapticObjects
+
+References
+----------
+
+Dan Y and Poo M (2004) Spike timing-dependent plasticity of neural
+circuits. Neuron, 44:232-330.
+
+Morrison A, Diesmann M, Gerstner W (2008) Phenomenological models of
+synaptic plasticity based on spike timing. Biol. Cybern. 98: 459-478.
+
+Song S, Miller KD, Abbott LF (2000) Competitive Hebbian learning
+through spike-timing-dependent synaptic plasticity.
+Nat. Neurosci. 3: 919–926.
+
+Stimberg M, Goodman DFM, Benichoux V, Brette R (2014)
+Equation-oriented specification of neural models for simulations.
+Front. Neuroinf. 8: Article 6. doi: 10.3389/fninf.2014.00006

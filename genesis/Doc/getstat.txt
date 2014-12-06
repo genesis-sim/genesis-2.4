@@ -1,0 +1,21 @@
+Routine Name:	getstat
+
+Description:	Returns current simulation time, step number, or memory used
+
+Usage:		getstat -time -step -memory
+
+Example:
+
+genesis > echo {getstat -time}
+0.1000500023
+
+genesis > echo {getstat -step}
+2001
+
+genesis > {getstat -memory}
+3704068
+
+Notes:
+
+See also:	showstat
+

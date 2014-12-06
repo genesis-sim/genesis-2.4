@@ -1,0 +1,65 @@
+Routine name:	simobjdump
+
+Description:	Sets up the format for dumping and reading objects to a file
+		using simdump.
+
+Usage:		simobjdump object ... -coords -default -noDUMP
+			
+		object:  The name of the GENESIS object class
+
+		... :    The fields to be dumped for this object
+
+		-coords: Dump the x y z coords. 
+
+		-default: Use all the fields defined for the object. This
+			will also happen if you call simobjdump with no
+			arguments, or if you don't call simobjdump at all.
+		
+		-noDUMP: A few GENESIS object classes, such as tables, have
+			a DUMP action which does object-specific things.
+			noDUMP inactivates this DUMP action. For example, in
+			a table, the DUMP action would normally dump the entire
+			contents of the table. noDUMP prevents this from 
+			happening.
+
+Example:	Here is a little dumpfile using simobjdump that recreates a
+		simple 2-compartment model. In this case the simobjdump
+		command was not used at all before the simdump, so the
+		simdump command caused the entire set of fields for the
+		relevent classes (neutrals and compartments) to be specified
+		for the dumpfile.
+
+		============================================================
+		//genesis
+
+		initdump -version 3
+		simobjdump neutral
+		simobjdump compartment activation Vm previous_state \
+			Im Em Rm Cm Ra inject dia len initVm
+		simundump neutral /a 0
+		simundump compartment /a/compt 0 0 0.6632976405 0.6632942696 \
+			-0.3333315551 0 1 1 1 1 0 0 0
+	    	simundump neutral /b 0
+		simundump compartment /b/compt 0 0 0.3299660931 0.3299627243 \
+			0.3333349228 0 1 1 1 0 0 0 0
+	        addmsg /b/compt /a/compt RAXIAL Ra Vm 
+		addmsg /a/compt /b/compt AXIAL Vm 
+		enddump
+		// End of dump
+
+		============================================================
+		
+Notes:		In theory it should be possible to use simdump on its own,
+		without invoking simobjdump or initdump. In this situation, 
+		the command assumes that all fields of the objects are to
+		be dumped. This is inefficient. Worse, it causes problems
+		because fields can take values that should not be reloaded
+		into them. Pointers are a good example. Also see below about
+		what happens with Xodus.
+
+		Simdump will happily dump the entire contents of a 1-Megabyte
+		xplot or table. This gives a valid, but enormous dumpfile.
+		If this is not desirable, simobjdump allows one to specify
+		the -noDUMP option.
+
+See also:       initdump, simdump, simundump.

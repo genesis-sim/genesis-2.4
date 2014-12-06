@@ -1,0 +1,29 @@
+Routine Name:	isa
+
+Description:	Tests to see if an element is derived from a specified object.
+
+Usage:		isa-flag = {isa object element}
+
+		isa-flag	returned as 1 if element is derived from
+				object; returned as 0 otherwise
+
+		object		name of a GENESIS object (element-type)
+
+		element		name or full pathname of element to test
+
+
+Example:	if ({isa symcompartment /cell/dendrite})
+			echo "This is a symmetric compartment"
+		end
+
+		genesis > create compartment /soma
+		genesis > echo {isa compartment /soma}
+		1
+		genesis > echo {isa symcompartment /soma}
+		0
+
+Notes:		The test will also be true if the element is created from
+                an extended object that is derived from the specified
+                object.
+
+See also:       Extended

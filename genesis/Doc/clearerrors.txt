@@ -1,0 +1,17 @@
+Routine Name:	clearerrors
+
+Description:	Resets error count to 0.
+
+Usage:		clearerrors
+
+Example:	clearerrors
+
+Notes:		When the number of errors reaches its maximum value (default:
+		10 syntax errors or 20 warnings) the current action is
+		interrupted, the simulator goes back to the command line, and
+		the errors are reset.  The clearerrors routine can be used to
+		reset the error count before this occurs, allowing a
+		simulation to continue running despite errors.
+
+See also:	maxerrors, maxwarnings
+

@@ -1,0 +1,15 @@
+Routine Name:	cpu
+
+Description:	Displays current cumulative cpu usage for user and system time.
+
+Usage:		cpu
+
+Example:	genesis >  cpu
+		user time used          = 3 sec  510000 usec
+		system time used        = 1 sec  180000 usec
+
+Notes:		This routine calls the getrusage operating system command to
+		display user/system usage statistics.
+
+See also:	showstat
+

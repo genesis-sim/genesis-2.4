@@ -1,0 +1,57 @@
+Routine Name:	writefile
+
+Description:	Writes out ASCII data to currently opened file.
+
+Usage:		writefile filename [arguments ...] [-nonewline] [-format str] 
+
+		filename	name of file to write to (must first be opened
+				with openfile routine with w or a switch)
+
+		-nonewline	do not append carriage return at end of line
+				(if omitted, carriage return is appended)
+
+		-format str	use specified format string str to format each
+				argument (to construct mixed formats, use
+				multiple writefile calls with -n option to
+				place them on a single line)
+
+		arguments	strings to be written out to file (default is
+				nothing, which effectively means a blank line
+				unless -n is selected to suppress carriage
+				return; the arguments are written out with
+				single spaces between each and are terminated
+				with a carriage return)
+
+Example:	openfile test2 w
+		// both of these write three entries per line,
+		// each separated by a space
+		writefile test2 1.0 2.0 3.0
+		writefile test2 "4.0 5.0 6.0"
+
+		genesis >  openfile test w
+		genesis >  writefile test Vm = 10 "string   with space" {10+5}
+		genesis >  writefile test  one -n
+		genesis >  writefile test line
+		genesis >  writefile test X Y -format "%5s"
+		genesis >  writefile test 5.3 6.5 -format "(%3s)"
+		genesis >  writefile test FIRST SECOND -n -format "%-10s"
+		genesis >  writefile test  THIRD -format "%30s"
+		genesis >  writefile test done
+		genesis >  closefile test
+		genesis >  more test
+		Vm = 10 string   with space 15
+		oneline
+		    X    Y
+		(5.3)(6.5)
+		FIRST     SECOND                         THIRD
+		done		
+		genesis >
+
+Notes:		The changes you make are made permanent when you close the
+		file (using closefile), or flush the buffer with flushfile.
+
+		There is limited formatting of output.
+
+See also:	openfile, closefile, listfiles, readfile, flushfile,
+		floatformat
+

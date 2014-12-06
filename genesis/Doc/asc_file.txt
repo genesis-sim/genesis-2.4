@@ -1,0 +1,116 @@
+Object Type:	asc_file
+
+Description:	
+
+The asc_file object is used to write data to a file in ASCII format.  A new
+line is written at every time step of the clock which is assigned.  Unless
+the notime flag is set, the first item on each line is the simulation time.
+Each SAVE message which is received adds another item to the line.
+
+Author:		M. Wilson, Caltech (4/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	ascfile_type  [in src/out/out_struct.h]
+
+Size:		88 bytes
+
+Fields:
+		filename	data file name to be written
+		fp		data file pointer
+		is_open		flag: is file currently open?
+		initialize	flag: has file been initialized?
+		leave_open	flag: leave file open? 1 leaves the file open
+                                all the time so you can write on it whenever
+                                you want (a good idea if the file is used
+                                frequently, but there is a limit to number of
+                                files that can be left open at any time);
+                                0 closes the file after every write to it
+                                (only useful if you have more than 30 files;
+                                this is slow)
+		append		flag: append data after resetting?
+		flush		flag: flush data to disk at each interval?
+                                1 forces program to send data to the disk at
+                                once and not store it in a buffer (slow but
+                                secure); 0 (default) writes data in a buffer
+                                (fast)
+		notime		flag: if non-zero, don't output the time
+		float_format	format specifier for output (default is %g)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	AscFileOutput  [in src/out/out_ascfile.c]
+
+Classes:	output
+
+Actions:	RESET  PROCESS  DELETE  SAVE  FLUSH  OUT_OPEN  OUT_WRITE
+
+Messages:	SAVE data
+
+------------------------------------------------------------------------------
+
+Notes:
+
+If the filename field is not set, the output file will be given the same
+name as the element which is created from the asc_file object.
+
+When the append flag is zero, a reset will close and reopen the file,
+setting the file pointer at the begining, effectively creating a new file
+if the simulation is stepped again.  When the append flag is set to a
+non-zero value, additional steps after a reset will be appended to the
+file.  The OUT_WRITE action may be called to write any string to the file.
+The OUT_OPEN command is used to manually initialize the file for writing,
+and must be called before calling OUT_WRITE.  In append mode, it must be
+called after changing the filename to a new output file name, or renaming
+an existing one.
+
+The float_format field specifies the format of the data written to the
+file, using the notation of the floatformat command, similar to that
+used in C.  The default is "%g".  By setting this to a string with
+a different value, for example "%0.12g", the data and the simulation time
+that are written to the file can be given to to a higher precision.
+
+There are two variations of asc_file that are not documented elsewhere:
+
+res_asc_file has two additional fields, time_res and value_res, with
+default values of 0.  The data is output at intervals that are separated
+by at least time_res (X-axis) OR value_res (Y-axis).  With the default
+values, this means that the interval will be determined by the simulation
+clock that is used.  To increase the interval, both time_res and value_res
+should be set to appropriate larger values.
+
+par_asc_file is a modified version of asc_file to be used with parallel
+GENESIS (PGENESIS), in order to guarantee that SAVE messages coming from
+various nodes provide outputs in a fixed order.  For more information on
+the use of par_asc_file, see the section on Parallel I/O Issues in the
+PGENESIS hypertext documentation.
+
+For binary data, use disk_out.
+
+Example:	
+
+    create asc_file /out
+    setfield /out    flush 1  leave_open 1 append 1  float_format %0.9g
+    setclock 1 0.0005
+    useclock /out 1
+    // Assume the existence of /cell/soma to provide output
+    addmsg       /cell/soma     /out       SAVE Vm
+    setfield /cell/soma inject 0
+    step 0.1 -t
+    // append the results of a new run with different injection
+    setfield /cell/soma inject 0.1e-9
+    reset
+    step 0.1 -t
+    // now do yet another injection with output to a different file
+    setfield /out filename out2
+    call /out OUT_OPEN
+    call /out OUT_WRITE "Run #2"        // Write a header
+    setfield /cell/soma inject 0.2e-9
+    reset
+    step 0.1 -t
+
+See also:	disk_out, disk_in, floatformat

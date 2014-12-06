@@ -1,0 +1,65 @@
+Object Type:	freq_monitor
+
+Description:	Calculates running event (spike) frequency over a given time
+		window using exponential weighting.
+
+Author:		M. Wilson, Caltech (2/89), modified by D. Jaeger
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	freq_mon_type  [in src/device/dev_struct.h]
+
+Size:		84 bytes
+
+Fields:		tmin		minimum time interval which must be held by
+				  the buffer
+		size            buffer size, in number of events
+		current  	current buffer location
+		start           starting buffer location - 1
+		end  		last occupied buffer location
+		event_size  	size of each event data structure
+		event           circular event buffer
+		exponent	power by which to weight
+		frequency       curent calculated value of the frequency
+                                (set to zero on reset)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	FrequencyMonitor  [in src/device/new_frequency.c]
+
+Classes:	device
+
+Actions:	PROCESS  RESET  CREATE
+
+Messages:	NONZERO_TRIG	input 	trigger on nonzero input
+		ZERO_TRIG	input	trigger only when input is zero
+		POSITIVE_TRIG	input   trigger on positive input
+		NEGATIVE_TRIG	input	trigger on negtive input
+		WINDOW		tmin	sets the window size tmin
+		CONTINUOUS	input	triggers every time
+
+------------------------------------------------------------------------------
+
+Notes:		This is a frequency measuring device which computes the
+		running event frequency over a time interval using exponential
+                weighting.  The field "tmin" should be set in order to specify
+                the interval or "window" for averaging.  Larger values give a
+                smoother result.  If "exponent" is unequal to the default
+                value of zero, inputs are weighted by exp(exponent*time).  The
+                frequency field may be examined or sent to a graph.
+
+		The first four messages are used to give it an input, and the
+                counting of input events is triggered by one of the four
+                conditions.  The most common way to use the frequency monitor
+                is to set the "tmin" field to an appropriate timing window,
+                send it a POSITIVE_TRIG message with the state of a spiking
+                element, and send a "PLOT frequency" message from the monitor
+                to a graph.
+
+Example:	See the demonstration script Scripts/examples/spike/freqmon.g.
+
+See also:	

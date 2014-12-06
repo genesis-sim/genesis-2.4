@@ -1,0 +1,27 @@
+Routine Name:	addmsgdef
+
+Description:	Adds a new message type allowing messages of that type
+		to be added to the element.
+
+Usage:		addmsgdef element message-name [message-arguments...]
+		 -type message-type
+
+		element		element for which to add the message
+				definition
+	
+		message-name	name of the message (the convention is
+				to use all upper case)
+
+		messages-arguments
+				zero or more names for the data slots
+				of the message
+
+		-type		option to set the message type number
+				explicitly
+				
+Notes:		It is normally unnecessary use the -type option as
+		addmsgdef assigns an unused message type number
+		automatically. -type should be necessary only for
+		specifying active messages.
+
+See also:	deletemsgdef, showobject, Extended

@@ -1,0 +1,119 @@
+# $Id: Makefile.sun4,v 1.2 2005/07/29 15:47:11 svitak Exp $
+#
+# GENESIS/XODUS : network simulator
+#
+#	Make tree altered June 1991
+#	Last altered Fri Oct  4 13:50:27 PDT 1991
+#	by David Bilitch
+#
+# YOU MUST NOT EDIT THIS MAKEFILE TO CONFIGURE GENESIS!
+# All configuration is in the file Makefile.
+#
+# $Log: Makefile.sun4,v $
+# Revision 1.2  2005/07/29 15:47:11  svitak
+# Relocated common targets to Makefile.BASE. Some architectures were making
+# in sys and shell, then all the subdirs. If you find this needs to be done
+# for your architecture, please submit a bug report at:
+# http://sourceforge.net/tracker/?func=add&group_id=141069&atid=748364
+#
+# Eliminated use of COPT in favor of CFLAGS_IN.
+#
+# Added architecture-dependent flags for compilation of SPRNG libraries to
+# corresponding Makefiles.
+#
+# Changed INSTALL to INSTALLDIR to avoid confusion with INSTALL executable.
+#
+# Added TEST variable to allow different location of 'test' executable.
+#
+# Made TMPDIR setting more prominent.
+#
+# Updated instructions for making genesis.
+#
+# Revision 1.1.1.1  2005/06/14 04:38:27  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.23  2000/06/07 05:24:25  mhucka
+# 1) Instead of MACH_DEP_FLAGS (which no longer seems to serve a purpose),
+#    now using LDFLAGS.
+# 2) Cleaned up a lot of the diagnostic print statements.
+#
+# Revision 1.22  2000/05/29 02:10:39  mhucka
+# Fixed "make install" directive, which was actually screwed up.
+#
+# Revision 1.21  2000/05/26 23:39:30  mhucka
+# Added INSTALLBIN.
+#
+# Revision 1.20  2000/05/26 22:19:49  mhucka
+# Need to copy Doc, src and other dirs during "make install".
+#
+# Revision 1.19  2000/05/19 20:08:48  mhucka
+# Need to pass value of SPRNG_LIB to make clean.
+#
+# Revision 1.18  2000/05/19 18:16:27  mhucka
+# Made it pass value of MACHINE to submakefiles during "make clean".
+#
+# Revision 1.17  2000/04/24 07:10:43  mhucka
+# Added another library parameter to handle things like the SPRNG library.
+#
+# Revision 1.16  1999/12/02 00:42:24  mhucka
+# Moved the setting of TERMCAP and TERMOPT to the top-level Makefile,
+# because at least in one case (Linux), users may have to customize the
+# value depending on which version of Linux they're running.  We want to
+# avoid having users have to modify the Makefile.MACHINE files.
+#
+# Revision 1.15  1999/10/17 23:58:35  mhucka
+# Removed XVERSION symbol definition.  It turns out it's not used anywhere.
+#
+# Revision 1.14  1998/01/15 03:17:37  venkat
+# Included-the-DISKIOSUBDIR-macro-to-be-passed-down-to-lower-level-subdirectories
+#
+# Revision 1.13  1997/06/13  00:36:54  dhb
+# Added @ to suppress command echoing of echo commands
+#
+# Revision 1.12  1996/06/18 07:07:08  dhb
+# Support for AR macro.
+#
+# Revision 1.11  1995/11/02  00:06:17  dhb
+# Changes to pass down TMPDIR macro to sub makes and the LEXLIB macro
+# to the code_g make.
+#
+# Revision 1.10  1995/04/29  01:11:24  dhb
+# Added handling of YACC, LEX and LEXLIB macros to define the
+# yacc and lex programs and the lex libraries respectively.
+#
+# Revision 1.9  1994/12/20  23:37:43  dhb
+# Fixed XINCLUDE handling.
+#
+# Revision 1.8  1994/12/06  01:45:40  dhb
+# Added the XINCLUDE macro
+#
+# Revision 1.7  1994/04/14  14:51:50  dhb
+# Now passes RANLIB macro down in install targets
+#
+# Revision 1.6  1994/04/04  21:29:08  dhb
+# *** empty log message ***
+#
+# Revision 1.5  1994/04/04  16:51:22  dhb
+# Added RANLIB variable to handle systems without ranlib.
+#
+# Revision 1.4  1994/03/22  23:56:31  dhb
+# Changed codeg target to code_g (the actual program name).
+#
+# Revision 1.3  1994/03/21  05:27:10  dhb
+# Changes to compile code_g program
+#
+# Revision 1.2  1993/10/19  18:53:27  dhb
+# RCS changes and libsh --> ./libsh
+#
+#
+
+LLIBS		=	$(LIBS) $(EXTRALIBS)
+CFLAGS		=	$(CFLAGS_IN)
+
+##
+## sprng may need different flags in order to compile.
+## In general, it can be optimized at a higher level than genesis code.
+##
+RNG_CFLAGS = $(CFLAGS_IN)
+
+include Makefile.BASE

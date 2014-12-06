@@ -1,0 +1,494 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Extended Objects</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-10.html">Previous</A>
+<A HREF="Manual-12.html">Next</A>
+<A HREF="Manual.html#toc11">Table of Contents</A>
+<HR>
+<H2><A NAME="Extended"></A> <A NAME="s11">11. Extended Objects</A></H2>
+
+<P>GENESIS provides an extensive set of objects for building simulations.
+The extended object facilities may be used to create additional objects
+at the script level.  New objects may also be added to GENESIS by
+compiling new object libraries written in C. (See 
+<A HREF="Manual-21.html#Customizing">Customizing GENESIS</A>.)</P>
+<P>A GENESIS object is characterized by its object name, fields, message
+definitions, actions and classes.  An extended object is created by
+adding new fields, message definitions, actions or classes to an
+element of a preexisting GENESIS object.  The new object defined
+through extending the element may be added as a named GENESIS object
+using the 
+<A HREF="Manual-25.html#addobject">addobject </a> command, or the element (and copies of
+it) may be used directly without using addobject.</P>
+<P>Although extended objects may be used for any purpose they are usually
+used for one of three reasons: specialization, composition or creating
+completely new objects.  Specialization customizes a given GENESIS
+object to describe a specific component in the model; the sodium
+channel of a squid giant axon for example.  Composition takes a
+potentially complex combination of elements using them together to
+implement a new function and then presents the composition as a single
+object.  A new object with a completely new function may be implemented
+by extending a neutral element.</P>
+<P>An extended object is said to be derived from or based on the object
+from which it was extended.  This derivation gives rise to an isa
+relationship between the extended object and its base object (or
+objects).  The isa command and ISA wildcard path option allow testing
+and selection of elements based on generic object names.  For example,
+if there were a number of specialized channels derived from the
+hh_channel object, the wildcard path
+<PRE>
+        /##[ISA=hh_channel]
+</PRE>
+
+would select all elements of all the specialized objects while
+<PRE>
+        /##[OBJECT=hh_channel]
+</PRE>
+
+would select only those element created directly from hh_channel.</P>
+<P>If the class of the extended object needs to belong to an additional class
+besides that of the base object, another one may be added with the
+<A HREF="Manual-25.html#addclass">addclass </a> command.  This will be necessary when the simulation
+schedule for the new extended object needs to be different from that of the
+base object, as when the base object is a neutral object.
+(See 
+<A HREF="Manual-16.html#Schedules">Simulation Schedules</A>.)</P>
+
+<H2><A NAME="ss11.1">11.1 Extending Fields</A></H2>
+
+<P>New fields are added to an element using the 
+<A HREF="Manual-25.html#addfield">addfield </a>
+command.  A new field may be used in every respect just as any field
+built in to the element.  The <CODE>-indirect</CODE> option of addfield
+adds fields which refer to other fields of the element (field aliases)
+or to fields of other elements in the element hierarchy (useful for
+making fields of elements within a composition available).  Fields
+added with addfield may later be removed with the deletefield command.</P>
+<P>Fields may also be extended by changing the accessibility of the field
+with 
+<A HREF="Manual-25.html#setfieldprot">setfieldprot </a>.  A field may be one of readwrite, readonly or
+hidden.  The accessibility of a field determines what a script
+executing outside the scope of the element may do with the field.  A
+readwrite field is completely accessible, readonly fields may not be
+set and hidden fields may not be examined or set, though their presence
+in the element may be determined by the exists and showobject
+commands.  A field's accessibility may never be made more permisive
+than the accessibility defined by the base object being extended (i.e.
+the computed field of an element which is readonly may not be made
+readwrite by extending the element), unless the <CODE>-debug</CODE> option of
+setfieldprotect is used.</P>
+<P>Examples:
+<PRE>
+    create compartment mycompt
+    addfield mycompt RM -description &quot;Specific membrane resistance&quot;
+    setfieldprot mycompt -readonly Rm // Rm is now computed
+    setfieldprot mycompt -readwrite Vm // Error Vm was readonly
+
+    create xcell acell
+    addfield acell fatmin -indirect . diamin \
+        -description &quot;XODUS 1 name for diamin&quot;
+</PRE>
+</P>
+
+
+<H2><A NAME="ss11.2">11.2 Extending Actions</A></H2>
+
+<P>New actions may be added to an element by defining a script function
+implementing the action and using the 
+<A HREF="Manual-25.html#addaction">addaction </a> command to add this
+function as an action function for the element.  Once added, all calls
+on the added action will result in a call to the script function.  The
+first argument to the action function is always the name of the action
+followed by additional action-specific arguments.</P>
+<P>An extended object may also override an action already defined for the
+base object.  A few of the built in actions provide a chaining of calls
+to action functions in which all action functions defined for the
+object and its base objects are called in a specific order.</P>
+<P>Current chained actions include CREATE, COPY, SET and DELETE.  CREATE
+and COPY actions are called in base object to subobject order while SET
+and DELETE are called in subobject to base object order.  The chaining
+of SET actions and subsequent direct setting of the element field are
+aborted if any SET action function returns a non-zero value.
+Manual chaining of other actions can be implemented using the 
+<A HREF="Manual-25.html#call">call </a>
+command's ``<CODE>-parent</CODE>'' option within an action function.
+For example, to perform the PROCESS action of the base object, as well as
+some new ones which are defined for the extended object, add
+<PRE>
+        call . PROCESS -parent
+</PRE>
+
+to the beginning of the script function which defines the PROCESS action
+for the extended object.</P>
+<P>When executing an action function, the working element is set to the
+element the action is called on and the effective accessibility of the
+element fields change.  Within an action function any fields added with
+addfield are effectively readwrite and fields of the base object revert
+to the accessibility defined by the base object.</P>
+<P>Example:
+<PRE>
+    // Here's a SET action function to calculate the actual membrane
+    // resistance when the specific resistance, length or diameter
+    // changes
+
+    function __mycomptSET__(action, field, value)
+        float   len, dia, RM
+
+        // don't have to name the element since mycompt is cwe
+
+        len = {getfield len}
+        dia = {getfield dia}
+        RM = {getfield RM}
+
+        if (field == &quot;RM&quot;)
+            RM = value
+        elif (field == &quot;len&quot;)
+            len = value
+        elif (field == &quot;dia&quot;)
+            dia = value
+        else
+            return 0
+        end
+
+        // Rm is readwrite within the action function
+
+        setfield Rm {RM * PI * dia * len}
+
+        return 0
+        end
+
+    addaction mycompt SET __mycomptSET__
+</PRE>
+</P>
+
+
+<H2><A NAME="ss11.3">11.3 Extending Message Definitions</A></H2>
+
+<P>New messages types can be defined for an element with the 
+<A HREF="Manual-25.html#addmsgdef">addmsgdef </a> command.  A new message type can then be used by the
+<A HREF="Manual-25.html#addmsg">addmsg </a> command to add messages of the new type.  Adding a
+new message definition typically means overriding the PROCESS action
+to obtain and use the new message data.</P>
+<P>Here is a simple example which creates an extended object that uses its
+PROCESS action to receive an INPUT message and compute the sine of its input.
+As there is no similar pre-defined object available to use as the base object,
+it is based on the most primitive object, the neutral object.  As neutral
+elements are not scheduled for processing, we will want to use the addclass
+command to assign the new object to a class which is scheduled for
+the PROCESS action.</P>
+<P>
+<PRE>
+    create neutral /sine
+
+    // Create fields called input and output
+    addfield /sine input
+    addfield /sine output
+
+    // Create a message definition for the INPUT message, define a PROCESS
+    // action to process the INPUT message and make the sine object a device
+    // class object
+    addmsgdef /sine INPUT value
+    addaction /sine PROCESS __sinePROCESS__
+    addclass /sine device
+
+    // PROCESS action script function
+    function __sinePROCESS__(action)
+
+        // check for an INPUT message: since its the only message type
+        // sine will accept, just make sure at least one message is there
+        // and use the first message's value
+
+        if ({getmsg . -incoming -count} &gt; 0)
+            // Have an INPUT message: compute output and set input field
+            // based on INPUT message value
+            float input = {getmsg . -incoming -slot 0 0}
+            setfield input {input} output {sin {input}}
+        else
+            // no INPUT message: compute output based on input field value
+            setfield output {sin {getfield input}}
+        end
+
+        return 1
+    end
+
+    // create the sine object
+    addobject sine /sine -author &quot;J. R. Hacker&quot; \
+        -description &quot;Computes sine of input&quot;
+    resched
+</PRE>
+</P>
+<P>Note the use of 
+<A HREF="Manual-25.html#resched">resched </a> after the sine element is turned
+into the sine object.   This command (or a reset) is needed so that
+the new object will be included in the current simulation schedule.</P>
+<P>The situation is a little more complicated when we want to construct a
+composite element, and the message is intended to be forwarded to a
+child element.  In a composition, child elements are not directly
+accessible to the user once the addobject command is used.  In order
+to allow message data to be passed to a child element, a message added
+on the parent may be forwarded to the child from the parent's ADDMSGIN
+action using the 
+<A HREF="Manual-25.html#addforwmsg">addforwmsg </a> command.  In this case the
+message data is handled directly by the child element.  The forwarded
+message must be deleted explicitly by calling the 
+<A HREF="Manual-25.html#deleteforwmsg">deleteforwmsg </a> command in the parent's DELETEMSGIN action.
+Addforwmsg requires that the destination element accept messages with
+the same name and number of data slots as the message being forwarded.</P>
+<P>Example:
+<PRE>
+    // This is part of a compositition which would normally include
+    // an axis scaling menu and perhaps some additional buttons or
+    // labels
+
+    create xform /form
+    create xgraph /form/graph
+
+    addmsgdef /form PLOT data plotname color
+    addaction /form ADDMSGIN __compgraphMSGIN__
+    addaction /form DELETEMSGIN __compgraphMSGIN__
+
+    // __compgraphMSGIN__ is used for both the ADDMSGIN and
+    // DELETEMSGIN actions, the action argument is checked to
+    // determine which action is being called
+
+    function __compgraphMSGIN__(action, msgnum)
+        str msgtype
+
+        msgtype = {getmsg . -incoming -type {msgnum}}
+
+        if (msgtype == &quot;PLOT&quot;)
+            if (action == &quot;ADDMSGIN&quot;)
+                addforwmsg . {msgnum} graph
+            else  // DELETEMSGIN
+                deleteforwmsg . {msgnum} graph
+            end
+        end
+    end
+</PRE>
+</P>
+
+
+<H2><A NAME="ss11.4">11.4 Extending Classes</A></H2>
+
+<P>Additional class names can be associated with an element using the
+addclass command.  Class names added with addclass can be used in
+wildcard path specifications for selecting groups of elements.</P>
+<P>Example:
+<PRE>
+        addclass mycompt specificmemb
+
+        setfield /##[CLASS=specificmemb] RM 1234
+</PRE>
+</P>
+
+
+<H2><A NAME="ss11.5">11.5 Using Extended Objects for Specialization</A></H2>
+
+<P>Specialization entails setting certain fields of an existing element to
+represent a more specialized component of a model.  The fields which
+define the specialized element should not be changed once set or the
+element would no longer represent the specialized component.  This can
+be enforced by setting the field accessibility to readonly or hidden.</P>
+<P>In the following example we define a Hodgkin-Huxley squid giant axon
+potassium channel as a specialization of the hh_channel object.
+This is a scaled down version of <EM>Scripts/tutorials/hhchan_K.g</EM> which
+provides the same specialization, but also adds a <EM>gdens</EM> field to model
+channel density within a compartment and automates message setup
+between the channel and its compartment.
+<PRE>
+    // constants for form of rate constant equations
+
+    int EXPONENTIAL = 1
+    int SIGMOID     = 2
+    int LINOID      = 3
+
+    // H-H squid parameters
+
+    float EREST_ACT = -0.070
+    float EK        = -0.082
+
+    // Now create the hh_channel and set fields for our channel.
+
+    create hh_channel K_squid_hh
+    setfield K_squid_hh \
+            Ek              {EK} \                          // V
+            Gbar            0.0  \
+            Xpower          4.0 \
+            Ypower          0.0 \
+            X_alpha_FORM    {LINOID} \
+            X_alpha_A       -10.0e3 \                       // 1/V-sec
+            X_alpha_B       -10.0e-3 \                      // V
+            X_alpha_V0      {10.0e-3+EREST_ACT} \           // V
+            X_beta_FORM     {EXPONENTIAL} \
+            X_beta_A        125.0 \                         // 1/sec
+            X_beta_B        -80.0e-3 \                      // V
+            X_beta_V0       {0.0+EREST_ACT}                 // V
+
+    // Hide the hh_channel fields which define the rate equations.
+    // We could have just made them readonly, but hiding them reduces
+    // the number of fields the user must consider.
+
+    setfieldprot K_squid_hh -hidden  Xpower Ypower X_alpha_FORM \
+        X_alpha_A X_alpha_B X_alpha_V0 X_beta_FORM X_beta_A \
+        X_beta_B X_beta_V0 Y_alpha_FORM Y_alpha_A Y_alpha_B \
+        Y_alpha_V0 Y_beta_FORM Y_beta_A Y_beta_B Y_beta_V0 
+                
+    // Now add this specialization as a new object.
+
+    addobject K_squid_hh K_squid_hh -author &quot;J. R. Hacker&quot; \
+        -description &quot;Hodgkin-Huxley Active K Squid Channel - SI units&quot;
+</PRE>
+</P>
+
+
+<H2><A NAME="ss11.6">11.6 Using Extended Objects for Composition</A></H2>
+
+<P>Composition uses a number of cooperating elements to create a reusable
+new component performing a complex task.  The new component presents
+itself as a single element even though it is composed of a combination
+of other elements.  In the following example a reusable graph scaling
+button is created from the basic built-in graphical elements.  The
+component includes a popup dialog for setting graph axis ranges.  The
+new object appears as an xbutton with a single additional field which
+is set to the name of the graph to control.</P>
+<P>NOTE: XODUS callback scripts don't work particularly well for widgets
+inside a composite object, since you can't use the full widget path to
+refer to the widget.  Here we use actions rather than script callbacks,
+since an action sets the affected widget as the current working
+element.
+<PRE>
+    // First we create the button which when clicked upon brings up
+    // the scaling dialog.  All widgets must be created within a form
+
+    create xform /form
+    create xbutton /form/scale
+
+    // Add a field which names the graph that scaling changes are to
+    // apply to.  We set the default value of the graphpath to the
+    // parent of the scale button.  This works nicely if we normally
+    // create graphscales under the corresponding graph.
+
+    addfield /form/scale graphpath -description &quot;pathname to graph element&quot;
+    setfield /form/scale graphpath ..
+
+    // Add actions for popup and hiding of graphscale dialog
+
+    // __gs_B1DOWN: on a button press, copy the cuurent graph axis
+    // settings from the graph named in the graphpath field to the
+    // popup dialogs and show the dialog
+
+    function __gs_B1DOWN(action)
+        str graph = {getfield graphpath}
+        if (!{isa xgraph {graph}})
+            echo xgraphscale {el .} graphpath {graph} is not an xgraph
+            return
+        end
+
+        // Initialize the value of each dialog from the corresponding
+        // graph field.
+        str field
+        foreach field (xmin xmax ymin ymax)
+            setfield popup/{field} value {getfield {graph} {field}}
+        end
+            xshow popup
+    end
+
+    // __gs_HIDE: hide the popup graph scale form
+
+    function __gs_HIDE(action)
+        xhide popup
+    end
+
+    // __gs_APPLY: apply a change to a graph scale dialog to the
+    // appropriate graph field.
+
+    function __gs_APPLY(action, field, value)
+        str graph = {getfield graphpath}
+        setfield {graph} {field} {value}
+    end
+
+    addaction /form/scale B1DOWN __gs_B1DOWN
+    addaction /form/scale HIDE __gs_HIDE
+    addaction /form/scale APPLY __gs_APPLY
+
+    // Now create a new form under the scale button.  This form will
+    // hold the popup dialog for setting the graph values.  In the
+    // popup form we create the dialogs for setting the graph axis
+    // ranges and a done button.
+
+    create xform /form/scale/popup [300,0,400,300]
+    create xdialog /form/scale/popup/xmin
+        addaction ^ B1DOWN __gs_apply_one
+    create xdialog /form/scale/popup/xmax
+        addaction ^ B1DOWN __gs_apply_one
+    create xdialog /form/scale/popup/ymin
+        addaction ^ B1DOWN __gs_apply_one
+    create xdialog /form/scale/popup/ymax
+        addaction ^ B1DOWN __gs_apply_one
+    create xbutton /form/scale/popup/done
+        addaction ^ B1DOWN __gs_call_hide
+
+    // Call the APPLY action on the graphscale to update
+    // the graph field
+
+    function __gs_apply_one(action)
+        call ../.. APPLY {getfield name} {getfield value}
+    end
+
+    // Call the HIDE action on the graphscale to hide the
+    // graph scale dialog
+
+    function __gs_call_hide(action)
+        call ../.. HIDE
+    end
+
+    // Now that we have all the pieces in place, add the new object.
+    // We can also delete the form we used to create the new button.
+
+    addobject xgraphscale /form/scale
+    delete /form
+</PRE>
+</P>
+<P>Now adding a graph scaling button to a graph is as easy as creating an
+element.  The following works even without setting the <EM>graphpath</EM> field
+since <EM>graphpath</EM> defaults to the parent of the xgraphscale.
+<PRE>
+    create xform /form
+    create xgraph /form/graph
+    create xgraphscale /form/graph/scale
+</PRE>
+</P>
+
+
+<H2><A NAME="ss11.7">11.7 Related Commands</A></H2>
+
+<P>The following routines are used for working with extended objects:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addaction">addaction </a> </TD><TD>Add an action to an element and a script function to</TD></TR><TR><TD>
+</TD><TD>implement the action</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addclass">addclass </a> </TD><TD>Add a class to the class list of an element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addfield">addfield </a> </TD><TD>Add a field to an element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addforwmsg">addforwmsg </a> </TD><TD>Forward a copy of an existing message to another element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addmsgdef">addmsgdef </a> </TD><TD>Add a message definition to an element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addobject">addobject </a> </TD><TD>Add the object described by a given element as a named</TD></TR><TR><TD>
+</TD><TD>GENESIS object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deleteaction">deleteaction </a></TD><TD>Delete an action previously added to an element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deleteclass">deleteclass </a> </TD><TD>Delete a class previously added to an element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deletefield">deletefield </a> </TD><TD>Delete a field previously added to an element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deleteforwmsg">deleteforwmsg </a></TD><TD>Delete a forwarded message to another element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deletemsgdef">deletemsgdef </a></TD><TD>Delete a message previously added to an element</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setfieldprot">setfieldprot </a></TD><TD>Set the accessibility for a field</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<HR>
+<A HREF="Manual-10.html">Previous</A>
+<A HREF="Manual-12.html">Next</A>
+<A HREF="Manual.html#toc11">Table of Contents</A>
+</BODY>
+</HTML>

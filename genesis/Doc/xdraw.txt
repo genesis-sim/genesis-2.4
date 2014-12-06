@@ -1,0 +1,128 @@
+Object Type:	xdraw
+
+Description:	Main object class for displaying pixes. Subclassed
+		from coredraw. This widget provides general projection
+		transforms for pixes.
+		Like other coredraw subclasses, draw can be thought of as
+		providing a window into a space where pixes reside, or a
+		screen onto which pixes are projected. One can select the size,
+		orientation and other parameters of this window/screen 
+		according to the set of functions described below.
+		The functions provided by draw, which are inherited or
+		overridden from the coredraw class, include:
+			Displaying and managing pixes.
+			Handling forward transforms for drawing pixes
+			Handling backward transforms for identifying
+				location of mouse events
+			Keyboard control over transformation parameters
+				such as zoom and pan.
+			Providing a mechanism for deciding which child
+				pix should recieve mouse events
+
+		Draw does not display anything on its own. The pixes
+		provide the actual images and drawing routines displayed
+		in a draw widget.
+
+		Keyboard commands may be used to translate or zoom the display
+		of pixes within a draw widget.  Use the arrow keys to
+		translate the image in the draw, and "<" and ">" to zoom out
+		(make smaller) and in (make larger).
+
+		The draw widget can display pixes using both orthographic
+		and perspective projections.  One can select between these
+		using keyboard commands as follows:
+
+		plane			perspective	key
+		-------------------------------------------
+		xy			off		z
+		xy			on		Z
+		yz			off		x
+		yz			on		X
+		xz			off		y
+		xz			on		Y
+		general orthographic	off		o 
+		general perspective	on		p 
+
+		In a future revision the z coordinate will be used to determine
+		the order of redrawing pixes to enable pixes to obscure
+		each other according to depth.
+
+Author:		Upi Bhalla Caltech April 93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xdraw_type [in src/Xodus/draw/xdraw_struct.h
+
+Size:		172 bytes
+
+Fields:		fg	Foreground color of draw (not used)
+		bg	Background color.
+		xgeom	Position of left edge of draw.
+		ygeom	Position of upper edge of draw.
+		wgeom	Width of draw
+		hgeom	Height of draw
+		xmin	x lower limit for displaying pixes.
+		ymin	y lower limit for displaying pixes.
+		zmin	z lower limit for displaying pixes.
+		xmax	x upper limit for displaying pixes.
+		ymax	y upper limit for displaying pixes.
+		zmax	z upper limit for displaying pixes.
+		cx	x coord of point in space which is to be located
+			at center of projection
+		cy	y coord of point at center of projection
+		cz	z coord of point at center of projection
+		wx	window 'width'. Provided for backwards compatibility.
+		wy	window 'height'. Provided for backwards compatibility.
+		vx	x coord of viewpoint for 'o' and 'p' projections.
+		vy	y coord of viewpoint for 'o' and 'p' projections.
+		vz	z coord of viewpoint for 'o' and 'p' projections.
+		script	Script operation(s) to perform on a mouse
+			click. The script calls to the draw widget
+			are only made if none of the child pixes has
+			expressed an interest in the event.
+		transform	The projection transformation to
+			perform while displaying the pixes.  One of
+			(z, Z, x, X, y, Y, o, p), described in the table
+			above.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XDraw [in src/Xodus/draw/xdraw.c]
+
+Classes:	widget output
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		XODROP:	Called when a pix is dropped into a draw widget.
+
+Messages:	CENTER cx cy cz
+		ZOOM   wx wy
+		VIEWPOINT vx vy vz
+			where the values of these messages set the 
+			specified projection controlling fields.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+		If the xdraw is receiving messages it will recalculate
+		the projections each clock tick.
+
+Example
+		create xform /form [0,0,500,500]
+		create xdraw /form/draw [0,0,100%,100%] \
+			-bg red -script "echo Hello, I am a draw widget" 
+                setfield /form/draw xmin -2 xmax 2 ymin -2 ymax 2
+		// display the pixes here
+		create xsphere /form/coredraw/sphere -fg green \
+			-script "echo Hello, I am a sphere pix"
+		xshow /form
+
+See also:	Widget documentation, pix documentation, documentation
+		for coredraw and other subclasses.
+

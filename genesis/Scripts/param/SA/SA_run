@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# 
+# Script for GENESIS simulated annealing (SA) parameter search demo.
+#
+# usage: SA_run <genesis program> <filename> [-resume]
+#
+
+if [ $# -lt 3 ]  # Not resuming a previous search.
+then
+echo
+echo Beginning parameter search using the SA method...
+echo
+else
+echo
+echo Resuming parameter search using the SA method...
+echo
+fi
+
+# This script checks the "sim_status" file, which contains a
+# single number.  If the number is "2" the search is finished.
+
+genesis=$1
+filename=$2
+status=`head -1 sim_status`
+
+while [ $status -ne 2 ]
+do
+    $genesis $filename
+    status=`head -1 sim_status`
+    sleep 10 # wait 10 seconds; hopefully, memory will be cleaned up by then.
+    clear
+done
+
+echo
+echo Parameter search completed.
+echo
+

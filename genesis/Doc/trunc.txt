@@ -1,0 +1,14 @@
+Routine Name:	trunc
+
+Description:	Returns integer part of number.
+
+Usage:		integer = {trunc number}
+
+Example:	genesis >  echo { trunc 5.999 }
+		5
+
+Notes:		This routine converts any number to an integer by deleting
+		the decimal part without any rounding.
+
+See also:	round
+

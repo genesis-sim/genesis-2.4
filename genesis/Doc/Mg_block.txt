@@ -1,0 +1,79 @@
+Object Type:	Mg_block
+
+Description:	Implementation of voltage- and [Mg]-dependent
+		blocking of a channel.
+
+Author:		E. De Schutter, Caltech (11/90)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	Mg_block_type  [in src/segment/seg_struct.h]
+
+Size:		120 bytes
+
+Fields:		Ik		blocked value of current
+		Gk		blocked value of current
+		Ek		blocked value of current k
+		Zk		charge; may also be used as
+				{charge / relative fraction of I},
+				e.g. 2/(Ica/Itot) -> msg to difpool
+		KMg_A		A-factor K(v) in eq'n for Mg block reaction
+		KMg_B		B-factor K(v) in eq'n for Mg block reaction
+		CMg		[Mg] in mM
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	MgBlock  [in src/segment/Mg_block.c]
+
+Classes:	segment channel
+
+Actions:	INIT		[INIT does nothing]
+		PROCESS
+		RESET
+		CHECK
+
+Messages:	VOLTAGE Vm	 	voltage from the compartment
+		CHANNEL Gk Ek		unblocked Gk and Ek from compartment
+		CHANNEL1 Gk
+		CHANNEL2 Gk Ek
+		CHARGE Zk
+
+------------------------------------------------------------------------------
+
+Notes:		An Mg_block element may be interposed between a synaptically
+		activated channel (a synchan or hebsynchan) and a compartment. 
+		This calculates a blocked value of Gk that is reduced from
+		the incoming Gk by a factor of A/(A + [Mg]*exp(-Vm/B)).
+
+		The example below puts this in the form of the Zador, Koch,
+		and Brown equation [Proc. Natl. Acad. Sci. USA 10:6718-6722
+		(1990)], with A = 1/eta and B = 1/gamma.
+
+Example:
+
+    float CMg = 2                       // [Mg] in mM
+    float eta = 0.33                    // per mM
+    float gamma = 60                    // per Volt
+    create      synchan               {compartment}/{channel}
+    setfield         ^ \
+                Ek                      {Ek} \
+                tau1                    {tau1} \
+                tau2                    {tau2} \
+                gmax                    {gmax}
+    create Mg_block {compartment}/{channel}/block
+        setfield         ^ \
+                CMg                     {CMg} \
+                KMg_A                   {1.0/eta} \
+                KMg_B                   {1.0/gamma}
+    addmsg   {compartment}/{channel} {compartment}/{channel}/block \
+                CHANNEL Gk Ek
+    addmsg   {compartment}/{channel}/block {compartment} CHANNEL Gk Ek
+    addmsg   {compartment}   {compartment}/{channel}/block VOLTAGE Vm
+    // Even though the channel current isn't used, CHECK expects this message
+    addmsg   {compartment}   {compartment}/{channel} VOLTAGE Vm
+
+See also:	synchan

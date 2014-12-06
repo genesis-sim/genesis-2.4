@@ -1,0 +1,38 @@
+Routine Name:   setparamGA
+
+Description:    sets the value of a parameter in a paramtableGA object from
+                a floating-point number.
+
+Usage:          setparamGA path table param value
+
+                path:   The location of the paramtableGA object in the
+                        element hierarchy.
+
+                table:  The parameter table to be accessed.
+
+                param:  The location of the desired parameter in the
+                        table.
+
+                value:  The floating-point value of the parameter.
+
+Return value:   a float, representing the parameter value desired.
+
+Example:            float val = 10.0
+                    setparamGA /GA_object 10 1 {val}
+
+                This sets the second parameter (zero-indexed) from
+                the tenth parameter table in the paramtableGA object
+                called /GA_object to 10.0.
+
+Notes:          The reason for having this routine and getparamGA is that
+                the parameter table array in paramtableGA objects is in an
+                object-specific binary form (optimized for the genetic
+                algorithm method) and thus can't be viewed or set directly
+                using the showfield, getfield or setfield commands (at
+                least not meaningfully).
+
+                This routine and getparamGA are hacks; ultimately they should
+                be made obsolete by overloading the SET and SHOW actions of
+                the paramtableGA object.
+
+See also:       Parameter Search (Param), paramtableGA, getparamGA

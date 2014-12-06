@@ -1,0 +1,317 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Simulations</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-14.html">Previous</A>
+<A HREF="Manual-16.html">Next</A>
+<A HREF="Manual.html#toc15">Table of Contents</A>
+<HR>
+<H2><A NAME="Simulations"></A> <A NAME="s15">15. Simulations</A>    </H2>
+
+<P>Broadly speaking, a GENESIS ``simulation'' consists of the following
+components:</P>
+<P>
+<UL>
+<LI>the complete collection of elements defined in the GENESIS environment
+at the current time (except for elements excluded by the disable routine);
+i.e., the elements that define the model, and accessory elements
+</LI>
+<LI>the object definitions that define how elements are to be interpreted
+(e.g., definitions of objects, classes, and so forth)
+</LI>
+<LI>the set of messages that provide the way information is passed
+among elements
+</LI>
+<LI> a schedule defining simulation activities and what elements are affected
+</LI>
+<LI> the set of simulation clocks defining the relative time for activities</LI>
+</UL>
+</P>
+<P>Sometimes, GENESIS users refer to a ``simulation'' as a specific
+step-through of a given simulation setup (i.e., stepping through a
+simulation, as defined above, over time) -- a ``run'' of a simulation.</P>
+
+<H2><A NAME="ss15.1">15.1 Running a Simulation</A>    </H2>
+
+<P>Many GENESIS routines help you construct simulations (see, for
+example, 
+<A HREF="Manual-8.html#Elements">Elements </a>, 
+<A HREF="Manual-13.html#Messages">Messages </a>, 
+<A HREF="#Clocks">Clocks </a>, and so forth).  The table below lists routines that
+specifically deal with preparing the simulation for time-oriented
+runs:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#abort">abort </a> </TD><TD>Cleanly interrupts simulation in progress.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#check">check </a> </TD><TD>Checks various aspects of simulation for specification errors.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#disable">disable </a> </TD><TD>Disables an element and its children from participating in a</TD></TR><TR><TD>
+</TD><TD>simulation.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#enable">enable </a> </TD><TD>Enables previously disabled elements to participate in a</TD></TR><TR><TD>
+</TD><TD>simulation.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getstat">getstat </a> </TD><TD>Returns time, step, or memory use as a function value.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#reset">reset </a> </TD><TD>Resets simulation to initial conditions, including calling</TD></TR><TR><TD>
+</TD><TD>RESET actions for individual elements in the simulation.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setmethod">setmethod </a> </TD><TD>Sets integration method for elements to use in simulation.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#showstat">showstat </a> </TD><TD>Reports statistics about current simulation (time, step,</TD></TR><TR><TD>
+</TD><TD>stepsize, or memory use; or element resource use).</TD></TR><TR><TD>
+<A HREF="Manual-25.html#step">step </a> </TD><TD>Advances the simulation by one or more steps.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#stop">stop </a> </TD><TD>Completes current simulation step, stopping simulation.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>The step routine might be considered the central GENESIS routine -- it
+runs the simulation, which is in a large part the whole point of
+GENESIS.  In relation to the step routine, everything else you do in a
+GENESIS simulation script is a preparation for running the simulation.</P>
+<P>A typical sequence of events in running a simulation is as follows:</P>
+<P>
+<OL>
+<LI> Set up the simulation environment (elements, messages, clocks, etc.)
+Often, you will use the 
+<A HREF="Manual-25.html#readcell">readcell</A> to
+construct one or more cells from specifications contained in cell
+parameter files.</LI>
+<LI> Run the reset routine to establish the initial state for the run:
+<PRE>
+         genesis &gt; reset
+    
+</PRE>
+</LI>
+<LI> Run the check routine to check for obvious specification errors:
+<PRE>
+         genesis &gt; check
+    
+</PRE>
+
+If there are any errors, return to step 1 to revise the environment
+as appropriate based on the check output.
+</LI>
+<LI>Run the step routine with a small step number (e.g., step 10) to test
+whether the simulation will run reasonably:
+<PRE>
+         genesis &gt; step 10
+</PRE>
+
+If the simulation fails or shows odd results, figure out where the
+problem is and return to step 1.  Often, this will involve some
+experimentation with the step size used for the global simulation
+clock, as described in 
+<A HREF="#Clocks">Simulation Clocks</A>.
+</LI>
+<LI> Run the reset routine to prepare for the full run:
+<PRE>
+         genesis &gt; reset
+</PRE>
+</LI>
+<LI> Having determined that your simulation clocks are using an 
+appropriate step size, 
+run the step routine for a longer period of time.  If you are not using
+graphics or interactive input, you may wish to place your
+simulation job in the background.  For example:
+<PRE>
+         genesis &gt; step -time 10.0 -background
+    
+</PRE>
+
+(The GENESIS prompt returns immediately but the simulation will
+have started in the background, as you can confirm using the
+showjobs routine.)</LI>
+</OL>
+</P>
+<P>You may wish to practice these steps using the simple GENESIS
+programming example scripts in the <EM>Scripts/tutorials</EM>
+directory before you try to build and run your own model.</P>
+
+<H3>Explicit vs. Implicit Integration Methods</H3>
+
+
+<P>The documentation for 
+<A HREF="Manual-25.html#setmethod">setmethod</A> describes
+the various numerical integration methods that may be used when
+GENESIS performs a simulation.  The default Exponential Euler method
+is a good compromise between speed, accuracy and ease of use for
+network models and single cell models involving a small number of
+compartments.  Multi-compartmental models result in numerically
+``stiff'' equations that are best solved with one of the implicit
+(Backward Euler or Crank-Nicholson) methods.  The implicit methods
+are much faster, and allow the use of larger step sizes.  But, they
+must be used in conjunction with the hsolve object, which takes over the
+computations of compartments, symcompartments, tabchannels and other
+selected element types.  (See the documentation for 
+<A HREF="Manual-26.html#hsolve">hsolve</A> and the section on 
+<A HREF="#Clocks">Simulation Clocks</A>.)  </P>
+<P>The following routines are designed to be used with hsolve elements:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#findsolvefield">findsolvefield </a> </TD><TD>Used with hsolve for input/output of values</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getsolvechildname">getsolvechildname </a></TD><TD>Finds hsolve child element names</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getsolvecompname">getsolvecompname </a></TD><TD>Used with hsolve to find compartment names</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H3>Running a Simulation in the Background</H3>
+
+<P>To perform a GENESIS simulation in the background (for example if you want to
+login from home over a modem, start a simulation, and logout while the
+simulation continues to run), your simulation script should use no graphics,
+and write all output to files.</P>
+<P>Besides specifying the -nox option when starting genesis to avoid starting
+XODUS, you also need to use the -notty and -batch options.  GENESIS will
+attempt to read from stdin after the .simrc and command line script are
+completed.  The -batch option causes genesis to exit rather than try to read
+stdin.  -notty will avoid doing any terminal setup and cleanup procedures
+which can also cause this type of behaviour.  You must specify both on the
+command line (i.e. neither option implies the other).  In addition, you need
+to redirect output (both stdout and stderr) to a file.   For example, a simple
+script ``batchtest.g'' might look like:
+<PRE>
+//genesis script for a simple compartment simulation (Tutorial #1)
+//batchtest.g
+
+create neutral /cell
+create compartment /cell/soma
+setfield /cell/soma Rm 10 Cm 2 Em 25 inject 5
+
+// send output to a file
+    create asc_file /out
+    setfield /out    flush 1    leave_open 1
+    setclock 1 1.0
+    useclock /out 1
+    addmsg       /cell/soma     /out       SAVE Vm
+
+setclock 0 0.001 // this is to make it run slowly
+reset
+step 100 -time
+exit
+</PRE>
+
+To run this script in the background (using the C shell), you would use:
+<PRE>
+    genesis -nox -batch -notty batchtest &gt;& batch.log &
+</PRE>
+
+With the Bourne shell (or bash) it would be:
+<PRE>
+    genesis -nox -batch -notty batchtest &gt; batch.log 2&gt;&1 &
+</PRE>
+</P>
+<P>When performing long simulation runs in the background, you can use a
+<A HREF="Manual-26.html#disk_out">disk_out</A>, 
+<A HREF="Manual-26.html#diskio">diskio</A>, or 
+<A HREF="Manual-26.html#asc_file">asc_file</A> element
+to save simulation results to disk at regular intervals. To save the
+state of the model at the end of the run, use the 
+<A HREF="Manual-25.html#save">save</A> or 
+<A HREF="Manual-25.html#simdump">simdump</A> command.</P>
+
+
+
+<H2><A NAME="Clocks"></A> <A NAME="ss15.2">15.2 Simulation Clocks</A></H2>
+
+<P>Each element in a simulation is associated with an interval timer or
+``clock''.  This clock is used to determine how frequently the action
+associated with the element (i.e., the INIT or PROCESS listed in the
+simulation schedule) will be executed during the simulation process.
+This is particularly useful when you want components of a simulation
+to run at significantly different time scales.</P>
+<P>By convention, clock number 0 is the global simulation clock or the basic
+simulation time step.  All elements start out using clock 0 by default.</P>
+<P>The simulator also contains an array of 100 independent clocks
+(this is the number of available clocks; a typical simulation only
+uses a few of these clocks).  Each clock is identified by a number
+from 1 to 100 corresponding to its position in the clock array.
+Clocks other than clock 0 must have settings larger than that of clock
+0; these settings should be integer multiples of the clock 0 setting
+for maximal timing precision.  </P>
+<P>The setting of a specific clock is not some ``current time'', but is
+the time increment used for stepping its associated elements through
+the simulation.  The units used for time must be consistent with those
+used for other related variables and parameters of the simulation.
+For example, if membrane resistances and capacitances are expressed in
+kilohms and microfarads, then times should be expressed in
+milliseconds.  To make it easier to keep track of units, many (but not
+all) GENESIS simulations use SI (MKS) units, and express time in
+seconds.</P>
+<P>For example, suppose clock 0 has the setting 1.0 (its default
+setting), and you assign clock 1 the value 5.  If you then have a
+graphical element use clock 1 for its simulation time, the graph
+element would perform its simulation action (e.g., receiving a message
+and plotting a value) only once every 5 steps taken by  the other elements.
+This can greatly speed up a simulation, as the time increment used
+for the display of information can usually be much larger than that
+which is small enough for an accurate stepwise numerical solution of the
+equations governing the model.</P>
+<P>The following GENESIS routines are used for working with simulation clocks:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getclock">getclock </a></TD><TD>Returns value of specified simulation clock.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setclock">setclock </a></TD><TD>Sets time interval (step size) associated with specified clock.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#showclocks">showclocks </a></TD><TD>Displays currently defined clocks and their assigned values.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#useclock">useclock </a></TD><TD>Specifies which clock an element should use during simulation.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H3>Choosing a Simulation Time Step   </H3>
+
+
+<P>At each step of a simulation, each participating element typically
+performs one or more computations.  Some elements perform a stepwise
+numerical integration in order to solve the state equations of the
+element they represent.  When setting up a simulation, you will need to
+choose a global simulation clock step size which is small enough to
+give accurate results, yet is large enough to give a reasonable
+simulation speed.</P>
+<P>You can empirically determine the time step used with an integration
+method by decreasing the time step until the differences in simulation
+results are within some criterion.  As a starting point, you should
+pick a step which would yield a smooth curve if you were to make a
+``connect-the-dots'' type of plot of the most rapidly varying
+variable.  The size of the time step needed also depends on the
+integration method which is used.  The documentation for 
+<A HREF="Manual-25.html#setmethod">setmethod</A> describes the several different ways
+these integrals can be calculated.</P>
+<P>Typically, you need around 10 microseconds for a neural simulation
+with explicit methods (like the default Exponential Euler method) and
+50 to 100 microseconds with the implicit methods (Backward Euler and
+Crank-Nicholson). (For the implicit methods the limiting factor is often
+the speed of the channel kinetics.)  Implicit methods are recommended when
+there are many small compartments in a cell model, as these result in
+numerically ``stiff'' equations.</P>
+<P>There is a complication when using the implicit methods. These are inherently
+not object oriented, and involve the construction of an ``hsolve''
+element which takes over the computations for a specified cell.  (See the
+documentation for 
+<A HREF="Manual-26.html#hsolve">hsolve</A>.)</P>
+
+
+
+<H2><A NAME="ss15.3">15.3 GENESIS Jobs</A></H2>
+
+<P>Certain compiled C functions available in GENESIS are designed to be run as
+background jobs (e.g., the function XEventLoop, which oversees XODUS screen
+events).  You can execute and monitor these background functions using the
+following job routines:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+addjob </TD><TD>Adds a job to the GENESIS background job table.</TD></TR><TR><TD>
+deletejob </TD><TD>Removes a job from the GENESIS job table.</TD></TR><TR><TD>
+setpriority </TD><TD>Changes priority of a GENESIS background simulation job.</TD></TR><TR><TD>
+showjobs </TD><TD>Lists all of the active GENESIS jobs and their priorities.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<HR>
+<A HREF="Manual-14.html">Previous</A>
+<A HREF="Manual-16.html">Next</A>
+<A HREF="Manual.html#toc15">Table of Contents</A>
+</BODY>
+</HTML>

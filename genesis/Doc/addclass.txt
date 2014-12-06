@@ -1,0 +1,32 @@
+Command Name:	addclass
+
+Description:	Adds a new class to list of currently recognized GENESIS
+		element classes.
+
+		Adds a new class tag to a given element.
+
+Usage:		addclass [element] class-name
+
+Example:	addclass /sine device
+
+Notes:		The addclass routine adds a class tag to a given element
+		identifying it as belonging to the given class.  Omitting
+		the element defines a class name without assigning any
+		element to the class.  (This is a deprecated usage which
+		may not be supported in future releases).
+
+		Objects can be grouped into named classes.  This
+		grouping can be used to facilitate the specification of
+		operations to be performed on functionally related
+		elements.  See scheduling (e.g., the addtask
+		routine, and Schedules) for an example of class use.
+
+		Classes are simply used for grouping of related
+		elements and do not alter the element functionality in
+		any way.  Classes in GENESIS don't carry the full
+		connotations of classes within a true object-oriented
+		programming environment.  They are simply convenient
+		ways of creating named groupings to which objects can be
+		assigned.
+
+See also:	listclasses, deleteclass, showobject, Extended

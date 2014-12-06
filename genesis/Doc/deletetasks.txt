@@ -1,0 +1,14 @@
+Routine Name:	deletetasks
+
+Description:	Removes all simulation events from the simulation schedule.
+
+Usage:		deletetasks
+
+Example:	deletetasks
+
+Notes:		deletetasks removes from the simulation schedule table any
+		functions currently scheduled for execution during simulation.
+		This allows you to construct a new schedule using a sequence
+		of addtask calls.
+
+See also:       Schedules, addtask, resched, showsched

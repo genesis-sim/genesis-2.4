@@ -1,0 +1,142 @@
+Routine Name:	volumeconnect3
+
+Description:	Establishes synaptic connections between groups of elements
+		based on the x-y-z positions of the elements.  This routine 
+		sets up the connections by adding SPIKE messages between the 
+		source and destination objects.
+
+Usage:		volumeconnect3 source_elements destination_elements \
+		-relative \
+		-sourcemask {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-sourcehole {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-destmask   {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-desthole   {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-probability p -decay decay_rate maxval minval power \
+		-planar \
+		-pbc xlen ylen zlen
+
+		source_elements  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages.  These must be of
+			class "spiking" and are usually spikegen or 
+			randomspike objects.
+
+		destination_elements  A wildcarded list of elements which are
+		        the destinations of the SPIKE messages.  These must  
+			be synchans or objects derived from synchan.
+
+		-relative This option means that connections will be set up
+			based on the locations of destination objects
+			relative to source objects.  If this option is not
+			selected, the absolute locations of source and
+			destination elements will be used to determine
+			which connections are to be made.
+
+		-sourcemask {box, ellipsoid} x1 y1 z1 x2 y2 z2 -- This
+			specifies a rectangular or ellipsoidal region from
+			which source elements are to be taken.  If the "box"
+			option is used, then x1, y1, and z1 are the minimum
+			x, y, and z values of the region while x2, y2, and
+			z2 are the maximum x, y, and z values of the
+			region.  If the "ellipsoid" option is used, then the
+			source region is an ellipsoid with x1, y1 and z1
+			representing the center of the ellipsoid while x2,
+			y2, and z2 represent the lengths of the principal
+			axes in the x, y, and z directions respectively.
+			Note that to choose a spherical region x2, y2, and
+			z2 must be equal.  Note also that one or the other
+			of {box, ellipsoid} MUST be chosen; leaving both of
+			them out will generate an error.  Finally, one can
+			choose multiple source regions by having multiple
+			-sourcemask options.  The same conventions are
+			followed for the next three options.  
+
+		-sourcehole {box, ellipsoid} x1 y1 z1 x2 y2 z2  -- This 
+			specifies a rectangular or elliptical region NOT to 
+			include in the source region(s).  You can exclude 
+			multiple regions by having multiple -sourcehole 
+			options.
+
+		-destmask {box, ellipsoid} x1 y1 z1 x2 y2 z2  -- This 
+			specifies a rectangular or elliptical region to which 
+			SPIKE messages will be sent.
+
+		-desthole {box, ellipsoid} x1 y1 z1 x2 y2 z2 -- This
+			specifies a rectangular or elliptical region
+			NOT to include in the destination region(s).
+			It is often used to prevent a cell from
+			connecting to itself.
+
+		-probability p  -- This option causes connections to be 
+			made with a fixed probability p in the range
+			[0,1].  This allows probabilistically
+			connected networks to be set up. If p > 1, a
+			value of 1 will be used.
+
+		-decay decay_rate maxval minval power 
+		        Rather than creating connections with a fixed
+		        probability, they are created with a
+		        probability (maxval - minval) *
+		        exp(-pow(scale*dist,power)) + minval, where
+		        'dist' is the distance from the source element
+		        (typically a spikegen in a soma compartment)
+		        to the destination element (typically a
+		        synchan in a dendritic compartment).
+
+		 -planar
+		     When the '-decay' option is also used, the
+		     distance along the z-axis is ignored, so that
+		     connection probabilities are based on the
+		     separation in the x-y plane. This option is
+		     useful when experimental data for connection
+		     probabilites are based upon the distance between
+		     parallel electrodes that lie normal to the
+		     cortical surface, along the z-axis.  The
+		     connection regions continue to use the 3D
+		     coordinates.
+
+		     -pbc xlen ylen zlen 
+		         Applies periodic boundary conditions to a box
+		         of dimensions xlen ylen zlen. Then, an edge
+		         cell will be connected to one on the opposite
+		         side.  A cell at a distance > xlen/2.0 will
+		         be considered to be at distance - xlen for
+		         the purpose of creating a connection.  This
+		         can also be used if the option "-decay
+		         decay_rate max_weight min_weight power" is
+		         specified.
+
+Notes: 	        volumeconnect3 differs from volumeconnect in the
+		addition of the new options '-decay', '-planar' and
+		'-pbc'. The name was chosen for consistency with the
+		volumeweight3 and volumedelay3 command options.  There
+		is no 'volumeconnect2' command. The availability of
+		the '-planar' option makes it unnecessary to have a
+		'planarconnect3'.
+
+Example:
+
+Connect up through 4th nearest neighbors on a grid, with an
+exponential decay of probabilities with planar distance:
+
+ volumeconnect3 /network/cell[]/soma/spike /network/cell[]/{synpath} \
+    -relative \	    // Destination coordinates are measured relative to source
+    -sourcemask box -1 -1 -1 1 1 1 \   // Larger than source area ==> all cells
+    -destmask ellipsoid 0 0 0 {SEP_X*2.5} {SEP_Y*2.5} {SEP_Z*0.5} \
+    -desthole box {-SEP_X*0.5} {-SEP_Y*0.5} {-SEP_Z*0.5} \
+         {SEP_X*0.5} {SEP_Y*0.5} {SEP_Z*0.5} -probability 1.1 \
+     -decay {1.0/SEP_X} 1.0 0.0 1 -planar // restrict distance to x-y plane
+
+Connect to nearest neighbors with periodic boundary conditions:
+
+ volumeconnect3 /network/cell[]/soma/spike /network/cell[]/{synpath} \
+    -relative \	    // Destination coordinates are measured relative to source
+    -sourcemask box -1 -1 -1 1 1 1 \   // Larger than source area ==> all cells
+    -destmask ellipsoid 0 0 0 {SEP_X*1.1} {SEP_Y*1.1} {SEP_Z*0.5} \
+    -desthole box {-SEP_X*0.5} {-SEP_Y*0.5} {-SEP_Z*0.5} \
+         {SEP_X*0.5} {SEP_Y*0.5} {SEP_Z*0.5} \
+    -probability 1.1 -pbc  {NX*SEP_X} {NY*SEP_Y} {SEP_Z} 
+    // set probability > 1 to connect to all in destmask
+
+See also:   planarconnect, volumeweight, volumedelay, volumeweight3,
+    	    volumedelay3; Chapter 18 of the Book of GENESIS (2nd ed.) has a
+	    lengthy discussion on this and related commands.

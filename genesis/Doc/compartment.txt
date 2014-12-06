@@ -1,0 +1,130 @@
+Object Type:    compartment
+
+Description:    Axially asymmetric compartment. Ra is located on
+                one side of the compartment. This is slightly more
+                computationally efficient than the symmetric counterpart.
+
+Author:         M. Wilson, Caltech (6/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  compartment_type  [in src/segment/seg_struct.h]
+
+Size:           124 bytes
+
+Fields:         Rm              total membrane resistance
+                Cm              total membrane capacitance
+                Em              membrane resting potential
+                Ra              axial resistance
+                inject          injected current in membrane
+                dia             compartment diameter
+                len             compartment length              
+                Vm              voltage across the membrane
+                previous_state  Vm at previous time step
+                Im              approximation to the total membrane current
+                initVm          initial value to set Vm on reset
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:       Compartment  [in src/segment/compartment.c]
+
+Classes:        segment
+                membrane
+
+Actions:        INIT            assign previous_state = Vm
+                PROCESS         update Vm, calculate Im
+                RESET           assign Vm = Em
+                CHECK           make sure Rm>0, Cm>0, 
+                                Ra'>0 (if RAXIAL message is present), 
+                                Ra>0 (if AXIAL message is present)
+                SAVE2
+                RESTORE2
+
+Messages:       CHANNEL Gk Ek   delivers the conductance and equilibrium
+                                potential of channel within the compartment
+                RAXIAL Ra Vm    delivers the Ra and Vm of a compartment
+                AXIAL Vm        delivers the Vm of a compartment
+                INJECT inject   sets the inject field to the message value
+                EREST Em        sets the Em  field to the message value
+
+------------------------------------------------------------------------------
+
+Notes:          Simulates a section of passive membrane or cable. The
+                potential across the membrane is given by Vm. There is a
+                leakage path for current through the resistance Rm. This
+                resistance is in series with a leakage battery Em. This
+                compartment can be coupled to other compartments with an axial
+                resistance Ra.  The compartment is not symmetrical, with Ra
+                lumped to one side of the compartment.  Any number of ionic
+                channels can be introduced into the membrane (Gk, Ek in the
+                circuit diagram).  The membrane also allows current
+                injection.
+
+                The compartment Im is the sum of axial currents and injected
+                current only.  The (transmembrane) channel currents or the
+                leakage current are not included.  For a multicompartment
+                cell, under a quasistatic approximation (C*dV/dt is small), Im
+                is approximately equal to the sum of the channel and leakage
+                currents, due to charge conservation.  This approximation is
+                used in the efield object (see efield.txt) to allow Im to be
+                used to calculate external field potentials.  The exception to
+                this is when Im is calculated with hsolve in chanmode 4.  In
+                that case, Im is directly calculated as the sum of the channel
+                currents and leakage current though Rm.
+
+                When a compartment performs its RESET action (usually
+                invoked by the reset command), Vm is set to the value of the
+                initVm field.  Normally, initVm follows any changes to Em,
+                so Vm will be initialized to Em upon reset.  If, as in the
+                Hodgkin-Huxley model, Em is a leakage potential that is
+                different from the rest potential, initVm may be set to the
+                rest potential.  It will then no longer follow Em, and Vm
+                will be set to the rest potential upon reset.
+                
+                Calculates Vm using:
+                
+                    dVm/dt = {(Em - Vm)/Rm + SUM[(Ek - Vm)*Gk] + 
+                        (Vm' - Vm)/Ra' + (Vm'' - Vm)/Ra + inject}/Cm
+
+                In the diagram, the compartment shown in the middle
+                receives the Vm' and Ra' of the upper compartment with
+                an RAXIAL message, and the Vm'' of the lower compartment
+                with an AXIAL message.  Channels deliver their Gk and Ek
+                with a CHANNEL message.
+
+
+                    Vm'
+                   o_________________________________________________
+                   |                |             |        |        |
+                   \
+                   /  Ra'
+                   \
+                   | 
+                   |
+                   | Vm
+                   o_________________________________________________
+                   |                |             |        |        |
+                   \                |             |        |        |
+                   /  Ra            \             \        |        |
+                   \              --/-->          /        |     ___|___
+                   |             Gk \        Rm   \       / \    _______ Cm
+                   |                |             |      / A \      |
+                   |                |             |      \ | /      |
+                   |         Ek    ---       Em  ---      \ /       |
+                   |             -------       -------     | Iinject|
+                   |                |             |        |        |
+                   |                |_____________|________|________|
+                   |
+                   | Vm''
+                   o_________________________________________________
+                   |                |             |        |        |
+
+
+Example:        
+
+See also:       symcompartment
+

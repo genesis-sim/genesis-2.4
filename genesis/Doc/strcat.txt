@@ -1,0 +1,13 @@
+Routine Name:	strcat
+
+Description:	Returns new string as concatenation of two strings.
+
+Usage:		new-string = {strcat s1 s2}
+
+Example:	genesis >  echo { strcat "bad" "dog" }
+		baddog
+
+Notes:		Unlike the C function of the same name, this routine does not
+		modify the string s1.
+
+		You can also concatenate strings using the ``@'' operator.

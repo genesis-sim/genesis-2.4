@@ -1,0 +1,27 @@
+                               USING HELP
+
+Many of the topics on the help menu use text windows like this one.  If
+there is more than one screen full of text, move the cursor into the scroll
+bar at the left edge of the window, hold the left mouse button down, and
+drag the mouse downwards to scroll through the text.  When you have
+finished, click the left button on the "DONE" box.
+
+The Help Menu selections are as follows:
+
+USING HELP--gives this message.
+
+RUNNING THE SIMULATION--tells how to use the various buttons and dialog
+     boxes and describes the plots which are produced. It also tells how
+     to set the soma injection currents, how to change or create both
+     excitatory and inhibitory connections between cells, and how to 
+     manipulate the simulation windows.
+
+MODEL PARAMETERS--tells something about the physical and mathematical model
+     used for the neurons and describes the various parameters which may be
+     set during a simulation.
+
+THINGS TO TRY--suggests parameters to try in order to simulate various
+     possible phenomena.
+
+QUIT HELP--makes the help menu disappear.
+

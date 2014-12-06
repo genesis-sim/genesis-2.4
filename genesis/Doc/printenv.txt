@@ -1,0 +1,23 @@
+Routine Name:	printenv
+
+Description:	Displays value of operating-system environmental variable.
+
+Usage:		printenv environment-variable
+
+Example:	genesis >  printenv SIMPATH
+		SIMPATH=. /usr/genesis/startup
+
+Notes:		This is a GENESIS implementation of the operating system
+		command printenv, which displays the value of a particular
+		operating system environmental variable.  Unlike its
+		operating-system counterpart, printenv from within GENESIS
+		requires that you supply a variable name (outside of GENESIS,
+		printenv with no arguments displays the list of all your
+		environmental variables).
+
+		Printenv sends its output directly to the screen.  If you need
+		to capture the information that printenv displays in a GENESIS
+		variable, use the getenv routine instead.
+
+See also:	getenv, setenv
+

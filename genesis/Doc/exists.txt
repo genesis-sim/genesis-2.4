@@ -1,0 +1,30 @@
+Routine Name:	exists
+
+Description:	Tests for existence of specified element or field.
+
+Usage:		exists-flag = {exists element [field]}
+
+		exists-flag	returned as 1 if element (or element field)
+				exists; returned as 0 otherwise
+
+		element		name or full pathname of element to test
+
+		field		element field to test existence of
+				(does not check whether field is nonempty)
+
+Example:	if ({exists /cell/dendrite})
+			delete /cell/dendrite
+		end
+
+		genesis > create compartment soma
+		genesis > echo {exists soma}
+		1
+		genesis > echo {exists bogus}
+		0
+		genesis > echo {exists soma len}
+		1
+		genesis > echo {exists soma bogusfield}
+		0
+
+Notes:		
+

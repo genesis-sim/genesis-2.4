@@ -1,0 +1,100 @@
+Routine Name:	addtask
+
+Description:	Adds a simulation event to the simulation schedule.
+
+Usage:		addtask function [arguments...]
+
+		function	a compiled C function to be executed at each
+				step in the simulation phase according to its
+				order in the schedule table (almost always,
+				this fucntion will be "Simulate")
+
+		arguments	arguments for the specified function
+
+		[practically speaking this means:]
+
+		addtask Simulate path -action action-name
+
+		path		path specification of elements affected
+				(typically a wildcard path designation
+				with a CLASS-conditioned selection to
+				identify all elements of a specific type)
+
+		action-name	action to perform on specified elements
+				(usually INIT or PROCESS; must be a valid
+				action, as determined by listactions)
+
+Example:
+
+        addtask  Simulate /##[CLASS=myclass]  -action PROCESS
+	addtask  myfunction  myargs
+
+	from startup/schedule.g:]
+
+	deletetasks
+        addtask Simulate /##[CLASS=buffer]      -action INIT
+        addtask Simulate /##[CLASS=segment]     -action INIT
+        addtask Simulate /##[CLASS=device]      -action INIT
+        addtask Simulate /##[CLASS=buffer]      -action PROCESS
+        addtask Simulate /##[CLASS=projection]  -action PROCESS
+        addtask Simulate /##[CLASS=spiking]     -action PROCESS
+        addtask Simulate /##[CLASS=gate] -action PROCESS
+        addtask Simulate /##[CLASS=segment][CLASS!=membrane][CLASS!=gate]\
+            [CLASS!=concentration][CLASS!=concbuffer] -action PROCESS
+        addtask Simulate /##[CLASS=membrane]    -action PROCESS
+        addtask Simulate /##[CLASS=hsolver]     -action PROCESS
+        addtask Simulate /##[CLASS=concentration]       -action PROCESS
+        addtask Simulate /##[CLASS=concbuffer]  -action PROCESS
+        addtask Simulate /##[CLASS=device]      -action PROCESS
+        addtask Simulate /##[CLASS=output]      -action PROCESS
+        resched
+
+Notes:		GENESIS provides a default simulation schedule that handles
+		most simulation configurations (see above), but for your
+		simulation you may need to specify a different order in which
+		the simulator should process elements in the simulation.  You
+		use addtask to enter simulation events to the simulation
+		schedule.  
+
+		You must be careful to avoid multiple references to elements
+		with the same action. For instance, given a model containing
+		the six elements /test[1-6], the following schedule would be
+		an invalid specification since it would cause test[1] to be
+		invoked twice on each simulation step.
+
+		  addtask Simulate  /test[1]    -action PROCESS
+		  addtask Simulate  /test[1-6]  -action PROCESS
+
+		With broad path specifications, it is easy to accidentally
+		include multiple reference. However, you can check for these
+		occurrences by running the check routine.  In the above case,
+		calling check after entering the above specifications would
+		generate the following message:
+
+		  ** Error - '/test[1]' multiply invoked
+		    with action 'PROCESS'. Check task [2]
+
+		Task [2] refers to the second addtask command. This
+		command was responsible for the conflict.
+
+		Alternately, not scheduling all enabled elements (see enable)
+		for simulation is detected as an error by the check routine.
+		For instance, given the model of six elements used above, you
+		might define a schedule with one addtask call as follows:
+
+		  addtask Simulate  /test[1-5]  -action PROCESS
+
+		Running check would produce the following message:
+
+		  * Warning - '/test[6]' is not scheduled for simulation.
+
+		A valid schedule for this set of elements might be:
+
+		    addtask Simulate  /test[1]  -action PROCESS
+		    addtask Simulate  /test[2-6]  -action PROCESS
+
+		or
+
+		    addtask Simulate  /test[1-6]  -action PROCESS
+
+See also:	Schedules, resched, deletetasks, showsched, check

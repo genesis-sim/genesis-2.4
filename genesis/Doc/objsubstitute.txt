@@ -1,0 +1,24 @@
+Routine Name:       objsubstitute
+
+Description:        Allows undump of saved simulation with new object names
+
+Usage:              objsubstitute orig_obj_name new_obj_name
+
+Example:            create table fakeplot
+                    // commands to add fields and actions to fakeplot
+                    // to make it look like an xplot
+                    ...
+                    addobject fakeplot fakeplot
+                    objsubstitute xplot fakeplot
+
+                    see Scripts/kinetikit/batch_interface.g
+
+Notes:              objsubstitute is used to allow you to save an object of
+                    one type using simobjdump and simdump, and then use
+                    simundump to reload it as a different type.  It allows for
+                    example, xgraph and xplot elements to be saved as neutral
+                    and table elements, so that the simulation can run in
+                    batch mode.
+
+See also:           msgsubstitute, substituteinfo, simobjdump, simdump,
+                    swapdump, simundump

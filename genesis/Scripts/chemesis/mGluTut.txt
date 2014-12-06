@@ -1,0 +1,8 @@
+Tutorial scripts to teach how to develop models of second messengers and calcium dynamics.
+
+mglu-ip3-chemesis.g is a chemesis script that builds the three biochemical reactions leading from activation of the metabotropic glutamate receptor, through production of inositol triphosphate. It uses parameters in param.g,and graphs for illustration are created in graphs.g. 
+
+ The same reactions are also programmed for xppaut, in the file mglu-ip3.ode.  This file has optional G_alpha and IP3 degradation.
+
+mglu-ip3-kkit.txt contains instructions for developing this model in kinetikit, which is part of genesis.
+

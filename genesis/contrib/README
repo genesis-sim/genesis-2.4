@@ -1,0 +1,53 @@
+genesis/contrib/README
+======================
+
+The genesis/contrib directory contains utilities, scripts, and other
+files that have been contributed by users. It may also used in a personal
+GENESIS installation for storing downloaded patches, updates, and other
+material that has become available since the last GENESIS release.
+
+*genesis-mode.el* - A useful emacs/xemacs macro for editing GENESIS SLI
+scripts, contributed by Cengiz Gunay. It provides syntax highlighting
+for GENESIS keywords, functions, and objects. It also gives automatic
+indentation with the tab key, and a function index menu item. To use it:
+
+  * copy the file into your ~/.emacs.d directory. 
+  * If it is not autoloaded when Emacs starts, place the following lines
+    in your ~/.emacs file::
+
+       (add-to-list 'load-path "~/.emacs.d/")
+       (require 'genesis-mode)
+
+  * If the '.emacs' file does't exist, create one containing just these two
+    lines.
+
+For XEmacs:
+
+  * place genesis-mode.el under ~/.xemacs
+  * add the following in your ~/.xemacs/init.el file::
+
+    (load-file "~/.xemacs/genesis-mode.el")
+
+
+*xemacs-mode* - An older set of emacs or xemacs macros by Hugo Cornelis.
+This replaces the version in the GENESIS 2.3 release, and may have some
+functionality that has not been incorporated into the new genesis-mode.el.
+To use it:
+
+1. Put the files in the genesis mode package somewhere in your
+   home directory, e.g. in the directory "~/genesis/xemacs-mode/".
+
+2. Put in your emacs initialization file::
+   (load-file "~/genesis/xemacs-mode/genesis-vars.el")
+   (load-file "~/genesis/xemacs-mode/genesis-langs.el")
+   (load-file "~/genesis/xemacs-mode/genesis-mode.el")
+   (load-file "~/genesis/xemacs-mode/genesis-files.el")
+
+Alternatively, these can refer to the location within the contrib
+directory, e.g.::
+
+    (load-file "/usr/local/genesis/contrib/xemacs-mode/genesis-vars.el")
+
+The xemacs-mode files are currently being incorporated into
+genesis-mode.el. Later versions of genesis-mode.el may be
+available at https://github.com/cengique/emacs-genesis-mode.

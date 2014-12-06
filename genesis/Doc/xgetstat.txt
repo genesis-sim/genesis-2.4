@@ -1,0 +1,20 @@
+Routine Name:		xgetstat
+
+Description:		returns 0 if Xodus is not properly initialized.
+
+Usage:			status = {xgetstat}
+
+Example:		echo {xgetstat}
+			1
+
+			if ({{xgetstat})
+				include graphics
+			end
+
+Notes:			It is possible to run GENESIS without XODUS by using
+			the -nox option to the genesis command line.  If a
+			simulation is to intended to be run both with and
+			without XODUS, a simulation script may use xgetstat to
+			determine if XODUS is available.
+
+See also:		genesis

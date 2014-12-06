@@ -1,0 +1,14 @@
+The script facdemo.g illustrates the use of the facsynchan object, and may be
+run by typing "genesis facdemo".  Like the hebbsynchan, the facsynchan is a
+variation of the synaptically-activated channel object, synchan.  As
+explained in greater detail in the facsynchan documentation, it can exhibit
+synaptic facilitation, synaptic depression, or some combination of the two.
+
+In this demonstration, a simple spike generator sends a steady stream of
+spikes to a "facsynchan" object.
+
+The facsynchan object can exibit both facilitation and depression at the same
+time, with different values of the facilitation per spike (fac_per_spike),
+depression pre spike (depr_per_spike), and different time constants for the
+decay of facilitation (fac_tau) and depression (depr_tau).  However, in this
+demo, the choices are either facilitation, depression, or neither.

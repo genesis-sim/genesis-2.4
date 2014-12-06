@@ -1,0 +1,106 @@
+Object Type:	xcoredraw
+
+Description:	Foundation object class for displaying pixes. All other
+		draw classes (at present: dumbdraw, draw, and graph) are
+		subclassed from coredraw. Therefore these subclasses perform
+		a superset of the operations described here.
+		Coredraw and its subclasses can be thought of as providing
+		a window into a space where pixes reside, or a screen onto
+		which pixes are projected. One can select the size,
+		orientation and other parameters of this window/screen 
+		according to the set of functions described below.
+		The functions provided by coredraw, which are inherited or
+		overridden by its subclasses, include:
+			Displaying and managing pixes.
+			Handling forward transforms for drawing pixes
+			Handling backward transforms for identifying
+				location of mouse events
+			Keyboard control over transformation parameters
+				such as zoom and pan.
+			Providing a mechanism for deciding which child
+				pix should recieve mouse events
+
+		Coredraw and subclassses do not display anything on their own.
+		The pixes provide the actual images and drawing routines
+		displayed in a coredraw widget/subclasses. It is important
+		to note that since the pix display, transformation and event
+		handling functions are present in the coredraw class, any pix
+		can be displayed in any draw subclass.
+
+		The coredraw widget can only display pixes using planar
+		orthographic projections in the xy plane. In other
+		words, x is to the right, y is up and the z coordinate
+		of pixes is ignored.
+
+		In a future revision the z coordinate will be used to determine
+		the order of redrawing pixes to enable pixes to obscure
+		each other according to depth.
+
+		Unless flexibility in transformation options would be
+		a handicap (e.g., in displaying a simulation layout where
+		alternative projections would just confuse matters) the
+		coredraw widget is not especially useful for displays.
+		The draw widget is recommended for all cases where
+		flexibility is desired, since the overhead in performing
+		the general transformations is minimal.
+
+Author:		Upi Bhalla Caltech April 93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xcoredraw_type [in src/Xodus/draw/xcoredraw_struct.h
+
+Size:		?
+
+Fields:		fg	Foreground color of coredraw (not used)
+		bg	Background color.
+		xgeom	Position of left edge of coredraw.
+		ygeom	Position of upper edge of coredraw.
+		wgeom	Width of coredraw
+		hgeom	Height of coredraw
+		xmin	left edge of window for displaying pixes.
+		ymin	bottom edge of window for displaying pixes.
+		xmax	right edge of window for displaying pixes.
+		ymax	top edge of window for displaying pixes.
+		script	Script operation(s) to perform on a mouse
+			click. The script calls to the coredraw widget
+			are only made if none of the child pixes has
+			expressed an interest in the event.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XCoreDraw [in src/Xodus/widg/xcoredraw.c]
+
+Classes:	widget output
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		XODROP: Called when a pix is dropped into the widget.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+		The xcoredraw does not perform any computational operations
+		driven by the simulation clock.
+
+Example:
+		create xform /form [0,0,500,500]
+		create xcoredraw /form/coredraw [0,0,100%,100%] \
+			-bg red -script "echo Hello, I am a coredraw widget" 
+		setfield /form/coredraw xmin -2 xmax 2 ymin -2 ymax 2
+		// display the pixes here
+		create xsphere /form/coredraw/sphere -fg green -r 1\
+			-script "echo Hello, I am a sphere pix"
+		xshow /form
+
+See also:	XODUS documentation, pix documentation, documentation
+		for coredraw subclasses.
+

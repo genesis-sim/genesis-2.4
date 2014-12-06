@@ -1,0 +1,26 @@
+Routine Name:	stack
+
+Description:	Displays list of elements on working element stack.
+
+Usage:		stack
+
+Example:	genesis >  pwe
+		/
+		genesis >  pushe /neuron1
+		/neuron1
+		genesis >  pushe /neuron2
+		/neuron2
+		genesis >  stack
+		/
+		/neuron1
+
+Notes:		The stack routine prints out the current contents of the
+		element stack (the stack used to store paths pushed and 'pop'ed
+		from the stack using the GENESIS pushe and pope routines).
+
+		The stacked elements are listed in the reverse order in which
+		they will be 'pop'ed (i.e., the last element listed will be
+		the first 'pop'ed).
+
+See also:	pushe, pope
+

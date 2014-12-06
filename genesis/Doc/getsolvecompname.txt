@@ -1,0 +1,18 @@
+Routine Name:	getsolvecompname
+
+Description:	Returns the name of the compartment stored at the index value
+		inside the hines solver.
+
+Usage:		getsolvecompname hsolve_element index
+
+Example:
+                genesis > showfield /cell/solve ncompts
+                [ /cell/solve ]
+                ncompts              = 1
+
+                genesis > echo {getsolvecompname /cell/solve 0}
+                soma[0]
+
+Notes:		Mainly used for debugging.
+
+See also:       hsolve, getsolvechildname, findsolvefield

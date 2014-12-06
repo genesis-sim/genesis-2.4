@@ -1,0 +1,37 @@
+
+                  Changes in Version 1.0
+                  ----------------------
+
+                  Changes to version 0.5 
+
+1. Fortran stream_number in calls to init_sprng now starts from 0
+   instead of from 1. ****** VERY IMPORTANT ******
+                             -------------- 
+
+2. A parallel Multiplicative Lagged Fibonacci Generator (mlfg) has
+   been implemented.
+
+3. Default parameter to init_sprng is called SPRNG_DEFAULT instead of DEFAULT.
+
+4. Several functions inlined, to improve speed.
+
+5. Directory 'include' contains the headers, and 'lib' the SPRNG libraries, 
+   instead of using 'SRC' and '.' respectively. If you have untarred
+   SPRNG into a location where an old version is present, please remove
+   your old interface.h, sprng.h, and sprng_f.h files in SRC and either
+   make links to those in the 'include' directory, or copy them to SRC.
+
+6. SRC/make.GENERIC helps in installation on new machines.
+
+7. 'pack_sprng' now returns the state of a stream in a machine independent 
+   format that can be unpacked with 'unpack_sprng' (except for pmlcg,
+   which still stores numbers in a machine dependent format). It may
+   be incompatible with data stored in the beta version's format.
+
+8. lcg64 and cmrg use larger primes as addends. So the random number
+   sequences will now be different from those in Version 0.5.
+
+                Changes to Version 1.0 Beta
+                ---------------------------
+
+1. Fixed a memory leak bug in mlfg.

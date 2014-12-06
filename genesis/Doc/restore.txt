@@ -1,0 +1,16 @@
+Routine Name:	restore
+
+Description:	Restores element state stored in file with save routine.
+
+Usage:		restore file-name
+
+Example:	restore mycell.save
+
+Notes:		After using the save command, restore may be used to restore
+		save element field values from a file.  This allows you to
+		resume a long simulation at the point where you left off.
+		An element must be capable of performing the RESTORE2 action
+		for its fields to be restored.
+
+See also:	save
+

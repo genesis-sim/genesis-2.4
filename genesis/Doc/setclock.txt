@@ -1,0 +1,24 @@
+Routine Name:	setclock
+
+Description:	Sets time interval (step size) associated with specified clock.
+
+Usage:		setclock clock-number value
+
+Example:	setclock 0 0.01     // simulation time step in msec
+		setclock 1 0.05     // plotting interval can be larger
+
+		genesis >  setclock 0 5.5
+		changing clock [0] from 1 to 5.5
+
+Notes:		The setclock routine is used to set the current value
+		assigned to the time increment for one of the GENESIS
+		simulator clocks.  These clocks are updated each time a step
+		is performed.
+
+		Clock number 0 is the default clock used by each element to
+		determine how often it should perform a simulation step.  When
+		components of a simulation run at significantly different time
+		scales, it may be useful to use other clocks (specified with
+		useclock) having different time intervals.
+
+See also:	showclocks, useclock, getclock

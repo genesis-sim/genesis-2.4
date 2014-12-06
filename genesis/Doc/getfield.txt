@@ -1,0 +1,22 @@
+Routine Name:	getfield
+
+Description:	Returns value of field in data structure of specified element.
+
+Usage:		getfield [pathname] field
+
+		field-value = {getfield pathname field}
+
+		pathname	path specification
+				defaults to current working element
+
+		field		name of field in element data structure
+		
+
+Example:	echo {getfield /cell/soma Vm}
+		setfield /cell/soma Rm {getfield /form/Rm_dialog value}
+
+Notes:		The getfield routine returns the value of fields in the
+		specified path.
+
+See also:	setfield, showfield, getfieldnames
+

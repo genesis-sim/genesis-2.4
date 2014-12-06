@@ -1,0 +1,72 @@
+Object Type:    table2D
+
+Description:    A two-dimensional table with interpolation.
+
+Author:         U. S. Bhalla MSSM May/93
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	[in src/olf/olf_struct.h]
+
+Size:           124 bytes (minimum)
+
+Fields:         input       x value input to table
+                input2      yvalue input to table
+                output      Output of table lookup
+                negoutput   Negative of table output
+                table       2d interpol struct for table
+                alloced     Internal flag for table allocation 
+                step_mode   Not implemented
+                stepsize    Not implemented
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	[in src/olf/table2d.c]
+
+Classes:        segment
+
+Actions:        SET  TABCREATE  PROCESS  RESET
+
+Messages:       INPUT  x-value-for-lookup  y-value-for-lookup
+                SUM    value-to-sum-onto-output
+                PRD    value-to-multiply-output-by
+                X      x-value-for-lookup
+                Y      y-value-for-lookup
+
+------------------------------------------------------------------------------
+
+Notes:          TABCREATE must be called to allocate the interpol_struct
+                of the table.  The syntax is:
+
+                call table-element TABCREATE xdivs xmin xmax [ydivs ymin ymax]
+
+                As with other interpol_structs, xdivs and ydivs refer to the
+                number of divisions in the table, with the first index running
+                from 0 to xdivs and the second one from 0 to ydivs.  If the
+                ydivs, ymin, and ymax parameters are not given, these will be
+                set to the values used for the x variable.
+
+                By default, objects that use 2-D tables (tab2Dchannel,
+                table2D, and tabcurrent) have the calc_mode for the tables set
+                to LIN_INTERP (a pre-defined global variable equal to one), so
+                that linear interpolation is performed at run time, allowing
+                the use of a smaller table.  In order to disable
+                interpolation, set the calc_mode to NO_INTERP (zero).  For
+                example:
+
+                setfield my2Dtable table->calc_mode {NO_INTERP}
+
+Example:        genesis > create table2D /foo
+                genesis > call /foo TABCREATE 5 0 1 5 0 1
+                genesis > setfield /foo table->table[0][0] 5
+                genesis > setfield /foo table->table[1][1] 10
+                genesis > setfield /foo table->table[3][3] 105
+
+               genesis > echo {getfield /foo table->table[3][3]}
+               105
+
+See also:	table, Interpol documentation (Tables).

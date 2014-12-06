@@ -1,0 +1,51 @@
+These scripts (written by Erik De Schutter) demonstrate the use of the
+difshell, fixbuffer, and taupump objects to model the diffusion of
+intracellular calcium ions in dendritic spines, and the effect of buffering
+and ionic pumps.  (To fully understand the scripts, see the documentation
+for these three objects.)
+
+This is a slightly simplified version of the model of calcium influx
+through a NMDA channel into a single spine, described in:
+
+De Schutter, E. and Bower, J. M.: Sensitivity of synaptic plasticity to the
+Ca2+-permeability of NMDA-channels: a model of long-term potentiation in
+hippocampal neurons.  Neural Computation 5, 681-694, 1993.
+
+For a general description of buffered calcium diffusion see:
+De Schutter E., and Smolen P., "Calcium dynamics in large neuronal
+models", in Methods in neuronal modeling: From ions to networks
+(2nd edition), C. Koch and I. Segev editors, pp. 211-250 (1998).
+
+The scripts are:
+
+SPINEDEMO-one.g: simulates a single activation of a NMDA and an AMPA
+channel on a spine.
+
+SPINEDEMO-burst.g: simulates a 200Hz burst activation of a NMDA and an AMPA
+channel on a spine.
+
+makeshells.g: sets up the model that is used in both of the simulation
+scripts
+
+parameters.g: contains the values of the constants used in the model
+
+The model consists of 6 compartments: a spine head, spine neck, dendritic
+shaft, distal dendrite, proximal dentrite, and soma.  All of these are
+passive compartments, except the spine head, which contains a NMDA channel
+(modeled with a synchan and Mg_block element) and an AMPA channel.
+
+The idea is to look at the diffusion of Ca arising from the Mg-blocked Ca
+current through the NMDA channel.  As the space constant for Ca diffusion
+is much less than the electrotonic space constant, it is necessary to divide
+each compartment into a number of diffusion shells.  Thus, there is a chain
+of coupled difshells that correspond to the head compartment (5 SLABs),
+neck (7 SLABs), and dendrite shaft (10 SHELLs).
+
+The calcium fraction of the NMDA current enters the first difshell of the
+spine head.  As it diffuses axially down the spine, the head and neck
+difshells use the SLAB (SLICE) geometry.  When calcium ions enter the
+dendritic shaft, they diffuse radially inward, so the SHELL geometry is
+used.  Each of the difshells is coupled with the appropriate messages to
+a fixbuffer (to model binding and release of Ca ions to non-mobile buffer
+molecules) and to a taupump (an ionic pump that removes Ca ions from
+the cell).

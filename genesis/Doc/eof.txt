@@ -1,0 +1,24 @@
+Routine Name:	eof
+
+Description:	Tests whether at end of currently opened file.
+
+Usage:		eof-flag = {eof filename}
+
+		eof-flag	returned as 1 if at end of file;
+				returned as 0 if not at end of file
+
+		filename	name of open file to test
+
+Example:
+                str line
+                openfile TestFile r
+                line = {readfile TestFile -linemode}
+                while (!{eof TestFile})
+                    // process line from the file
+                    echo {line}
+                    line = {readfile TestFile -linemode}
+                end
+
+Notes:		The file must be currently open.
+
+See also:	openfile, listfiles, readfile

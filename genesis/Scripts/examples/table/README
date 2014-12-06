@@ -1,0 +1,13 @@
+This directory contains two separate demonstrations of uses of the table
+object.
+
+tab_funcgen.g - shows how to use the "table" object as a function
+    generator.  The "step_mode" option is used to read out table values with
+    each clock tick, permitting the table to act as a generator for any
+    arbitrary function. (Submitted by Upi Bhalla)
+
+tab_logplot.g - the use of a table lookup provides a fast and flexible way
+    to transform data which are to be plotted.  This example shows how to
+    use a table with an "xgraph" object to make logarithmic plots.  
+
+

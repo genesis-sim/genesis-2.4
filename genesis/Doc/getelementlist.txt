@@ -1,0 +1,10 @@
+Routine Name:	getelementlist
+
+Description:	Returns list of elements matching wildcard specification.
+
+Usage:		getelementlist path -listname listname
+
+Notes:		This is an alias for el.
+
+See also:	el
+

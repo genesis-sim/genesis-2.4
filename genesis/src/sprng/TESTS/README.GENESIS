@@ -1,0 +1,14 @@
+Notes about running the tests
+2000-04-26 <mhucka@bbb.caltech.edu>
+
+If you want to run the tests of the SPRNG generators, first execute the
+following command after compiling the random number generators:
+
+	  make PLAT=someplatform
+
+where "someplatform" is the value of the variable MACHINE that you specified
+in the GENESIS src/Makefile.  For example, on Linux, PLAT=Linux.
+
+To run the tests, go back to the parent directory and run
+
+   ./checksprng

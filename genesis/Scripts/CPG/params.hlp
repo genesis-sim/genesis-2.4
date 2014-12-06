@@ -1,0 +1,138 @@
+                      DESCRIPTION OF CELL PARAMETERS
+
+
+
+  MODEL DESCRIPTION
+  -----------------
+  
+  This is a simulation of four simplified but realistic neurons in 
+  a feedback configuration. Each cell is composed of two compartments 
+  corresponding to a soma and a dendrite. Each compartment has two 
+  variable conductance ionic channels for sodium (Na) and potassium (K).  
+  The dendritic channels are synaptically activated while the somatic 
+  channels  are voltage dependent with Hodgkin-Huxley kinetics.  The 
+  output of each  cell is a spike event. These spike events reach their 
+  synaptic destinations after a specified delay. When they arrive they 
+  activate a conductance change Gk with peak value given by weight*gmax 
+  where the connection strength determines the value of the weight.  The
+  reason for this scaling factor is that a single synaptic input rarely 
+  has any noticable effect when one uses realistic values for gmax.  
+  Thus, we scale up the synaptic input since there is usually redundancy
+  in neural circuits.  Note that the inhibitory inputs have less effect
+  than the excitatory ones since the equilibrium potential for the
+  potassium channel is closer to the resting potential than the equilibrium
+  channel for the sodium channel.  The parameters tau1 and tau2 control the 
+  time course of the postsynapstic conductance changes.  These conductances 
+  have time courses of the form:
+
+                          alpha function form
+                  for tau1 == tau2 	G = Gk*Ate(-t/Tau)
+
+                          dual exponential form
+                  for tau1 <> tau2 	G = Gk*A(e(-t/tau1) - e(-t/tau2))
+
+  where A is a normalizing factor.
+
+  The change in membrane potential caused by this input is given by
+
+         dVm/dt = [(Vm' - Vm)/Ra + (ENa - Vm)*GNa + (EK - Vm)*GK + 
+                	    (Erest - Vm)/Rm + Iinject]/Cm.
+
+  ENa and EK are the ionic equilibrium potentials for each conductance. 
+  Rm is the membrane resistance and Cm is the membrane capacitance. 
+  Erest is the resting membrane potential and Iinject is an injection 
+  current.  Vm' is the membrane potential of the adjacent compartment 
+  and Ra is the axial resistance between them. The network diagram for 
+  the model looks like this:
+                                    ___
+                         synaptic  |ENa|
+                          weight   |___| 
+                     +-----------< |EK |      DENDRITE
+                     |             |___|
+                     |            /     \
+                     |           / cell1 \    SOMA
+                     |           ---------
+                     |              |    
+                     |              +---------+
+                     |                        |
+            delay   [ ]                      [ ]
+                     |              ___       |
+                     |             |ENa| >----+
+                     |             |___|   
+                     |             |EK |
+                     |             |___|
+                     |            /     \
+                     |           / cell2 \
+                     |           --------- 
+                     |              |     
+                     +--------------+
+                                  axon
+
+
+
+
+  The circuit diagram for each cell looks like this
+
+
+                               DENDRITE
+   Vm                                 
+   o__________________________________________________________
+   |           |              |             |        |        |      
+   |           |              |             |        |        |
+   |           \              \             \        |        |
+   |         --/-->         --/-->          /       / \    ___|___
+   |       GNa \           GK \        Rm   \      / A \   _______ Cm 
+   |           |              |             |      \ | /      |
+   |           |              |             |       \ /       |
+   |     ENa  ---      EK    ---    Erest  ---       | Iinject|
+   |        -------        -------       -------     |        |
+   |           |              |             |        |        |
+   \           |______________|_____________|________|________|
+   /  Ra                             
+   \                                 
+   |                                 
+   |                                      
+   |                                 
+   |                             SOMA                              AXON
+   |  Vm                                                            _____
+   o________________________________________________________________|   |____\
+               |              |             |        |        |     |   |    /
+               |              |             |        |        |     -----
+               \              \             \        |        |
+             --/-->         --/-->          /        |     ___|___
+        HH-GNa \        HH-GK \        Rm   \       / \    _______ Cm        
+               |              |             |      / A \      |
+               |              |             |      \ | /      |
+         ENa  ---      EK    ---    Erest  ---      \ /       |
+            -------        -------       -------     | Iinject|
+               |              |             |        |        |
+               |______________|_____________|________|________|
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

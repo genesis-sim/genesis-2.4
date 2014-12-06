@@ -1,0 +1,167 @@
+This is a list of the prototypes defined in this directory. Some
+prototypes are defined in more than one file. The xx_mit_yyy prototypes
+in benchan.g are implementations of the same channel parameters
+using different kinds of GENESIS objects for benchmarking purposes.
+
+
+***********************************************************************
+
+                          K  Channels
+
+***********************************************************************
+
+Channel          File            Object             Implemented by
+
+K_moll_cs        CSchan.g        tabchannel		Dave Beeman
+KA_moll_cs       CSchan.g        tabchannel             Dave Beeman
+K_squid_hh       hhchan.g        hh_channel             Hodgkin & Huxley
+K_hh_tchan       hh_tchan.g      tabchannel             Hodgkin & Huxley
+K_squid_tab      thalchan.g      tabchannel             Hodgkin & Huxley
+K_lgn_tab	 thalchan.g	 tabchannel		McCormick, et. al.
+K_lgn_hh	 thalchan.g	 hh_channel		McCormick, et. al.
+K0_io_tchan      mauricechan.g   tabchannel             Maurice Lee
+K1_io_tchan      mauricechan.g   tabchannel             Maurice Lee
+K_mit_hh         benchan.g       hh_channel             Upi Bhalla
+K_mit_vdep       benchan.g       vdep_gate/vdep_channel Upi Bhalla
+K_mit_stab       benchan.g       tabgate/vdep_channel   Upi Bhalla
+K_mit_ftab       benchan.g       tabgate/vdep_channel   Upi Bhalla
+K_mit_stchan     benchan.g       tabchannel             Upi Bhalla
+K_mit_tchan      benchan.g       tabchannel             Upi Bhalla
+                 mitchan.g       tabchannel             Upi Bhalla
+K_gran_hh        granchan.g      hh_channel             Upi Bhalla
+Kca_mit_tab      mitchan.g       tabgate/vdep_channel   Upi Bhalla
+K_mit_tab        traubchan.g     tabgate/vdep_channel   Upi Bhalla
+K_trit_agt       ASTchan.g       tabchannel             Dave Beeman
+K_hip_traub	 traubchan.g	 tabgate/vdep_channel	R.D. Traub
+Kca_hip_traub	 traubchan.g	 tabgate/vdep_channel	R.D. Traub
+KA_bsg_yka       yamadachan.g    tabchannel		Walter Yamada
+                 bulbchan.g
+KM_bsg_yka       yamadachan.g    tabchannel		Walter Yamada
+                 bulbchan.g
+K_bsg_yka        yamadachan.g    tabchannel		Walter Yamada
+K_mit_usb        newmit.g        tabchannel		Upi Bhalla
+K_alphamn_bsf    BSFchan.g       tabchannel		Bunow et al
+K_hip_pyr_tl     TLchan.g        tabchannel		Traub & Llinas
+K_mit_usb        newbulbchan.g   tabchannel             Upi Bhalla
+K2_mit_usb       newbulbchan.g   tabchannel             Upi Bhalla
+K_slow_usb       newbulbchan.g   tabchannel             Upi Bhalla
+Kahp_hip_traub91 traub91chan.g   tabchannel		Traub, et. al.
+Kc_hip_traub91   traub91chan.g   tabchannel     	Traub, et. al.
+Kdr_hip_traub91  traub91chan.g   tabchannel		Traub, et. al.
+Ka_hip_traub91   traub91chan.g   tabchannel		Traub, et. al.
+Kc_moll_db       ASTchan.g       table/vdep_channel	Dave Beeman
+H_lgn_tab	 thalchan.g	 tabchannel		McCormick, et. al.
+K_leak		 thalchan.g	 leakage		Pratik Mukherjee
+Moczyd_KC        MoczydKC.g      tab2Dchannel           Erik De Schutter
+K_squid_markov   markovchan.g    Kpores                 Dave Beeman
+
+***********************************************************************
+
+                          Na  Channels
+
+***********************************************************************
+
+Channel          File            Object             Implemented by
+
+Na_moll_cs       CSchan.g        tabchannel		Dave Beeman
+Na_squid_hh      hhchan.g        hh_channel             Hodgkin & Huxley
+K_hh_tchan       hh_tchan.g      tabchannel             Hodgkin & Huxley
+Na_squid_tab     thalchan.g	 tabchannel             Hodgkin & Huxley
+Na_io_vdep       mauricechan.g   tabgate/vdep_channel   Maurice Lee
+Na_mit_hh      	 benchan.g       hh_channel             Upi Bhalla
+Na_mit_vdep    	 benchan.g       vdep_gate/vdep_channel Upi Bhalla
+Na_mit_stab      benchan.g       tabgate/vdep_channel   Upi Bhalla
+Na_mit_ftab      benchan.g       tabgate/vdep_channel   Upi Bhalla
+Na_mit_stchan    benchan.g       tabchannel             Upi Bhalla
+Na_mit_tchan     benchan.g       tabchannel             Upi Bhalla
+                 mitchan.g       tabchannel             Upi Bhalla
+Na_gran_hh       granchan.g      hh_channel             Upi Bhalla
+Na_aplysia_ag    ASTchan.g       tabchannel             Dave Beeman
+Na_bsg_yka       yamadachan.g    tabchannel		Walter Yamada
+Na_rat_yhl       YHLchan.g       tabchannel		Yang,Hsu,Lester
+Na_rat_smsnn     SMSNNchan.g     tabchannel             Stuhmer et al
+                 newbulbchan.g
+Na2_rat_smsnn    newbulbchan.g   tabchannel             Stuhmer et al
+Na_alphamn_bsf   BSFchan.g       tabchannel		Bunow et al
+Na_hip_pyr_tl    TLchan.g        tabchannel		Traub & Llinas
+Na_mit_usb       newbulbchan.g   tabchannel             Upi Bhalla
+Na2_mit_usb      newbulbchan.g   tabchannel             Upi Bhalla
+Na_hip_traub91   traub91chan.g   tabchannel		Traub, et. al.
+Na_sej_tab	 thalchan.g	 tabchannel		Lytton & Sejnowski
+Na_squid_markov  markovchan.g    Napores                Dave Beeman
+
+***********************************************************************
+
+                          Ca  Channels
+*********************************************************************
+
+Channel          File            Object                 Implemented by
+
+NCa_drg_fnt_tab  FNTchan.g       tabgate/vdep_channel   Upi Bhalla
+NCa_drg_fnt      FNTchan.g       tabchannel             Upi Bhalla
+Ca_io_vdep       mauricechan.g   tabgate/vdep_channel   Maurice Lee
+Ca_mit_tab       benchan.g       tabgate/vdep_channel   Upi Bhalla
+                 mitchan.g       tabgate/vdep_channel   Upi Bhalla
+                 traubchan.g     tabgate/vdep_channel   Upi Bhalla
+Ca_bsg_yka       yamadachan.g    tabgate/vdep_channel   Walter Yamada
+Ca_aplysia_ag    ASTchan.g       tabchannel             Dave Beeman
+B_trit_st        ASTchan.g       tabgate/vdep_channel   Dave Beeman
+Ca_hip_traub	 traubchan.g	 tabgate/vep_channel	R.D. Traub
+LCa_mit_usb  	 newmit.g	 tabchannel		Upi Bhalla
+LCa3_mit_usb     newbulbchan.g   tabchannel             Upi Bhalla
+Ca_hip_pyr_tl    TLchan.g        tabchannel		Traub & Llinas
+Ca_hip_traub91   traub91chan.g   tabchannel		Traub, et. al.
+Ca_sej_tab       thalchan.g      tabchannel             Lytton & Sejnowski
+Ca_lgn_hh        thalchan.g      hh_channel             McCormick, et. al.
+
+
+***********************************************************************
+
+                          Synaptic channels
+
+***********************************************************************
+
+Channel          File            Object                 Implemented by
+
+glu_mit_upi	 mitsyn.g        synchan                Upi Bhalla
+	   	 mitsynC2.g      channelC2              Upi Bhalla
+GABA_mit_upi     mitsyn.g        synchan                Upi Bhalla
+		 mitsynC2.g      channelC2              Upi Bhalla
+glu_mit_usb      bulbchan.g      channelC2              Upi Bhalla
+Ex_channel       synchans.g	 synchan		Bhalla/Beeman
+Inh_channel      synchans.g	 synchan		Bhalla/Beeman
+GABA_mit_usb     bulbchan.g      ddsyn                  Upi Bhalla
+glu_gran_usb     bulbchan.g      ddsyn                  Upi Bhalla
+
+***********************************************************************
+
+                          Compartments
+
+***********************************************************************
+
+compt                 File           Object             Implemented by
+
+compartment           compartments.g compartment        Erik De Schutter
+compartment_sphere    compartments.g compartment        Erik De Schutter
+symcompartment        compartments.g symcompartment     Erik De Schutter
+symcompartment_sphere compartments.g symcompartment     Erik De Schutter
+
+***********************************************************************
+
+                          Miscellaneous
+
+***********************************************************************
+
+item             File            Object                 Implemented by
+
+Ca_mit_conc      benchan.g       Ca_concen              Upi Bhalla
+                 mitchan.g       Ca_concen              Upi Bhalla
+                 traubchan.g     Ca_concen              Upi Bhalla
+Ca_bsg_conc      yamadachan.g    Ca_concen              Walter Yamada
+
+Vclamp           vclamp.g        diffamp/PID/RC		Mark Nelson
+
+olf_receptor     bulbchan.g      receptor2              Upi Bhalla
+spike            bulbchan.g      spike/axon             Upi Bhalla
+spike            protospike.g    spikegen               Dave Beeman
+***********************************************************************

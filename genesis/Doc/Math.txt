@@ -1,0 +1,40 @@
+  5.  Math Routines
+
+  The following table lists the mathematical routines available in
+  GENESIS.  These routines include basic math, trigonometric, and random
+  number routines.  (Remember that GENESIS also has standard arithmetic
+  operators such as + for addition, - for subtraction, etc.)
+
+  The GENESIS syntax for functions like ``exp'', ``sin'', etc. is a
+  little unusual, as they take arguments that are separated by spaces,
+  as with other GENESIS routines (commands) that have arguments.  They
+  also require curly brackets (braces) to cause evaluation of the
+  function and of strings that represent numerical quantities. Rather
+  than the form exp(x), you would use {exp {x}}.  See the section on
+  ``Using Variables'' in ``Creating Variables'' (Variables.txt) for a
+  description of the use of braces with variable names.
+
+  ______________________________________________________________________
+  Routine       Description
+  ______________________________________________________________________
+  abs           Returns absolute value of number.
+  acos          Returns angle (in radians) corresponding to given cosine.
+  asin          Returns angle (in radians) corresponding to given sine.
+  atan          Returns angle (in radians) corresponding to given tangent.
+  cos           Returns cosine for given angle (specified in radians).
+  exp           Returns ``e'' raised to specified power.
+  floatformat   Sets format for display of variables of type float.
+  gaussian      Returns value from Gaussian (Normal) distribution.
+  log           Returns logarithm (base ``e'') of number.
+  max           Returns maximum value of two numbers.
+  min           Returns minumum value of two numbers.
+  pow           Returns a number raised to a specified power.
+  rand          Returns a random number falling in a specified range.
+  randseed      Initializes random-number generator with new random seed.
+  round         Rounds decimal number to nearest integer value.
+  setrand       Select Numerical Recipes or SPRNG random number generator
+  sin           Returns sine for given angle (specified in radians).
+  sqrt          Returns square root of positive number.
+  tan           Returns tangent for given angle (specified in radians).
+  trunc         Returns integer part of number.
+  ______________________________________________________________________

@@ -1,0 +1,23 @@
+Routine Name:	setdefault
+
+Description:	Sets the default value of an object field.
+
+Usage:		setdefault object-name field-name value ...
+
+Example:	genesis > setdefault compartment Em -0.07
+		genesis > create compartment /soma
+		OK
+		genesis > showfield /soma Em
+
+		[ /soma ]
+		Em                   = -0.0700000003
+		genesis > echo {getdefault compartment Em}
+		-0.0700000003
+
+
+Notes:		Once you have changed the default value of an object
+		field, all elements created from that object will
+		have that field initialized to the new value.
+
+See also:	getdefault
+

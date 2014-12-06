@@ -1,0 +1,31 @@
+concen: a library which implements diffusion routines in GENESIS.
+
+Copyright (C) 1994-1999 Erik De Schutter, BBF-UIA
+
+This library was developed with support of the National Foundation for
+Scientific Research (NFWO, Belgium) at the Born-Bunge Foundation and 
+University of Antwerp - UIA, and these institutes retain the full 
+copyright on the computer code in this library.
+
+You may copy, distribute and modify this library without prior approval
+as long as it remains part of the computer program called GENESIS, for
+GEneral Neural SImulation System, copyrighted by the California Institute 
+of Technology.  YOU MAY NOT COPY, DISTRIBUTE OR MODIFY THIS LIBRARY, or 
+any of the source code files contained in this library, FOR USE IN ANY 
+OTHER COMPUTER PROGRAM without prior written approval of the author, Erik 
+De Schutter.
+
+This library is distributed in the hope that it will be useful, but WITHOUT 
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+FITNESS FOR A PARTICULAR PURPOSE. 
+ 
+This copyright notice in its entirety, must be present in every copy of 
+the software.
+
+Erik De Schutter can be contacted at erik@bbf.uia.ac.be and at http://www.bbf.uia.ac.be/
+
+GENESIS, the GEneral Neural SImulation System is copyrighted as follows:
+        Copyright 1988 - 1997, California Institute of Technology
+   Some components are copyright by the originating institution and are used
+    with the permission of the authors.
+

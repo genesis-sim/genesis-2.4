@@ -1,0 +1,22 @@
+Routine Name:	where
+
+Description:	Returns name of operating-system directory in which specified
+		file is located.
+
+Usage:		where filename
+
+		filename	name of file to search for (must be actual
+				name; where does not add a .g if you do not
+				explicitly supply it, and does not accept
+				wildcarded names)
+
+Example:	genesis >  where mysim.g
+		'mysim.g' found in .
+
+		genesis >  where fooby
+		could not find 'fooby' in . /usr/genesis/startup
+
+Notes:		The where routine searches the script path list (as specified
+		in the operating system environmental variable SIMPATH) and
+		reports the first instance found of the specified file.
+

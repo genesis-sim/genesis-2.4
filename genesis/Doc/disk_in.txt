@@ -1,0 +1,147 @@
+Object Type:	disk_in
+
+Description:	Reads in a 2-d array of data from an ascii or binary file.
+
+Author:		U. S. Bhalla, Caltech (1/90)
+		Coordinate read-in added by U. S. Bhalla, Mt. Sinai, 5/95.
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	disk_in_type  [in src/olf/olf_struct.h]
+
+Size:		148 bytes + allocation for arrays and interpols
+
+Fields:		filename	name of data file
+		leave_open	flag: leave file open between steps [cycles]
+		nx		x dimension of input val array
+		ny		y dimension of input val array
+		loop		flag: return to start of file on EOF
+		val		2D array of input values
+		fp		pointer to file
+		fileformat	flag: 0 (default) for ASCII, 1 for FMT1
+		time_offset	offset from sim time for FMT1 files
+		is_open		internal flag : is file open yet?
+		allocated	internal flag: Is array allocated yet?
+		tempdata	data array used for FMT1 reading
+		start_time	field used for FMT1 handling
+		dt		field used for FMT1 handling
+		datatype	field used for FMT1 handling
+		header_size	field used for FMT1 handling
+		lastpos		field used for FMT1 handling
+		xpts,ypts,zpts	Interpols used for storing coordinate
+				information when FMT1 files are read.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	DiskIn  [in src/olf/disk_in.c]
+
+Classes:	segment
+
+Actions:
+        RECALC  CHECK  SET  RESET  PROCESS  INIT
+
+
+Messages:	
+        none
+------------------------------------------------------------------------------
+
+Notes:  
+		The disk_in element reads in data from a file to the val
+		array in the element every clock tick.  This is a 2-d array
+		with dimensions set by the nx and ny fields.
+
+		The source file can be either in ASCII or FMT1 formats.  FMT1
+		is the GENESIS-specific format used by disk_out.  Data in
+		FMT1 files is time-stamped, and accessed according to the
+		current simulation clock.
+
+		At RESET, disk_in automatically figures out if the file
+		is FMT1. If not it assumes it is ASCII. The fileformat
+		flag is set accordingly. 
+
+		FMT1 files contain information on the number of data items, 
+		and the 3-d coordinate information for each item. On RESET,
+		the 'val' array is automatically allocated for the data values.
+		nx is set to 1, and ny is set to the number of data items.
+		Also on RESET, the coordinate information is loaded into the
+		xpts,ypts,zpts interpol-structs, which are automatically
+		allocated as needed. These interpols can be accessed in
+		the usual ways. See the interpol documentation.
+
+		ASCII files do not have coordinate information. The nx and ny
+		fields must be set prior to reading in an ASCII file, so
+		that the disk_in can figure out how many data points to
+		read per time-step. Changing nx and ny causes
+		automatic reallocation of the 'val' array, with dire
+		results for any messages that had been linked to earlier
+		incarnations of the val array.  In other words, never set
+		the nx or ny unless you are sure that no messages
+		are being sent from the input array. Typically one sets
+		nx and ny as soon as one creates the disk_in, and
+		later adds messages.
+
+		The leave_open flag should normally be set to 1 to avoid
+		closing and reopening the file every clock tick.
+
+		The time_offset field allows one to specify the difference
+		between the simulation time and the FMT1 internal time stamp.
+
+		The format of the ascii file is simply a sequence of numbers,
+		separated by spaces, tabs or newlines, with a maximum of 16
+		numbers per line.  They are read in sequentially to fill the
+		val[x][y] array, the x index being incremented more rapidly .
+		Every time a new clock tick is read in, the reading starts
+		from a new line, discarding any unread data on the previous
+		line.
+
+		The format of the FMT1 file is highly condensed. See the
+		source (in src/out/out_view.c) and the documentation for
+		disk_out for more details. In general, it includes information
+		on the size of the file, the coordinates of all elements
+		whose values are stored, and the time-step at which successive
+		data values are stored.
+
+
+Example:	
+
+    create disk_in /in
+    // read a single line with 2 variables at each time step
+    // from the file Vm1 (in Scripts/MultiCell)
+    setfield  /in nx 2 ny 1 filename Vm1 dt 1 leave_open 1
+    create xform /form
+    create xgraph /form/graph
+    setfield /form/graph xmax 500 ymin -100 ymax 50
+    // The Vm value is the second one on each line
+    addmsg /in /form/graph PLOT val[1][0] *Vm *red
+    xshow /form
+    reset
+    step 500
+Alternatively, the message from the disk_in element could have been an INPUT
+message to a spikegen element.  The spikegen element could then send a SPIKE
+message to a synchan element, as in Scripts/tutorials/tutorial4.g.
+
+If we had 100 cells, each containing a spikegen element, with names
+``cell[0]/spike'' through ``cell[99]/spike'' and a data file containing
+multiple groups of 10 lines with 10 Vm values each, to represent 100
+simultaneous inputs, we could use statements like this:
+
+    // send a message for each spike generator
+    for (i=0;i<=9; i = i + 1)
+        for (j=0;j<=9; j = j + 1)
+             addmsg /in /cell[{j + 10*i}]/spike INPUT val[{i}][{j}]
+        end
+     end
+
+Normally, you will want to use a clock with a much larger step for reading
+in the data than that used for the integration of the equations for
+calculating membrane potentials, etc.  Otherwise, the data file would have
+to be very large.  The example in Scripts/examples/XODUS/fileview also
+illustrates the use of arrays and the binary format.
+
+See also:	
+
+   asc_file, disk_out

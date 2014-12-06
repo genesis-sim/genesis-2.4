@@ -1,0 +1,36 @@
+Routine Name:	setprompt
+
+Description:	Sets string to use as prompt for GENESIS shell.
+
+Usage:		setprompt prompt-string
+
+		prompt-string	string to use as shell prompt (default:
+				"genesis #!", where "!" is replaced by
+				command number); if you want to use a string
+				that includes blank spaces, you must include
+				the prompt in quotation marks to make the
+				string a single argument (additional
+				arguments are ignored)
+
+Example:	genesis #13 >  setprompt tutorial
+		tutorial >  setprompt "tutorial !"
+		tutorial 15 >
+
+Notes:		When starting up GENESIS the command line will appear as a
+		prompt waiting for user input.
+
+		genesis #0 > 
+
+		The number contained in the prompt refers to the index of the
+		command which is incremented for each line entered from the
+		keyboard. This number can be used in conjunction with the
+		'history' recall mechanism to re-execute commands based on
+		their index.  [Note that GENESIS starts with 0 rather than 1.]
+
+		The prompt string displayed in the command interpreter window
+		can be set using the setprompt routine.  Specific simulations
+		often wish to change the prompt to reflect the nature of the
+		simulation.  
+
+See also:	h
+

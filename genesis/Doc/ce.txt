@@ -1,0 +1,36 @@
+Routine Name:	ce
+
+Description:	Changes the current working element.
+
+Usage:		ce element-path
+
+		element-path	complete or relative pathname of element to
+				make current working element; can also be
+				operating-system style hierarchy
+				abbreviations, such as . (current),
+				.. (element above current)
+
+Example:	ce /
+		ce /proto
+		ce output
+		ce ..
+
+		genesis >  create compartment foo
+		genesis >  ce ^
+		genesis >  pwe
+		/foo
+	
+Notes:		All GENESIS elements exist in a hierarchy.  The root element
+		lives at the top of the tree (designated by /) and child
+		elements are created beneath the root.  You use the ce routine
+		to move about the tree (much as you can use the "cd" command
+		to move about the operating system file system).
+
+		If the element-path specified in a ce call starts with a /
+		then the path is assumed to be an absolute path from the root
+		of the element hierarchy.  If the first character of the path
+		specified is not a / then the path is assumed to be relative
+		to the current working element.
+
+See also:	pwe, le, pushe, pope, stack
+

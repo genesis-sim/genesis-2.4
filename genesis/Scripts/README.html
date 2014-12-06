@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
+<title></title>
+</head>
+<body>
+<div class="document">
+
+
+<P>
+<a href="../index.html"><img src="../images/back2.gif" align="middle"
+ hspace=12>Return to the GENESIS main index</a>
+<P>
+<HR>
+<P>
+<center><H2>GENESIS tutorials and examples</H2></center>
+<p>The directories beneath genesis/Scripts include a series of simulations
+designed to be run under GENESIS.  In each case, you will need to change
+into the appropriate directory and follow the directions given in the
+README file for that directory.</p>
+<p>These simulations fall into two categories.  The &quot;neuroscience tutorials&quot;
+and their README files are:</p>
+<ul class="simple">
+<li>squid: <A HREF="squid/README.txt">squid/README.txt</A>,
+<A HREF="squid/squid.txt">squid/squid.txt</A></li>
+<li>cable:  <A HREF="cable/README.txt">cable/README.txt</A></li>
+<li>neuron:  <A HREF="neuron/README.txt">neuron/README.txt</A></li>
+<li>burster:  <A HREF="burster/README.txt">burster/README.txt</A></li>
+<li>traub91:  <A HREF="traub91/README.txt">traub91/README.txt</A></li>
+<li>CPG:  <A HREF="CPG/README.txt">CPG/README.txt</A></li>
+<li>piriform:  <A HREF="piriform/piriform-help.txt">piriform/piriform-help.txt</A></li>
+<li>purkinje:  <A HREF="purkinje/README.txt">purkinje/README.txt</A>,
+<A HREF="purkinje/help.txt">purkinje/help.txt</A></li>
+</ul>
+<p>These  simulations were designed as interactive tutorials for
+teaching concepts in neurobiology and neural modeling.  As their use
+requires no knowldge of GENESIS programming, they are suitable for use in a
+computer simulation laboratory which would accompany upper division
+undergraduate and graduate neuroscience courses.  Each of these has on-line
+help and a number of suggested exercises or &quot;experiments&quot; which may be
+either assigned as homework or used for self-study.  These tutorials may
+also be taken apart and modified to create your own simulations, as they are
+reasonably well commented.  Several of them are derived from existing
+research simulations.</p>
+<p>Further details of these tutorials and the theory behind them are given
+in &quot;The Book of GENESIS&quot; by James M. Bower and David Beeman.  The file
+<A HREF = "../Doc/BoG.txt">../Doc/BoG.txt</A> provides more information about this book.</p>
+<p>The tutorial on single neuron behavior in &quot;Scripts/neuron&quot; is a good one to
+start with, as it has fairly extensive built-in help available.  To run it,
+give the command &quot;genesis Neuron&quot; and click the left mouse button on the box
+labeled &quot;help&quot; once it appears.</p>
+
+<p>&quot;Scripts/squid&quot; contains a simulation of voltage and
+current clamp experiments on the giant squid axon.  The tutorial also
+provides the ability to block channels, to plot the Hodgkin-Huxley
+activation variables, and to generate state plots.  The accompanying
+exercises help the student understand the Hodgkin-Huxley model and the
+procedure used to calculate rate parameters from voltage clamp
+experiments.  Other exercises elucidate the basis of post-inhibitory
+rebound and refractory period.  Documentation is contained in the
+file <A HREF ="squid/squid.txt">squid/squid.txt</A> and the
+<A HREF="squid/README.txt">squid/README.txt</A> file.  Give the command
+&quot;genesis Squid&quot; to run the tutorial and then click on
+&quot;help&quot;.</p>
+
+<p>The &quot;cable&quot; tutorial simulates an extensible neuronal cable.  Current
+injection or synaptic input may be provided to any one of the compartments,
+and all relevant parameters are adjustable from &quot;pop-up&quot; menus.</p>
+
+<p>The &quot;burster&quot; tutorial examines mechanisms which lead to burst firing in
+molluscan neurons and the effects of the various types of ionic channels
+which are commonly found.  The simulation is implemented within the Neurokit
+cell builder environment and can also serve as an introduction to Neurokit.
+This allows the user to modify most of the relevant parameters and
+assumptions used in the model and to investigate the causes of many of the
+features seen in molluscan pacemaker firing patterns.  The cell which is
+modeled is a &quot;generic burster&quot;, loosely modeled after the Aplysia R15
+cell, although it contains channel models fitted to measurements on bursting
+neurons in several different molluscs.  The README file gives instructions
+for running the tutorial.</p>
+<p>The &quot;traub91&quot; tutorial is based upon a GENESIS recreation of the hippocampal
+pyramidal cell model of Traub, et. al.  [R.D.Traub, R. K. S.  Wong, R.
+Miles, and H. Michelson, Journal of Neurophysiology, Vol. 66, p.  635
+(1991)] This tutorial also uses Neurokit to explore some of the properties
+of the model.  The file &quot;traub91proto.g&quot; may also be used as an example of
+the implementation of Ca concentration dependent channels in GENESIS.  The
+README file gives instructions for running the tutorial.</p>
+<p>&quot;CPG&quot; is a tutorial on central pattern generator circuits by Sharon
+Crook (U. of Maryland).  The simulation is designed to allow you to
+study the activation patterns and emergent behavior of a simple
+neuronal network of four cells.  The simulation allows you to set any
+pattern of connections between the cells, using either excitatory or
+inhibitory connections, and to vary the cell and channel parameters.</p>
+
+<p>The &quot;piriform&quot; directory contains a &quot;user-friendly&quot; adaptation of
+the research simulation used by Wilson and Bower to model the processing of
+olfactory inputs to the piriform cortex.  This scaled-down version of the
+original simulation uses 135 each of pyramidal cells, feedforward and
+feedback inhibitory interneurons, arranged in a 9 x 15 array.  To run the
+simulation, type &quot;genesis Piriform&quot; and click on the box labeled &quot;help&quot; when
+it appears.</p>
+<p>The &quot;purkinje&quot; tutorial is based upon a GENESIS simulation of a cerebellar
+Purkinje cell, modeled and fine-tuned by Erik de Schutter. The tutorial
+assumes that you have a basic knowledge of the Purkinje cell and its synaptic
+inputs. It gives visual insight in how different properties as concentrations
+and channel conductances vary and interact within a real Purkinje cell.</p>
+<hr class="docutils" />
+<p>The &quot;demos&quot; are intended as examples of simulations which can be built
+with the package.  The demos and their documentation currently include:</p>
+<ul class="simple">
+<li>tutorials: <A HREF = "tutorials/README.txt">tutorials/README.txt</A></li>
+<li>MultiCell: <A HREF = "MultiCell/README.txt">MultiCell/README.txt</A>,
+<A HREF = "MultiCell/MultiCell.txt">MultiCell/MultiCell.txt</A></li>
+<li>orient_tut: <A HREF = "orient_tut/README.txt">orient_tut/README.txt</A></li>
+<li>neurokit: <A HREF = "neuroktit/README.txt">neuroktit/README.txt</A></li>
+<li>kinetikit: <A HREF = "kinetikit/README.txt">kinetikit/README.txt</A></li>
+<li>channels: <A HREF = "channels/README.txt">channels/README.txt</A></li>
+<li>vclamp: <A HREF = "vclamp/README.txt">vclamp/README.txt</A></li>
+<li>int_methods: <A HREF = "int_methods/README.txt">int_methods/README.txt</A></li>
+<li>examples: <A HREF = "examplesREADME.txt">examples/README.txt</A></li>
+<li>newlib: <A HREF = "newlib/README.txt">newlib/README.txt</A></li>
+<li>param: <A HREF = "param/README.txt">param/README.txt</A></li>
+<li>chemesis: <A HREF = "chemesis/README.html">chemesis/README.html</A>,
+ <A HREF = "chemesis/CalTut.html">chemesis/CalTut.html</A></li>
+<li>gpython-tools: <A HREF = "gpython-tools/README.html">gpython-tools/README.html</A>,
+ <A HREF = "gpython-tools/README-gipyplot.html">gpython-tools/README-gipyplot.html</A></li>
+<li>stdp_rules:_<A HREF = "stdp_rules/README.html">stdp_rules/README.html</A></li>
+<li>VAnet2: <A HREF = "VAnet2/README.html">VAnet2/README.html</A></li>
+</ul>
+<p>The Scripts/tutorials directory contains the GENESIS scripts which are
+listed in Appendix B of &quot;The Book of GENESIS&quot;.  These scripts are used
+in Part II of the book with tutorials which guide the user through the
+process of constructing GENESIS simulations.</p>
+<p>The Orient_tut simulation (in Scripts/orient_tut) is a simplistic version of
+the Hubel and Weisel orientation selectivity model over a small region of
+the V1.  It is used as an example in Chapter 18 of &quot;The Book of GENESIS&quot; in
+order to describe the utility functions for setting up large networks.
+Chapter 22 is also relevant for understanding some of the advanced XODUS
+features which are used here.  It does not have built-in help, but has
+a detailed README file.</p>
+<p>&quot;MultiCell&quot; simulates two simple neurons in a feedback configuration.  This
+simulation, written by Matt Wilson in 1989, illustrates the &quot;old&quot; way of
+making connections between neurons with the axon and channelC2 objects used
+in GENESIS versions 1.x.  These scripts have been converted to GENESIS 2.0
+with the &quot;convert&quot; utility and make use of the X1compat (XODUS 1 compatible)
+widgets and the Connection Compatibility (oldconn) library.  It thus serves
+as an example of the conversion of a GENESIS 1 simulation to GENESIS 2.</p>
+<p>The &quot;neurokit&quot; directory contains one of the most elaborate of the
+simulations.  It provides a number of tools for building and editting
+complex neurons and uses a sophisticated graphical interface.  Although the
+scripts are quite complicated, the program is easy to use.  Type &quot;genesis
+Neurokit&quot; to start the simulation and, after a while, a command bar will
+appear at the top of the screen.  Click the left mouse button on &quot;help&quot; and
+follow the directions.</p>
+<p>The &quot;kinetikit&quot; directory contains the latest of our &quot;kits&quot; for building
+simulations with a graphical interface.  This program is used for modeling
+biochemical kinetics reactions, and provides a convienient interface for the
+use of the objects in the kinetics library.  See the README file in this
+directory for details, or plunge ahead and type &quot;genesis Kinetikit&quot; from
+within this directory.</p>
+<p>The files in genesis/Scripts/channels provide an introduction to the
+channel editing facilities provided by neurokit, and illustrate the use of
+the library of prototype channels. This tutorial should be run after the
+user has tried out Neurokit itself.</p>
+<p>The genesis/Scripts/vclamp directory has paradigm files for doing a
+voltage clamp analysis of ion channels. It is meant as a tutorial on how
+neurokit can be used to simulate electrophysiological experiments.
+Familiarity with neurokit is assumed.</p>
+<p>The Scripts/int_methods tutorial is a tutorial on the different integration
+methods accessible through neurokit and available for use in your
+simulations.</p>
+<p>The Scripts/examples directory contains a few short demonstration scripts
+giving examples of simulations involving new GENESIS features.  The
+Scripts/examples/XODUS subdirectory contains examples illustrating new
+features of XODUS that have been incorporated into GENESIS 2.0 and later
+versions.  There are several new and revised examples for GENESIS 2.2.  The
+Scripts/examples/README file gives further details.</p>
+<p>The Scripts/newlib directory contains sample C source code, header files,
+and Makefiles for compiling new commands and objects into GENESIS.  The
+procedure is documented in the GENESIS Reference Manual Section &quot;Customizing
+GENESIS&quot;, and in the text files in the genesis/Doc directory,
+Customizing.txt, NewGenesis.txt, and NewObjects.txt.</p>
+<p>The Scripts/param directory contains demonstrations of the parameter search
+library developed by Mike Vanier, and first introduced in GENESIS 2.2.  For an
+introduction to parameter searching with GENESIS, see the documentation for
+ParameterSearch and Paramtable and the README file in Scripts/param.</p>
+<p>The Scripts/chemesis directory contains tutorial scripts and example
+scripts to teach how to develop models of second messengers and
+calcium dynamics.  A step-by-step explanation of the Calx.g scripts is
+provided in CalTut.txt and CalTut.html. 'chemesis' is a library of
+objects for creating models of biochemical reactions, second
+messengers, and calcium dynamics that was developed and contributed to
+the GENESIS 2.4 libraries by K. T. (Avrama) Blackwell.
+The Scripts/gpython-tools directory contains a collection of
+stand-alone Python-based graphical utilities for plotting,
+visualizing, and analyzing the output of GENESIS 2 and GENESIS 3 (G-3)
+simulations. The scripts are well documented and commented, and may be
+modified for use with other data.</p>
+<p>The Scripts/stdp_rules directory contains both a text and HTML
+tutorial on using the stdp_rules object, along with example scripts.
+This new GENESIS 2.4 object has been added for efficiently
+implementing spike timing dependent plasticity in large networks of
+hsolved multicompartmental cells.</p>
+<p>The Scripts/VAnet2 directory contains an improved hsolved
+implementation of the dual exponential conductance version of the
+Vogels-Abbott network model. It serves as a tutorial on how to achieve
+a speed improvement of 10 to 20 times when using hsolve with network
+models.</p>
+<hr class="docutils" />
+<p>To try out the simulations, cd to the desired directory and look at the
+README file for information on running the simulation.  It is best to do
+this from a terminal window at the bottom of the screen, so that that it will
+not be completely covered up by the displays created by the simulations.</p>
+<hr class="docutils" />
+<p>IMPORTANT NOTE:</p>
+<p>Before running these simulations, make sure that you have added the
+directory in which GENESIS resides to your search path.  You will also need
+to have a copy of .simrc in your home directory.  This file will need to be
+edited if GENESIS has not been installed in the place specified in the
+file.  In order to access the Neurokit simulation, your .simrc file should
+use the SIMPATH environment variable to set a path to the neurokit and
+neurokit/prototypes directories.  Normally, the .simrc file will be
+properly configured during the installation of GENESIS.  Further details
+are given in the src/README file.</p>
+<p>To run the simulations, you will need to change into the appropriate
+directory and follow the directions given in the README file for that
+directory.  In most cases, this will consist of typing &quot;genesis
+main-script-name&quot;, where &quot;main-script-name&quot; is the main simulation script
+that includes other files in the directory.  In a few cases, the simulation
+will attempt to write data to files when it runs.  Usually the README file
+will warn you of this.  If the Scripts directories are installed in a
+system area for which you do not have write permission, you may need to
+copy the simulation directory to a directory of your own in which you are
+allowed to create files.</p>
+</div>
+
+<P>
+<HR>
+<P>
+<a href="../index.html"><img src="../images/back2.gif" align="middle"
+ hspace=12>Return to the GENESIS main index</a>
+
+</body>
+</html>

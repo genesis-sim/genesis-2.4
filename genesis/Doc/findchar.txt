@@ -1,0 +1,29 @@
+Routine Name:	findchar
+
+Description:	Returns location of specified character in a given string.
+
+Usage:		position = {findchar string char}
+
+		position	returned as integer indicating position of
+				first occurrence of char in string (positions
+				start with 0); returns -1 if char not found in
+				string
+
+		string		string to search
+
+		char		single character to locate in string (any
+				extra characters in char are ignored)
+
+Example:	genesis >  echo {findchar abcbx b}
+		1
+		genesis > echo {findchar "a bcbx" b}
+		2
+		genesis > echo {findchar abcbx bx}
+		1
+		genesis > echo {findchar abcbx q}
+		-1
+
+Notes:
+
+See also:	strcat, strcmp, strncmp, strlen, substring
+

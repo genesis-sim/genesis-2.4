@@ -1,0 +1,62 @@
+Object Type:	vdep_channel
+
+Description:	A Hodgkin-Huxley type voltage-dependent channel, which
+		receives activation gate values from other elements.
+
+Author:		M. Wilson, Caltech (2/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	vdep_channel_type  [in src/hh/hh_struct.h]
+
+Size:		96 bytes
+
+Fields:		Gk		channel conductance
+		Ik		channel current
+		Ek		channel reversal potential
+		gbar		channel maximum conductance
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	VDepChannel  [in src/hh/vchannel.c]
+
+Classes:	segment channel
+
+Actions:	RESET
+		PROCESS
+		CHECK		[CHECK does nothing]
+                SAVE2           invoked with the save command
+                RESTORE2        invoked with the restore command
+
+Messages:	VOLTAGE voltage
+		MULTGATE gate_state power
+		ADDGATE gate_state power 
+		GMAX gmax 
+		EK Ek
+
+------------------------------------------------------------------------------
+
+Notes:	A vdep_channel calculates Gk by multiplying gbar by any number of
+	factors of the form (gate_state)^(power).  These are typically
+	received with the MULTGATE message from a tabgate element. For
+	example, Gk = gbar*h*m^3 could be implemented with:
+
+		addmsg Na_squid/m Na_squid MULTGATE m 3
+		addmsg Na_squid/h Na_squid MULTGATE m 1
+
+	Here, m and h are vdep_gate or tabgate elements, and Na_squid is a
+	vdep_channel.  Note that the field for the gate variable is called
+	'm', regardless of the name of the gate element.
+
+	For most uses, the vdep_channel has been superseded by the
+	tabchannel.  It is sometimes used with a table and tabgate element
+	to implement conductances which depend on both concentration and
+	voltage (e.g. the potassium C-current).
+
+Example:	see Scripts/neurokit/prototypes/traub91chan.g
+
+See also:	hh_channel, tabchannel, tabgate

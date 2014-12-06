@@ -1,0 +1,14 @@
+Routine Name:	getdefault
+
+Description:	Returns the default value of an object field.
+
+Usage:		getdefault object-name field-name
+
+Example:	genesis > echo {getdefault compartment Rm}
+		1
+
+
+Notes:
+
+See also:	setdefault
+

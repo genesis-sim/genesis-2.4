@@ -1,0 +1,143 @@
+Routine Name:   spkcmp
+
+
+Description:    This function compares two spike time files, one from raw
+                data and one from a GENESIS simulation; it returns a number
+                which is a measure of how different the spike times are for
+                the two cases.
+
+
+Usage:          spkcmp reference-data simulation-data
+                        -offset time
+                        -pow1 p
+                        -pow2 q
+                        -msp  missing_spike_penalty
+                        -nmp  nonmonotonicity_penalty
+                        -et   end-time
+                        -spk
+
+
+Arguments:      reference-data:  reference data spike time file
+                simulation-data: simulation data spike time file
+
+                The reference data is what you want the parameter search to
+                match; the simulation data is what the simulation produces.
+                The recommended convention is to have the reference data
+                spike time file end in .spk and the simulation data spike
+                time file end in .spk.sim.
+
+
+Options:        -offset time
+                    This offsets the simulation spikes by a fixed
+                    amount.  It's useful when the delay before current
+                    injection is different for the experiments and the
+                    simulations.  This value can be positive or negative.
+
+                -pow1 p
+                    This controls the degree to which spike mismatches
+                    at the beginning of the trace are more heavily
+                    weighted than those at the end.  A value of zero
+                    (the default) means there is no extra weight.  p
+                    must be >= 0.
+
+                -pow2 q
+                    This controls the degree to which missing spikes
+                    are penalized differently according to how many
+                    spikes there were in the real trace.  The idea is
+                    that when the real trace has lots of spikes, each
+                    missing or extra spike should not be penalized too
+                    harshly, but when it has only a few it should be
+                    penalized very harshly.  A value of zero (the
+                    default) means all missing spikes get the same
+                    penalty.  q must be >= 0.
+
+                -msp missing_spike_penalty
+                    Penalty for spikes which are in one trace but not
+                    the other; default = 1.0 per spike.
+
+                -nmp nonmonotonicity_penalty
+                    Penalty for simulated traces where the interspike
+                    intervals do not get larger monotonically with time.
+                    This allows us to select against cells with bursting
+                    behaviors.  A nonmonotonicity penalty of (say) 2.0
+                    would add 2.0 for each second of nonmonotonicity; in
+                    other words, if you have a nonmonotonic interspike
+                    interval, the duration of that particular ISI in
+                    seconds will be multiplied by 2.0. and this would be
+                    added to the total penalty.  Default = 0.0 per second
+                    of monotonicity per spike (i.e. no penalty).
+
+                -et end-time
+                    If used, ignore spikes beyond a certain end time.
+
+                -spk
+                    This causes the number of missing spikes to be
+                    printed out instead of having a penalty added to
+                    the total.
+
+
+Return value:   Returns a nonnegative floating-point number representing
+                the goodness of the match, with 0 representing a perfect
+                match.  The units of the match are roughly in units of
+                (msec error)/spike. The more different the times are, the
+                larger the value.  In the event of an error, a massive
+                penalty value (1.0e6) is returned.
+
+
+Input spike file format:
+
+                Spike time files should be in the following format:
+
+                CURR  <current-value>
+                SPK   <spike time>
+                ----------
+                etc.
+
+                The line of dashes delimits the different current values.
+                The spike times may be omitted for a given current; this
+                will happen if no spikes occur at a given current.  Note
+                that this assumes a fixed current input (current clamp).
+                Multiple currents may be put one after another in the file.
+                Typically a single file will contain spike times from
+                several different current injections into a single cell
+                (real or modeled).  Make sure the currents in the
+                simulation spike results and in the target spike results
+                (what you are trying to match) are in the same order.
+
+
+Algorithm:      The algorithm is essentially an average of the absolute
+                values of the differences in spike times between the real
+                and simulated outputs, with corrections for spikes which
+                are only present in one of the outputs.  There are several
+                other parameters controlled by the options (described
+                above).  The algorithm is described in detail in the file
+                src/param/spkcmp.c (function compare_spikes()).
+
+
+Example:        genesis > float match
+                genesis > match = {spkcmp "realpyr.spk" "simpyr.spk.sim" \
+                                   -pow1 1.0 -pow2 0.6 -msp 0.5 -nmp 200.0}
+
+
+Notes:          This function is typically used for processing data
+                generated by the gen2spk function, which outputs spike time
+                files in the correct format for this function.
+
+                This function expects that the two spike time files have
+                the same values for input currents in the same order; if
+                not, it exits with an error message and returns a huge
+                penalty.
+
+                The spike file format has clearly been optimized for
+                current-clamp experiments, which is a limitation.
+
+                This function has been optimized to work with typical
+                outputs of pyramidal cells from piriform cortex.  It should
+                work well for all regular-spiking pyramidal cells.  It may
+                work well for other cell types as well (with some
+                adjustment of the option values), but for cells with very
+                different behavior (e.g. Purkinje cells in bursting mode)
+                you may be better off writing your own custom match function.
+
+
+See also:       Parameter Search (Param), gen2spk, shapematch

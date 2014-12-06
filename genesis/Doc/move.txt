@@ -1,0 +1,27 @@
+Routine Name:	move
+
+Description:	Moves an element and its children from one portion of the tree
+		to another.
+
+Usage:		move src_element dst_element
+
+		src_element	element to move (if this element has
+				sub-elements, they too are moved)
+		
+		dst_element	location into which to move src_element (if
+				dst_element already exists, src_element is
+				moved beneath it with original name; if
+				dst_element does not exist, src_element is
+				given that name as new name)
+
+Example:	move /cell1 /cell5
+
+		create neutral /network
+		move /cell[1] /network
+
+Notes:		In the example above, if /cell5 does not exist, /cell1 will
+		be renamed to /cell5.  The second example turns /cell[1]
+		into /network/cell[1].
+
+See also:	copy
+

@@ -1,0 +1,15 @@
+  15.3.  GENESIS Jobs
+
+  Certain compiled C functions available in GENESIS are designed to be
+  run as background jobs (e.g., the function XEventLoop, which oversees
+  XODUS screen events).  You can execute and monitor these background
+  functions using the following job routines:
+
+  ______________________________________________________________________
+  Routine        Description
+  ______________________________________________________________________
+  addjob         Adds a job to the GENESIS background job table.
+  deletejob      Removes a job from the GENESIS job table.
+  setpriority    Changes priority of a GENESIS background simulation job.
+  showjobs       Lists all of the active GENESIS jobs and their priorities.
+  ______________________________________________________________________

@@ -1,0 +1,126 @@
+Routine Name:	volumeweight3
+
+Description: Sets the weight fields on groups of synapses between
+		specified lists of elements.  Most often used to set
+		weights on groups of synapses that have been set up by
+		calling the "volumeconnect" or "volumeconnect3"
+		command.  This function can assign groups of synapses
+		to a fixed weight, can assign weights based on
+		the distances between pre- and postsynaptic elements,
+		and can add various types of randomness to weight
+		values.
+
+Usage:		volumeweight3 sourcepath destination_path \
+		-fixed weight                              \
+		-decay decay_rate max_weight min_weight    \
+		-uniform scale                             \
+		-gaussian stdev maxdev                     \
+		-exponential mid max                       \
+		-absoluterandom  			   \
+		-decay decay_rate max_weight min_weight power \
+		-pbc xlen ylen zlen 	     		      \
+		-planar
+
+		sourcepath  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages connecting the
+			pre- and postsynaptic elements (i.e. the presynaptic
+			elements).  These must be of class "spiking" and are 
+			usually spikegen or randomspike objects.
+
+		destination_path  A wildcarded list of elements which must be
+			synchans or objects derived from synchan.
+
+		-fixed weight  -- This option sets all the synaptic weights in
+		        question to be equal to "weight".
+
+		-decay decay_rate max_weight min_weight power -- Sets weights to
+		       (max_weight - min_weight) * 
+		       exp(-pow(distance*decay_rate,power)) + min_weight,
+		       where 'distance' is the distance from the
+		       source element (typically a spikegen in a soma
+		       compartment) to the destination element
+		       (typically a synchan in a dendritic
+		       compartment).  volumeweight2 assumes a power of 1.
+
+		-pbc xlen ylen zlen -- Applies periodic boundary
+		     conditions to a box of dimensions xlen ylen
+		     zlen. This is only useful in the case where the
+		     connectivity is all-to-all, or when
+		     volumeconnect3 is used with the "-pbc" option, so
+		     that an edge cell will be connected to one on the
+		     opposite side.  Then if pbc is specified, a cell
+		     at a distance > xlen/2.0 is considered to be at
+		     distance - xlen, and likewise for ylen and zlen,
+		     for the purpose of applying a decay in the
+		     weights with distance. This option can only be
+		     used with "-decay decay_rate max_weight
+		     min_weight power".
+
+		-planar -- Restricts distances to lie in the x-y
+			plane, as in planarweight2. If the -pbc option is
+			also used, a zlen parameter must given, although it
+			will be ignored.
+
+		The next four options are used to add random components to the
+		weights established using the -fixed or -decay options.  How
+		these random components are added to the weights is explained
+		below.
+
+		-uniform scale  -- This option gives a random number taken 
+			from a uniform distribution in the range 
+			{-scale, scale}.
+
+		-gaussian stdev maxdev  -- This option gives a random number
+			taken from a gaussian distribution centered on zero,
+			with a standard deviation equal to "stdev" and with
+			a maximum value of "maxdev".  The maximum value is
+			used to limit the random component to a given range.
+
+		-exponential mid max  -- This option gives a random number
+			taken from an exponential distribution with a 
+			minimum value of zero, a 1/e point of "mid" and a 
+			maximum value of "max".  This is mainly for backwards
+			compatibility with genesis 1.4.
+
+		-absoluterandom  This option alters the way the random number
+			is combined with the nominal weight to give the actual
+			weight, as described below.
+
+		Once a random component has been created for a given weight, 
+		it is used to set the weight as follows.  If the 
+		-absoluterandom option has not been selected the weight is set 
+		to be:
+
+		final_weight = weight + (weight * random_number)
+
+		Whereas if the -absoluterandom option has been selected then
+		we have
+
+		final_weight = weight + random_number
+
+		Thus the default is to have the amount of randomness as a 
+		constant proportion of the weight value.
+
+Notes:		volumeweight3 is similar to volumeweight2, except
+		that the '-decay' option now has a fourth required
+		argument for the power that (distance*decay_rate) is
+		raised to. The opttions '-pbc' and '-planar' are new.
+		The  '-planar' option makes it  unnecessary to have a
+		'planarweight3' command.
+
+		The options -fixed and -decay are mutually exclusive.  The 
+		different random options -uniform, -gaussian, and -exponential
+		are also mutually exclusive.
+
+Example:	
+
+    float decay_rate = 1.0/SEP_X
+    int power = 2
+      volumeweight3 /network/cell[]/soma/spike \
+        /network/cell[]/soma/Ex_channel \
+        -decay {decay_rate} {weight} 0.0 {power} \
+        -pbc {NX*SEP_X} {NY*SEP_Y} {SEP_Z}
+
+See also: planarweight, volumeconnect, volumedelay, volumeconnect3,
+    	  volumedelay3; Chapter 18 of the Book of GENESIS (2nd ed.)
+          has a lengthy discussion on this and related commands.

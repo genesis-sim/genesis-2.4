@@ -1,0 +1,27 @@
+
+                         SPRNG Libraries
+                         ---------------
+        (http://www.ncsa.uiuc.edu/Apps/CMP/RNG/www/install.html)
+        (http://www.ncsa.uiuc.edu/Apps/CMP/RNG/www/makefile.html)
+
+This directory contains the source code for the SPRNG libraries, and
+certain other test executables. 
+
+Select the platform and installation directory, as explained in
+../make.CHOICES. Please read ../README too.
+
+Next, typing the command below   => results in the following being created:
+      make              => Fortran and C libraries for all the generators,
+                             Timing executables, test executables
+      make lfg		=> Modified Additive Lagged Fibonacci Generator
+      make mlfg		=> Multiplicative Lagged Fibonacci Generator
+      make lcg		=> 48 bit Linear Congruential Generator
+      make lcg64	=> 64 bit Linear Congruential Generator
+      make pmlcg	=> Prime Modulus Linear Congruential Generator
+                             (Requires GMP library)
+      make cmrg		=> Combined Multiple Recursive Generator
+
+Object files created during the compilation process can be deleted finally
+by typing
+       make clean
+

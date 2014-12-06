@@ -1,0 +1,15 @@
+Routine Name:	useclock
+
+Description:	Specifies which clock an element should use during simulation.
+
+Usage:		useclock path clock-number
+
+Example:	useclock /graphform/Vmgraph 1
+
+Notes:		The useclock routine specifies which clock is to be used by a
+		GENESIS element.  You might use it, for instance, to allow
+		some elements to be updated at greater intervals than the
+		basic simulation step.
+
+See also:	showclocks, setclock, getclock
+

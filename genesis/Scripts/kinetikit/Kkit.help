@@ -1,0 +1,1636 @@
+/**********************************************************************
+** This documentation is part of kinetikit and is
+**           copyright (C) 1995-2001 Upinder S. Bhalla.
+** It is made available under the terms of the GNU General Public License. 
+** See the file COPYRIGHT for the full notice.
+** Alternatively, use the 'Help' menu for information on authorship and
+** copyright.
+**********************************************************************/
+KINETIKIT: a Genesis/Xodus tool for developing simulations of
+chemical kinetics.
+	By Upinder S. Bhalla National Centre for Biological Sciences,
+		Bangalore, INDIA. 1995-2001
+
+Manual last modified Feb 7 2003, for Kinetikit version 9.
+For changes since previous version, please see the CHANGES file.
+
+=============================================================================
+Sections:
+1. Introduction
+2. Tutorial: Building a model
+	2.1	Setting up an ezyme reaction
+	2.2	Adding in a chemical reaction for inhibition
+	2.3	Stimulus for model
+3. Tutorial: Saving models
+	3.1	Saving
+	3.2	Restoring
+	3.3	Restoring from the interface
+	3.4	Saving plots
+4. Tutorial: Experiments on model
+	4.1	Overlays
+	4.2	Buffering
+	4.3	Slope of plot
+	4.4	Second-order kinetics
+	4.5	Accuracy/speed
+	4.6	Degradation pathways
+5. Tutorial: Techniques for complex models.
+	5.1	Groups
+	5.2	Merging
+	5.3	Scripting with the model
+6. Menu Options
+	6.1	File menu
+	6.2	Units menu
+	6.3	Tools menu
+	6.4	Options menu
+	6.5	Graphs menu
+	6.6	Help menu
+7. Objects in kkit
+	7.1	Pools
+	7.2	Reacs
+	7.3	Enzymes
+	7.4	Groups
+	7.5	Channels
+	7.6	Transport
+	7.7	Stims
+	7.8	Tables
+	7.9	Plots
+8. Library of models
+9. Customizing
+10. Preliminary notes on using modules
+11. Future plans
+12. Acknowledgements
+
+
+
+
+=============================================================================
+1. Introduction
+
+Kinetikit is an interface and utility for developing simulations of chemical
+kinetics. It is designed to be 'click and drag' and is (hopefully), 
+intuitive to use.
+
+1.1 Starting Kinetikit
+To run it: 
+1. Obtain and install a copy of Genesis which includes the kinetics library.
+2. Obtain and install kinetikit.
+3. Add the kinetikit directory to your SIMPATH in .simrc
+4. Type 
+	genesis kkit
+from the UNIX prompt.
+or, if you already have a model foo.g saved from kinetikit, just type
+	genesis foo
+
+...........................................................................
+
+1.2 Kinetikit basics: modules
+
+Available modules are displayed in the 'library' window. Instances of
+these modules are created by dragging them
+onto the edit window. They are interconnected (in the edit window) by
+dragging them onto each other, and graphed by dragging them onto the graph
+window. Their parameters may be changed by double-clicking on the icons
+representing the modules. The basic modules are :
+pools - representing available pools of reactants
+reactions - representing standard chemical reactions between pools
+enzymes - representing Michaelis-Menten enzyme kinetics
+stims - representing simple two-level stimulus generators
+groups - providing an organizational basis for complex models
+tables - representing more complex stimulus generators
+channels - representing ligand-gated channels
+transport - representing intracellular transport processes on molecular motors
+
+There are also two representations of editing functions:
+Delete - denoted by a toothy dinosaur in the library, affectionately known as
+	'Barney', who eats (deletes) any of the above modules.
+Duplicate - denoted by two clones in the library, which duplicates any module
+	dragged onto it.
+
+...........................................................................
+
+1.3 Kinetikit basics: reactions
+Kinetikit models standard chemical kinetics of the form:
+
+	A + B <---kb---kf---> C + D
+
+For convenience, it also provides special modules for modeling Michaelis-
+Menten enzyme kinetics:
+
+	Enz + Sub <---kb---kf---> Complex ---kcat---> Prd + Enz
+
+or, in terms of the rate constants used in kkit:
+
+	Enz + Sub <---k2---k1---> Complex ---k3---> Prd + Enz
+
+
+and ion channels which at this point are driven purely by concentration
+gradients. The stim and xtab modules provide inputs to the model, typically
+by controlling the concentration of one or more pools.
+
+kkit uses a graphical representation of all interactions, which is fairly
+close to common illustrative representations used in describing chemical
+pathways. 
+
+...........................................................................
+
+1.4 Kinetikit basics: running
+Models are run using the fairly obvious start-stop-reset buttons in
+appropriate colors on the control panel.
+1.4.1 Start.
+	When you hit the 'start' button,
+the simulation starts running for a runtime specified by the Runtime dialog.
+Note that the runtime is calculated from the current state of the model.
+While the simulation is running, the Current time dialog monitors the
+simulation time. A side-effect of changing the runtime is that the graph
+x-axes are updated so that the runtime is the x maximum.
+1.4.2 Stop.
+	This stops the currently running simulation gracefully. The
+simulator will stop at the end of the current timestep, and will be 
+ready to start up where you left off if you hit the start button again.
+1.4.3 Reset.
+	This is drawn in red because it irreversibly halts and
+wipes out the current state of the simulation. It also sets the current
+time to 0.
+
+...........................................................................
+
+1.5 Kinetikit basics: Editing
+Everything in the edit window is edited by the simple process of double-
+clicking on it. This will cause an edit panel for that element to pop up
+to the right. Most fields except the 'Path' are editable. Changes made in
+the dialogs are not passed on to the element until you hit 'return' on
+the dialog, or until you click on the button on the dialog. The UPDATE
+button refreshes the values of all dialogs, and the HIDE button does what
+it says. There is a NOTES window in most edit panels. You can enter text here,
+but it will not be stored till you click on the NOTES button beside it. At
+this time there is a limitation on the number of characters that
+Genesis can handle in a text string, so try it out to see how far you get:
+type in something, hit the NOTES button, and then hit UPDATE. It should be
+possible to enter at least 5 lines in the NOTES window.
+
+...........................................................................
+
+1.6 Kinetikit basics: Rearranging
+All the items in the edit window can be repositioned by click-and-drag
+operations. Some items (e.g., enzymes and channels) are always attached
+to pools, so if you move the pool these children also change position.
+All the children of groups also move with them by default, but this 
+behavior can be toggled using the appropriate button on the edit panel for
+the group. Of course, the whole edit window can be panned around using the
+arrow keys, and zoomed in and out using the angle bracket keys. If you
+zoom too far out then the arrows interconnecting items will vanish in
+the distance, but they will reappear when you zoom back in.
+
+...........................................................................
+
+1.7 Kinetikit basics: Connecting
+Most of the modules can be connected to each other. For example, if you
+drag a pool onto a reac, then a green arrow will appear representing the
+connection. If you repeat this operation, the original connection is 
+removed. We will go into much more detail on setting up models below.
+
+...........................................................................
+
+1.8 Kinetikit basics: Grouping
+Groups are an organizational feature. Any element, including other groups,
+can be dragged into a group. To remove it from the group, drag it onto
+the group again. We will discuss the uses of grouping later.
+
+...........................................................................
+
+1.9 Kinetikit basics: Graphing
+Pools can be dragged into any of the graph windows to set up a plot.
+This plot has its own little edit panel, which can be recalled by
+double-clicking the plot label in the graph. Likewise, a plot can be deleted
+by dragging the plot label onto Barney (the toothy dinosaur icon). The
+graphs themselves have numerous features which are described in various
+manual pages for Genesis. One of the useful ones is the ability to drag on
+the axis labels to rescale the graph.
+
+...........................................................................
+
+1.10 Kinetikit basics: Saving
+Hit the 'File' option in the title bar. Type in any notes that you
+want to keep for this particular model, then enter the filename
+you want to use for the model in the 'save' dialog. When you hit
+return or click the 'save' button, the model will be saved.
+
+...........................................................................
+
+1.11 Kinetikit basics: Quitting
+Hit the 'File' option in the title bar, and then the 'quit' button on the menu.
+It will ask for confirmation before quitting. 
+
+
+=============================================================================
+2. Tutorial.
+As a simple example we will go through the process of building, saving, and
+editing a model. We will use most of the library components while
+building this model.
+The model is a simple simulation of end-product inhibition. We assume that
+the product 'prd' of an enzymatic reaction interacts with the enzyme to produce
+an inactive form. 
+
+...........................................................................
+
+2.0.
+Start up Genesis, and kinetikit. If all your simpaths are set correctly it
+should be possible to type
+genesis kkit
+to get going.
+At this point you may wish to click the 'Help' menu item to open the help
+window, which displays this file.
+
+...........................................................................
+
+2.1 Setting up the enzyme reaction
+2.1.1 Creating the 'enz' pool.
+	To start off, let's make the pool of molecules for the enzyme. Click on
+	the blue 'kpool' icon in the library window, and drag it into the 
+	edit window in a central-ish location. A new 'kpool' icon appears in
+	the edit window, and an edit panel pops up on the right. Go to the
+	edit panel, and enter the values:
+	Field	  Value
+        ---------------
+	color	: red (Click on the red end of the color spectrum.
+		Alternatively, you could type in 'red' in the dialog box.)
+	CoInit	: 1
+	Name	: enz
+	If you are really neat, you can click the 'HIDE' button at this point
+	to get rid of the edit panel.
+2.1.2 Units, volumes and concentrations.
+	Note that the pool parameter window has concentrations in two units:
+	Numbers per cell and Concentrations in uM. It also has terms for
+	volume and diameter. If you work through the numbers, you will find
+	that the default odd-looking volume is selected so that the number
+	per cell are equal to the concentration in uM. You can change the
+	default volume and preferred units by opening the 'units' menu item.
+	Default volumes only apply to newly created pools, so they will not
+	affect existing pools. Concentration units do not affect the actual
+	calculations, so they are applied across the board. Units, as you
+	are well aware, need to be tracked carefully for consistency between
+	experiments and the numbers in the simulation. The enzymatic and
+	binding reactions below also have parameters which can be specified
+	either in #/cell and second units, or in concentration and time units.
+	The conversions here are more complex since there is a dependence on
+	the number of reactants.
+	As another interesting note, the volume represented here is not
+	unusually small for a cellular compartment. Nor is 1 uM unusually
+	low. Consider the implications of having just one or two molecules
+	of a reactant accessible. Would the plots really look like the ones
+	here ?
+2.1.3 Creating the Michaelis-Menten reaction for the enzyme pool.
+	The 'enz' pool on its own is just a bunch of molecules. So we need
+	to add the catalytic activity to this pool. We do so by clicking on
+	the 'kenz' icon in the library window, and dragging it onto the 'enz'
+	icon in the edit window. If it works, then a 'kenz' icon appears
+	above the 'enz' pool icon. and the edit panel for the enzyme
+	pops up. We'll use the defaults without changing.
+		Note that enzyme activity _must_ be associated with a pool,
+	since enzymatic activity is associated with specific molecular species.
+	Try creating a new 'kenz' by dragging from the library to a blank part
+	of the edit window, and it will tell you off. Also note that if you
+	move the parent pool of a kenz on the edit window, the kenz will tag
+	along as well. Finally, you can move the enzyme with respect to the
+	parent pool by dragging it to a different place on the screen. This
+	new relative position will be maintained when the parent pool is moved.
+2.1.4 Create pools for substrate and product.
+	Follow the same steps as for the enz pool in 2.1.1.
+        Field             Substrate pool               Product pool
+        -----------------------------------------------------------
+        color             green                        pink
+        CoInit            1                            0
+        Name              sub                          prd
+
+2.1.5 Connect up the enzyme reaction.
+        This is easy. Just drag 'sub' to 'kenz', i.e., to the Michaelis-Menten
+        enzyme icon attached to the icon for 'enz'. An arrow should appear
+        to display this reaction. Now drag 'kenz' to 'prd', and you should
+        get another arrow.
+2.1.6 Graphing the reaction progress.
+	Now we put in some plots. Drag each of the pools 'sub', 'enz', 'prd'
+	one by one to the graph widgets. A color-coded little text icon
+	will appear in the graph window to indicate the specified plot. This
+	text icon can be double-clicked to put up an edit panel for the plot.
+	You may prefer to put the plots in different graph windows to reduce
+	clutter.
+2.1.7 Initial trial run
+	Just hit the 'reset', and then the 'start' buttons. If all went well
+	you will see the concentrations of the reactions being plotted as a
+	function of time. If open the edit panel for one of the pools,
+	the current values for 'n' and 'Co' are displayed as the simulation
+	is running.
+
+...........................................................................
+
+2.2 Adding in a chemical reaction for the inhibition.
+2.2.1 Creating the chemical reaction.
+	Drag the 'kreac' icon onto a convenient spot in the edit window.
+	Note that reactions, unlike enzymes, are not located on a specific
+	pool.
+	Change the following fields:
+        Field             new value
+        ---------------------------
+        kf                10
+        kb                1
+        Name              inhib
+
+	As discussed above, capital Kf and capital Kb have units related to
+	the number of molecules involved in forward and backward reactions
+	respectively.  The 'bare' reaction does not have any Kf or Kb
+	defined, so it will not yet allow you to set these. The volume
+	used by default ensures that Kf and Kb are numerically
+	equal to kf and kb. 
+
+2.2.2 Adding the final inhibited form of the product
+	Drag in another pool for the inhibited form. Set the following
+	fields:
+        Field             Value
+        ---------------------------
+        color             yellow
+	CoInit	 	  0
+        Name              inhib-enz
+
+2.2.3 Connect up the end-product inhibition pathway.
+	Click on the 'enz' pool and drag onto the reac named 'inhib' 
+	Click on the 'prd' pool and drag onto the reac named 'inhib' 
+	Click on the reac named 'inhib' and drag it to the 'inhib-enz' pool.
+
+2.2.4 Graphing the inhib-enz
+	This should be obvious by now. Drag the inhib-enz pool to a graph.
+
+2.2.5 Second trial run
+	In order to overlay the previous run on this one, go to the
+	'Graphs' menu item and toggle the "Do not overlay plots" button
+	so that it now reads "Overlay all plots".
+	Hit 'reset' again, and 'start', and off you go. See the
+	difference when the inhibition is present ?
+	To get rid of the accumulated plots, toggle 'Overlay' back off again
+	and hit reset once more.
+
+...........................................................................
+
+2.3 Stimulus for model
+2.3.1 Creating the xtab
+	Drag in the xtab from the library. As usual, an edit panel appears.
+	This is quite complicated, and we won't go into the details of what
+	it can do. For illustration, we will just use the xtab to generate
+	a linear ramp:
+	Under Mode select, choose the Stim loop option. This pops up an
+		even more complex window.
+	Click ONCE on the upper right corner of the graph to get a position
+		around (100,1). You can set it precisely using the dialogs
+		under 'Interpolation options'. A little green dot will appear
+		at the point you clicked. If the dot fails to appear then try
+		again, but if you click too often, it will also move the blue
+		dot which is the other interpolation point. 
+	Then click the 'interpolate' button.
+		You should now have a nice line from 0 to this point.
+		This will be your stimulus ramp.
+	Click the 'Stimulus Off: click to start' toggle near the top of
+		the window to activate the table for delivering stimuli.
+	Click on the RETURN button to flip back to the stimulus run options. 
+
+...........................................................................
+
+2.3.2 Connecting the xtab
+	Easy. Click and drag xtab onto the 'sub' pool.
+
+...........................................................................
+
+2.3.3 Third trial run
+	This should be obvious by now: 
+		Hit 'reset' again, and 'start', and off you go.
+
+	For more entertainment, try other stimulus patterns. You could
+	set the xtab to a sine-wave pattern (now how could that 
+	occur in biology ?) and see what the response looks like.
+
+=============================================================================
+3 Tutorial: Saving and restoring model
+3.1	Saving
+	What, you mean you haven't been saving yet ? You should know better!
+	Go to the 'File' menu, open it. Enter some useful comments into 
+	the text area under the NOTES sign. Then enter a filename like 
+	end_prd_inhib.g into the 'save' dialog, and hit return. Phew! Your
+	model is now safe. Use the UNIX shell to examine the file if you are 
+	curious. end_prd_inhib.g is a text file, and in fact is a perfectly
+	legal Genesis script file. The simundump commands are rather
+	cryptic and meant for machine consumption, but the rest
+	are fairly straightforward.
+	Be warned that the saves overwrite existing files. As a general
+	organizational rule and as an electronic equivalent of a page in
+	a lab notebook, I normally type in a version number as part of
+	each filename.
+	An example end_prd_inhib.g file is provided in the examples
+	directory, in case you would like to compare output.
+		
+3.2	Restoring.
+	Quit your simulation (from the 'File' menu).
+	There are two ways to restore the model. The obvious one is to first
+	load in kkit, and then go to the command line and type the name of
+	the model file ('end_prd_inhib' in our example). For convenience,
+	the saved files will load in kkit themselves if they are invoked
+	directly:
+
+	genesis end_prd_inhib
+
+	will start kkit and then load in the model 'end_prd_inhib',
+	without further user intervention. This assumes that kinetikit
+	is set up properly in your Genesis SIMPATH (check your .simrc). Note
+	that the state of the model is restored, but not the data in the plots.
+	The plot values can be saved separately. The reason for this is
+	that the plot data occupies a lot of space, and is not used often
+	enough to justify saving it every time.
+
+3.3	Restoring from the interface
+	Due to an oft-lamented peculiarity of the Genesis parser, it is
+	not possible to load in a file specified in a dialog. So, if you
+	have already started up kkit, you will have to go to the command
+	prompt to load in the model file.
+
+3.4	Saving plots
+	Plots can be individually saved using the dialog in the pop-up panel
+	for the plot. The format is standard x-y format, one coordinate pair
+	per line, separated by spaces. One can also save all the plots at
+	once using the "Save all plots to file:" dialog in the Graphs menu
+	item. This saves all the plots in a single file in xplot format,
+	which is basically the same x-y format with one coordinate pair per
+	line. Different plots in the same file are identified by '/newplot'
+	and '/plotname ...', and it should be easy to extract the plots you
+	want from this file.
+
+
+=============================================================================
+4 Tutorial: Experiments on model
+4.1	Overlays
+	For the following sections we will probably want to compare the
+	progress of the reactions in time. This is done by selecting the
+	overlay for the plots. In the overlay mode, the previous plots are
+	retained. Run your reference reaction, and then BEFORE
+	hitting reset, go to the 'graphs' item on the menu bar. Change the
+	toggle from "Do not overlay plots" to "Overlay all plots". Now make
+	the changes in the model, hit the 'Reset' button, and start over.
+	You will now have a new set of plots which can be compared with the
+	old curves. When you have enough plots piled up on each other, just
+	go back to the 'graphs' menu item and change the toggle back again.
+	The next Reset will clean out all the plots.
+
+4.2	Buffering
+	Let's buffer the substrate. Double click on the 'sub' icon. Flip the
+	"BUFFERING OFF" toggle on the substrate pool to 'BUFFERING ON'. Now
+	run the model again. You will find that the concentration of 'sub'
+	is held fixed at CoInit. If your simulation is running slowly, you
+	can even change CoInit on the fly by entering a new value in the 
+	dialog. (This was possible with a 66 MHz 486 machine, but is not
+	so easy with modern computers!) Turn the buffering and
+	overlay off for the next stage.
+
+4.3	Slope of plot
+	The 'prd' in this model rises continuously. Let us see if the
+	production rate approaches steady-state. One way of doing this is to
+	plot the slope of the 'prd' concentration.
+	Double-click on the 'prd' label in
+	the graph window. An editor panel for the plot appears. Hit the toggle
+	"Slope calculation mode" to change it from 'off' to 'on'. The new
+	points for the prd will be displayed as slope. The time units are per
+	second. This is too small to see easily, so scale it up by changing
+	the Y-scale value to 100.
+	Exercise for the reader: Can you come up with another way of deriving
+	the rate of production of 'prd' (the slope) ? Hint: contemplate the
+	rate equations for a reac.
+	Return the slope and Y-scale back to their original settings  for
+	the next step.
+
+4.4	Second-order kinetics
+	Lets say we want to change the order of the inhibition of the enz
+	by the prd from first order to second. Try the obvious method: drag in
+	the 'prd' to the 'inhib' reac a second time. Oops, this turns out to be
+	the procedure for _removing_ an existing reac. To do this right, start
+	out by replacing the first arrow from 'prd' and then going to the
+	'Options' menu. Flip the toggle saying "Higher order reacs disabled",
+	and then drag the prd to the inhib reac again. This time you should get
+	a second arrow parallel to the first. (Older versions of Xodus have a
+	bug in which the second arrow is not displayed under some conditions.)
+	You can make the reaction as high-order as you like. Mechanistically,
+	be warned that true higher-order reactions are rare and should
+	be considered an approximation to multi-stage reactions. As an
+	exercise, build and compare nominally equivalent examples of a
+	high-order reaction implemented as 
+	1. a high-order reac as described here.
+	2. as a sequential multi-stage reaction (First one specific
+		intermediate is formed, then the other).
+	3. as a parallel multi-stage reaction (where either intermediate form
+		can be formed at the fist step)
+
+4.5	Accuracy/speed
+	This is where graph overlays are specially useful.
+	- Start out with a clean graph, and run the end_prd_inhib 
+		example model normally.
+	- Now go to the 'options' menu and change the dt from 0.01 to 0.001.
+	- Then in the graph menu, turn overlays on.
+	- Reset and run the model again.
+	The output should be nearly identical,
+	which is reassuring. It shows us that the original dt was pretty
+	reasonable. See how long a dt you can get away with. You will find
+	that if you push the dt up to 1 second there is some interesting
+	'ringing' in the traces just after the run starts.
+	(The exact values are hopeless too). Perhaps we can live with this, but
+	but when you click 'start' again (without resetting) to make
+	the stimulus fall back down and start over, terrible things happen
+	to the output. This is an example of problems with transients.
+	Frequently one encounters steeply changing transients in these models,
+	for example, when you start the model up or deliver a stimulus. In
+	such cases it sometimes helps to reduce the timestep to get over the
+	transient, and then go to a longer timestep for speed once the 
+	numerically difficult part is over. This can be done using the
+	Uniform/Variable dt toggle in the Options menu. Flip the 
+	toggle over to Variable dt and set the 'dt for transients' to
+	0.01 seconds. Put the overlay on, reset, and rerun.
+	You will see that the simulator initially runs at the fine timestep
+	and then switches over to the longer one. This time the system is
+	stable at least for the transients though if you run it for enough
+	cycles you will see that the 1 second timestep will eventually
+	lead to instability anyway.
+
+4.6	Set up a degradation pathway for the prd.
+	This should be a simple enough exercise for the reader, and can
+	be done with what you already know.
+	Hint: assume that the degradation end-product is held at a fixed level.
+	Blatant hint: You can do this by buffering it.
+
+=============================================================================
+
+5 Tutorial: Techniques for complex models
+	This section is relevant only when you have a complex enough model
+	that managing it becomes a major issue. As a rough guide, when the
+	icons in your model start to become really crammed together when you
+	try to see them all at the same time, you can be pretty sure you
+	need to start using the techniques described here.
+
+5.1	Groups
+	A group is a container for other kinetic elements, including other
+	groups. These are a useful basis for modularization. Typically,
+	each signaling pathway should be represented by a separate group.
+	They perform no numerical operations, so be liberal in their use.
+5.1.1	Creation of groups
+	Creating a group element is trivial - drag it into the edit window, as
+	should be obvious by now. Lets call this group epi, and color it blue.
+	Other elements (including other groups) are placed
+	into the group by dragging them in. For our example, try this out
+	with all the elements in the current model. Note that the position
+	of the elements does not change, but the color of their text labels
+	changes to that of the group. The enzyme does not need to be dragged
+	into the group - it is already managed by its parent pool. If the
+	pool is in the group then all its enzyme and channel activites
+	are also in the group.
+5.1.2	Color matching
+	It is advisable to set the foreground color of each of the
+	elements in a group to some common base color, for example, shades
+	of green. In complex models this (along with the textcolor) helps
+	to identify members of a group.
+5.1.3 Hiding and showing (contracting and expanding)
+	There are controls for this in the pop up panel for the group. The
+	purpose is straightforward enough: to reduce clutter in a complex
+	model. I actually find that I prefer to have all the elements of
+	all the groups visible in all their glory, because this helps me to
+	keep track of all the relationships. 
+5.1.4 Moving
+	The children of a group normally will move along with their parent
+	group when it is shifted in the edit window. This behavior can
+	be toggled using the "Move..." toggle in the group edit panel.
+5.1.5 Saving
+	Rather than saving an entire model, one can save the contents of a
+	particular group. This will try to also save all elements which are
+	connected to that group, even if they are not in the group itself.
+	Try it out, saving the file as group_epi.g.  We will use it later.
+	Note that the plots are not saved, since the idea is to restrict
+	the file to the contents of the group.
+5.1.6	Initializing
+	The 'Initialize all children to current levels' button is useful for
+	models which need to start at an equilibrium level which takes a
+	while to attain. Just click the 'Initialize' button, once the model
+	has equilibrated. Now the 'CoInit' fields are set to the equil value,
+	and the model will be equilibrated at reset. This button should be
+	used with caution, however. Make sure that you have saved the version
+	used to derive the equilibrium, in case you wish to change conditions
+	later. This is specially applicable to models which you later wish
+	to merge, since any change to the model will change equilibrium levels.
+
+5.2	Merging
+	This is one of the most important facilities for developing large,
+	complex models in kkit. Basically, it allows you to simply load in
+	independently developed modules (your own or from a library) in
+	succession. The loading routines will hook up most things
+	automatically while avoiding overlap.
+5.2.1	Loading new files in
+	I assume that at this point you have a group called epi, with all
+	the elements moved into it as children. (If not, you can quit, start
+	over, and reload the file group_epi.g). Lets now merge this with the
+	original end_prd_inhib.g which we saved in section 2.4. To make things
+	interesting, lets remove the 'prd' from the group (by dragging it
+	into the group again). The idea is that the original end_prd_inhib.g
+	overlaps with the current model on this element. We would like the
+	merging process to connect up with it without duplication.
+	Go to the command line and type
+	include end_prd_inhib.g.
+	Amazing - it loads right in.  (You will need to move the group 'epi'
+	around a bit to see the newly loaded elements.)
+	Take special note of the connections to the 'prd' pool
+	It should now be connected both to the group 'epi' and to the
+	elements in the original model. You could think of the 'prd' pool
+	as a second messenger which interacts with both pathways.
+	This facility makes it very easy to hook up different signaling
+	pathways through common messengers such as Ca and AA.
+
+5.2.2 Interconnecting groups (messenger pools)
+	You have just seen an example where the 'prd' pool was used as a
+	common messenger which automatically got hooked up during merging.
+	For this to work well, it helps to keep the
+	common messengers as children of the base group /kinetics (where
+	everything goes by default). 
+
+5.2.3 Future development
+	The merging facility is slated for considerable development. Some
+	of the items to look forward to include:
+	- Saving a complex merged model as a collection of file references
+		to individual modules
+	- Automatic selection of most recent version of library module.
+	- Improvements to the common messenger facility
+	- Automatic positioning of merged-in modules to lessen overlap.
+	The long term objective is to make it possible to think in terms of
+	pathways without having to worry about the details of merging and
+	managing libraries.
+	
+5.3	Scripting with the model
+	kkit dump files are just genesis script files, albeit not really
+	easy for humans to read. They can therefore be included in other
+	script files and the models manipulated in the usual way.
+	Use the 'nox' option to set up the model without an interface:
+		include saved_file.g nox
+	This will load in the model but not set up the graphical interface.
+	In doing so, all graph plots will be changed into tables so that
+	output is saved as usual. One problem is that tables do not explicitly
+	record time information. They assume that the table timestep is
+	uniform.
+	Model scripts are especially useful for complex input situations.
+	One can manage pretty complex stimuli with the 'stim' and the
+	'xtab', but these have limitations. Very complex inputs like
+	those used for synaptic change (with multiple bursts of pulses)
+	are difficult to set up graphically, but easy to do with the
+	script language. Similarly, repeated runs with parameter
+	variations are better done through the script language. One 
+	utility function which I frequently use is
+	do_save_all_plots(filename)
+	which does just what it says. It is intelligent enough to examine
+	tables rather than plots when the graphics are off.
+
+
+=============================================================================
+
+6. Menu Options
+Menus are opened and closed by clicking on the menu button. In some cases
+menu commands will close the menu, leaving the menu button in a depressed
+state. If so, it will take two (rather than one) clicks to redisplay the menu.
+
+6.1 File menu.
+----------------------
+[ This option has been disabled in Kinetikit 11.
+[ 6.1.1	Open file...
+[	This item pops open a panel with various loading options.
+[	As this item indicates, this version of Genesis will not allow
+[	files to be loaded in from the GUI, and you have to type in the filename
+[	at the command prompt.
+6.1.2	Save [filename]
+	This dialog saves the model to the specified filename. This _can_
+	be done from the GUI.
+6.1.3	NOTES
+	This is a text entry area, for typing notes that will be saved
+	along with the model.
+6.1.4	Clear entire simulation
+	Well, that should be clear enough !
+6.1.5	quit
+	Another obvious button. It pops up a further panel asking for
+	confirmation in case you hit it in error.
+
+6.2 Units menu.
+----------------------
+6.2.1	Time units
+	This is pretty straightforward: either seconds or minutes.
+	This applies to all objects in the simulation, but it does not
+	change any of the internal parameters. It just scales the input
+	and output units used by the user.
+6.2.2	Concentration units
+	Either nanomolar, micromolar or millimolar.
+	This applies to all objects in the simulation, but it does not
+	change any of the internal parameters. It just scales the input
+	and output units used by the user.
+6.2.3	Default pool size
+	This sets the pool volume upon creation of _new_ pools. Existing
+	pools are not affected.
+	The volume and diameter are obviously interrelated. The simulation
+	starts up with a default volume of 1.6667e-21 m^3, which is the
+	volume for which 1 molecule gives 1 micromolar.
+
+
+6.3 Tools menu.
+----------------------
+6.3.1	Postscript...
+	This provides various options for helping one to dump the contents
+	of the edit window in postscript format. Oddly enough, there is
+	no command for doing the actual dump. You must go to the edit window
+	and type ^P (control-P) to cause the dump to happen.
+6.3.2	Plot...
+	This just pops up the Graphs menu, which is described below.
+6.3.3	Compare models...
+	This option lets one compare the kinetic parameters of a model. Simple
+	'diffs' of model files do not work well for this task.
+	The option pops up a self-documented window to help one compare all
+	or part of a loaded model with a model in a file, or part of another
+	loaded model, or part of the same model.
+6.3.4	Tabulate model parms
+	This dialog box dumps a listing of all model parameters into a
+	text file suitable for importing subsequently into a word-processor
+	or spreadsheet.
+6.3.5	Copying Tool...
+	Still under construction, but you can see what it is supposed to do
+	someday.
+
+6.4 Options menu.
+----------------------
+There are four sections to this menu: Timestep control, Reaction options,
+	Integration methods and Graph options
+
+Timestep Control options
+6.4.1	Clock dt for simulation
+	This is the basic clock for the simulation. 0.01 seconds is usually
+	a good starting value.
+6.4.2	Clock dt for plots
+	Says what it is. One saves CPU time as well as memory if this
+	is set to a value substantially larger than the simulation dt.
+	1 second is usually a good value.
+6.4.3	Clock dt for control
+	This is the clock used for updating the 'Current time' dialog.
+	This should usually be set to a value such as 5 seconds, well over
+	the simulation timestep to avoid wasting CPU cycles. 
+6.4.4	Uniform dt/Variable dt toggle
+	This selects between the default uniform dt for running a model 
+	against the pseudo-variable timestep mode. In the variable timestep
+	mode, an initial transient time (e.g., 2 seconds) of the simulation
+	is run at a much finer timestep (e.g., 0.0001 seconds). This provides
+	greater accuracy at the time that the simulation values are changing
+	most rapidly. When the user presses 'start' the simulation begins
+	at the finer timestep and then automatically switches to the usual
+	timestep for the rest of the simulation.
+6.4.5	dt for transients
+	This sets the fine timestep for transients. 0.0001 seconds is the
+	default.
+6.4.6	Transient settling time.
+	This sets the duration for which the simulator will run at the 
+	fine timestep, before switching over to the normal timestep. It
+	defaults to 2 seconds.
+
+Reaction Options
+
+6.4.7	Higher order reacs disabled/enabled
+	This toggle allows one to build higher-order reactions. Consider
+	pool A, and reac R. Normally, the first time you drag A to R you
+	set up a reaction pathway, and the second time you drag A to R
+	you remove it. To create a reaction with an order of 2,
+	you need to flip this toggle to
+
+		Higher order reacs enabled
+
+	before dragging A to R a second time. Note that the toggle reverts
+	to the 'disabled' state each time it is used, to avoid confusion.
+
+	This toggle also works for dragging pools to enzymes.
+
+6.4.8 pool-to-pool uses SUMTOTAL / pool-to-pool uses CONSERVE
+	This toggle flips between using CONSERVE and SUMTOTAL when
+	connecting pools to each other. Each case is described below.
+
+	WARNING: the CONSERVE message is now deprecated. Please do not
+	use it in new models. Its use is partially supported up to 
+	Kinetikit 8 and 9. In newer versions of the simulator the 
+	CONSERVE message is ignored in some cases, and eventually will be
+	phased out.
+	The CONSERVE message is used when you wish to explicitly set up
+	conservation relationships between a group of pools. Suppose a
+	molecule A can exist alone, bound to B as AB, and bound to C as
+	AC. If you wish to have A calculated by conservation relationships,
+	just drag AB to A and AC to A. This bypasses the normal calculations
+	for A, and assures that the conservation relationships will be
+	satisfied.
+	Normally the differential equations for each reactant provide
+	sufficient accuracy to ensure that the conservation relationships
+	are satisfied.
+	In some cases (e.g., very fast rates for one reaction step)
+	you may prefer to use conservation instead to improve stability
+	and accuracy. Be sure to check on stability - you can get
+	interesting numerical oscillations in some cases. The conservation
+	facility should not be used lightly, as it is easy to leave out
+	something that should be part of the conservation scheme. For
+	example, enzymes may contribute to the conservation scheme too.
+	You may also find that you get better stability by arranging the
+	conservation scheme differently: e.g., AB as the conserved
+	quantity rather than A.
+
+	The SUMTOTAL message is used when several pools have an
+	identical activity, for instance a common enzyme site
+	activated in several different ways.  Each of the contributing
+	pools in this example would send a SUMTOTAL message to the pool
+	representing the enzyme. The summed pool would behave as a
+	normal enzyme except that its nTotal is now the sum of the
+	SUMTOTAL messages.  It is assumed that the activity site is
+	independent of the regulation site(s). In other words, the
+	contributing pools do not care how much of the summed pool
+	is in an enzyme complex or even taking part in other reactions.
+	Thus, if one were to take a single pool A, and send a SUMTOTAL
+	to another pool B, and hang an enzyme off B, this would NOT be
+	the same as having the same enzyme attached to A.
+	In the first case all of A would always be available for other
+	reactions.
+	In the second case the amount of A available for other reactions
+	would be determined by how much was busy complexing with the enzyme.
+
+6.4.9	Normal enz-to-pool: not CONSERVE / Enz-to-pool uses nComplex for
+	CONSERVE. Again, this is now deprecated. Please do not use it.
+	This toggle is used when you wish to set up conservation relationships
+	involving enzyme complexes. Although the number of molecules in
+	the enzyme complex is usually small, you can't just ignore them
+	when doing conservation relationships. See the previous
+	section (6.4.6).
+
+6.4.10	Normal enz-to-pool: not SUMTOTAL / Enz-to-pool uses nComplex for
+	SUMTOTAL
+	This toggle is used when you wish to use the SUMTOTAL message
+	involving enzyme complexes.
+
+6.4.11	Normal pool-to-enz: not INTRAMOL / pool-to-enz uses n for INTRAMOL
+	This toggle is used when you wish to set up intra-molecular reactions.
+	In this situation, the number of enzyme sites available per substrate
+	is _not_ a function of concentration of the enzyme. So we need to
+	divide out the enzyme conc by the concentration of the entire
+	pool of enzymes. Hence the INTRAMOL message.
+	This message is also deprecated as of Kinetikit version 9. 
+
+6.4.12	Normal pool-to-reac : not KF / pool-to-reac uses Co for kf
+	This toggle allows you to add messages that specify the kf of a 
+	reaction. This provides a great deal of flexibility in designing 
+	models, at the expense of some rigor. As a philosophical point, I feel
+	that most biological reactions do not work by directly modifying rates,
+	but rather by forming different molecular species wich react at 
+	different rates.
+	The source of the kf message is Co from a pool, rather than
+	n. The idea is that the Co field can be scaled (by the volume field)
+	which lets one put in scale factors.
+	As soon as this option has been used in creating a message, the toggle
+	is turned off again so that the usual messaging can be resumed.
+	Removal of the KF message requires that this toggle again be activated,
+	otherwise the usual pool-to-reac operations will be assumed.
+6.4.13	Normal pool-to-reac : not KB / pool-to-reac uses Co for kb
+	This toggle controls the kb rate constant in the same manner as
+	described above. Note that the KF and KB toggles are exclusive, you
+	cannot have both of them on at the same time.
+
+Integration methods
+
+Most of these methods work only with the Jan 2003 onwards versions of
+the kinetics source code or binaries. The Mixed stochastic method works
+with Aug 2002 versions, but is less robust than the Jan 2003 version.
+The implementation of the various stochastic methods is discussed in a
+preprint which is available from Upi Bhalla (bhalla@ncbs.res.in)
+
+6.4.14	Exponential Euler: The default determinstic (mass-action)
+	integration method. It is considerably more accurate than the
+	simple Euler method. It requires timestep specification.
+
+6.4.15	Runge-Kutta: This is still under development and for now it
+	falls back to the Exponential Euler method. When it works it will
+	provide a true variable timestep method with 4th order accuracy
+	to Kinetikit. It does not require timestep specification.
+
+6.4.16	Mixed Stochastic: This uses an approximate stochastic method with
+	adaptively switching to Exponential Euler for individual reactions.
+	The switching occurs based on two criteria: the number of molecules
+	in the pool, and the propensity (roughly, probability) of a reaction.
+	This is a robust and very scalable method, but it tends to produce
+	slightly wider distributions of molecule counts than exact stochastic
+	methods. It requires timestep specification, typically about
+	half the timestep of the Exponential Euler. The speed of this
+	method is almost completely independent of the molecular count (volume),
+	but scales inversely with the number of molecular species.
+
+6.4.17	Gibson-Bruck: This is the recommended exact stochastic method. It
+	is very fast, but slows down both with molecular count and
+	number of molecular species.
+	It uses an adaptive timestep. It requires timestep
+	specification because it has to update molecules which are buffered or
+	involve SUMTOTALS. A recommended timestep is 1 msec.
+
+6.4.18	Gillespie 1: This is the classic Gillespie method. It is about
+	4 times slower than the Gibson-Bruck method. 
+	It uses an adaptive timestep. It requires timestep
+	specification because it has to update molecules which are buffered or
+	involve SUMTOTALS. A recommended timestep is 1 msec.
+
+6.4.19	Gillespie 2: This is the other classic Gillespie method. It is about
+	10 times slower than the Gibson-Bruck method. 
+	It uses an adaptive timestep. It requires timestep
+	specification because it has to update molecules which are buffered or
+	involve SUMTOTALS. A recommended timestep is 1 msec.
+
+Graph options
+Currently we only have a single graph option here, useful when switching
+between integration methods and comparing them. The main graph options
+are in the graphs menu.
+6.4.20	Do not overlay plots / Overlay all plots
+	This toggle lets you flip between overlay and usual modes. In the usual
+	mode, all previous points in a graph are erased on reset. In the
+	overlay mode, each existing plot is retained and a new plot started
+	when the reset button is hit.
+	
+
+6.5 Graphs menu
+----------------------
+The graph menu is in three sections: Graph Axis Limits, Plot Display Options
+and Other Graph Options.
+
+Graph Axis Limits
+6.5.1	X-axis Max 
+	X-axis Min 
+	Y-axis Max 
+	Y-axis Min 
+	These four dialogs do the obvious thing. The changes affect all
+	graphs, including the 'moregraphs'
+
+Plot Display Options
+6.5.2	Show More graphs
+	This toggle causes the display/hiding of an extra couple of graph
+	widgets. These may be useful in models where there are so many
+	interesting reactions that the default two are not enough.
+6.5.3	Do not overlay plots / Overlay all plots
+	This toggle lets you flip between overlay and usual modes. In the usual
+	mode, all previous points in a graph are erased on reset. In the
+	overlay mode, each existing plot is retained and a new plot started
+	when the reset button is hit.
+6.5.4	Plots enabled / Plots disabled
+	This toggle allows one to run a model with or without the plots
+	active. Useful if you are using some other way of monitoring a
+	simulation and wish to avoid the overhead of plotting.
+	This toggle requires a reset in order to become effective.
+6.5.5	Delete all plots
+	Does what it says.
+
+Other Graph options
+6.5.6	Clock dt for plots
+	This sets the timestep for all the plots.
+6.5.7	Save all plots to file:
+	This saves all the plots in a single file in xplot format,
+	This is a text file in which each line has a pair of x,y
+	coordinates. Different plots in the same file are identified by
+	'/newplot' and '/plotname ...' at the start of the coordinate list.
+	It is easy to extract the plots you want from this file using
+	a spreadsheet.
+	
+6.6 Help menu
+----------------------
+This pops up the Help form. Most of the Help form is a text widget with the
+contents of this kkit help file displayed. There is also a button for
+redisplaying the 'About kkit' notice that appears on startup.
+
+=============================================================================
+7. Objects in kkit
+Each kkit object has three facets: the computational entity, the icon,
+and the edit panel.
+The first does the actual work, and takes the form of an instance of a
+Genesis object such as a pool, or a reaction, etc.
+The icon represents this object and provides
+a convenient handle for manipulations.
+The edit panel (which pops up on double-clicking the icon) is used to
+change values for the computational entity. The edit panel has several
+fields which are common to all objects:
+
+Parent:	This is the full path of the parent of the current element.
+	It is a read-only field
+Name:	The name of the current element. Editable.
+Color:	Color of the icon.
+NOTES:	There is a text widget for entering notes, and a big NOTES button
+	beside it for storing the contents of the widget to the element.
+	A common mistake is to forget to click the NOTES button after
+	changing the text for the notes.
+UPDATE:	This button refreshes the value of the dialogs. It is mainly used
+	when the simulation is running, if you want to get an exact
+	numerical value for the variables in an element.
+HIDE:	Gets rid of the edit panel.
+
+Note that there is only one edit panel for all elements of a given class.
+In other words, when you look at the values for two different pools, you
+are actually using the same edit panel, just with different values inserted.
+This arrangement is nice because it saves memory (imagine having a complete
+edit panel stored for each pool in a big model). However, it is annoying
+when you wish to look at the values for two or more pools at the same time.
+Plots are your best bet in such cases.
+
+------------------------------------------------------------------
+7.1	Object:		Pool
+	Computation:	Solves the actual differential equations. All
+		computations are in terms of 'n', the number of molecules
+		of the chemical species. As a useful facility, the
+		concentration Co is also computed based on the volume and
+		concentration terms. The default volume is such that
+		'n' is equal to 'Co' in micromolar.
+			The pool equations use the _changes_ computed
+		by the reacs, enzymes, etc. So the pools are the only
+		element in the kinetics code which actually solves
+		differential equations. The others provide the rates.
+			Pools have numerous other numerical facilities.
+		The most important of these is buffering, in which the
+		pool does not compute at all, and just stays at the level
+		of its nInit. Be warned that buffering and stimulus inputs
+		violate conservation of mass in the reaction system,
+		because they represent processes not being directly modeled.
+			Conservation of mass is normally represented
+		implicitly in the differential equations. There is
+		provision for explicitly setting up mass conservation,
+		but this can be numerically tricky. See section 6.4.
+			All computations are carried out using the
+		exponential Euler form. This turns out to be remarkably
+		efficient and accurate, but is far from the best. There
+		is some ongoing work on a fast, accurate solver 'ksolve',
+		which will take over the computations in a kinetic model
+		in much the same way that the hsolve does in a cell model.
+
+	Icon:		A filled rectangle
+	Icon manipulations:
+		Moving self
+		Dragging onto reacs - hooking up and disconnecting reactions.
+		Dragging onto enzymes - hooking up and disconnecting.
+		Dragging onto groups - grouping
+		Dragging onto other pools - conservation
+		Dragging onto other pools - SUMTOTAL. This is used when
+			one wishes to have a pool whose level is the sum of
+			several others. If one has numerous enzyme isoforms
+			with the same activity this is one way to go about
+			implementing it.
+		Dragging onto graph - plot conc of pool
+		Dragging from table or stim: override pool levels by table
+			or stim output. Does NOT override buffering, though.
+	Edit panel:
+		- n fixed, conc changes/ Conc fixed, n changes toggle
+		This toggle lets you choose which set of values to treat
+		as a reference when changing the volume. It rarely matters
+		once the volume is settled.
+		- n dialog
+		Set/display the current number of molecules of the pool
+		- nInit dialog
+		Set/display the number of molecules to which pool will be
+		initialized, or buffered if buffering is ion.
+		- nTotal dialog
+		Set/display the total number of molecules (including in
+		compounds with other pools) of this species. Used mainly for
+		conservation conditions.
+		- nRemaining dialog
+		nRemaining = nTotal - n
+		- Co, CoInit, CoTotal, CoRemaining dialogs
+		Equivalents to the corresponding 'n' based dialogs, scaled by
+		volume.
+		- vol dialog
+		Volume to use for scaling Co from n. Co = n / vol
+		- Buffering OFF/ Buffering ON toggle
+		Toggle for buffering by this pool. Buffering holds the 
+		Co/n fixed at CoInit/nInit. It overrides all other inputs
+		to pool.
+
+
+
+------------------------------------------------------------------
+7.2	Object:		Reacs
+	Computation:	Computes the product of kf with 'n's for forward
+		reactions, and kb with 'n's for backward reactions, and sends
+		this info on to the pool for the integration. Higher order
+		reactions are somewhat inefficiently represented simply as
+		multiple incoming messages for the 'n's.
+	Icon:	Bidirectional arrow.
+	Icon manipulations: 
+		Moving self
+		Dragging onto pools for products
+		Dragging reactant pools onto reac.
+	Edit panel:
+		- kf dialog: Forward rate constant
+		- kb dialog: Backward rate constant
+
+------------------------------------------------------------------
+7.3	Object:		Enzymes
+	Computation:
+		Consider the Michaelis - Menten formulation of an
+		enzymatic reaction:
+
+		Enz + Sub <---k1---k2---> Complex ---k3---> Prd + Enz
+
+		Given the enzyme, substrate, and product pools, this
+		could be implemented as two reacs and a pool for the complex.
+		The enz object does all this for you, i.e., it represents
+		the reacs and the enzyme complex pool. 
+		Since the enzyme object only makes sense in conjunction
+		with an enzyme pool, we require that it be created on a pool.
+	Icon:
+		Text on black background.
+	Icon manipulations:
+		Movement with respect to parent pool. Note that if the pool
+			is moved, the enzyme does too.
+		Dragging substrates into enzyme
+		Dragging enzyme onto products
+		Dragging enzyme onto graph to plot CoComplex
+	Edit panel:
+		- k1, k2, k3 dialogs: rate constants.
+		- vol dialog :
+			Volume to use as scaling factor to calculate Co from n
+		- Enz complex is hidden / Enz complex is available (toggle): 
+			In most cases the enzyme complex is a distinct
+			molecular species that cannot undergo all the same
+			reactions as the free enzyme pool. So the portion of
+			the enzyme pool that is bound as complex is 'hidden'
+			from other reactions. Occasionally one wishes to
+			make the complex form undergo the same reactions as the
+			parent pool, hence this toggle.
+			Note that the conc of the enz complex is usually
+			vanishingly small.
+
+		- nComplex dialog: Number of molecules of the complex
+		- nComplexInit dialog: Number of molecules of the complex to
+			initialize the enzyme with.
+		- CoCompex, CoComplexInit: Same as above 'n' values, scaled by
+			vol.
+------------------------------------------------------------------
+7.4	Object:		Groups
+
+	Computation:
+			Groups do not perform any calculations.
+			They are the basis for organizing complex models.
+
+	Icon:		A star
+
+	Icon manipulations:
+			Moving self and children of group.
+			Dragging onto other groups
+
+	Edit panel:	
+		- Expanded/Contracted toggle
+		This displays / hides the children of the group.
+		When contracted the group looks overlaid.
+
+		- Move children.../Move group alone
+		The group normally pulls its children along when moved. This
+		toggle lets you move the group without disturbing its kids.
+
+		- Initialize all children to current amounts
+		This button is useful for models which need to start at
+		an equilibrium level which takes a while to attain. Just
+		click the 'Initialize' button, once the model has
+		equilibrated. Now the 'CoInit' fields are set to the
+		equil value, and the model will be equilibrated at reset.
+		This button should be used with caution, however. Make sure
+		that you have saved the version used to derive the
+		equilibrium, in case you wish to change conditions
+		later. This is specially applicable to models which
+		you later wish to merge, since any change to the model
+		will change equilibrium levels.  
+
+		- save_group
+		This dialog lets you save the specific group and all its
+		children, while leaving the rest of the model alone. The
+		save routine attempts to also save all elements which 
+		are directly linked to the kids of this group via messages.
+		It is recommended that all such linked-in elements be on
+		the /kinetics element, rather than on other groups.
+------------------------------------------------------------------
+7.5	Object:		Channels
+	Computation:
+		Calculates concentration gradient and scales by the
+		permeability to give flux of molecules through the channel.
+		The number of channel molecules is determined by the
+		parent pool, so we require that it be created on a pool.
+		Note that at this point we do not consider any electrical
+		properties of the channel. This development is under 
+		consideration.
+
+	Icon:	Figure meant to represent a ligand gated channel
+	Icon manipulations:
+		Movement with respect to parent pool. Note that if the pool
+			is moved, the channel does too.
+		Dragging conducted ions to and from channel. 
+	Edit panel:
+		n dialog: 
+		Duplicate of value of n of parent pool.
+		perm dialog: Scale factor for permeability.
+		gmax : Not currently used.
+------------------------------------------------------------------
+7.6	Object:		Transport
+	Computation:
+		Transports molecules. Equivalent to a unidirectional
+		reaction with a delay.
+	Icon:	A diamond with an arrow moving along a line.
+	Icon manipulations:
+		Moving self
+		Dragging pools onto self for loading transporter.
+		Dragging onto pools for unloading transporter.
+	Edit panel:
+		Input rate): Rate of loading, equivalent to kf.
+		Delay duration: Time taken for loaded molecules to reach
+			target.
+		Delay timestep: Equivalent to width of 'bin' in transporter.
+			If possible, keep this the same as the simulation dt. 
+			A 'narrow' bin (equal to simulation dt) means that
+			rapid changes in loaded molecules will be faithfully
+			followed. 
+			A 'wide' bin means that fewer bins are required to
+			specify entire delay, but rapid changes may be
+			smeared out.
+			The number of bins is the delay duration divided
+			by the delay timestep.
+			Since memory capacity is rarely a limiting factor
+			in modern machines, you can almost always keep the
+			delay timestep equal to the simulation timestep.
+
+------------------------------------------------------------------
+7.7	Object:		Stims
+	Computation:
+		Generates repetitive step stimuli. Composite
+		object subclassed from the on the pulsegen object.
+	Icon:		Lightning bolt.
+	Icon manipulations:
+		Moving self
+		Dragging onto pools for setting up stim
+		Dragging onto graph to monitor activity.
+	Edit panel:
+		Stim width dialog: Specifies duration of 'on' phase of
+			stimulus pulse.
+		Level uses # units / Level uses concentration units toggle:
+			The title says it all
+		Baseline level: Specifies level of 'off' phase of stimulus.
+		Stim level: Specifies level of 'on' phase of stimulus.
+		Interpulse delay: Specifies duration of 'off' phase of pulse.
+		Stimlus OFF: click to start / Stimlus ON: click to stop toggle:
+			The title says it.
+------------------------------------------------------------------
+7.8	Object:		Tables
+	Computation:
+		Reads out a stored waveform for use as a stimulus. The
+		waveform can be read in from a file, or specified graphically
+		through the edit panel. The waveform can loop, i.e., 
+		repeat cyclically, or go through once only. It can
+		start at a specified time. Although the waveform values
+		are stored in a discrete table, the output is interpolated
+		on every timestep so that transitions are smooth.
+		Normally 100 data points are available for graphical
+		specification, but this number can be changed.
+		Any number of points can be read in
+		from a file in xy format (x y coords, separated  by spaces,
+		1 x y pair per line), or in y format (Just the y coord, one
+		per line). Assorted scaling operations are also available.
+	Icon:	A table, as in furniture. Pun intended.
+	Icon manipulations:
+		Moving self
+		Dragging onto pools for setting up stimulus
+		Dragging onto graph to monitor activity.
+	Edit panel:
+		This is a multi-page panel, because there are so many options.
+
+.......................................................................
+
+		Page 1: 
+				xtab editor
+		Mode select: This has multiple options
+			Lookup: Not yet implemented.
+			Stim loop: Goes to stimulus editor page. Sets the
+				waveform to be repeated when it finishes.
+			Stim once: Goes to stimulus editor page. Sets the
+				waveform to be run just once, and then settles
+				at the final value.
+			File I/O: Goes to File I/O selector for loading and
+				dumping contents of table.
+			Threshold: Not yet implemented.
+		Table size: Number of points in table
+		Table increment: Time between successive table entries.
+			This normally updates itself to keep
+			track of the loop duration, size of table and so on. 
+			Note that this is _not_ the increment each timestep.
+			The table handles interpolation internally to keep
+			track of timesteps.
+		Loop duration: Specifies the length of the
+			waveform in simulation time. No matter how many
+			points the table has, it will run through them with
+			this duration. Interpolation is used if the time steps
+			do not fall exactly on table entries.
+		Loop start: Simulation time at which to start
+			generating output for the table. For example, if one
+			wished to let the model equilibrate for 50 sec
+			before delivering a stimulus, one would set this
+			value to 50. Negative values are also allowed. These
+			will start the table output partway into the
+			table. It is also OK to change this value partway
+			through a simulation, the output will change 
+			abruptly to the appropriate value.
+
+.......................................................................
+
+		Page 2: Lookup editor page: Not yet implemented.
+
+.......................................................................
+
+		Page 3: Stimulus editor page
+		This page allows you to create your stimulus waveform. 
+		The plot is initialized with the value in the table, but
+		subsequent manipulations on this page do not affect the
+		original table until the 'Apply' or the 'RETURN' buttons
+		are clicked. If you don't like the plot you can escape
+		without changing the original table waveform, by
+		clicking the 'Undo' or 'DISMISS' buttons.
+
+		Stimulus On/Off toggle: When a table is connected onto a 
+			pool, it can control pool output values. This enables
+			or disables the table from overriding pool values.
+			Note that buffering the pool overrides everything
+			else, including the stimlus.
+		Output is conc/Output is # toggle: decides if the stimlus
+			controls concentration or numbers.
+		Stimlus will loop/Stimulus will be delivered once: Toggles
+			whether the waveform will be generated once, or
+			repeat when finished.
+
+		Stimlus waveform: This displays the stimlus pattern being
+			edited. It permits the user to click on the graph
+			to assign points, indicated by blue and green dots.
+			The plot is drawn between successive points, so one
+			can laboriously set up a table. The interpolate
+			options below make the job easier for most cases.
+
+		Predefined waveforms:
+		Straight line has two controls: Baseline level and slope.
+			These are pretty self-explanatory.
+		Sine wave has four controls:
+			Period: Period of sine wave
+			Phase (deg): Starting phase of sine wave, in degrees.
+			y offset: Obvious.
+			y scale: Obvious.
+
+		Interpolation options:
+		The first row has controls for individual points clicked on
+		the graph, represented by the green and blue dots. X1 is
+		for the green dot, and X2 for the blue one. When you click on
+		the graph, the green dot gets placed at the most recent click
+		point, and the blue dot on the previous one. The X1 and Y1
+		specify coordinates for the green dot, and can be set 
+		manually as well. The '+' and '-' buttons allow one to 
+		nudge the value of X1 up and down one unit. The same
+		controls apply for X2 and Y2.
+		The second row has controls for performing interpolation.
+		The 'step' button draws a vertical line from the blue
+		dot to the current level of the green dot, and then a
+		horizontal line to the green dot.
+		The 'Interpolate' button draws a straight line between the 
+		green and blue dots. The remaining points are unaffected.
+		The 'Smooth' function is not yet implemented.
+
+		Scaling options:
+		Buttons:
+		y_scale_factor: Scales all points on current plot by factor.
+		Note that it uses the current plot as a starting point, so
+		you cannot go back to the original simply by restoring this
+		to 1. 
+		y_offset: Adds value to all points on current plot. Again,
+		it is relative to current value, not to original.
+		Scaling buttons:
+		Log, Exp, Log10, Exp10: These do what their names suggest.
+		Note that negative concentrations are not allowed.
+
+		Apply: Takes the edited waveform and puts the contents into
+		the table.
+
+		Undo: Discards the edited waveform, reloads the table waveform
+		into the edit window.
+
+.......................................................................
+
+		Page 4: File I/O page.
+		This page handles transfer of table data to and from a file.
+
+		File name: Specify filename
+		File format toggle: This can be set to 
+			"y values only" or
+			"x y values"
+		The first format has only y values in the file. The 
+		x axis is set up as uniform interval of 1.
+		The second format has x and y values, one pair per line,
+		separated by whitespace. 
+		Number of lines to skip at file start:
+		This dialog tells the loading routine how
+			many lines to skip from the top of the file
+			when loading it.
+		Load: Loads a file into the xtab.
+		Save: Saves a file from the xtab.
+
+.......................................................................
+
+		Page 5: 
+		Stimulus Threshold options: This is not yet implemented.
+
+------------------------------------------------------------------
+7.9	Object:		Plots
+	Computation:	Displays and stores simulated values. Can 
+			perform compression, slope calculations and scaling
+			on the data points.
+	Icon:		The name of the plot in the graph window, but nothing
+			on the edit window.
+	Icon manipulations:
+			Dragging to Barney (the delete icon) to delete the plot
+			Double-clicking for manipulating the plot.
+	Edit panel:
+		Compression cutoff: The plot uses lossy compression: it only
+			stores data points whose y values differ from the
+			last stored value by more than a predefined amount.
+			This dialog specifies the amount. It defaults to zero,
+			which means no compression. For long simulations,
+			it is a good idea to use compression as plots can
+			use up enormous amounts of memory.
+		Slope calculation mode OFF/ON: This toggles the 'slope' mode
+			of plotting. In slope mode, the y values are
+			differentiated with respect to time.
+				plotval = (y(t) - y(t-1))/dt
+		Y Offset: Offsets plot by specified amount in Y axis.
+		Y Scale: Scales plot by specified amount in Y axis.
+		Save to file: Stores plot data in specified filename. The
+			format is
+				x1 y1
+				x2 y2
+				x3 y3
+			etc; i.e, one coordinate pair per line separated by
+			spaces.
+
+=============================================================================
+
+8. Library of models
+A library of 'modules' of signaling pathways developed using kinetikit
+are available. These modules include
+PKC
+MAPK
+Ras
+Gq
+PLC-beta
+PLA2
+Ca
+and many others.
+To download them, please visit
+	http://www.ncbs.res.in/informatics
+and follow the guidelines. You can also write to me at bhalla@ncbs.res.in.
+
+=============================================================================
+9.  Customizing
+	The first and main bit of customizing you are likely to do has
+to do with the default size of the windows. These are defined in
+PARMS.g, with commented out values for common screen sizes.
+	Most of the other user-configurable settings are also
+in PARMS.g, but are unlikely to be very useful since all the info is
+stored when you save a model.
+
+=============================================================================
+
+10. Preliminary notes for using modules.
+
+Modules in kkit.
+Kinetikit versions 8 and above provide a facility for interconnecting pathways
+at the block diagram level rather than through individual reactions.  A set of
+reactions is grouped and this group forms the basis for treating the reactions
+as a module. Each module will have input(s) and output(s), represented by the
+downlink and uplink icons. The inputs and outputs are identical to other
+reactions, but the uplink and downlink tools enable them to be set up
+automatically when block diagrams are connected.  Individual reaction
+specifications should no longer be needed if a library of modules is available.
+The parameters of the interactions are, of course, specific to each system.
+
+
+Uplinks
+Uplinks provide a uniform interface for specifying output of a module.
+
+This output can take 2 forms:
+- Second messengers generated by the module.
+- More complex interactions which require replication of some reactions
+	which act on 1 or more molecules in the downstream pathway.
+
+Creating an uplink
+Drag the uplink into the edit window or directly onto the group which is to 
+be its parent.
+Make sure that the uplink is on a group. Once it is there it will accept
+messengers etc only from within that group.
+
+Specifying a messenger to be used as an output.
+- Drag the messenger into the uplink
+If there is more than one second messenger involved, the order of dragging
+becomes important.
+There is a special situation where the messenger is itself an enzyme or
+channel. Here we do NOT want the enzyme or channel to be replicated for
+each interaction. So we first create a mirror for the messenger, then
+drag the mirror over to the uplink.
+
+Specifying enzymes to be used for module output.
+- Make sure this is a 'bare' enzyme: no substrate or product.
+- Drag the enzyme into the uplink. The system will automatically create
+	a substrate and product for the enzyme, which will be tied to the
+	corresponding downstream molecules.
+- Set default enzyme parameters.
+
+Specifying complex reactions in module output
+- Drag all pools (including those with enzymes sitting on them, the enzymes
+	do not need to be dragged individually in this case), reactions, 
+	etc onto the output module.
+- Open the uplink window. A display with the selected reactions and pools
+	will appear. There is a blank window to the right of this display.
+	Drag any pools involved in the downstream interactions into this
+	blank window. Little envelopes with the name of the molecule appear
+	to indicate that this is now being used to communicate downstream.
+- Set up default parameters.
+
+Downlinks
+The setup for downlinks is identical to that for uplinks.
+
+
+Connecting uplinks to downlinks:
+Drag uplink to downlink. All connections, replications of reactions etc,
+take place automatically. A little link icon appears above the respective
+uplink and downlink. This can be edited to assign specific parameters for
+this interaction.
+
+Disconnecting uplinks from downlinks:
+Repeat the drag. All involved interactions are removed, and the link icons
+vanish.
+
+
+Modular saves.
+- Each module should have its own preferred module name specified. 
+- The File menu specifies a directory for all modules. 
+- The File menu provides two save options: a 'flat' file which is what the
+	old kkit used to do, where the whole model is saved in a single file;
+	and a modular save option where each module is saved independently
+	and a small main file loads in each module as well as sets
+	up their interaction parameters.
+- Modules are automatically saved with an incremented version number
+	if their contents have changed. Each module is 'signed' with an md5sum
+	which is partly to check for changes, and partly to ensure the
+	integrity of the module file.
+
+=============================================================================
+
+11. Future plans
+
+11.0	HTML-izing this document
+
+11.1	Embedded modules (Now a reality in version 8.)
+	In due course this will lead to a proper database for modules and
+	link parameters.
+
+11.2	Merging in with the suite of 'kits' under development.
+
+11.3	Bug reports:
+Please send bug reports relating to kinetikit (and only to kinetikit) to
+
+bhalla@ncbs.res.in
+
+I cannot guarantee a quick reply, but I will try to fix things as they
+turn up. Please do _not_ send me general questions regarding Genesis and
+its installation. These are more appropriately addressed to the Genesis
+and Babel addresses:
+genesis@bbb.caltech.edu
+babel@bbb.caltech.edu
+
+
+=============================================================================
+12. Acknowledgements
+
+This project owes its existence to many people and organizations, of whom I
+can only mention a few.
+
+The Aaron Diamond Foundation. Part of this project was developed while I was an
+Aaron Diamond Foundation Fellow at Mt. Sinai, and this work was supported
+in part by a grant from the Aaron Diamond Foundation.
+
+The National Centre for Biological Sciences, my home institution.
+
+Ravi Iyengar, my mentor at Mt. Sinai, who encouraged me with this
+modeling project while making sure I got my hands wet with experiments, too.
+
+The Genesis development team, for providing the coding foundation, and
+specially Dave Bilitch and Dave Beeman, who imposed higher
+standards on my compulsively relaxed concept of a 'release' version.
+
+Various alpha testers, including Francis Horber, Bruce Graham,
+Raghav Rajan, Jyoti Mishra, Bjorn Obrink, Prahlad Ram, and others.
+
+The Linux, XFree86 and GNU projects, for building an amazing free OS on which
+most of the development was done.
+
+My family, for quietly/vocally putting up with this distraction from
+other responsibilities.
+
+=============================================================================

@@ -1,0 +1,772 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference Manual: Changes Introduced in GENESIS 2</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-1.html">Previous</A>
+<A HREF="Manual-3.html">Next</A>
+<A HREF="Manual.html#toc2">Table of Contents</A>
+<HR>
+<H2><A NAME="Changes"></A> <A NAME="s2">2. Changes Introduced in GENESIS 2</A></H2>
+
+<P>GENESIS version 2.4 includes many new features and enhancements to previous
+versions.  The following sections describe changes introduced between
+versions 2.0 and 2.4.  The final part of this chapter describes the considerable
+changes that were introduced in version 2.0.  If you have previously used
+GENESIS 1 (e.g., version 1.4 or earlier), please read those sections also,
+in order to understand the differences between GENESIS 2 and GENESIS 1.</P>
+
+<P>The <EM>ChangeLog</EM> file lists the changes introduced in each new
+release of GENESIS.  Likewise, <EM>Doc/README.changes</EM> lists the
+documentation files that have been added or changed.  
+
+<H2><A NAME="ss2.0">2.0 Changes Introduced in GENESIS 2.4</A></H2>
+
+<P>
+
+The new 'stdp_rules' object has been added for efficiently implementing spike
+timing dependent plasticity in large networks of hsolved multicompartmental
+cells. There have also been additions to fields of the 'synapse' subelement of
+the synchan to provide time of last spike arrival, and fields to implement
+synaptic plasticity. See the documention
+for <A HREF="Manual-26.html#stdp_rules">stdp_rules</A>, and for
+<A HREF="Manual-21.html#NewPlasticityObjects">NewPlasticityObjects</A> for
+details of this object.  <EM>Scripts/stdp_rules</EM> contains both
+a text and HTML tutorial on using stdp_rules along with example scripts.
+Information on the added synapse fields of the synchan can be found in
+these, as well as the documentation for <A HREF="Manual-26.html#synchan">
+synchan</A>.
+
+<P>
+Three new network connection commands, 
+<A HREF="Manual-25.html#volumeconnect3">volumeconnect3</A>,
+<A HREF="Manual-25.html#volumeweight3">volumeweight3</A>, and
+<A HREF="Manual-25.html#volumedelay3">volumedelay3</A>
+have been added and documented. These allow distance-dependent
+connection probabilities and/or weights and the use of periodic boundary
+conditions for network connectivity.
+
+<P>
+A new version of the chemesis library for modeling second messengers and calcium
+dynamics is now installed by default. The documentation is found in
+<A HREF="chemesis.html">chemesis.html</A>, with examples and a tutorial
+<EM>Scripts/chemesis/CalTut.html</EM>.
+<P>
+
+New tutorial Scripts and Documentation were added for:
+<UL>
+     <LI> chemesis
+     <LI> the <EM>Scripts/gpython-tools</EM> Python utility collection
+     <LI> An updated Purkinje tutorial in <EM>Scripts/purkinje</EM>
+     <LI> stdp_rules, including 'NewPlasticityObjects' documentation for
+       implementing similar objects.
+     <LI> <EM>Scripts/VAnet2</EM> contains an improved hsolved implementation of
+       the dual exponential conductance version of the Vogels-Abbott network
+       model. It serves as a tutorial on how to achieve a speed improvement of
+       10 to 20 times when using hsolve with network models.
+</UL>
+
+<P>
+The genesis/contrib directory is for utilities, scripts, and other files that
+have been contributed by users. It may also used in a personal GENESIS
+installation for storing downloaded patches, updates, and other material that
+has become available since the last GENESIS release. It currently contains
+emacs macros for editing GENESIS scripts.
+
+
+<P>
+Several Makefile changes and bug fixes were made to ease installation with
+recent versions of the gcc compiler and X11 versions.
+
+<P>
+
+<H2><A NAME="ss2.01">2.01 Changes Introduced in GENESIS 2.3</A></H2>
+
+In addition to many bug fixes, these are the most significant new
+features of GENESIS version 2.3:</P>
+
+<P>The GENESIS 2.3 release supercedes version 2.2.1, which was primarily a
+  bug fix release.  It has a number of changes in the simulator source code to
+  allow use on a greater variety of platforms, including Intel and AMD 64 bit
+  processors, MacIntosh with OS/X, and Microsoft Windows with the Cygwin
+  environment.  The files <EM>src/README.cygwin</EM> and <EM>src/README.OSX</EM>
+  explains more about the use of GENESIS under Windows and OSX.
+  The <EM>Scripts/kinetikit</EM> simulation for
+  modeling biochemical kinetics has been upgraded to version 11.
+</P>
+
+<P> The <EM>Scripts/purkinje</EM> tutorial has been updated to version 2, which
+  includes a cell plugin framework, on-the-fly generation of tabchannels, and the
+  ability to select compartment names for ascii ouput and current injection.  It
+  also provides multiple output graphs for simultaneously plotting membrane
+  potential, calcium concentration, and channel conductance, current, and
+  reversal potential.
+
+<P> It has been a long-standing tradition in computing to use the extension
+  ".doc" for plain text documentation files, dating from long before the
+  advent of Microsoft Word.  However, we have finally capitulated to current
+  usage and changed the extensions of the on-line help text files in the
+  <EM>Doc</EM> directory to ".txt", in order to make them viewable with web
+  browsers that normally associate the ".doc" extension with Word files.
+</P>
+
+<P>
+  There have been changes to the output format of the disk_out, asc_file,
+  and res_ascfile objects. In GENESIS 2.2, these three objects were changed
+  to write data files in double precision format (type double) instead of
+  single (type float).  Unfortunately, the resulting files were
+  incompatible with the disk_in and xsimplot objects (which expect floats),
+  and existing utilities that people have written to read the output of
+  disk_out.  GENESIS 2.2.1 reverted to the single precision format.
+</P>
+<P>
+  In GENESIS 2.3, the asc_file, res_asc_file, and par_asc_file objects now
+  treat incoming message values as double precision data.  However, they
+  now have an added field "float_format" that can specify a format string
+  in the form used by the floatformat command.  The default value is "%g",
+  giving the usual single precision result, for backwards compatibility
+  with previous versions of these objects.  By setting this to a string with
+  a different value, for example "%0.12g", the data and the simulation time
+  that are written to the file can be given to to a higher precision.
+
+<P>
+  The tabchannel object now has a Z_conc field (default = 1) to indicate
+  that the Z gate is concentration dependent.  It may be unset (set to zero)
+  to allow a voltage-dependent Z gate.
+</P>
+
+<H3>New Objects and Commands in GENESIS 2.3</H3>
+<P>
+  GENESIS 2.3 implements three objects used in the GENESIS simulation of an
+  8-cell network model of the leech heart interneuron beat timing circuit.
+  (See http://calabreselx.biology.emory.edu/software.html) The SynE_object,
+  SynG_object, and SynS_object provide electrical synaptic transmission,
+  graded synaptic inhibition, and voltage-dependent modulation of
+  spike-mediated synaptic transmission in the leech neuron models.  These are
+  documented only in the GENESIS plain text format documentation in the
+  <EM>genesis/Doc</EM> directory, or via the GENESIS "help" command.  See
+  SynE_object.txt, SynG_object.txt, and SynS_object.txt.
+
+<P>
+  The izcell object has been added to implement the Izhikevich simple spiking
+  neuron model.  This uses only four parameters to produce a wide variety of
+  action potential shapes and firing patterns in a simplified "point neuron"
+  model.  The documentation is in <EM>Doc/izcell.txt</EM>, or via the GENESIS
+  "help" command.  <EM>Scripts/examples/izcell</EM> provides commented example
+  scripts and further documentation.
+
+<P>
+  Two new debugging commands gctrace (for tracing GENESIS commands) and
+  gftrace (for tracing script language functions) have been added, starting
+  with GENESIS 2.2.1.  The usage of these is:
+
+<PRE>
+     gctrace &lt;level&gt;
+     if &lt;level&gt; is 1, command tracing is enabled.
+     if &lt;level&gt; is 0, command tracing disabled.
+
+     gftrace &lt;level&gt;
+     if &lt;level&gt; is 1, function tracing is enabled.
+     if &lt;level&gt; is 0, function tracing disabled.
+</PRE>
+
+<P>
+  gftrace is particularly useful for finding out which script functions are
+  called from the script field of Xodus widgets without having to locate
+  the widget in the GENESIS element hierarchy.
+</P>
+
+<H2><A NAME="ss2.1">2.1 Changes Introduced in GENESIS 2.2</A></H2>
+
+<P>
+  In addition to many bug fixes and improvements to allow compilation on
+  new platforms, these are the most significant new features of GENESIS
+  version 2.2:
+</P>
+
+<P>In order to make parameter searching easier, we have developed a library of
+parameter search objects and functions that automate the search process.  A
+description of parameter searching with GENESIS can be found in
+<A HREF="Manual-18.html#Param">The GENESIS Parameter Search Library</A>, with
+demonstration scripts in <EM>Scripts/param</EM>.</P>
+<P>As of GENESIS version 2.2, symcompartment elements may be used with
+the hsolve method, allowing the use of fast implicit numerical
+integration methods with cell models constructed with symmetric
+compartments.  There have also been a number of changes and bug fixes
+for the hsolve object.  The documentation for 
+<A HREF="Manual-26.html#hsolve">hsolve </A> has
+been updated to reflect the behavior in GENESIS 2.2.</P>
+<P>There have been improvements in the library of objects for modeling
+the effects of ion diffusion, and a new Michaelis Menten store pump
+object, the hillpump.  These are now documented, and the
+<EM>Scripts/examples/spinedemo</EM> directory has a demonstration of
+the use of the difshell, fixbuffer, and taupump objects to model the
+diffusion of intracellular calcium ions in dendritic spines, with the
+effect of buffering and ionic pumps.</P>
+<P>Several tools have been added for spike train generation, recording, and
+analysis.  There are improved versions of the freq_monitor and peristim
+objects, and the new autocorr and crosscorr objects for calculating histograms
+of auto-correlations and cross-correlations in spike trains.  The timetable
+object allows controlled sequences of synaptic input at times specified in a
+table.  The event_tofile object creates an ascii file containing simulation
+times at which an input crosses a specified threshold value.</P>
+<P>The new facsynchan is a synaptically activated channel with synaptic
+facilitation and/or synaptic depression.</P>
+<P>The tabchannel and tab2Dchannel now have an ``instant'' field that may be used
+to specify that a particular gate should instantaneously reach the steady
+state activation value.  This allows the channel conductance to have a
+multiplicative factor.  This is often used to model a Ca-dependent
+conductance, or to implement Morris-Lecar models having zero time constant for
+activation.  For an example, see the improved implementation of the
+Ca-dependent K channel in <EM>Scripts/traub91</EM>.</P>
+<P>The diskio object is used to to read and write data in the portable binary
+NETCDF format.  As of GENESIS 2.2, diskio also supports files in the older
+GENESIS binary FMT1 format, which is used by the existing disk_in and disk_out
+objects.  </P>
+<P>SPRNG (the scalable portable random number generator) has been
+incorporated into GENESIS to provide faster and higher quality random
+numbers, which will be the same across all hardware platforms.  We
+continue to support use of the Numerical Recipes generator, which is
+used by default.  A new command, setrand, is used to select between
+the NR or SPRNG generators.</P>
+
+<P>In addition to the demonstration scripts mentioned above, there have
+been several other additions and updates to the <EM>Scripts</EM>
+directory.  These include a tutorial based on the detailed De Schutter
+and Bower Purkinje cell model, an updated version of
+<EM>kinetikit</EM>, and added channel models in the
+<EM>Scripts/neurokit/prototypes</EM> directory.  The
+<EM>Scripts/examples</EM> directory has several new or updated GENESIS
+programming examples, including the use of the facilitating synchan, a
+new demonstration of Hebbian learning, and the use of the pore objects
+for modeling stochastic ion channels.</P>
+
+<H3>New Commands in GENESIS 2.2</H3>
+
+<P>The following commands are new in GENESIS 2.2.
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD> Description </TD></TR><TR><TD>
+<A HREF="Manual-25.html#addglobal">addglobal </a></TD><TD>Declares a global variable; name may be a variable</TD></TR><TR><TD>
+<A HREF="Manual-25.html#countelementlist">countelementlist </a></TD><TD>Returns the number of elements in element list</TD></TR><TR><TD>
+<A HREF="Manual-25.html#fileconnect">fileconnect </a> </TD><TD>Makes synaptic connections using a weight matrix file</TD></TR><TR><TD>
+<A HREF="Manual-25.html#gen2spk">gen2spk </a></TD><TD>Creates file with spike times from file of Vm vs. time</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getglobal">getglobal </a></TD><TD>Returns global variable value; name may be a variable</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getparamGA">getparamGA </a></TD><TD>Gets parameters from the paramtableGA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getsolvechildname">getsolvechildname </a></TD><TD>Finds hsolve child element names</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamBF">initparamBF </a></TD><TD>Initializes parameters for the paramtableBF object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamCG">initparamCG </a></TD><TD>Initializes parameters for the paramtableCG object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamGA">initparamGA </a></TD><TD>Initializes parameters for the paramtableGA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamSA">initparamSA </a></TD><TD>Initializes parameters for the paramtableSA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamSS">initparamSS </a></TD><TD>Initializes parameters for the paramtableSS object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#msgsubstitute">msgsubstitute </a></TD><TD>Allows undump of saved simulation with new message names</TD></TR><TR><TD>
+<A HREF="Manual-25.html#objsubstitute">objsubstitute </a></TD><TD>Allows undump of saved simulation with new object names</TD></TR><TR><TD>
+resetfastmsg</TD><TD>Variation of reset command for use with kinetics library</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setglobal">setglobal </a></TD><TD>Sets value of global variable; name may be a variable</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setparamGA">setparamGA </a></TD><TD>Sets parameters for the paramtableGA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setrand">setrand </a></TD><TD>Select Numerical Recipes or SPRNG random number generator</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setsearch">setsearch </a></TD><TD>Specifies which parameters will be varied in a search</TD></TR><TR><TD>
+<A HREF="Manual-25.html#shapematch">shapematch </a></TD><TD>Returns goodness of match between two waveform files</TD></TR><TR><TD>
+<A HREF="Manual-25.html#spkcmp">spkcmp </a></TD><TD>Returns goodness of match between two spike time files</TD></TR><TR><TD>
+<A HREF="Manual-25.html#substituteinfo">substituteinfo </a></TD><TD>Lists substitutions from msgsubstitute/objsubstitute</TD></TR><TR><TD>
+<A HREF="Manual-25.html#volumedelay2">volumedelay2 </a></TD><TD>Faster version of volumedelay; requires destination</TD></TR><TR><TD>
+<A HREF="Manual-25.html#volumeweight2">volumeweight2 </a></TD><TD>Faster version of volumeweight; requires destination</TD></TR><TR><TD>
+<A HREF="Manual-25.html#xsimplot">xsimplot </a></TD><TD>Performs 2D plotting of data sets from binary file</TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+</P>
+
+<H3>New Objects in GENESIS 2.2</H3>
+
+<P>The following objects are new in GENESIS 2.2.
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD> Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#autocorr">autocorr </a></TD><TD>Calculates histograms of auto-correlations</TD></TR><TR><TD>
+<A HREF="Manual-26.html#calculator">calculator </a></TD><TD>Adds, subtracts, multiplies, and divides using messages</TD></TR><TR><TD>
+<A HREF="Manual-26.html#crosscorr">crosscorr </a></TD><TD>Calculates histograms of cross-correlations</TD></TR><TR><TD>
+<A HREF="Manual-26.html#event_tofile">event_tofile </a></TD><TD>Records event times; e.g spikes or threshold crossings</TD></TR><TR><TD>
+<A HREF="Manual-26.html#facsynchan">facsynchan </a> </TD><TD>Like synchan, with synaptic facilitation and/or depression</TD></TR><TR><TD>
+<A HREF="Manual-26.html#hillpump">hillpump </a></TD><TD>Michaelis-Menten store pump to be coupled to a difshell</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableBF">paramtableBF </a></TD><TD>Implements "brute-force" parametersearch</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableCG">paramtableCG </a></TD><TD>Implements conjugate-gradient descent parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableGA">paramtableGA </a></TD><TD>Implements genetic algorithm parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSA">paramtableSA </a></TD><TD>Implements simulated annealing parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSS">paramtableSS </a></TD><TD>Implements stochastic parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#timetable">timetable </a></TD><TD>A table of time values for change of synaptic activation</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xfastplot">xfastplot </a></TD><TD>High-speed graphic display similar to an oscilloscope</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss2.2">2.2 Changes Introduced in GENESIS 2.1</A></H2>
+
+<P>In addition to many bug fixes, these are the most significant new
+features of GENESIS version 2.1:</P>
+<P>There are now two-dimensional versions of the tabchannel and table objects
+(tab2Dchannel and table2D) which will be useful for modeling voltage and
+concentration dependent channels.  The tabcurrent object, along with the
+setupNaCa and setupghk commands, may be used to model non-ohmic
+currents, and can also be used to compute the solution to the
+Goldman-Hodgkin-Katz equation.</P>
+<P>The diskio, variable, and metadata objects may be used to provide the features
+of the existing disk_in and disk_out objects to read and write data in
+the portable binary NETCDF format.  This will ease the interfacing of GENESIS
+simulations with popular analysis and signal-processing tools such as MATLAB,
+and make it possible to use binary files produced by GENESIS on multiple
+platforms.</P>
+<P>There is a new version of the library (<EM>src/concen</EM>) of objects
+which are used to model the effects of the diffusion of ions (e.g., calcium).
+(These are largely undocumented at present.  Please see the short summaries
+below, the source code, and the results of the showobject command.  Full
+documentation will be provided in a future GENESIS release.)</P>
+<P>There have been substantial improvements in the hsolve object, which is used
+to maximize the speed and accuracy of computations for compartmental models.
+The default mode of use (chanmode 0) has been revised so that it is possible
+to easily add and delete outgoing messages to other elements, and to use it
+with any elements whether or not they are handled by hsolve.  There is a new
+mode (chanmode 4), and some changes in the restrictions of the other modes.
+These are explained in detail in the revised documentation for hsolve.  A new
+command findsolvefield has been provided to make it easy to accesss fields of
+the hsolve element when using these faster chanmodes, thus avoiding their
+restrictions on input and output of field values.  The useconcen and usenernst
+fields of the hsolve object have been removed, as they are no longer needed.
+A new restriction is that, for chanmodes 2-4, the element tree of your cell
+(or other element tree to be taken over by hsolve) must not contain any
+non-hsolvable elements other than neutral elements.  For existing simulations
+that violate this restriction, it will be easiest to switch to chanmode 0 or
+1.</P>
+<P>The readcell command and the hsolve object recognize the new concentration and
+channel objects.  Both readcell and hsolve may be used to create an hsolve
+element instead of a neutral element at the root of the cell hierarchy.</P>
+<P>Compartments now have both start and end coordinates.</P>
+<P>XODUS forms can now be nested, allowing for grouping of widgets within a form
+using a nested form.</P>
+<P>The latest version of the library of objects for biochemical kinetics
+modeling and its graphical interface (Kinetikit) are now part of
+the GENESIS distribution.</P>
+<P>Several changes have been made to allow parallel GENESIS (PGENESIS) to be
+built on top of GENESIS.</P>
+
+<H3>New Commands in GENESIS 2.1</H3>
+
+<P>The following commands are new in GENESIS 2.1.  Most of these are described
+in the 
+<A HREF="Manual-25.html#Commands">GENESIS Command Reference</A>.
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD> Description </TD></TR><TR><TD>
+findsolvefield </TD><TD>Used with hsolve for input/output of values</TD></TR><TR><TD>
+getsolvecompname</TD><TD>Used with hsolve to find compartment names</TD></TR><TR><TD>
+planardelay2 </TD><TD>Faster version of planardelay; requires destination</TD></TR><TR><TD>
+planarweight2 </TD><TD>Faster version of planarweight; requires destination</TD></TR><TR><TD>
+setupNaCa </TD><TD>Sets up a tabcurrent to model the Na-Ca exchanger current</TD></TR><TR><TD>
+setupghk </TD><TD>Sets up a tabcurrent to solve the GHK equation</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H3>New Objects in GENESIS 2.1</H3>
+
+<P>The following objects are new in GENESIS 2.1.  Most of these are described
+in the 
+<A HREF="Manual-26.html#Objectref">GENESIS Object Reference</A>.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD> Description </TD></TR><TR><TD>
+concchan </TD><TD>Handles 1-D diffusion of molecules across a membrane</TD></TR><TR><TD>
+concpool </TD><TD>Concentration pool without diffusion</TD></TR><TR><TD>
+difbuffer </TD><TD>First order diffusable buffer; constant total concentration</TD></TR><TR><TD>
+dif2buffer </TD><TD>First order diffusable buffer; variable total concentration</TD></TR><TR><TD>
+difshell </TD><TD>Concentration shell with one-dimensional diffusion</TD></TR><TR><TD>
+diskio </TD><TD>Similar to disk_in/disk_out with portable binary NETCDF format</TD></TR><TR><TD>
+enz </TD><TD>Handles Michaelis-Menten enzyme kinetics with pool object</TD></TR><TR><TD>
+fixbuffer </TD><TD>First order fixed buffer</TD></TR><TR><TD>
+fura2 </TD><TD>Computes fura2 fluorescence in a single difshell</TD></TR><TR><TD>
+ghk </TD><TD>Calculates the Goldman-Hodgkin-Katz (constant field) equation</TD></TR><TR><TD>
+metadata </TD><TD>Used with diskio to read/write descriptive content</TD></TR><TR><TD>
+mmpump </TD><TD>Models a Ca-ATPase pump obeying Michaelis-Menten kinetics</TD></TR><TR><TD>
+pool </TD><TD>A concentration pool used in kinetic reactions</TD></TR><TR><TD>
+reac </TD><TD>Handles standard kinetic reaction schemes with pool object</TD></TR><TR><TD>
+res_asc_file</TD><TD>Like asc_file, for changes outside a given range</TD></TR><TR><TD>
+spikehistory</TD><TD>Outputs neuron ID and spike times to an ascii file</TD></TR><TR><TD>
+tab2Dchannel</TD><TD>Channel with 2-D tables, e.g. for dependence on Vm and [Ca]</TD></TR><TR><TD>
+tabcurrent </TD><TD>Tabulated non-ohmic ion current; also solves GHK equation</TD></TR><TR><TD>
+table2D </TD><TD>Has an internal 2-D table, with interpolation</TD></TR><TR><TD>
+variable </TD><TD>Used with diskio to read/write binary data</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss2.3">2.3 Changes Introduced in GENESIS 2.0</A></H2>
+
+
+<P>With the release of GENESIS version 2.0, many parts of the system
+have been redesigned and reimplemented to provide a more portable, stable
+and consistent system.
+The GENESIS command set has been revised subtantially in order to provide
+more consistent command names and command options.  Likewise, the scripting
+language has also been revised to make it more consistent and to address
+various idiosyncracies in the syntax.  There has also been a complete
+reimplementation of the XODUS graphical user interface objects.  This was
+done in order to provide an improved appearance of the graphics, correction
+of design problems including memory allocation, improved portability and
+elimination of dependency on the Athena widget set.</P>
+<P>Although these changes extend the capabilities of GENESIS and make it more
+flexible and easier to use, this is at the cost of some loss of backwards
+compatibility with previous versions of GENESIS.  The convert utility
+described below, and in 
+<A HREF="Manual-22.html#Convert">Script Conversion</A> should
+make the conversion of existing GENESIS scripts relatively painless.
+This section of the manual gives an overview of some of the more significant
+changes that will affect present users of GENESIS 1.</P>
+
+
+<H2><A NAME="ss2.4">2.4 Command Names</A></H2>
+
+<P>Some of the names of GENESIS commands have been changed in GENESIS
+2, in order to provide a more consistent and intuitive naming scheme.
+For example, underscores have been eliminated in command names, unless
+they are obsolete commands related to ``old-style connections'' that
+are being preserved for backwards-compatibility.  In some cases, names
+of command options have been changed and new options have been added.
+In order to find the names of allowed options, give the name of the
+command followed by the ``<CODE>-usage</CODE>'' option.  Note that in GENESIS 2,
+options follow any command arguments.  Options may be abbreviated to
+the shortest unambiguous character string.</P>
+<P>The following table lists the old and new names of commands which
+have changed.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+GENESIS 1 </TD><TD> GENESIS 2 </TD></TR><TR><TD>
+EL, element_list </TD><TD> el, getelementlist</TD></TR><TR><TD>
+Error </TD><TD> error</TD></TR><TR><TD>
+INPUT </TD><TD> input</TD></TR><TR><TD>
+VERSION </TD><TD> version </TD></TR><TR><TD>
+addschedule </TD><TD> addtask</TD></TR><TR><TD>
+alias </TD><TD> addalias</TD></TR><TR><TD>
+calc_Cm </TD><TD> calcCm</TD></TR><TR><TD>
+calc_Rm </TD><TD> calcRm</TD></TR><TR><TD>
+cell_sheet </TD><TD> cellsheet</TD></TR><TR><TD>
+clean </TD><TD> deleteall</TD></TR><TR><TD>
+clear_buffer </TD><TD> clearbuffer</TD></TR><TR><TD>
+clearschedule </TD><TD> deletetasks</TD></TR><TR><TD>
+clocks </TD><TD> showclocks </TD></TR><TR><TD>
+commands </TD><TD> listcommands</TD></TR><TR><TD>
+date</TD><TD> getdate</TD></TR><TR><TD>
+dd_3d_msg </TD><TD> dd3dmsg</TD></TR><TR><TD>
+duplicate_table </TD><TD> duplicatetable</TD></TR><TR><TD>
+float_format </TD><TD> floatformat </TD></TR><TR><TD>
+gen_3d_msg </TD><TD> gen3dmsg </TD></TR><TR><TD>
+get </TD><TD> getfield</TD></TR><TR><TD>
+get_input </TD><TD> getinput</TD></TR><TR><TD>
+getfields </TD><TD> getfieldnames</TD></TR><TR><TD>
+jobs </TD><TD> showjobs </TD></TR><TR><TD>
+killjob </TD><TD> deletejob</TD></TR><TR><TD>
+paste_channel </TD><TD> pastechannel</TD></TR><TR><TD>
+pathname </TD><TD> getpath</TD></TR><TR><TD>
+pop </TD><TD> pope</TD></TR><TR><TD>
+priority </TD><TD> setpriority</TD></TR><TR><TD>
+prompt </TD><TD> setprompt</TD></TR><TR><TD>
+push </TD><TD> pushe</TD></TR><TR><TD>
+rall_calc_Rm </TD><TD> rallcalcRm</TD></TR><TR><TD>
+rancoord </TD><TD> randcoord</TD></TR><TR><TD>
+rand_comp </TD><TD> randcomp</TD></TR><TR><TD>
+randomfield </TD><TD> setrandfield</TD></TR><TR><TD>
+randomseed </TD><TD> randseed</TD></TR><TR><TD>
+read_cell </TD><TD> readcell</TD></TR><TR><TD>
+rel_position </TD><TD> relposition</TD></TR><TR><TD>
+reschedule </TD><TD> resched</TD></TR><TR><TD>
+scale_parms</TD><TD> scaleparms</TD></TR><TR><TD>
+scale_tabchan </TD><TD> scaletabchan</TD></TR><TR><TD>
+sched </TD><TD> showsched </TD></TR><TR><TD>
+sendmsg </TD><TD> addmsg</TD></TR><TR><TD>
+set </TD><TD> setfield</TD></TR><TR><TD>
+setup_alpha </TD><TD> setupalpha </TD></TR><TR><TD>
+setup_gate </TD><TD> setupgate </TD></TR><TR><TD>
+setup_tau </TD><TD> setuptau </TD></TR><TR><TD>
+show </TD><TD> showfield </TD></TR><TR><TD>
+showbinding </TD><TD> showcommand </TD></TR><TR><TD>
+spatialfield </TD><TD> setspatialfield</TD></TR><TR><TD>
+status </TD><TD> getstat (function returns value) </TD></TR><TR><TD>
+status </TD><TD> showstat (prints to screen)</TD></TR><TR><TD>
+tweak_alpha </TD><TD> tweakalpha </TD></TR><TR><TD>
+tweak_tau </TD><TD> tweaktau </TD></TR><TR><TD>
+write_cell </TD><TD> writecell </TD></TR><TR><TD>
+xshow_on_top </TD><TD> xshowontop </TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>The following obsolete GENESIS 1 commands have been removed from GENESIS 2,
+either because they are no longer needed, or because have been replaced by a
+more general command or better way of accomplishing the same result.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Old command </TD><TD> Reason for removal </TD></TR><TR><TD>
+addfunc </TD><TD> used only when compiling libraries </TD></TR><TR><TD>
+autoshell </TD><TD> of no known use </TD></TR><TR><TD>
+bgstep </TD><TD> replaced by ``step -background''</TD></TR><TR><TD>
+click1, click2 </TD><TD> see 
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A> </TD></TR><TR><TD>
+delete_output_data </TD><TD> removed with print_out object </TD></TR><TR><TD>
+dropwhen </TD><TD> see 
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A> </TD></TR><TR><TD>
+endscript </TD><TD> use return statement to return from a script </TD></TR><TR><TD>
+getinfo </TD><TD> never implemented </TD></TR><TR><TD>
+getobjenv </TD><TD> see 
+<A HREF="Manual-11.html#Extended">Extended Objects</A> </TD></TR><TR><TD>
+graphpts </TD><TD> call ADDPTS action of 
+<A HREF="Manual-26.html#xplot">xplot </a></TD></TR><TR><TD>
+library </TD><TD> obsolete </TD></TR><TR><TD>
+listwhen </TD><TD> see 
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A> </TD></TR><TR><TD>
+object </TD><TD> used only when compiling libraries </TD></TR><TR><TD>
+newclass </TD><TD> used only when compiling libraries </TD></TR><TR><TD>
+read </TD><TD> not needed </TD></TR><TR><TD>
+restoreimage </TD><TD> replaced by simundump </TD></TR><TR><TD>
+saveimage </TD><TD> replaced by simdump </TD></TR><TR><TD>
+setobjenv </TD><TD> see 
+<A HREF="Manual-11.html#Extended">Extended Objects</A> </TD></TR><TR><TD>
+simplot </TD><TD> same as xsimplot </TD></TR><TR><TD>
+source </TD><TD> not needed </TD></TR><TR><TD>
+statusline </TD><TD> obsolete and terminal-dependent </TD></TR><TR><TD>
+when </TD><TD> see 
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A> </TD></TR><TR><TD>
+xaddpts </TD><TD> call ADDPTS action of 
+<A HREF="Manual-26.html#xplot">xplot </a> </TD></TR><TR><TD>
+xcreate </TD><TD> obsolete XODUS alias for create</TD></TR><TR><TD>
+xevent </TD><TD> see 
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A> </TD></TR><TR><TD>
+xget </TD><TD> subsumed by getfield </TD></TR><TR><TD>
+xgraphfile </TD><TD> now an ASCII option of xsimplot </TD></TR><TR><TD>
+xkill </TD><TD> subsumed by delete command for widgets</TD></TR><TR><TD>
+xsendevent </TD><TD> see 
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A> </TD></TR><TR><TD>
+xset </TD><TD> subsumed by setfield </TD></TR><TR><TD>
+xshowall </TD><TD> use ``xshow /##[ISA=xform]''</TD></TR><TR><TD>
+xshowconn </TD><TD> replaced by xtree actions</TD></TR><TR><TD>
+xtreetrunc </TD><TD> use xtree TRUNCATE action </TD></TR><TR><TD>
+xupdatepix </TD><TD> subsumed by xupdate, PROCESS or RESET actions</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>The following commands are new in GENESIS 2.  These are described in the
+<A HREF="Manual-25.html#Commands">GENESIS Command Reference</A>.</P>
+<P>
+<TABLE BORDER><TR><TD>
+addclass </TD><TD>addfield </TD><TD>addforwmsg </TD><TD>addmsgdef </TD></TR><TR><TD>
+addobject </TD><TD>callfunc </TD><TD>enddump </TD><TD>deleteforwmsg</TD></TR><TR><TD>
+deletemsgdef</TD><TD>file2tab </TD><TD>getdefault </TD><TD>getelementlist</TD></TR><TR><TD>
+getsyncount</TD><TD>getsyndest </TD><TD>getsynindex </TD><TD>getsynsrc </TD></TR><TR><TD>
+initdump </TD><TD>isa </TD><TD>listactions </TD><TD>loadtab </TD></TR><TR><TD>
+normalizeweights </TD><TD>pixflags </TD><TD>planarconnect </TD><TD>planardelay </TD></TR><TR><TD>
+planarweight </TD><TD>resetsynchanbuffers</TD><TD>rmsmatch </TD><TD>setdefault </TD></TR><TR><TD>
+setfieldprot </TD><TD>setspatialfield </TD><TD>simdump </TD><TD>simobjdump </TD></TR><TR><TD>
+simundump </TD><TD>strsub </TD><TD>swapdump </TD><TD>syndelay </TD></TR><TR><TD>
+tab2file </TD><TD>volumeconnect </TD><TD>volumedelay </TD><TD>volumeweight </TD></TR><TR><TD>
+warning </TD><TD>xflushevents </TD><TD>xgetstat </TD><TD>xinit </TD></TR><TR><TD>
+xmap </TD><TD>xpixflags </TD><TD>xps </TD><TD>xtextload </TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss2.5">2.5 Objects</A></H2>
+
+<P>The names of GENESIS objects have not changed in version 2.  However, some
+new objects have been added, new fields and actions have been added to some,
+and a few have been removed.  Most of the XODUS draw widgets have undergone
+considerable change, although there is a high degree of backwards
+compatibility for the simple widgets.  For detailed descriptions of the
+XODUS objects, see the individual object reference summaries and the
+chapter on ``Advanced XODUS Techniques'' in ``The Book of GENESIS''.</P>
+
+<H3>New GENESIS Objects</H3>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD> Description </TD></TR><TR><TD>
+hebbsynchan</TD><TD>Like synchan, with Hebbian modification of weights</TD></TR><TR><TD>
+randomspike</TD><TD>Generates random spike events, replacing random</TD></TR><TR><TD>
+spikegen</TD><TD>Performs threshold spike discrimination, replacing spike</TD></TR><TR><TD>
+synchan</TD><TD>Synaptically activated channel, replacing channelC2</TD></TR><TR><TD>
+synchan2</TD><TD>Alias for synchan</TD></TR><TR><TD>
+xaxis</TD><TD>Makes axis for plots - is created by xgraph</TD></TR><TR><TD>
+xcoredraw</TD><TD>Foundation object class for displaying pixes.</TD></TR><TR><TD>
+xdumbdraw</TD><TD>Demonstration object class for displaying pixes.</TD></TR><TR><TD>
+xgif</TD><TD>Draws gif images as a pix inside a draw widget</TD></TR><TR><TD>
+xpix</TD><TD>Base object for all pix widgets </TD></TR><TR><TD>
+xplot</TD><TD>Draws graphical plots - is created by xgraph</TD></TR><TR><TD>
+xsphere</TD><TD>Example pix which draws a filled circle</TD></TR><TR><TD>
+xtree</TD><TD>Displays/manipulates relationships between elements and objects</TD></TR><TR><TD>
+xvar</TD><TD>Displays numerical values graphically with shape and color</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H3>Removed from GENESIS 2 </H3>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Old object </TD><TD> Reason for removal </TD></TR><TR><TD>
+xconn </TD><TD> Now incorporated into xview</TD></TR><TR><TD>
+xelmtree </TD><TD> Now incorporated into xtree</TD></TR><TR><TD>
+xfileview </TD><TD> Implemented by sending messages from disk_in to xview</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss2.6">2.6 SLI Syntax Changes</A></H2>
+
+<P>In addition to changes in some command names, there have been some changes
+to the syntax of statements used by the Script Language Interpreter.</P>
+
+<H3>Function Arguments</H3>
+
+<P>GENESIS 1 used both the ``command form'' and the ``function call form'' of
+specifying function arguments.  In addition, it required that the function
+call form be used when a function is expected to return a value, as with
+``get'' (now ``getfield'').  GENESIS 2 uses only the command form.  Thus,
+you can no longer type a command as ``commandname(arg1,arg2...)''.  The new
+syntax for command invocation in expressions is to delimit the command and
+its arguments with curly braces.</P>
+<P>For example, the GENESIS 1.4 version of <EM>Scripts/tutorials/tutorial3.g</EM>
+used:
+<PRE>
+    set /cell/soma inject {get({dialog}, value)}
+</PRE>
+
+GENESIS 2 uses:
+<PRE>
+    setfield /cell/soma inject {getfield {dialog} value}
+</PRE>
+</P>
+<H3>Operands in Expressions</H3>
+
+<P>The other change is in how operands in expressions are handled.  For
+arithmetic operators, any string arguments are cast to floating point.  For
+logical and bitwise operators, all operands are cast to integers.
+Comparison operators are unchanged.  The string concatenation operation,
+which was previously provided using the + operator when both operands were
+strings, has been replaced by the @ operator which casts both operands to
+strings and concatenates them.  The precedence for @ is the same as for +, -,
+etc.  This is described in further detail under 
+<A HREF="Manual-3.html#Operators">Operators</A>.</P>
+
+
+<H2><A NAME="ss2.7">2.7 Synaptic Connections</A></H2>
+
+<P>Synaptic connections are handled much differently under GENESIS 2 than in
+GENESIS 1.  With version 1, a spike generating object sends a message to an
+axon object and the ``connect'' command is used to link the axon with a
+channelC2 object.  With version 2, messages are used from a spike generating
+object to a synchan object, which incorporates the features of both the axon
+and the synaptically activated channelC2.  This replaces the idiosyncratic
+``axonal connection'' with standard GENESIS elements and messages, allowing
+easier access to synaptic data at both the script and C levels.  The
+relevant GENESIS commands are summarized in 
+<A HREF="Manual-14.html#Connections">Synaptic Connections</A>.  An example of this new method of implementing
+connections may be found in <EM>Scripts/tutorials/tutorial4.g</EM>.</P>
+<P>In order to provide backwards compatibility with GENESIS 1 and to ease the
+process of converting existing simulations, the old-style connection objects
+and commands have been preserved in a connection compatability library.
+This library (oldconn) may be compiled as an optional part of the GENESIS
+2.0 release.  Setting and getting axon connection fields is provided via the
+new setconn and getconn commands (which are only available in the
+compatability library).  The convert utility converts set and get commands
+on connections to use setconn and getconn.</P>
+
+
+<H2><A NAME="ss2.8">2.8 Extended Fields</A></H2>
+
+<P>Environment variables of objects and their elements have now been replaced
+with extended fields.  The addfield and deletefield commands are used to add
+and delete extended fields.  The setfield, getfield, showfield, setdefault,
+and getdefault commands work the same for extended fields as for predefined
+fields.  For example, the GENESIS 1 command
+<PRE>
+    set -env /cell/soma area 1e-9
+</PRE>
+
+would be replaced by
+<PRE>
+
+    if (!{exists /cell/soma area})
+        addfield /cell/soma area
+    end
+    setfield /cell/soma area 1e-9
+</PRE>
+</P>
+
+<H2><A NAME="ss2.9">2.9 Extended Objects</A></H2>
+
+<P>GENESIS now has an an extended object facility for the creation of new
+objects at the script level.  This allows for prototyping new objects,
+creating higher level or model specific objects built from other GENESIS
+objects, without the need for writing C code to be compiled into GENESIS.
+The extended field facility described above may be used to create additional
+fields for these new objects.  When a new object is defined, the user can
+specify script functions to be called when an associated action is called on
+these types of elements.  Once an extended object is defined, it may be used
+in the same manner as any built-in object and elements created from the
+object behave just as elements of built-in objects.  The construction and use
+of extended objects is described in 
+<A HREF="Manual-11.html#Extended">Extended Objects</A>.</P>
+
+
+<H2><A NAME="ss2.10">2.10 Saving Simulations</A></H2>
+
+<P>The save command file format has changed to include the number of
+saved values for each element.  Old save files are not compatible
+with the new format and cannot be read in by restore.  Three new commands
+(simdump, simundump, and simobjdump) have been provided for saving the
+state of a simulation.  These replace the old saveimage and restoreimage
+commands, but are not equivalent.</P>
+
+
+<H2><A NAME="ss2.11">2.11 Script Conversion</A></H2>
+
+<P>Because of these major changes in command names, options, and script
+language syntax, GENESIS 1 scripts will generally not run under GENESIS 2.
+The convert program converts GENESIS 1 compatible scripts to use GENESIS 2
+syntax, commands and features.  Some features have changed dramatically
+enough that an automatic conversion to the new features is not feasible.  In
+these cases, convert generates script code for compatibility libraries which
+support the GENESIS 1 features.
+Although some scripts can be converted and run successfully without any manual
+changes to the converted scripts, it will often be necessary to make
+additional changes.  The use of convert and a discussion of conversion
+issues is given in 
+<A HREF="Manual-22.html#Convert">Converting GENESIS 1 Scripts to GENESIS 2</A> and in the man page for convert.</P>
+
+
+<H2><A NAME="ss2.12">2.12 The Parallel Library</A></H2>
+
+<P>GENESIS 2 included the first release of a parallel processing
+capability, which allows a model to be partitioned and run on
+workstation clusters and on parallel supercomputers.  Single
+simulations can be parallelized and automated searches of parameter
+space can be performed in parallel.  This is described in a separate
+manual.  As the parallel library is under continual development, and
+may not be of interest to all GENESIS users, it is not included in the
+GENESIS distribution file, but is available
+separately.  You may download the latest version of the parallel
+library and its documentation from the
+<A HREF="http://www.genesis-sim.org/GENESIS/">GENESIS WWW site</A>.
+
+<H2><A NAME="ss2.13">2.13 Rallpacks Benchmarks</A></H2>
+
+
+<P>Rallpacks are a set of benchmarks for evaluating neuronal
+simulators for both speed and accuracy.  As both of these criteria are
+important when choosing a simulator, we are now including Rallpacks
+within the GENESIS distribution, in the directory
+<EM>genesis/rallpack</EM>.</P>
+
+
+<HR>
+<A HREF="Manual-1.html">Previous</A>
+<A HREF="Manual-3.html">Next</A>
+<A HREF="Manual.html#toc2">Table of Contents</A>
+</BODY>
+</HTML>

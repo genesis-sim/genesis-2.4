@@ -1,0 +1,33 @@
+Fileview examples
+
+By Venkat Jagadish 1996 - Caltech
+Adapted from Scripts/examples/XODUS/fileview/generate.g by Upi Bhalla 1995
+
+This directory illustrates dumping and restoring simulation data from files,
+using the variable object in the diskio library.  The xgraph object is used 
+for the display.  The documentation for these two objects gives further 
+details of their use.
+
+Note:
+
+Since variables can be arbitrarily created only in file formats that 
+support the notion of variables to store data, such as in netcdf, 
+these scripts will fail if the diskio element attempts to support FMT1.
+
+Files:
+1. generate.g
+	This is derived from one of the xview examples. It generates the data
+	that will be stored in the netcdf format
+2. testfile.nc
+	This is the data file produced by generate.g. It is entirely portable
+	between different machine architectures. 
+3. replaygraph.g
+	This reads in data from the file and uses the variable object to plot 
+	on an xgraph.
+
+
+The difference in using variables for sending and receiving messages directly
+as opposed to the diskio element is in the calculation of element fields.
+'ny' for the diskio is not set in this case and has to be calculated from
+the number of variables. This method is still crude since arbitrary variables
+can be created in a netcdf situation.

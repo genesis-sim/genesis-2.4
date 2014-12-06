@@ -1,0 +1,10 @@
+The ddsyn channel is similar to a synchan with an internal table to transform
+voltage to activation.  In a typical usage, it receives its activation, not
+in the form of a delta-function spike from an axonal connection, but from
+its internal table in repsponse to a voltage sent from the pre-synaptic
+dendrite compartment.  This allows it to model dendro-dendritic synapses.
+
+The ddsyn.g script creates a ddsyn with a V_PRESYN message
+and an equivalent combination of a synchan getting an ACTIVATION message
+from a table.  Various values of voltage are sent to ddsyn or the external
+table as the simulation is stepped in increments of 100 msec.

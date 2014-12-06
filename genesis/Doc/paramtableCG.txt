@@ -1,0 +1,195 @@
+Object Type:    paramtableCG
+
+Description:    This object implements a conjugate gradient descent
+                algorithm as part of a parameter search process, and also
+                stores the parameter tables and various bookkeeping
+                information relating to the parameter search process.
+
+Author:         Mike Vanier, Caltech
+
+-------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+Data structure: paramtableCG_type  [in src/param/param_struct.h]
+
+Size:       308 bytes (more when tables are loaded)
+
+Fields:     iteration_number        iteration number
+            num_params              total number of parameters
+            num_params_to_search    number of parameters to search over
+            search                  array of flags:
+                                    0 = don't search this parameter,
+                                    1 = do search this parameter
+            type                    type of parameter:
+                                    0 = additive,
+                                    1 = multiplicative
+            center                  of parameter values in range
+            range                   of parameter values
+            min                     of parameter values
+            max                     of parameter values
+            label                   label of parameter,
+                                    for documentation purposes only
+            current                 array of parameter values
+                                    to be simulated next
+            current_match           match value of current parameter set
+                                    being simulated
+            best                    array of parameter values
+                                    giving best match so far
+            best_match              best match value
+            new_best_match          flag: 1 if last match was the best so far
+            done                    flag: 1 when the simulation is finished
+            filename                where parameter information is
+                                    stored/saved as a binary file
+            alloced                 flag: 1 means tables are allocated
+            linemin_number          which line minimization we're doing;
+                                    for bookkeeping only
+            state                   state of parameter search:
+                                    0 = random searches at startup
+                                    1 = gradient calculation
+                                    2 = line minimization
+            deriv_method            0 = do a proper derivative;
+                                    1 = quick-and-dirty estimate
+                                        (not yet implemented)
+            deriv_index             index of parameter we're taking
+                                      the derivative of
+            deriv_h_init            initial values of h (the spatial step
+                                      size) to use in derivative
+                                      calculations
+            deriv_h_decrease        how fast to decrease h
+            deriv_h_min             lowest permissible value of h
+            deriv                   array of 1st partial derivatives:
+                                      d(match)/d(param)
+            dir                     direction vector
+            tolerance               tolerance of parameter search as a whole
+            linemin_tolerance       tolerance of line minimization
+                                      routines
+
+
+-------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:   ParamtableCG  [in src/param/paramtableCG.c]
+
+Classes:    param
+
+Actions:    Note: required arguments to actions are in <angle brackets>;
+                  optional arguments are in [square brackets].
+
+            CREATE      Creates the object (not invoked directly).
+
+            TABCREATE <num_params>
+                        Initializes the object for a given number of
+                        parameters.
+
+            DELETE      Deletes all allocated memory.
+
+            TABDELETE   Same as DELETE.
+
+            INITSEARCH  Initializes the search process.
+
+            RANDOMIZE   Picks a random parameter set from the parameter
+                        space as a potential starting point for the search.
+
+            EVALUATE <match>
+                        Copies the match value into the current_match field.
+                        If this match is the best match so far, this action
+                        copies the current parameter set into the best
+                        parameter set and the current_match field into the
+                        best_match field.
+
+            UPDATE_PARAMS
+                        Chooses the next set of parameters to
+                        simulate based on past results.
+
+            UPDATE_PARAMS2
+                        Increments iteration_number.  Only used in
+                        random searches at the beginning of a CG
+                        parameter search.
+
+            LOADBEST    Copies best parameter values to current values;
+                        can be used to start the search at the best values
+                        found so far.
+
+            RESTART     Re-initializes parameter search at the
+                        best point found so far.
+
+            SAVE [filename]
+                        Saves the object as a binary file.  If no
+                        argument given, use the "filename" field
+                        of the element.
+
+            SAVEBEST <filename>
+                        Saves the best parameter set to an ascii file.
+
+            RESTORE [filename]
+                        Restores the object from a binary file.  If no
+                        argument given, use the "filename" field of the
+                        element.
+
+            RESTOREBEST Restores the best parameter table from a text file.
+
+            DISPLAY     Displays the best parameter set obtained so
+                        far on stdout.
+
+            CHECK       Runs a series of self-check diagnostics on this
+                        object.
+
+Messages:   none
+
+-------------------------------------------------------------------------
+
+Notes:      This object stores parameter tables and calculates new tables
+            to be simulated in a parameter search process using a
+            conjugate gradient-descent algorithm.  Here is a brief
+            description of the algorithm:
+
+            The conjugate-gradient (CG) method is a type of gradient
+            descent algorithm.  In this method the gradient of the match
+            function at a given point in parameter space and the direction
+            of steepest descent with respect to this function are computed.
+            A line minimization in the direction of steepest descent is
+            done to find the point on the line with the best match value.
+            A new gradient is calculated at this point and the procedure is
+            iterated until the method converges to a local minimum of the
+            matching function.  Successive line minimizations are done in
+            directions which are "conjugate" to one another so that
+            successive minimizations are as nearly independent of each
+            other as possible.  In theory this will guarantee that the
+            parameter search will find a local minimum of the objective
+            function.
+
+            The termination criteria used by the algorithm is that either
+            (a) the gradient must be very close to zero, or (b) successive
+            line minimizations must produce nearly identical results.  Note
+            that this can happen fairly early in the search, resulting in
+            rapid convergence to a local minimum which is nowhere near the
+            global minimum.  Welcome to gradient-descent algorithms :-)  One
+            way around this is to simply rerun the search from random
+            starting points again and again until you find better matches.
+            A better alternative is to use the simulated annealing (SA)
+            method instead of this one, which also incorporates a
+            (modified) gradient descent algorithm so that you get the best
+            of both worlds (i.e. ability to escape from local minima
+            characteristic of SA methods, and convergence to local minima
+            characteristic of gradient descent algorithms).
+
+            The fields deriv_h_init, deriv_h_decrease, deriv_h_min do not
+            have to be set explicitly; they are set to "reasonable" values
+            by default.  deriv_h_init is actually an array of values, one
+            per parameter.  The (hidden) field h represents the spatial
+            step size used in the derivative calculation.  You can find
+            more information about this in the source code; don't mess with
+            it unless you know what you're doing or your results will
+            probably be worse.
+
+            The code for this routine was adapted from the conjugate
+            gradient code in Numerical Recipes in C, 2nd Ed., by Press
+            et. al. (chapter 10).  The actual code is substantially
+            different but the algorithm is essentially the same.
+
+Example:    See Scripts/param/CG for demo scripts.
+
+See also:   Parameter Search (Param), Paramtable, setsearch, initparamCG,
+            paramtableBF, paramtableGA, paramtableSA, paramtableSS

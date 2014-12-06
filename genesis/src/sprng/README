@@ -1,0 +1,57 @@
+
+          SPRNG: Scalable Parallel Random Number Generator libraries 
+          ----------------------------------------------------------
+                      http://www.ncsa.uiuc.edu/Apps/SPRNG/
+ 
+/* Disclaimer: NCSA expressly disclaims any and all warranties, expressed */
+/* or implied, concerning the enclosed software.  The intent in sharing   */
+/* this software is to promote the productive interchange of ideas        */
+/* throughout the research community. All software is furnished on an     */
+/* "as is" basis. No further updates to this software should be           */
+/* expected. Although this may occur, no commitment exists. The authors   */
+/* certainly invite your comments as well as the reporting of any bugs.   */
+/* NCSA cannot commit that any or all bugs will be fixed.                 */
+
+IMPORTANT: Please read CHANGES.TEXT for the history of changes since
+the last release of SPRNG.
+ 
+The SPRNG libraries of generators produce good quality random numbers,
+and are also fast. They have been subjected to some of the largest
+random number tests, with around 10^13 RNs per test.
+
+Languages: C, C++, FORTRAN
+
+Platforms: Cray T3E, IBM SP2, SGI Power Challenge Array, Origin 2000,
+           CONVEX Exemplar, SUN workstations, PC running Linux, HP
+           workstations
+
+Generators: Modified Additive Lagged Fibonacci, Multiplicative Lagged
+            Fibonacci, Combined Multiple Recursive generator, three types of
+            Linear Congruential. 
+
+(The user can switch from one generator to another at link time,
+without modifying or recompiling the code.)
+
+Directory structure:
+
+  SRC:      SPRNG source code.
+
+  EXAMPLES: Example program that demonstrate the use of the SPRNG.
+
+  TESTS:    Test suite to verify the quality of sequential and parallel
+            random number generators.
+
+  DOCS:     Detailed documentation. For more up-to-date information:
+               http://www.ncsa.uiuc.edu/Apps/SPRNG/www/toc.html
+
+  include:  Header files for the user to include.
+
+  lib: The SPRNG libraries will go in here when SPRNG is built.
+
+Building the library:
+
+For GENESIS, this library should be compiled from the parent directory's
+Makefile which will pass all the appropriate variables thru to the
+local Makefile.
+
+Please see documentation for details.

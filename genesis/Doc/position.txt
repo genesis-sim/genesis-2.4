@@ -1,0 +1,22 @@
+Routine Name:	position
+
+Description:	Sets xyz coordinates of an element and all of its children.
+
+Usage:		position element x y z
+
+		element		element whose coordinates to specify
+
+		x, y, z		x, y, z coordinates to give element; to
+				specify absolute coordinates, use a number;
+				to specify coordinates relative to the current
+				position, use the form Rnumber; to ignore the
+				coordinate (leave it as it is), use I
+
+Example:	position /neuron 10 20 4.6
+		position /neuron I I R5.2
+		position /neuron 1.5 R1.1 I
+		position /V1/horiz 0 0 {-5 * V1_SEPZ}
+
+Notes:		This routine affects the positions of the child elements as
+		well as that of the parent.
+

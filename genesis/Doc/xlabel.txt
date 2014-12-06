@@ -1,0 +1,65 @@
+Object Type:	xlabel
+
+Description:	Static display for a text string.
+
+Author:		Maneesh Sahani Caltech July/92
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xlabel_type [in src/Xodus/widg/xlabel_struct.h]
+
+Size:		104 bytes
+
+Fields:		fg	Foreground color of text in label
+		bg	Background color.
+		xgeom	Position of left edge of label with respect to parent
+			form. This value is an integer. If it is suffixed with
+			a '%' symbol (eg set label xgeom 20%) then percent of
+			form size is used. Relative positions with respect
+			to other widgets can be specified by following the
+			distance with a :widgetname
+			(eg set label xgeom 20:otherwidget)
+		ygeom	Position of upper edge of label with respect to form.
+		wgeom	Width of label
+		hgeom	Height of label
+			The geometry fields can optionally be set on the
+			create line using the square brackets notation:
+			[xgeom,ygeom,wgeom,hgeom]
+		label	optional text string to display. Defaults to
+			widget name in the GENESIS hierarchy.
+		font	optional font for text.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XLabel [in src/Xodus/widg/xlabel.c]
+
+Classes:	widget
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+		The xlabel does not perform any computational operations.
+
+Example
+		create xform /form [0,0,500,500]
+		create xlabel /form/label1 [0,0,30%,50%] \
+			-label "I am a label" \
+			-fg red
+		create xlabel /form/label2 [0:/form/label1,0,50%,20%] \
+			-label "I am another label" \
+			-font r24 \
+			-bg red
+		xshow /form
+
+See also:	XODUS documentation.
+
+

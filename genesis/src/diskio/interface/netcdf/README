@@ -1,0 +1,24 @@
+     Summary: the netCDF (network Common Data Form) interface in GENESIS
+
+		    Michael Hucka <mhucka@bbb.caltech.edu>
+				 1999-10-12
+
+The "netcdf-3.4" subdirectory here contains the entire contents of the
+netcdf-3.4 distribution, plus a file named "copyright.html" which is the
+online version of the copyright notice for netCDF 3.4.  (Despite what the
+manifest and other files claim, the netCDR 3.4 distribution did not contain a
+file called "COPYRIGHT".  In order to make sure that there is a copyright
+notice somewhere, we manually added the copyright page from the netCDF web
+site.)
+
+NetCDF (network Common Data Form) is an interface and library for
+array-oriented data access.  It was developed at the Unidata Program Center
+in Boulder, Colorado, USA.  The home page for netCDF is
+
+		http://www.unidata.ucar.edu/packages/netcdf/
+
+Documentation for netCDF is available online at
+
+	    http://www.unidata.ucar.edu/packages/netcdf/docs.html
+
+Please note the copyright notice in the file "netcdf-3.4/copyright.html".

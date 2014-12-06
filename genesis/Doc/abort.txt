@@ -1,0 +1,13 @@
+Routine Name:	abort
+
+Description:	Cleanly interrupts simulation in progress.
+
+Usage:		abort
+
+Example:	abort
+
+Notes:		
+
+See also:	stop, step
+
+

@@ -1,0 +1,12 @@
+The genesis/src/contrib directory contains contributed programs that are
+separate from the GENESIS installation, and that are not compiled by
+default.
+
+The xplot directory contains source code and a Makefile for the xplot program,
+a plotting program originally written by Matt Wilson, and modified by Mike
+Vanier.  This program (which is unrelated to the GENESIS object of the
+same name), may be used to view the results of parameter fits and to
+compare them with the target data.  It also has many other uses.  The file
+xplot.txt describes the many commands and options that can be used with
+xplot.  xplot/README gives installation instructions.
+

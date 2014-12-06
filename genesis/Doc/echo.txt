@@ -1,0 +1,36 @@
+Routine Name:	echo
+
+Description:	Prints out its arguments to the console.
+
+Usage:		echo [arguments] [-nonewline] [-format format-string]
+
+		arguments	strings, or expressions enclosed in braces
+
+		-nonewline	do not include carriage return at end of line
+
+		format-string	a string of the form "%[flag][width]s", where
+				"width" is the minimum number of characters
+				to be output.  If the output width is less
+				than this, it is padded with blanks.  "flag"
+				is as in C; "0" means pad with zeroes, "-"
+				means left justify.  (to construct mixed
+				formats, use multiple echo commands with
+				-nonewline to place them on a single line)
+
+Example:	
+		genesis >  int five = 5
+		genesis >  echo five
+		five
+		genesis > echo { five }
+		5
+
+		genesis > echo "Give me" -n; echo space! -f %20s
+		Give me              space!
+
+Notes:		The echo routine is used to print output to the command
+		interpreter window.  If echo is followed by a string (or a
+		quoted string) that string will be printed.  If echo is
+		followed by a string enclosed in curly brackets, then the
+		value assigned the variable named by the string will be
+		printed.
+

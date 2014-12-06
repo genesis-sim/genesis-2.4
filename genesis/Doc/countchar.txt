@@ -1,0 +1,15 @@
+Routine Name:	countchar
+
+Description:	Counts occurrences of specified character in string.
+
+Usage:		number-of-occurrences = {countchar string char}
+
+		number-of-occurrences	returned as integer indicating how
+					many occurences of char were found
+					in string
+
+Example:	genesis >  echo {countchar "abcbdb" b}
+		3
+
+Notes:		
+

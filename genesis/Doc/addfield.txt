@@ -1,0 +1,30 @@
+Routine Name:	addfield
+
+Description:	Add an extended (user-defined) field to an element.
+
+Usage:		addfield [element] field-name [-indirect element field]
+			[-description text]
+
+		field-name	name of the new field to be added to element
+
+		-indirect	make the field-name an alias for the a field
+				in another element
+
+		-description	add a descriptive text string
+
+Example:	addfield /cell/soma area -d "Area of the compartment"
+
+Notes:		If you have a compartment, /soma, with a hh_channel
+		/soma/hh_Na, then
+
+                    addfield /soma Gk -indirect hh_Na Gk
+
+                will add a field to /soma called Gk which is an alias for
+		/soma/hh_na Gk.  Note that the path in the -indirect option
+		is relative to the element to which you are adding the
+		field.  The indirect element path can also be an absolute
+		path.
+
+
+See also:	deletefield
+

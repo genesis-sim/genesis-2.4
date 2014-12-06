@@ -1,0 +1,18 @@
+Routine Name:	acos
+
+Description:	Returns angle (in radians) corresponding to given cosine.
+
+Usage:		angle-in-radians = {acos cosine}
+
+Example:	genesis >  echo { acos 1 }
+		0
+
+		genesis >  float degrees_per_radian = 360 / (2 * 3.1415926)
+		genesis >  echo {{ acos 0.707} * degrees_per_radian}
+		45.00865245
+
+Notes:		
+
+See also:	cos
+
+

@@ -1,0 +1,64 @@
+OBJECT				KPORES			3/14/92 (AS)
+
+DESCRIPTION:
+    Simulates a population of potassium ion channel proteins (pores)
+    embedded in a patch of membrane over an isopotential region.  Each
+    individual pore undergoes standard Markov kinetics through a five state
+    scheme:
+
+	      4an->        3an->        2an->         an->
+	[n0]---------[n1]---------[n2]---------[n3]---------[n4]
+	      <-bn         <-2bn        <-3bn        <-4bn
+
+	where [n4] = Open State and an and bn have voltage dependencies 
+	given by:
+
+	an = (alpha_A + alpha_B*Vk)/(alpha_C + exp((alpha_D+Vk)/alpha_F))
+
+	bn = (beta_A + beta_B*Vk)/(beta_C + exp((beta_D+Vk)/beta_F))
+
+	The total population of pores is given by Nt.
+	The total number of pores within each of the five stable states
+	at any given iteration is given by n0, n1, n2, n3, n4, respectively.
+	The total number of pores in the open stable state is given
+	by No = n4.
+	The open state conductance of a pore is given by Gmax.
+	The effective conductance for the population of pores at any
+	given iteration is then Gk = Gmax*No.
+
+SPECIFICATIONS:
+    FUNCTION   		KPorePop()
+    DATA STRUCTURE   	K_pore_type
+    CLASS  		segment membrane
+    SIZE   		?? bytes
+    AUTHOR  		A. Strassberg Caltech 3/92
+
+ACTIONS:
+    CHECK 	null
+    RESET	sets initial distribution of pores into the various stable
+		states based upon the equilibrium solutions to the Markov
+		matrix for given Vk.
+    PROCESS 	updates the distribution of the stable states of the
+		population based upon the rate constants an and bn, derived
+		from the current transmembrane voltage Vk.
+    INIT 	null
+
+MESSAGES:
+    VOLTAGE    	sends transmembrane voltage Vk to the population of pores.
+		This Vk is used to update the state distribution after each
+		iteration.
+
+FIELDS:
+    See DESCRIPTION
+
+
+RELATED COMMANDS/TOPICS:
+    Napores
+
+ERROR MESSAGES:
+
+BUGS:
+
+NOTES:
+    See Strassberg and DeFelice, 1993, Neural Computation 5:6
+    and the demonstration scripts in Scripts/examples/pore

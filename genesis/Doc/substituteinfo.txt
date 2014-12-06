@@ -1,0 +1,22 @@
+Routine Name:       substituteinfo
+
+Description:        Lists the substitutions made with the use of objsubstitute
+                    and msgsubstitute
+
+Usage:              substituteinfo
+
+Example:            genesis > objsubstitute compartment mycompt
+                    genesis > substituteinfo
+                    Number of object substitutions: 1
+                    0   orig=compartment        new=mycompt
+
+                    Number of msg substitutions: 0
+
+Notes:              objsubstitute and msgsubstitute are used to allow
+                    you to save an object of one type using simobjdump and
+                    simdump, and then use simundump to reload it as a
+                    different type.  substituteinfo provides information
+                    about these substitutions.
+
+See also:           objsubstitute, msgsubstitute, simobjdump, simdump,
+                    swapdump, simundump

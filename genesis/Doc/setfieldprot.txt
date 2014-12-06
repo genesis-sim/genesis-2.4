@@ -1,0 +1,36 @@
+Routine Name:	setfieldprot
+
+Description:	Set the accessibility level element fields.
+
+Usage:		setfieldprot element -readwrite fields ... -readonly fields ...
+                    -hidden fields ...
+
+		element		element for which to change field protections
+	
+		-readwrite	make the following fields readwrite
+
+		-readonly	make the following fields readonly
+
+		-hidden		make the following fields hidden
+
+		-debug		turn on debugging mode; all hidden fields
+				are treated as if they were readonly and
+				any field may be made readwrite
+
+		-nodebug	turn off debugging mode
+
+Notes:		Hidden fields are not presented by showfield and are
+		not readable in any way.  The presence of hidden fields
+		may be determined using the showobject command.
+
+		NOTE: The -debug option is intended to be used when
+		debugging new objects.  Hidden and readonly fields
+		should not usually be changed to readwrite as these
+		fields are either private fields or computed by the
+		object.  Setfieldprot will give a warning if a built in
+		field is being made more accessible than the protection
+		defined by the built in object.  If it is necessary to
+		use debug mode to run a simulation please email the
+		GENESIS development group and report the problem.
+
+See also:	addfield, showobject, Extended

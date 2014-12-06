@@ -1,0 +1,21 @@
+Routine Name:	round
+
+Description:	Rounds decimal number to nearest integer value.
+
+Usage:		rounded-value = {round number}
+
+		rounded-value		returned as integer
+
+		number			integer or floating-point number
+					to round
+
+Example:	genesis > echo { round 3.333 }
+		3
+		genesis > echo { round 3.666 }
+		4
+
+Notes:		This routine converts any number to an integer by rounding
+		to the nearest whole number.
+
+See also:	trunc
+

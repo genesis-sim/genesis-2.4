@@ -1,0 +1,282 @@
+  10.  Objects
+
+  The GENESIS distribution contains a large number of predefined element
+  types, known as ``objects''.  These are the templates from which
+  simulation elements may be created.  This terminology can be somewhat
+  confusing, because a GENESIS object is similar to what object-oriented
+  languages such as Java or C++ call a ``class'', and a GENESIS element
+  corresponds to an ``object'' in these languages.  ``Elements''
+  (Elements.txt) are created as instantiations of a particular object.
+
+  An object contains specification information needed to construct a
+  particular type of element.  The information contained in a object are
+  the functions needed to create and simulate this type of element, and
+  its data structure, as well as the messages that it can receive, and
+  the actions that it can perform.  The documentation on ``Actions''
+  (Actions.txt) gives more information about GENESIS actions.  Objects
+  can also contain additional information such as a description of the
+  object and its data fields, and the author of the object.  Information
+  about a particular object can be displayed using the showobject
+  command.
+
+  The following objects are currently available within GENESIS:
+
+  10.1.  GENESIS Objects by Category
+
+  10.1.1.  Basic Objects
+
+  ______________________________________________________________________
+  Object    Description
+  ______________________________________________________________________
+  neutral   Empty object used for grouping, or basis for an extended object
+  ______________________________________________________________________
+
+  10.1.2.  Neuron Modeling Objects
+
+  Membrane Objects:
+
+  ______________________________________________________________________
+  Object           Description
+  ______________________________________________________________________
+  compartment      Axially asymmetric compartment; Ra is located on one side
+  izcell           Izhikevich simple spiking neuron model (see Doc/izcell.txt)
+  symcompartment   Like compartment, with Ra divided into two equal components
+  unit             An isolated compartment that receives INJECT messages
+
+  Channel/Gate Objects:
+
+  ______________________________________________________________________
+  Object          Description
+  ______________________________________________________________________
+  Kpores          K channel with Markovian (stochastic) kinetics
+  Mg_block        Provides voltage and [Mg]-dependent blocking of a channel
+  Napores         Na channel with Markovian (stochastic) kinetics
+  SynE_object     Electrical synaptic transmission (see Doc/SynE_object.txt)
+  SynG_object     Graded synaptic inhibition (see Doc/SynG_object.txt)
+  SynS_object     Provides V-dependent modulation (see Doc/SynG_object.txt)
+  ddsyn           Modified synchan for dendrodendritic synapses
+  facsynchan      Like synchan, with synaptic facilitation and/or depression
+  hebbsynchan     Like synchan, with Hebbian modification of weights
+  hh_channel      Voltage dependent conductance using Hodgkin-Huxley parameters
+  leakage         Passive ``leakage'' channel with constant conductance
+  manuelconduct   Implements Perkel's receptor-mediated conductance model
+  synchan         Synaptically activated channel with presynaptic weights/delays
+  synchan2        Same as synchan; for backwards compatibility
+  tab2Dchannel    Channel with 2-D tables, e.g. for dependence on Vm and [Ca]
+  tabchannel      Hodgkin-Huxley type channel with tabulated parameters
+  tabcurrent      Tabulated non-ohmic ion current; also solves GHK equation
+  tabgate         Gate with tables for alpha/beta rate variables
+  vdep_channel    H-H channel; gets activation gate values from other elements
+  vdep_gate       Gate with Hodgkin-Huxley parameters for rate variables
+  ______________________________________________________________________
+
+  Ion Concentration Objects:
+
+  ______________________________________________________________________
+  Object        Description
+  ______________________________________________________________________
+  Ca_concen     Calculates ion concentration from current
+  concpool      Concentration pool without diffusion
+  difbuffer     First order diffusible buffer; constant total concentration
+  dif2buffer    First order diffusible buffer; variable total concentration
+  difshell      Concentration shell with one-dimensional diffusion
+  fixbuffer     First order fixed (non-mobile) buffer
+  fura2         Computes fura2 fluorescence in a single difshell
+  ghk           Calculates the Goldman-Hodgkin-Katz (constant field) equation
+  hillpump      Variation of Michaelis-Menten store pump
+  mmpump        Models a Ca-ATPase pump obeying Michaelis-Menten kinetics
+  nernst        Calculates Nernst potential from concentration and temperature
+  taupump       Simple pump with a variable time constant of removal
+  ______________________________________________________________________
+
+  The Ca_concen implements the simplest model for the change of calcium
+  (or other ion) concentration, with a rate of increase of the
+  intracellular ionic concentration proportional to the inward current,
+  and a single time constant for decay of the concentration.
+
+  When it is necessary to provide a more detailed model of variations of
+  calcium concentration within a compartment, the difshell is used to
+  divide the compartment into a number of shells and to model diffusion
+  between them.  It is typically coupled to buffers and/or pumps.  The
+  concpool provides a single shell model of a "well-mixed" concentration
+  pool without diffusion between shells.  As it can also couple to
+  buffers and pumps, it provides for multiple mechanisms for calcium
+  removal.
+
+  The buffers (e.g., fixbuffer) interact with a difshell or concpool to
+  model the binding of calcium to buffer molecules and to calculate the
+  concentrations of free and bound buffer molecules, using a kinetic
+  scheme with forward and backward rate constants for the binding and
+  release of calcium.  Diffusible (mobile) buffers are modeled with the
+  difbuffer and dif2buffer objects, which also provide for the diffusion
+  of buffer molecules (carrying bound calcium) between buffers.  The
+  ionic pumps provide various mechanisms to remove ions from the shell.
+
+  Miscellaneous Neural Objects:
+
+  ______________________________________________________________________
+  Object         Description
+  ______________________________________________________________________
+  hsolve         Implements Hines method for fast implicit solution of DEs
+  randomspike    Generates random spike events
+  receptor       Olfactory receptor-gives activation from weighted sum of odors
+  receptor2      More realistic implementation of receptor
+  site           Simple synaptic transformation that maps input to current
+  spikegen       Generates a spike when input crosses a threshold
+  ______________________________________________________________________
+
+  Obsolete objects used with GENESIS 1 axonal connections:
+
+           _____________________________________________________
+           axon         axonlink      channelA      channelB
+           channelC     channelC2     channelC3     defsynapse
+           random       synapse       synapseA      synapseB
+           spike
+           _____________________________________________________
+
+  (These undocumented objects are available only if the Connection
+  Compatibility Library has been installed.  They are not recommended
+  for use in new simulations, and are provided only for backwards
+  compatibility with simulations that were developed under GENESIS 1.)
+
+  10.1.3.  Accessory Objects
+
+  Miscellaneous Objects:
+
+  ______________________________________________________________________
+  Object            Description
+  ______________________________________________________________________
+  graded            undocumented buffer object - obsolete ???
+  linear            undocumented buffer object - obsolete ???
+  passive_buffer    undocumented buffer object - obsolete ???
+  periodic          undocumented buffer object - obsolete ???
+  playback          Updates its state from a pre-filled buffer
+  script_out        Executes a script function at each simulation step
+  sigmoid           Computes the sigmoidal transformation of the input
+  table             1-D table with various modes for output of contents
+  table2D           Has an internal 2-D table, with interpolation
+  ______________________________________________________________________
+
+  Device Objects:
+
+  ______________________________________________________________________
+  Object          Description
+  ______________________________________________________________________
+  PID             Proportional, Integral, Derivative feedback controller
+  RC              A resistance R, shunted by a capacitance C
+  autocorr        Calculates histograms of auto-correlations
+  calculator      Adds, subtracts, multiplies, and divides using messages
+  crosscorr       Calculates histograms of cross-correlations
+  diffamp         Difference amplifier-output proportional to input difference
+  efield          Extracellular field potential recording electrode
+  event_tofile    Records event times; e.g spikes or threshold crossings
+  expthresh       undocumented - obsolete ???
+  freq_monitor    Calculates running event (spike) frequency
+  funcgen         Function generator (sine, square, triangle, constant)
+  interspike      Generates an interspike interval histogram
+  peristim        Generates a peristimulus spike histogram
+  pulsegen        Pulse generator that can generate a variety of patterns
+  timetable       A table of time values for change of synaptic activation
+  ______________________________________________________________________
+
+  Input/Output Objects:
+
+  ______________________________________________________________________
+  Object         Description
+  ______________________________________________________________________
+  asc_file       Clocked write of data to a file in ASCII format
+  disk_in        Reads in a 2-d array of data from an ascii or binary file
+  disk_out       Clocked write of data to a file in binary format
+  diskio         Similar to disk_in/disk_out with portable binary NETCDF format
+  metadata       Used with diskio to read/write descriptive content
+  par_asc_file   Variation of asc_file for use with PGENESIS (see asc_file)
+  par_disk_out   Variation of disk_out for use with PGENESIS
+  print_out      undocumented - obsolete ???
+  res_asc_file   Like asc_file, with min time and value interval (see asc_file)
+  spikehistory   Outputs neuron ID and spike times to an ascii file
+  variable       Used with diskio to read/write binary data
+  ______________________________________________________________________
+
+  10.1.4.  Biochemical Kinetics Modeling Objects
+
+  ______________________________________________________________________
+  Object      Description
+  ______________________________________________________________________
+  concchan    Handles 1-D diffusion of molecules across a membrane
+  enz         Handles Michaelis-Menten enzyme kinetics with pool object
+  pool        A concentration pool used in kinetic reactions
+  reac        Handles standard kinetic reaction schemes with pool object
+  ______________________________________________________________________
+
+  (These objects are available only if the Kinetics Library has been
+  installed.)
+
+  10.1.5.  Parameter Search Objects
+
+  ______________________________________________________________________
+  Object         Description
+  ______________________________________________________________________
+  paramtableBF   Implements "brute-force" parametersearch
+  paramtableCG   Implements conjugate-gradient descent parameter search
+  paramtableGA   Implements genetic algorithm parameter search
+  paramtableSA   Implements simulated annealing parameter search
+  paramtableSS   Implements stochastic parameter search
+  ______________________________________________________________________
+
+  For a description of the use of the parammeter search  objects see
+  ``The GENESIS Parameter Search Library'' (Param.txt).
+
+  10.1.6.  Graphical (``XODUS Widget'') Objects
+
+  ______________________________________________________________________
+  Object      Description
+  ______________________________________________________________________
+  xaxis       Makes axis for plots -- automatically created by xgraph
+  xbutton     A button which executes script actions from mouse clicks
+  xcell       Similar to xview, but specialized for compartmental cell display
+  xcoredraw   The core class from which other draw widgets are subclassed
+  xdialog     A dialog box containing a text string
+  xdraw       Main object class for the display of pixes, with transforms
+  xdumbdraw   Simple example window for the display of pixes
+  xfastplot   High-speed graphic display similar to an oscilloscope
+  xform       The window containing other graphical elements
+  xgif        Draws GIF format images as a pix inside a draw
+  xgraph      Specialized draw widget for the display of plots
+  ximage      Displays a GIF format bitmapped image inside a form
+  xlabel      Rectangular label containing a text string
+  xpix        Basic object for drawing graphical objects (pixes) in 3-D space
+  xplot       Displays plots within a graph -- created by messages to xgraph
+  xshape      Pix used for drawing shapes -- often used for icons
+  xsphere     Example pix which draws a filled circle
+  xtext       A widget for the display and editing of text
+  xtoggle     Maintains toggle state and executes actions from mouse clicks
+  xtree       Displays and manipulates elements and their messages
+  xvar        Uses shapes to display numerical values with color, size, etc.
+  xview       Like an array of xvars, displaying multiple points in 3-D space
+  ______________________________________________________________________
+
+  For a description of the use of the XODUS objects see ``The XODUS
+  Graphical Interface'' (XODUS.txt).
+
+  10.2.  Related Commands
+
+  The GENESIS routines used to establish and work with objects include
+  the following.  (Remember: the following routines refer to these
+  element types in general, not specific instantiations of these
+  objects).
+
+  ______________________________________________________________________
+  Routine        Description
+  ______________________________________________________________________
+  getdefault     Returns the default value of an object field
+  listactions    Lists the actions which are defined for GENESIS objects
+  listclasses    Displays list of currently defined element classes
+  listobjects    Lists the available objects
+  setdefault     Sets the default value of an object field
+  showobject     Displays description of a specified object
+  ______________________________________________________________________
+
+  In addition, there are a number of routines that are used in the
+  specification and creation of ``Extended Objects'' (Extended.txt).  To
+  compile a new object into GENESIS, see ``Customizing GENESIS''
+  (Customizing.txt).

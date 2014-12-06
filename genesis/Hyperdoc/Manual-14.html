@@ -1,0 +1,122 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Synaptic Connections</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-13.html">Previous</A>
+<A HREF="Manual-15.html">Next</A>
+<A HREF="Manual.html#toc14">Table of Contents</A>
+<HR>
+<H2><A NAME="Connections"></A> <A NAME="s14">14. Synaptic Connections</A></H2>
+
+<P>Synaptic connections to neurons are established by sending a SPIKE message
+from a spiking class element to a synchannel class element.  Typically,
+this means using a 
+<A HREF="Manual-26.html#spikegen">spikegen </a> element to convert action
+potentials to delta-function ``spike events'' and establishing a SPIKE
+message to a 
+<A HREF="Manual-26.html#synchan">synchan </a> element.  The propagation delays and
+synaptic weighting for each synaptic connection are stored in the synchan.</P>
+<P>For example, to send somatic action potentials in cell1 to ``Ex_channel''
+in the dendrite compartment of cell2, one might use:
+<PRE>
+  create spikegen /cell1/soma/spike
+  setfield /cell1/soma/spike thresh 0 abs_refract 0.010 output_amp 1
+  addmsg  /cell1/soma  /cell1/soma/spike  INPUT Vm
+
+  addmsg /cell1/soma/spike /cell2/dend/Ex_channel SPIKE
+  setfield /cell2/dend/Ex_channel synapse[0].weight 10 synapse[0].delay 0.005
+</PRE>
+
+Here, this synaptic connection is labeled as ``synapse[0]'', as it was
+the first (of possibly several) to be established with the SPIKE
+message.  A more detailed example is given in
+<EM>Scripts/tutorials/tutorial4.g</EM>, and is discussed in Chapter
+15 of ``The Book of GENESIS''.  The <EM>Scripts/orient_tut</EM> directory
+contains examples of routines for setting up networks of synaptically
+connected cells.  Further details of the construction of neural
+circuits and networks are given in Chapter 18 of ``The Book of
+GENESIS'' (second ed.).  Also see the 
+<A HREF="Manual-26.html#synchan">synchan </a> documentation.</P>
+<P>The following GENESIS routines are used for establishing and working with
+synaptic connections:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#fileconnect">fileconnect </a> </TD><TD>Makes synaptic connections using a weight matrix file</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getsyncount">getsyncount </a> </TD><TD>Returns the number of synapses or SPIKE messages</TD></TR><TR><TD>
+</TD><TD>for synchan and spikegen objects.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getsyndest">getsyndest </a> </TD><TD>Returns the destination path or index of a synapse</TD></TR><TR><TD>
+</TD><TD>given the source path and number of the SPIKE message.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getsynindex">getsynindex </a> </TD><TD>Returns the synapse index in a synchan element</TD></TR><TR><TD>
+</TD><TD>given the source element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getsynsrc">getsynsrc </a> </TD><TD>Returns the source path of a synapse given the</TD></TR><TR><TD>
+</TD><TD>destination and the synapse index.</TD></TR><TR><TD>
+normalizeweights</TD><TD>Sets the cumulative synaptic weight on a synaptic</TD></TR><TR><TD>
+</TD><TD>channel to a given or randomly selected value.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#planarconnect">planarconnect </a></TD><TD>Connects one group of elements in a plane to another,</TD></TR><TR><TD>
+</TD><TD>using source and destination element lists and masks.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#planardelay">planardelay </a></TD><TD>Sets delays of a group of synapses receiving input</TD></TR><TR><TD>
+</TD><TD>from a list of presynaptic elements in a plane.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#planardelay2">planardelay2 </a> </TD><TD>Faster version of planardelay; requires destination</TD></TR><TR><TD>
+<A HREF="Manual-25.html#planarweight">planarweight </a> </TD><TD>Sets weights of a group of synapses receiving input</TD></TR><TR><TD>
+</TD><TD>from a list of presynaptic elements in a plane.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#planarweight2">planarweight2 </a> </TD><TD>Faster version of planarweight; requires destination</TD></TR><TR><TD>
+<A HREF="Manual-25.html#resetsynchanbuffers">resetsynchanbuffers </a></TD><TD>Shrinks the event buffer down to its original size</TD></TR><TR><TD>
+</TD><TD>for synchan objects.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#syndelay">syndelay </a> </TD><TD>Sets up delays of a group of postsynaptic objects.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#volumeconnect">volumeconnect </a></TD><TD>Connects one group of elements in a volume to another,</TD></TR><TR><TD>
+</TD><TD>using source and destination element lists and masks.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#volumedelay">volumedelay </a> </TD><TD>Sets delays of a group of synapses receiving input</TD></TR><TR><TD>
+</TD><TD>from a list of presynaptic elements in a volume.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#volumedelay2">volumedelay2 </a></TD><TD>Faster version of volumedelay; requires destination.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#volumeweight">volumeweight </a> </TD><TD>Sets weights of a group of synapses receiving input</TD></TR><TR><TD>
+</TD><TD>from a list of presynaptic elements in a volume.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#volumeweight2">volumeweight2 </a></TD><TD>Faster version of volumeweight; requires destination.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>Earlier versions of GENESIS used a different method of establishing synaptic
+connections by means of axon objects (projections) which hold the delays and
+weights for each connection.  This approach, which is not recommended for new
+simulations, is illustrated in the <EM>Scripts/MultiCell</EM> simulation.</P>
+<P>The following obsolete routines (available in the Connection
+Compatibility Library) are used with old-style axonal connections:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+affdelay</TD><TD>calculates an aggregate delay between elements</TD></TR><TR><TD>
+</TD><TD>separated by two paths, one fast-conducting and</TD></TR><TR><TD>
+</TD><TD>one slow-conducting</TD></TR><TR><TD>
+affweight</TD><TD>Calculates weights of projections along a path which</TD></TR><TR><TD>
+</TD><TD>decay exponentially in strength with distance.</TD></TR><TR><TD>
+connect </TD><TD>Creates connection between a projection and a segment,</TD></TR><TR><TD>
+</TD><TD>using connection element of a specified type.</TD></TR><TR><TD>
+cstat </TD><TD>Displays information about connections from a projection.</TD></TR><TR><TD>
+delete_connection</TD><TD>Deletes a connection between a projection and segment.</TD></TR><TR><TD>
+expsum </TD><TD>Returns exponentially weighted sum of connection</TD></TR><TR><TD>
+</TD><TD>weights according to the radial distance.</TD></TR><TR><TD>
+expweight </TD><TD>Sets weights of efferents from cell arrays made</TD></TR><TR><TD>
+</TD><TD>with createmap and connected with region_connect.</TD></TR><TR><TD>
+getconn </TD><TD>Returns axon connection weight and delay.</TD></TR><TR><TD>
+normalize_synapses</TD><TD>Sets the cumulative weight of axonal connections to</TD></TR><TR><TD>
+</TD><TD>a channel to a given or randomly selected value.</TD></TR><TR><TD>
+radialdelay</TD><TD>Sets delays of a group of synapses receiving input</TD></TR><TR><TD>
+</TD><TD>from a list of presynaptic elements in a plane.</TD></TR><TR><TD>
+region_connect</TD><TD>Connects one group of elements in a plane to another,</TD></TR><TR><TD>
+</TD><TD>using source and destination element lists and masks. </TD></TR><TR><TD>
+scaleweight </TD><TD>Adjusts the weight of a connection by a scaling factor.</TD></TR><TR><TD>
+setconn </TD><TD>Sets axon connection weight and delay.</TD></TR><TR><TD>
+showconn </TD><TD>Prints out weight or delay of axonal connection.</TD></TR><TR><TD>
+volume_connect</TD><TD>Connects one group of elements in a volume to another,</TD></TR><TR><TD>
+</TD><TD>using source and destination element lists and masks.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<HR>
+<A HREF="Manual-13.html">Previous</A>
+<A HREF="Manual-15.html">Next</A>
+<A HREF="Manual.html#toc14">Table of Contents</A>
+</BODY>
+</HTML>

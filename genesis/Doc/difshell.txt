@@ -1,0 +1,154 @@
+Object Type:    difshell
+
+Description:    Implementation of a concentration shell that can have
+                miscellaneous in/out flows (when coupled to other objects),
+                and one-dimensional diffusion between other difshells.
+
+Author:         E. De Schutter BBF-UIA 4/94 - 3/99
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  difshell_type [in src/concen/conc_struct.h]
+
+Size:           152 bytes
+
+Fields:         C               concentration (calculated by difshell) in mM
+                prev_C          concentration at previous time step
+                Ceq             equilibrium concentration in mM
+                D               diffusion constant in m^2/sec
+                val             ionic valence
+                leak            constant in/outflow in mM/sec
+                shape_mode      Set to one of the predefined global
+                                variables SHELL=0, SLICE=SLAB=1, USERDEF=3.
+
+                    SHELL: onion shell, for radial diffusion. Set len for
+                    cylindrical shell (zero length for spherical shell), dia
+                    (outer diameter of shell) and thick (thickness of shell);
+                    vol, surf_up, and surf_down are computed on RESET.
+
+                    SLICE (or SLAB): salami slices of cylinder, for axial
+                    diffusion. Set dia (diameter of cylinder) and thick
+                    (thickness of slab), len is not used; vol, surf_up, and
+                    surf_down are computed on RESET.
+
+                    USERDEF: len, dia, thick are not used. Set vol, surf_up
+                    and surf_down.
+
+		len             shell length
+                dia             shell diameter
+                thick           shell thickness
+                vol             shell volume
+                surf_up         area of upper (outer) shell surface
+                surf_down       area of lower (inner) shell surface
+
+------------------------------------------------------------------------------
+SIMULATION PARAMETERS
+
+Function:       DifShell [in src/concen/difshell.c]
+
+Classes:        concentration segment
+
+Actions:        RESTORE2  SAVE2  CHECK  RECALC  RESET  PROCESS  INIT
+
+Messages:	INFLUX      I_Ca          (current flow in A; increases C)
+                OUTFLUX     I_Ca          (current flow in A; decreases C)
+                FINFLUX     I_Ca fraction (current flow, scaled by fraction)
+		FOUTFLUX    I_Ca fraction (current flow, scaled by fraction)
+		STOREINFLUX flux          (flux into store in moles/sec;
+                                          increases C)
+		STOREOUTFLUX flux         (flux out of store in moles/sec;
+                                          decreases C)
+		DIFF_DOWN   prev_C thick  (diffusion to inner shell, sent from
+                                           an outer shell)
+		DIFF_UP     prev_C thick  (diffusion to outer shell, sent from
+                                           an inner shell)
+		BUFFER      kBf kBb Bfree Bbound    (fields sent from a buffer,
+                                                    e.g. a fixbuffer)
+		TAUPUMP     kP Ceq        (sent from a taupump)
+		EQTAUPUMP   kP            (sent from a taupump; uses Ceq from
+                                          the difshell)
+		MMPUMP      vmax Km       (sent from a mmpump)
+		HILLPUMP    vmax Kd Hill  (sent from a hillpump)
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The concentration of intracellular calcium close to the cell membrane surface
+can have a significant influence on the conductance of calcium dependent
+potassium channels and on mechanisms for synaptic plasticity.  Unless the
+neural compartment is very small and the calcium is "well-mixed", the calcium
+concentration may vary considerably within the compartment.  It may then be
+necessary to model diffusion within the compartment by dividing it into a
+number of shells.  The difshell object is used for modeling these shells and
+diffusion between them.  It may also be used for modeling axial diffusion
+between compartments.  Just as the length of a neural compartment should be
+chosen to give small differences in membrane potential between adjacent
+compartments, the thickness of diffusion shells should be chosen to give small
+differences in concentration between adjacent shells.
+
+A difshell is typically coupled to buffers and/or pumps, in order to provide
+for multiple mechanisms for calcium removal.
+
+The buffers (e.g, fixbuffer) interact with a difshell or concpool to model the
+binding of calcium to buffer molecules and to calculate the concentrations of
+free and bound ions using a kinetic scheme with forward and backward rate
+constants for the binding and release of calcium.  The BUFFER message from a
+buffer passes on the rate constants and the calculated free and bound
+concentrations so that the difshell may calculate the resulting ion
+concentration C in the shell.
+
+The ionic pumps provide various mechanisms to remove ions from the shell.
+Details of the fields that are passed to the difshell with messages from
+the pumps are provided in the documentation for the various pump objects.
+
+The various FLUX messages assume SI units for the Faraday constant, currents
+and dimensions.  If other units are used, scale the val parameter to account
+for this.
+
+NOTE: When using difshell, difbuffer, or dif2buffer elements without hsolve
+(or in chanmodes 0 or 1), it will be necessary to issue two reset commands
+after setting up the simulation.
+
+For a general description of buffered calcium diffusion see:
+De Schutter E., and Smolen P., "Calcium dynamics in large neuronal
+models", in Methods in neuronal modeling: From ions to networks
+(2nd edition), C. Koch and I. Segev editors, pp. 211-250 (1998).  The
+spinedemo simulation gives a detailed example of the use of the difshell,
+taupump, and fixbuffer objects for modeling calcium diffusion in dendritic
+spines.
+
+Example:
+
+  /* based on spinedemo, for spine head initial shell (headshell0) */
+
+  create difshell headshell0
+  setfield headshell0 C 0.000020 Ceq 0.000020 D 6.0e-10 val 2.0  leak 0.0
+  setfield headshell0 shape_mode {SLAB} len 0.0 dia 0.5e-6 thick 0.1e-6
+
+  /* Ca fraction of NMDA current is influx into outer shell */
+  addmsg Mg_block headshell0 FINFLUX  Ik 0.128
+
+  /* attach fast immobile buffer */  headbuf0
+  create fixbuffer headbuf0
+  setfield headbuf0 Btot 0.2 kBf 5.0e5 kBb 500 // mM, 1/(mM*sec), 1/sec
+  addmsg headbuf0 headshell0 BUFFER kBf kBb Bfree Bbound
+  addmsg headshell0 headbuf0 CONCEN C
+
+  /* attach the pump */
+  create taupump headpump0
+  setfield headpump0 Ceq 0.000020
+  /* The pump rate is proportional to the surface-to-volume ratio
+     spine head initial shell is end of cylinder, so stv=1/thick */
+  setfield headpump0 T_C {thick/Pump_kP} // pump rate Pump_kP = 1.4e-5
+  addmsg headpump0 headshell0 TAUPUMP kP Ceq
+
+  /* set up diffusion messages, assuming the existence of headshell1 */
+  addmsg headshell0 headshell1 DIFF_DOWN prev_C  thick
+  addmsg headshell1 headshell0 DIFF_UP   prev_C thick
+
+  // similar statements for the other shells ...
+
+See also:   taupump, fixbuffer, Scripts/examples/spinedemo

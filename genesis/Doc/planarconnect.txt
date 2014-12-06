@@ -1,0 +1,95 @@
+Routine Name:	planarconnect
+
+Description:	Establishes synaptic connections between groups of elements
+		based on the x-y positions of the elements.  This routine 
+		sets up the connections by adding SPIKE messages between the 
+		source and destination objects.
+
+Usage:		planarconnect source_elements destination_elements \
+		-relative \
+		-sourcemask {box, ellipse} x1 y1 x2 y2 \
+		-sourcehole {box, ellipse} x1 y1 x2 y2 \
+		-destmask   {box, ellipse} x1 y1 x2 y2 \
+		-desthole   {box, ellipse} x1 y1 x2 y2 \
+		-probability p
+
+		source_elements  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages.  These must be of
+			class "spiking" and are usually spikegen or 
+			randomspike objects.
+
+		destination_elements  A wildcarded list of elements which are
+		        the destinations of the SPIKE messages.  These must  
+			be synchans or objects derived from synchan.
+
+		-relative This option means that connections will be set up
+			based on the locations of destination objects
+			relative to source objects.  If this option is not
+			selected, the absolute locations of source and
+			destination elements will be used to determine
+			whichconnections are to be set up.
+
+		-sourcemask {box, ellipse} x1 y1 x2 y2  -- This specifies a
+		        rectangular or elliptical region from which source
+			elements are to be taken.  If the "box" option is 
+			used, then x1 and y1 are the minimum x and y values
+			of the region while x2 and y2 are the maximum x and y
+			values of the region.  If the "ellipse" option is 
+			used, then the source region is an ellipse with x1
+			and y1 representing the center of the ellipse while
+			x2 and y2 represent the lengths of the principal axes
+			in the x and y directions respectively.  Note that
+			to choose a circular region x2 and y2 must be equal.
+			Note also that one or the other of {box, ellipse} 
+			MUST be chosen; leaving both of them out will generate 
+			an error.  Finally, one can choose multiple source 
+			regions by having multiple -sourcemask options.  
+			The same conventions are followed for the next three 
+			options.  
+
+		-sourcehole {box, ellipse} x1 y1 x2 y2  -- This specifies a
+			rectangular or elliptical region NOT to include in
+			the source region(s).  You can exclude multiple 
+			regions by having multiple -sourcehole options.
+
+		-destmask {box, ellipse} x1 y1 x2 y2  -- This specifies a 
+			rectangular or elliptical region to which SPIKE
+			messages will be sent.
+
+		-desthole {box, ellipse} x1 y1 x2 y2  -- This specifies a
+			rectangular or elliptical region NOT to include in
+			the destination region(s). 
+
+		-probability p  -- This option causes connections to be 
+			made with a probability p, which must be in the
+			range [0,1].  This allows probabilistically-connected
+			networks to be set up.
+
+Example:	[From the "Orient_tut" simulation:]
+		
+		planarconnect /retina/recplane/rec[]/input     \
+			      /V1/horiz/soma[]/exc_syn         \
+			      -relative                        \
+			      -sourcemask box -1 -1  1  1      \
+			      -destmask   box {-V1_SEPX * 2.4} \
+					      {-V1_SEPY * 0.6} \
+					      { V1_SEPX * 2.4} \
+					      { V1_SEPY * 0.6}
+
+
+Notes:		This routine calculates distance using only the x and y 
+		coordinates of the element positions.  It is convenient for
+		objects laid out in planar arrays but ignoring the z
+		direction is somewhat unrealistic.  volumeconnect is almost 
+		identical with planarconnect except that it uses the positions
+		of elements in three dimensions to specify whether connections 
+		are made or not.  
+
+		The weights and delays of the connections set up by this   
+		command are typically specified using the planarweight and 
+		planardelay commands, although they can be set up by hand.
+
+See also:	volumeconnect, planarweight, planardelay; Chapter 18 of the 
+		Book of GENESIS (2nd ed.) has a lengthy discussion on this and
+                related commands.
+

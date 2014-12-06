@@ -1,0 +1,137 @@
+  21.2.  Compiling a New Version of GENESIS
+
+  To compile a new version of GENESIS containing new user libraries:
+
+  1. Create a directory from which to compile the new GENESIS.  You may
+     do this by using the UNIX mkdir command to create your own
+     directory for containing the customized GENESIS.
+
+  2. You need new libraries to add.  These will either be ones that you
+     have created yourself, following the directions in ``Defining New
+     Objects and Commands'' (NewObjects.txt), or existing libraries
+     which have been contributed by other GENESIS users.  The
+     ``Scripts/newlib'' directory contains an example of a
+     user-defined GENESIS library which you may use for testing these
+     instructions.  For now, we will assume that you have one or more
+     library directories.
+
+  3. Create subdirectories for the libraries.  The libraries should be
+     contained in one or more subdirectories of the directory for the
+     new GENESIS.  If you have existing libraries, use either the UNIX
+     cp -r (recursive copy) or mv command to put the library
+     subdirectories under the directory which you created in the first
+     step.
+
+  4. Create a ``Makefile'' for compiling GENESIS.  The ``genesis''
+     directory in the GENESIS distribution contains a file ``Usermake''
+     that serves as a template for this Makefile.  Copy it to the
+     directory above those containing your libraries, giving it the name
+     ``Makefile''. Please note that the Usermake file is subject to change
+     with each GENESIS release. If there is potential that users with
+     different versions of GENESIS will compile your library, provide a
+     Makefile specific to each GENESIS release (e.g. Makefile2.2.1,
+     Makefile2.3).
+
+     At this point, your directory structure should look something like
+
+                     new genesis  --> contains Makefile (from Usermake)
+                           /\
+                          /  \
+                         /    \
+                        /      \
+               new library     additional new
+               subdirectory    library subdirectories
+
+  Each library subdirectory will contain its own Makefile constructed by
+  editing ``genesis/Libmake'', as described in the Libmake file and in
+  ``Defining New Objects and Commands'' (NewObjects.txt).
+
+  5. Edit the Makefile (copied from Usermake) as instructed by the
+     comments in Makefile.
+
+     First, there is a definition for the variable GENINST.  The GENESIS
+     installation process should create the Usermake file with this set
+     to the full path of the genesis installation directory, for
+     example:
+
+          GENINST =       /usr/local/genesis-2.4/genesis
+
+  If, for some reason, the GENESIS files have been moved from the origi-
+  nal GENESIS installation directory, this line may need to be edited to
+  reflect the change.
+
+  Next, there are some instructions regarding assignment of the system-
+  specific variables, MACHINE, OS, XLIB, CC, CFLAGS, CPP, LD, LINKFLAGS,
+  and LEXLIB.  These should be set to the same values as those used in
+  the original ``genesis/src/Makefile'' when GENESIS was compiled.
+
+  The following line,
+
+       SIMNAME =       genesis
+
+  gives the name of the GENESIS executable that will be produced.  If
+  you would like to give it another name like ``mygenesis'' to distin-
+  guish it from the standard version, you may change it here.  Next, we
+  come to the USERDIR variable.  The instructions in the Makefile say
+  that this should give the names of any library directories.  If we
+  were compiling the single library in the subdirectory ``newlib'', we
+  would say:
+
+       USERDIR = newlib
+
+  The variable USEROBJ should give the pathnames of any new library
+  object modules.  After compilation, each library will have a ``.o''
+  file which will be linked into GENESIS.  The instructions in Usermake
+  tell us that this name is specified by the TARGET_OBJ variable in the
+  library Makefile.  For the example given in ``Scripts/newlib'', we
+  would look in ``newlib/Makefile'' (the library Makefile) and see that
+  it is set to ``examplelib.o''.  We need to give the path relative to
+  the place where we are compiling the new GENESIS, so we would say:
+
+      USEROBJ = newlib/examplelib.o
+
+  The remaining variable to set is USERLIB, which should give the names
+  of any new libraries.  The library name is specified by the
+  LIBRARY_NAME variable in the library Makefile.  Following through with
+  the newlib example, USERLIB would be set to
+
+      USERLIB =example
+
+  This completes the edits to the Makefile.
+
+  6. Check the contents of the libraries.  If you have constructed the
+     new libraries yourself, following the steps outlined in ``Defining
+     New Objects and Commands'' (NewObjects.txt), there should be little
+     else to do.  If you have received them from someone else, you
+     should check the line in each library Makefile that begins with
+     ``GENESIS = ''.  This should give the full path to the GENESIS
+     distribution.  If it is not where you keep your GENESIS
+     distribution, change it accordingly.
+
+  7. Type ``make'' from within the directory containing the Usermake-
+     derived Makefile.  If you have compilation errors, it is time to
+     carefully review the instructions!  To delete the temporary files
+     which were created during the compilation, type ``make clean''.
+
+  8. Test the new commands and objects.  From within the directory in
+     which you compiled the new genesis executable, type ``genesis'''
+     (or ``./genesis'' if your path has been set by a particularly
+     paranoid system manager).  Now type ``listcommands'' and
+     ``listobjects'' to see if the new commands and objects have really
+     been incorporated.
+
+     For the newlib example, you should find a new command called
+     ``example'' and a new object called ``example_object''.  Give
+     GENESIS the command ``echo {example 1 2 3 4}'' and see if the
+     results are consistent with the comments in newlib/command.c.  The
+     command ``showobject example_object'' should produce some
+     information about the new object.  You may execute the test script,
+     ``newlib/testexample.g'' to see if elements created from this
+     object behave as expected.
+
+  If you have problems running or compiling the new version of GENESIS,
+  you should make sure that the files in ``genesis/lib'' were compiled
+  under the same environment (operating system and compiler) as your new
+  library.  If you suspect that this is not the case, you should
+  recompile GENESIS, following the instructions in
+  ``genesis/src/README''.

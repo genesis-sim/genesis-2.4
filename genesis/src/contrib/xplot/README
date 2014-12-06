@@ -1,0 +1,17 @@
+This directory contains source code and a Makefile for the xplot program,
+a plotting program originally written by Matt Wilson, and modified by Mike
+Vanier.  This program (which is unrelated to the GENESIS object of the
+same name), may be used to view the results of parameter fits and to
+compare them with the target data.  It also has many other uses.  The file
+xplot.txt describes the many commands and options that can be used with
+xplot.
+
+The Makefile has a few defines that you may need to edit for your own
+environment.  It is currently set up to use gcc as the C compiler under
+Linux.  There are other settings that you can uncomment for Solaris.  By
+default, it uses /usr/local/bin as the installation directory.  If you do
+not have privileges to write to this directory, you should edit the
+INSTALLDIR line in order to install it in a directory of your own.
+
+Type "make" or "make default" to compile it, and "make install" to
+copy it to the installation directory.

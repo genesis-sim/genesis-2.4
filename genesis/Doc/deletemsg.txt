@@ -1,0 +1,41 @@
+Routine Name:	deletemsg
+
+Description:	Deletes a message link between two elements.
+
+Usage:		deletemsg element msg-number -incoming -outgoing
+			-find srcelem type
+
+		element		element receiving or sending the message
+
+		msg-number	index of message in element message list
+				(index can be obtained with 'showmsg'
+				routine, or, in a script, with 'getmsg' used
+				with the -find option)
+
+		srcelem		element sending the message
+
+		type		message type (PLOT, AXIAL, VOLTAGE, etc.)
+
+		-incoming	message to be deleted is incoming
+
+		-outgoing	message to be deleted is outgoing
+
+		-find		delete the first message (lowest index)
+				matching the srcelem and type
+
+Example:	deletemsg /cell/soma 2 -incoming
+
+		deletemsg /data/voltage -in 0 -find /cell/soma PLOT
+
+Notes:		The deletemsg routine is used to remove messages added using
+		the addmsg routine.  Deleting earlier messages will change
+		the message numbers of the remaining messages.  If
+		msg-number is not known for the desired message, it may be
+		found by using getmsg with the -find option.
+
+		When the -find option of deletemsg is used, the msg-number
+		argument is required, but ignored, and the message must be
+		an incoming one. (The -incoming and -outcoming options are
+		ignored, if specified.)
+
+See also:	addmsg, showmsg, getmsg

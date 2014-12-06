@@ -1,0 +1,64 @@
+The scripts in these subdirectories were contributed by Adam Strassberg to
+demonstrate his GENESIS objects, "Napores" and "Kpores", which are
+documented in Doc/Napores.txt and Doc/Kpores.txt.  These objects are used to
+simulate a population of ion channel proteins (pores) embedded in a patch of
+membrane over an isopotential region.  Each individual pore undergoes
+standard Markov kinetics.  Further details are given in:
+
+Strassberg, A. F., DeFelice, L. J. (1993) "Effects of single channel kinetics
+upon transmembrane voltage dynamics" in Computation and Neural Systems,
+109-113, F. H. Eeckman and J. M. Bower (eds.), Kluwer Academic Press.
+
+Adam F. Strassberg and Louis J. DeFelice (1993) "Limitations of the
+Hodgkin-Huxley Formalism: Effects of Single Channel Kinetics upon
+Transmembrane Voltage Dynamics", Neural Computation, 5:6.
+
+UnClamp - simulates the response of a space-clamped patch of squid giant
+    axon membrane to a step current injection, using Napores and Kpores.
+
+VClamp - simulates the response of a space-clamped patch of squid giant axon
+    to a step change in membrane voltage, using Napores and Kpores.
+
+ConClamp - simulates the continuous model with standard Hodgkin-Huxley
+    channels for comparison with the two cases above.  The main simulation
+    scripts are ConClamp.g and ConVclamp.g.
+
+------------------------------------------------------------------------------
+
+Addition by Dave Beeeman for GENESIS 2.2:
+
+We have discovered an error in the units used to calculate current densities
+in these scripts.  The value shown as 100 pA/m^2 is actually 0.1 pA/m^2.  As
+the email address given for Strassberg is no longer valid, please send any
+other comments, suggestions or corrections to babel@genesis-sim.org.
+
+The paper by Strassberg and DeFelice reveals that the continous dynamics of
+the Hodgkin-Huxley equations is not always sufficient to describe neuron
+firing when the density of channels is low or the cell is small.
+
+There has recently been a great deal of interest in the effect of the 
+stochastic opening of channels on firing, even with moderate numbers of
+channels.  Near the threshold for firing, the number of open channels
+is small, and stochastic behavior can be important.  For example, see:
+
+E. Schneidman, B. Freedman, and I. Segev (1998) Ion channel stochasticity may
+be critical in determining the reliability and precision of spike timing,
+Neural Comp. 10: 1679-1703.
+
+The pore objects are useful for modeling this kind of behavior.  However,
+the cell reader does not recognize these objects.  In order to make them
+more similar to other GENESIS channel objects, and to make them usable with
+the readcell "*compt" option, we have created the the extended objects
+Na_squid_markov and K_squid_markov from the pore objects Napores and Kpores.
+The script tut3markov.g in the markov directory illustrates the use of these
+with a simulation based on tutorials/tutorial3.g.   It uses the prototype
+Markovian (stochastic) channels defined in markovchan.g instead of the
+hh_channels defined in hhchan.g, and uses readcell to build the cell.
+
+This simulation is necessarily rather slow for larger compartments, because
+of the large number of random numbers that are generated when there are many
+pores.  It is likely that the algorithm used in the Schneidman et al. paper
+is more efficient than the one implemented in the GENESIS pore objects.  If
+you should improve upon these objects, please contact us at
+babel@genesis-sim.org.
+

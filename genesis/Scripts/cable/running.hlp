@@ -1,0 +1,106 @@
+                   RUNNING THE CABLE TUTORIAL SIMULATION
+
+  THE CONTROL BUTTONS
+  -------------------
+  The control panel contains buttons which control the starting and stopping
+  of the simulation.  If you are eager to get going, click the left mouse
+  button on the box labeled "STEP" to start the simulation while you are
+  reading the help messages.
+
+  The various buttons are:
+
+  HELP - brings up the help menu.
+
+  RESET - resets the simulation to time step 0 and clears the graphs (unless
+          in overlay mode).
+
+  STOP - temporarily stops the simulation.  You may then change parameters
+         and click on "STEP" to continue, or "RESET" and "STEP" to start
+         over.
+
+  QUIT - exits the simulation.
+
+  overlay - toggles overlay mode.  When overlay is ON, RESET followed by
+            STEP causes the next plot to be plotted over the previous plot.
+
+  Reset Defaults - restarts the simulation with the default values of the
+           various parameters.  Use this if you have changed a lot of things
+           and don't remember what the initial values were.
+
+  STEP - in addition to initiating the simulation, this also functions as a
+         "dialog box" for setting the number of simulation steps which are
+         performed each time.  To change the numeric field of a dialog box,
+         use the mouse to move the cursor into the dialog box.  Then, use
+         the keyboard right and left arrow keys to move the "^" symbol to
+         the right of the place where you wish to make the changes.  Then
+         use the "Delete" key to back up over anything you wish to change,
+         and type in the changes.  To cause the changes to be entered, you
+         must then hit "Return" while the cursor is in the numeric field.
+
+
+  dt - is a dialog box used for setting the simulation time step.  The
+       default value was chosen for reasonable accuracy in reproducing the
+       time course of the membrane potential.  You can speed up the
+       operation of the simulation by chosing a larger value if you just
+       want to get a rough idea of the effect of changing various
+       parameters.  This will also allow you to explore possible
+       instabilities in the numerical integration method resulting from an
+       inappropriate step size.  When you are ready for serious work, change
+       it back to the original value.
+
+  Change Cell Parameters - displays a menu containing dialog boxes for
+       changing the values of the specific resistances and capacitance
+       (RM, RA and CM) as well as the lengths and diameters of the soma and
+       cable compartments.  (Be sure to hit "Return" after modifying the
+       value shown in the box.)  The DISMISS button hides the menu again.
+
+  Change Current Injection - displays a menu containing dialog boxes for
+       changing the magnitude and timing of the injection current pulse.
+       There is also a dialog box for specifying the compartment to which
+       the injection current is applied. (Note that the soma is compartment
+       zero, and the cable sections are numbered starting with 1.)  The
+       "toggle" button at the top is used for turning the injection on and
+       off.  The DISMISS button is used to hide the menu.
+
+  Change Synaptic Input - calls up a menu with dialog boxes to specify the
+       parameters gsyn, tsyn and Vsyn (described in the Introduction), the
+       delay, and the compartment for synaptic input.  There is also a
+       toggle for turning the input on and off.
+
+  Change Integration Method - displays a menu containing dialog boxes for
+       changing the numerical integration method used in the simulation.
+       The Crank-Nicholson method is the default method for this
+       tutorial, and is used when the simulation is started.  The
+       integration methods are described in another "HELP" selection.
+
+  No. of Cable Sects. - is a dialog box which allows you to specify the
+       number of passive cable compartments connected to the soma.
+
+  Add/Remove Plots - displays a menu containing a dialog box which allows
+       you to specify cable sections for which Vm will be plotted.  In our
+       notation, the numbering of cable sections begins with 1.  The menu
+       button labeled "Remove Cable Plots" disables all plots except that of
+       the soma Vm, and the DISMISS button hides the menu.
+
+Conductance Plot Hidden/Visible - is a toggle to show a plot of the
+       conductance of the synaptically activated channel.
+
+  The upper graph plots the soma membrane potential (in millivolts) as a
+  function of time (in milliseconds).  The lower graph plots the natural log
+  of the membrane potential, so that you may detect and calculate any
+  exponential time dependences.  The scales of the graphs can be changed by
+  clicking on the 'scale' button associated with the graph, changing the
+  values in the appropriate dialogs and pressing the 'DONE' button.  For
+  example, you may wish to increase the time scale (xmax) if you click on
+  "STEP" more than once without resetting, or you may wish to view a more
+  limited range of data in order to increase the resolution.  Note that the
+  existing data will be replotted whenever the scale is changed.
+
+  Because of the way that the logarithmic plotting is implemented, you may
+  find that if the maximum value of Vm is small (less than a millivolt), you
+  will not have sufficient resolution in the lower graph.  The easiest way
+  around this limitation is to increase the injection current.
+
+  If you have made significant changes in the soma or cable parameters from
+  the default values, be sure to check that you have used an appropriate
+  value of the integration step size, dt.

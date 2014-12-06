@@ -1,0 +1,55 @@
+Object Type:	playback
+
+Description:	update a pre-filled buffer
+
+Author:		M. Wilson, Caltech (6/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	playback_type  [in src/buffer/buf_struct.h]
+
+Size:		100 bytes
+
+Fields:	
+		tmin
+		size
+		current
+		start
+		end
+		event_size
+		event
+		state
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	PlaybackBuffer  [in src/buffer/playback.c]
+
+Classes:	buffer
+
+Actions:	PROCESS
+		RESET
+		COPY BufferCopy
+		CREATE BufferCreate
+
+Messages:	none
+
+------------------------------------------------------------------------------
+
+Notes:		The putevent command may be used to fill the buffer
+
+Example:	
+
+    create playback /test
+    putevent /test 10 10.0 20 0.0 30 30.0 40 0.0 50 50.0 60 0.0
+    create xform /testform
+    create xgraph /testform/graph
+    addmsg /test /testform/graph PLOT state *playback *blue
+    xshow /testform
+    reset
+    step 100
+
+See also:	putevent

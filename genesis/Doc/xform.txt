@@ -1,0 +1,73 @@
+Object Type:	xform
+
+Description:	Containing window for other graphical interface objects.
+
+Author:		Maneesh Sahani Caltech July/92
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xform_type [in src/Xodus/widg/xform_struct.h
+
+Size:		124 bytes
+
+Fields:		fg	Foreground color (not used)
+		bg	Background color (not used)
+		xgeom	Position of left edge of form with respect to screen.
+			This value is an integer. If it is suffixed with a
+			'%' symbol (eg set form xgeom 20%) then percent of
+			screen size is used.
+		ygeom	Position of upper edge of form with respect to screen.
+		wgeom	Width of form
+		hgeom	Height of form
+			The geometry fields can optionally be set on the
+			create line using the square brackets notation:
+			[xgeom,ygeom,wgeom,hgeom]
+		title	Optional text string to be placed on top of widget.
+			Currently only available at create time.
+		nested  Read-only flag that indicates if the form was created 
+			as an embedded form or not. 
+			(1 => embedded, 0 => top-level)
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XForm [in src/Xodus/widg/xform.c]
+
+Classes:	widget
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Invisible until 'xshow' command is issued unless it is 
+		created as an embedded form with the '-nested' option.
+	
+		One could also create an embedded form and 
+		make it invisible by default using the '-noautomap' option
+		in conjunction with the '-nested' option. For obvious 
+		reasons, the '-noautomap' option is superfluous when used 
+		with top-level forms.
+		
+		The xform does not perform any computational operations.
+
+		Important: xforms are top-level unless created with the 
+			   -nested option.
+
+Example
+		create xform /foo [0,0,500,50%] -title "I am a top-level form"
+		xshow /foo
+
+		create xform /foo/embedded_foo [0,0,100%,40%] -nested -title \
+			"I am an embedded form" 
+
+		create xform /foo/popup_foo [20,20:embedded_foo,,] -nested  \
+			-noautomap -title "xshow/xhide to map/unmap me"
+
+See also:	Scripts/examples/XODUS/widgets.g, XODUS documentation.
+

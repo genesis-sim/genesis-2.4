@@ -1,0 +1,29 @@
+Routine Name:	randcoord
+
+Description:	Shuffles positions of compartments in a neuron.
+
+Usage:		randcoord element fraction [-electrical] [-channel]
+
+		element		name of element to shuffle
+
+		fraction	fractional amount of shift
+
+		-electrical	flag for scaling electrical properties with
+				changes in length of compartment
+
+		-channel	flag for scaling conductance of channels with
+				changes in length of compartment (currently,
+				only hh_channels and channelC2s are recognised)
+
+Example:	randcoord /cell 0.1 -electrical
+
+Notes:		Shuffles around the positions of compartments in a neuron,
+		based on messages, to make the cell look more natural.  If the
+                given element is not a compartment, it looks for children that
+                are compartments without incoming AXIAL messages, i.e. somas.
+                If the given element is a compartment, it starts the traversal
+                at the compartment itself.  Having found the root elements, it
+                then traverses them by their message trees, relatively
+                positioning the children.
+
+See also:	relposition

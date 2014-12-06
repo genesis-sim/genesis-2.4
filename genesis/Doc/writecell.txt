@@ -1,0 +1,39 @@
+Routine Name:	writecell
+
+Description:	Writes parameters of neuron to a cell parameter file in a
+		standard format.
+
+Usage:		writecell filename cellname -cartesian -polar -relative
+			-absolute -syndens -syncond -author author
+
+		filename		name to give cell descriptor file
+					(should end with extension .p)
+
+		cellname		name of GENESIS cell for which you
+					want to store description
+
+		author			who made the cell
+
+		default options		-cartesian -relative -syndens
+
+Example:	writecell  newmitral.p  /mitral 
+
+Notes:		This cell-writing routine is the counterpart of the readcell
+		routine.  writecell takes a multicompartment neuron set up
+		in GENESIS and writes it in the neuron descriptor format to
+		a file.  Options allow you to specify whether the compartment
+		coordinates are cartesion or polar, and whether they are
+		given in absolute units or relative to the postion of the
+		parent compartment.  The -syndens and -syncond options
+		specify whether synaptic conductances are expressed as
+		densities (conductance per unit area) or in absolute units.
+		The format of the cell parameter file is described in the
+		documentation for readcell.  The routine is capable of
+		parsing GENESIS neurons which are not in the 'flat' element
+		structure produced by the readcell routine.  There are
+		limitations to the present version of writecell, as there
+		have been new features added to readcell which have not yet
+		been incorporated into writecell.  Thus, not all cell models
+		can be parameterized with writecell.
+		
+See also:	readcell

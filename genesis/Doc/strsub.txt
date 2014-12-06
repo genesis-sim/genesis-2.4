@@ -1,0 +1,12 @@
+Routine Name:	strsub
+
+Description:	Returns a string with one substring replaced by another
+
+Usage:		strsub string old-substring new-substring [-all]
+
+Example:	genesis > echo {strsub "old dogs chase old cats" old young}
+		young dogs chase old cats
+
+                genesis > {strsub "old dogs chase old cats" old young -all}
+                young dogs chase young cats
+Notes:		

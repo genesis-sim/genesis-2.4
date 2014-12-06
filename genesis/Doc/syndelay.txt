@@ -1,0 +1,83 @@
+Routine Name:	syndelay
+
+Description:	This command is used to set or to add a small "synaptic" 
+		component to the delay fields of synapses.  It is useful 
+		for when cells are very close together and thus where 
+		planardelay or volumedelay give unrealistically small
+		delays.
+
+Usage:		syndelay path delay                        \
+		-add					   \
+		-uniform scale                             \
+		-gaussian stdev maxdev                     \
+		-exponential mid max                       \
+		-absoluterandom
+
+
+		path  A wildcarded list of elements which must be synchans or 
+		        objects derived from synchan.  
+
+		delay -- This sets all the synaptic delays in question to be
+                        equal to "delay", or adds "delay" to the existing
+                        delay if the -add option is selected.
+
+		-add  This option causes the delays to be added to the 
+		        preexisting delays in the synapses instead of
+			overwriting them.  
+
+		The next four options are used to add random components to the
+		delay.  How these random components are added to the delays is 
+		explained below.
+
+		-uniform scale  -- This option gives a random number taken 
+			from a uniform distribution in the range 
+			{-scale, scale}.
+
+		-gaussian stdev maxdev  -- This option gives a random number
+			taken from a gaussian distribution centered on zero,
+			with a standard deviation equal to "stdev" and with
+			a maximum value of "maxdev".  The maximum value is
+			used to limit the random component to a given range.
+
+		-exponential mid max  -- This option gives a random number
+			taken from an exponential distribution with a 
+			minimum value of zero, a 1/e point of "mid" and a 
+			maximum value of "max".  This is mainly for backwards
+			compatibility with genesis 1.4.
+
+		-absoluterandom  This option alters the way the random number
+			is combined with the nominal delay to give the actual
+			delay, as described below.
+
+		Once a random component has been created for a given delay, 
+		it is used to set the delay as follows.  If the 
+		-absoluterandom option has not been selected the delay is set 
+		to be:
+
+		final_delay = delay + (delay * random_number)
+
+		Whereas if the -absoluterandom option has been selected then
+		we have
+
+		final_delay = delay + random_number
+
+		Thus the default is to have the amount of randomness as a 
+		constant proportion of the delay value.
+
+Example:	syndelay /cell[]/apical_dend/Ex_chan 0.001 \
+			    -add -gaussian 0.1 0.3 
+
+		This command will add a small delay to the delay fields in the
+		synapses in /cell[]/soma/apical_dend/Ex_chan.  The "synaptic"
+		delay added will be 1 millisecond plus a random component.
+
+Notes:          The delays are never allowed to go negative even if a large
+                negative random component is added.  Negative delays are set
+                to zero.
+
+		If the -add option is chosen, the random component modifies 
+		only the delay added and not the total delay.
+
+See also:	planardelay, volumeconnect, volumeweight, syndelay; Chapter 18
+                of the Book of GENESIS (2nd ed.) has a lengthy discussion on
+                this and related commands.

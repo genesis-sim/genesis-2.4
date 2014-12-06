@@ -1,0 +1,83 @@
+# xppaut code for the following sets of reactions
+# Glu + mGluR <--> Glu-mGluR (D3)
+# Glu-mGLuR + G <-> G-Glu-mGluR -> aG + Glu-mGluR (D5 and D6)
+# aG -> G (D7)
+# G2f,b increased, MM reaction increased, Ip3 + dag deg increased to
+# get earlier ip3 peak (comparable to exp, nature papers)
+# aG + PLC <-> aPLC-aG (G2)
+# aPLC + PIP2 <-> aPLC-PIP2 -> aPLC +IP3+ DAG (k1, k2, and k3 for G6)
+# IP3 -> IP3deg (G9)
+
+#simulations run better if rectangular pulse is filtered
+parameters C=0.001 R=1
+#description of Glu_mGluR pulse
+par K_mGluR=4 dur_g=0.1 time_g=0.1
+#total concentration of G, PLC and PIP2
+par K_G=25 K_PLC=5 K_PI=160
+#kplc and Vmax describe aPLC catalyzing IP3 production from PIP2
+par kfplc=0.83 kbplc=0.1 Vmax1=0.58
+#D5 and D6 describe Glu_mGluR catalyzing G_alpha production, Km2=(D6f+D5B)/D5f
+par D5f=15 D5b=7.2 D6f=1.8
+par Vmax2=1.8 Km2=0.6
+#G2 describe aG binding to PLC
+par G2f=100 G2b=100 
+#degradation of aG (D7f) and IP3 (G9f)
+#par D7f=9 G9f=4
+par D7f=0 G9f=0
+
+################## Glu_mGluR pulse ###########
+# one pulse
+glut=K_mGluR*heav(t-time_g)*heav(time_g+dur_g-t)
+
+dGlu_mGluR/dt=glut/C-Glu_mGluR/(R*C)
+
+############## Conserve Equations ####################
+
+#G=K_G-aG-GG_mGluR-aPLC_aG-aPLC_pip2
+G=K_G-aG-aPLC_aG-aPLC_pip2
+PLC=K_PLC-aPLC_aG-aPLC_PIP2
+PIP2=K_PI-aPLC_PIP2-IP3-ip3deg
+
+########## Differential Equations for changes in molecule quantities ##########
+daG/dt=D6f*Glu_mGLuR*G/(G+km2)-G2f*aG*PLC+G2b*aPLC_aG
+#dGG_mGluR/dt=D5f*Glu_mGluR*G-(D5b+D6f)*GG_mGluR
+#daG/dt=D6f*GG_mGluR-G2f*aG*PLC+G2b*aPLC_aG-D7f*aG
+daPLC_aG/dt=G2f*aG*PLC-G2b*aPLC_aG-kfplc*aPLC_aG*PIP2+(kbplc+Vmax1)*aPLC_PIP2
+daPLC_PIP2/dt=kfplc*aPLC_aG*PIP2-(kbplc+Vmax1)*aPLC_PIP2
+dIP3/dt=Vmax1*aPLC_PIP2-G9f*IP3
+Dip3deg/dt=G9f*IP3
+
+######### set initial values, 0 if not specified #######
+init aG=0.0007
+init aPLC_aG=0.0035
+init IP3=0.1
+
+aux glut=glut
+aux G_left=G
+aux PLC_left=PLC
+aux PIP2_left=PIP2
+
+########################################################################
+
+@ Total=2 dt=0.00001  xlo=0 xhi=2 ylo=0 yhi=1 maxstor=600000 \
+  bounds=10000000 BACK=white 
+
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,166 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Elements</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-7.html">Previous</A>
+<A HREF="Manual-9.html">Next</A>
+<A HREF="Manual.html#toc8">Table of Contents</A>
+<HR>
+<H2><A NAME="Elements"></A> <A NAME="s8">8. Elements</A></H2>
+
+<P>Elements are the basic computing and organizational entities available
+to the user.  Elements are organized in a hierarchical structure similar
+to a UNIX directory tree.  Each element embodies a specific computation
+in the simulation.  This computation may implement part of the model being
+simulated or may be part of the graphical interface or file I/O.</P>
+<P>The state of an element is contained in the element's fields.  Fields may
+be of any C defined type.  A field protection facility provides for both
+the visibility and accessability of the element fields.  Fields have default
+values which define the state of an element's fields when the element is
+created.  The default values may be changed, changing the initial values of
+elements created subsequently.</P>
+<P>Elements may need information from other elements to perform their
+calculations.  This information is gathered from the other elements'
+fields via 
+<A HREF="Manual-13.html#Messages">Messages</A>.</P>
+<P>A set of default element types (called ``objects'') is distributed
+with GENESIS.  These are used as templates for the creation of the
+particular elements that are used in a GENESIS simulation.  One
+example of an element type is the ``compartment'' object, which is
+used to create sections of neural membrane in a cell model.  Another
+example is an ``xform'' object used to create graphical form widgets
+which might appear on the screen.  The GENESIS distribution currently
+contains about 120 predefined objects.  These are summarized in 
+<A HREF="Manual-10.html#Objects">Objects</A>.</P>
+
+<H2><A NAME="ss8.1">8.1 Related Commands</A></H2>
+
+<P>The following  GENESIS routines are used for creating and working with
+specific elements:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD> Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addfield">addfield </a> </TD><TD>Adds a new (extended) field to an element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#call">call </a> </TD><TD>Allows an element to execute the function associated with</TD></TR><TR><TD>
+</TD><TD>the named action.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#copy">copy </a> </TD><TD>Copies an element (and its children, if any) from one</TD></TR><TR><TD>
+</TD><TD>portion of the element tree to another.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#create">create </a> </TD><TD>Creates new element of specified element type.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#createmap">createmap </a> </TD><TD>Makes multiple copies of an element to form a 2-D array</TD></TR><TR><TD>
+<A HREF="Manual-25.html#delete">delete </a> </TD><TD>Deletes an element and all of its children. </TD></TR><TR><TD>
+<A HREF="Manual-25.html#deleteall">deleteall </a> </TD><TD>Deletes all existing elements. [not recommended]</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deletefield">deletefield </a></TD><TD>Deletes an extended field of an element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#egg">egg </a> </TD><TD>Generates coordinates for points on the surface of an ovoid.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#exists">exists </a> </TD><TD>Tests for existence of specified element or field.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getfield">getfield </a> </TD><TD>Returns value of field in data structure of specified element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getfieldnames">getfieldnames </a></TD><TD>Returns names of all existing fields in specified element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#isa">isa </a> </TD><TD>Tests to see if an element is derived from a specified object.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#move">move </a> </TD><TD>Moves an element and its children from one portion of the</TD></TR><TR><TD>
+</TD><TD>tree to another.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#plane">plane </a> </TD><TD>Generates 3-d coordinates for a plane with specified</TD></TR><TR><TD>
+</TD><TD>dimensions and characteristics.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#position">position </a> </TD><TD>Sets xyz coordinates of an element and all of its children.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#reclaim">reclaim </a> </TD><TD>Reclaims memory from deleted elements.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#restore">restore </a> </TD><TD>Restores element state stored in file with save routine.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#rotcoord">rotcoord </a> </TD><TD>Rotates coordinates of elements in 3-d space.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#save">save </a> </TD><TD>Saves current field values for specified element in a file.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setfield">setfield </a> </TD><TD>Sets value of field in data structure of specified element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#showfield">showfield </a> </TD><TD>Displays value of field in data structure of specified element.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>Other commands related to GENESIS elements are described in the
+sections on 
+<A HREF="Manual-9.html#Tree">Hierarchical Structure</A>, 
+<A HREF="Manual-10.html#Objects">Objects</A>, and 
+<A HREF="Manual-11.html#Extended">Extended Objects</A>.</P>
+
+
+<H2><A NAME="Actions"></A> <A NAME="ss8.2">8.2 Actions</A></H2>
+
+<P>Each element in a simulation is capable of performing one or more
+actions.  An action can be described as an operation that an element
+performs on its data.  The predefined actions of an element are inherited
+from the object that was used to create the element.  Actions are defined
+within compiled functions that are attached to each object.  Other actions
+may be added with the 
+<A HREF="Manual-25.html#addaction">addaction </a> command.</P>
+<P>GENESIS calls many actions implicitly as part of the process of running a
+simulation, or as a side effect of certain commands.  This allows
+particular object-specific behaviors to executed at particular points in
+simulation.  For example, the PROCESS action is called at each step of the
+simulation.  Other actions are not performed regularly in the simulation
+schedule, but are performed globally on all objects; these include the
+CHECK action and the RESET action, which are invoked using the 
+<A HREF="Manual-25.html#check">check </a> and 
+<A HREF="Manual-25.html#reset">reset </a> commands, respectively.  If a particular
+action is not defined for an element, a default behavior is performed on
+the element (SET sets the field, SHOW returns the field, CREATE leaves
+fields initialized from defaults, etc.).</P>
+<P>The following predefined actions are common to many GENESIS objects.</P>
+<P>
+<TABLE BORDER><TR><TD>
+PROCESS </TD><TD> Called on each simulation step as described by the simulation</TD></TR><TR><TD>
+</TD><TD> schedule to perform the element's update processing.</TD></TR><TR><TD>
+INIT </TD><TD> Called on each simulation step as described by the simulation</TD></TR><TR><TD>
+</TD><TD> schedule to initialize the element for this simulation step.</TD></TR><TR><TD>
+RESET </TD><TD> Called when the simulation is reset (reset command) to allow</TD></TR><TR><TD>
+</TD><TD> an element to reset itself to its default state.</TD></TR><TR><TD>
+CHECK </TD><TD> Called from the check command to allow an element to verify</TD></TR><TR><TD>
+</TD><TD> that it has all the information and the correct information</TD></TR><TR><TD>
+</TD><TD> needed to proceed with the simulation.</TD></TR><TR><TD>
+SET </TD><TD> Called when an element field is set (or once for a setfield</TD></TR><TR><TD>
+</TD><TD> command if SPECIAL_SET exists as an element field). The SET</TD></TR><TR><TD>
+</TD><TD> action must return 1 if it sets the field in question and 0</TD></TR><TR><TD>
+</TD><TD> if it doesn't.</TD></TR><TR><TD>
+SHOW </TD><TD> Called in order to perform special formating for field display</TD></TR><TR><TD>
+</TD><TD> or retrieval (getfield or showfield commands).</TD></TR><TR><TD>
+CREATE </TD><TD> Called when an element is created to initialize the element.</TD></TR><TR><TD>
+</TD><TD> Must return non zero if the initialization is successful.</TD></TR><TR><TD>
+COPY </TD><TD> Called when an element is copied.</TD></TR><TR><TD>
+DELETE </TD><TD> Called when an element is destroyed.</TD></TR><TR><TD>
+SAVE2 </TD><TD> Called by save command to save state of the element to a file.</TD></TR><TR><TD>
+RESTORE2 </TD><TD> Called by restore to restore previous state from a file.</TD></TR><TR><TD>
+DUMP </TD><TD> Called by the simdump command.</TD></TR><TR><TD>
+UNDUMP </TD><TD> Called by the simundump command.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>There are also a number of actions that have to be explicitly invoked on an
+element-by-element basis, such as the TABCREATE action.  You invoke these
+with the 
+<A HREF="Manual-25.html#call">call </a> command, e.g.</P>
+<P>
+<PRE>
+    call Na_tabchannel TABCREATE X 49 -0.1 0.05
+</PRE>
+
+This use of actions corresponds to the use of ``method calls'' in
+object-oriented languages such as Java.</P>
+<P>There are also situations where you may want to explictly call an action
+(like RESET) for a particular element, without performing it on all
+elements (e.g. by issuing a reset command).  This is because the the reset
+routine gives no control over the order in which the elements are RESET,
+and you may need to call the RESET action for specific elements in the
+proper order if the initial state of one element depends on the initial
+state of another element.  For example:
+<PRE>
+    call Ca RESET     // Reset the Ca channel
+    call conc RESET   // Reset the Ca_concen element next
+    reset             // reset everything
+</PRE>
+</P>
+<P>Other predefined actions that are specific to the way the object is used are
+described in the documentation for the particular object.  For a
+description of actions that are specific to XODUS elements (widgets), see
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A>.  A list of actions that an
+object can perform can also be displayed using the 
+<A HREF="Manual-25.html#showobject">showobject </a> command.</P>
+
+
+<HR>
+<A HREF="Manual-7.html">Previous</A>
+<A HREF="Manual-9.html">Next</A>
+<A HREF="Manual.html#toc8">Table of Contents</A>
+</BODY>
+</HTML>

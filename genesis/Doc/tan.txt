@@ -1,0 +1,12 @@
+Routine Name:	tan
+
+Description:	Returns tangent for given angle (specified in radians).
+
+Usage:		tangent = {tan angle-in-radians}
+
+Example:	float t = {tan {3.14159/4}}
+
+Notes:		
+
+See also:	atan
+

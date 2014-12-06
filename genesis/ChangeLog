@@ -1,0 +1,1576 @@
+                             G E N E S I S
+                Summary of changes and revision history
+                ***************************************
+                Last edited: $Date: Tue Nov 11 14:05:40 MST 2014 $
+
+Each set of changes listed below is prefaced with the version number for
+which the changes apply.  For development releases, two version numbers
+are listed on separate lines, the first being the development release
+version and the second being the proposed public release version.  The
+proposed release is subject to discussion and change.
+
+
+------------------------------------------
+FINAL RELEASE 2.4
+2014-November
+------------------------------------------
+
+- A new autoconf-based build system has been incorporated, so that a
+simple "./configure" command will create the appropriate Makefile.
+
+- Three new network connection commands, 'volumeconnect3', 'volumeweight3',
+and 'volumedelay3', have been added and documented. These allow
+distance-dependent connection probabilities and/or weights and the use
+of periodic boundary conditions for network connectivity.
+
+- Added HTML indexing to the 'genesis' directory and subdirectories.
+README files have been replaced or supplemented with '.txt' or '.html' files.
+
+- Several source code bug-fixes and changes to src/Makefile.dist were
+made in order to solve compilation problems on newer OS versions.
+
+------------------------------------------
+BETA RELEASE 2.4 beta
+2014-July
+------------------------------------------
+
+- addition of 'stdp_rules' object, documentation, and Scripts for implementing
+spike timing dependent plasticity in networks of hsolved cells
+
+- the chemesis library for modeling second messengers and calcium dynamics
+has been added to GENESIS
+
+- new tutorial Scripts were added for chemesis, gpython-tools,
+purkinje, stdp_rules, VAnet2
+
+------------------------------------------
+FINAL RELEASE 2.3
+2006-March
+------------------------------------------
+-Last-minute pgenesis doc updates.
+
+-Makefile.dist changes to development targets srcdist and bindist and some
+comment clarifications.
+
+-Added Izhikevich simple spiking neuron model objects and demo scripts. Plain
+text documentation is included under Doc only.
+
+-Added float_format field for asc_file and res_ascfile objects.
+
+-Update of the new purkinje cell tutorial to allow graphing of multiple data
+streams.
+
+-Documentation has been revised for BoG.txt, Changes.txt, asc_file.txt, and 
+Objects.txt, tabchannel.txt, README.cygwin.
+
+-Some files were moved and Makefile.dist updated to facilitate creating src and
+binary distributions with minimal impact on the existing directory hierarchy.
+
+
+------------------------------------------
+STABLE RELEASE CANDIDATE 2.3
+2006-January
+------------------------------------------
+- Completely updated documentation! Including pgenesis and many of the
+  tutorials.
+
+- Fixed some display issues in the squid tutorial and eliminated the restriction
+  on the number of steps which can be performed.
+
+- Fixed crash of Xodus when resizing windows.
+
+- Made Xodus dialogs behave correctly in the face of newer window managers
+  which may attempt to enforce "focus stealing prevention".
+
+- Script parser should now operate correctly on scripts with Mac- and Windows/
+  DOS- like line endings.
+
+- A new purkinje tutorial with a cell plugin framework, on-the-fly generation
+  of tabchannels, and the ability to select compartment names for ascii ouput
+  and current injection.
+
+- Added channels and made some small changes to accomodate leechlib.
+
+- Fixed small bug in Xodus display.
+
+- Increased sizes of buffers for compartment names to accomodate cvapp
+  conversion from neurolucida files.
+
+- Updated kinetikit example files to sync with kkit11.
+
+- Additional makefile targets for binary distributions.
+  Intended for developers.
+
+
+------------------------------------------
+DEVELOPMENT RELEASE 2.3 (aka 2.3 beta)
+All changes intended for 2.3 release
+2005-August
+------------------------------------------
+
+- Incorporated patches for variable argument functions.
+  The old-style varargs.h usage is deprecated and has been replaced by
+  stdarg.h.
+
+- Incorporated MacOSX patches submitted by Alfonso Delgado-Reyes,
+  Cengiz Gunay, and Werner Van Geit. Since OSX (and other OS's) may use
+  case-insensitive file systems, some directory name conflicts
+  were resolved under the Xodus tree.
+
+- Incorporated Cygwin patches submitted by Sergio Daicz.
+  Cygwin installations had the same problems mentioned above with Xodus
+  directory names requiring the same solution. Other fixes included
+  changing the size of hash table to avoid overflow. This was fixed by
+  changing the hash table size to a prime number (10007), resulting in a
+  more evenly distributed hash.
+
+- Incorporated bug fixes for the kinetics library.
+
+- Removed references to PARSER in Makefiles since it is no longer used.
+  Since it's use was not well documented, it was tempting to define it
+  with the same path as YACC. This would cause problems on most compilers
+  since PARSER was used as an argument to '-D'.
+
+- Removed [references to] extra fortran and C++ source code files.
+  The fortran and c++ code libraries are not used by GENESIS.
+
+- Modified Makefiles to pass appropriate variables to SPRNG.
+  The SPRNG random number generation libraries should now compile on
+  all known architectures. Variables are now passed from the top-level
+  Makefile.
+
+
+------------------------------------------
+STABLE RELEASE 2.2.1
+2005-June
+------------------------------------------
+
+* 2.2.1 development code relocated to sourceforge repository
+
+- Changed AUTHORS permissions to 644 from 755
+
+- Removed empty file VERSION_2.2.1
+
+- Removed empty directory src/sprng/DOCS
+
+- Added COPYRIGHT
+
+- Added GLPLicense, GNU Lesser Public License
+
+- Removed file src/diskio/interface/netcdf/netcdf-3.4/src/macros.make
+  since it is generated from macros.make.in
+
+- Removed Doc/Manual.tar.Z. Now accessible from the sourceforge
+  project site. Updated Doc/README.manual to indicate relocation.
+
+- Moved src/CHANGES to this file (ChangeLog).
+
+
+------------------------------------------
+DEVELOPMENT RELEASE 2.2.1 (aka 2.2.1 beta)
+All changes intended for 2.2.1 release
+------------------------------------------
+
+* Bug fixes from January 2002:
+
+ - Changes to disk_out, asc_file, and res_ascfile.  In GENESIS 2.2, these
+   three objects were changed to write data files in double precision
+   format (type double) instead of single (type float).  Unfortunately, the
+   resulting files were incompatible with the disk_in and xsimplot objects
+   (which expect floats), and existing utilities that people have written
+   to read the output of disk_out.  GENESIS 2.2.1 reverts to the single
+   precision format.
+
+ - Corrected a bug in the timetable object that can produce segmentation
+   faults.
+
+ - Corrected a bug in readcell (tools/new_parser.c).  When readcell was
+   invoked twice, in order to create two different cells, Em in all the
+   compartments of the second cell was set to 0, instead of the value of
+   EREST_ACT that is specified in the cell parameter file.  (This doesn't
+   happen if ELEAK is specifically set in the cell parameter file.)
+
+ - Added changes from Mike Vanier to allow the the supplementary plotting
+   program src/contrib/xplot (not the GENESIS xplot object) to compile with
+   the Sun C compiler, as well a with gcc.
+
+ - Although the use of "deleteall -force" is discouraged (it isn't always
+   guaranteed to reset all parameters to the same values as when genesis
+   was started), it is used in the Scripts/piriform simulation.  Mike
+   Vanier fixed a bug in sim/sim_malloc.c that produced a segmentation
+   violation when this command was used.  Some code cleanup was done in
+   sim/sim_event.c, while investigating a possible bug.
+
+ - Fixed some problems in executing the shell script "test_dir" in
+   Scripts/piriform.
+
+ - Fixed a corrupted data file "testfile" in
+   Scripts/examples/diskiolib/diskio.
+
+* Bug fixes from August 2002 genesis-2.2.1-beta-20020812
+
+ - Fix to hines/hines_chip_init.c submitted by Hugo Cornelis.
+   Instantaneous tabchannel gates (i.e. those that use the instant field)
+   produced inaccurate results under hsolve chanmodes 2-5.
+
+ - Fix to readcell (tools/new_parser.c) by Hugo Cornelis for core dump with
+   difshell STOREINFLUX message.
+
+ - Fixes submitted by Mikael Lindqvist for concen/fura2.c (missing break in
+   PROCESS case, and incorrect MSGVALUE arguments for CONCEN message), and
+   for concen/concpool.c (typo in test for dia <= 0.0).
+
+ - Fix to sim/sim_dump.c, provided by Upi Bhalla.  It fixes a segmentation
+   violation that happens with IRIX when kinetikit is used, but not under
+   Linux.
+
+-  Fix by Dave Beeman for an error in olf/olflib.g that caused the SUM
+   message for the table2D object to fail.
+
+ - Two new debugging commands gctrace (for tracing GENESIS commands) and
+   gftrace (for tracing script language functions) were contributed by Hugo
+   Cornelis.  The changed files are ss/script.y, ss/parse.h, ss/parse.c,
+   ss/eval.c, ss/ss_func_ext.h, shell/shelllib.g, shell/shell_func_ext.h,
+   shell/shell_exec.c, and shell/shell_debug.c.  Usage summary:
+  
+   gctrace <level>
+   if <level> is 1, command tracing is enabled.
+   if <level> is 0, command tracing disabled.
+
+   gftrace <level>
+   if <level> is 1, function tracing is enabled.
+   if <level> is 0, function tracing disabled.
+
+   gftrace is particularly useful for finding out which script functions are
+   called from the script field of Xodus widgets without having to locate the
+   widget in the genesis hierarchy.
+
+* Bug fixes from March 2003:
+
+ - Fixes from Mike Vanier for ss/script.y and convert/script.y to prevent
+   parse errors with recent versions of GNU bison (e.g. ver. 1.75).
+
+ - Fixes from Mike Vanier for ss/parse.h and convert/parse.h.
+ 
+   According to Mike:  There was a type error involving the YYSTYPE
+   expression and some ifdef's which had the combined effect of making the
+   compiler think that YYSTYPE was an int even though it is defined here.
+   I think that giving an explicit type for YYSTYPE is the Wrong Thing to
+   do; you should always #define it since bison generates lines like
+   "#ifdef YYSTYPE".  My fix was simple:  I just added '#define YYSTYPE
+   YYSTYPE' after the typedef for YYSTYPE.
+
+   Yes, this actually works.  Apparently, #define uses a separate namespace
+   or something than the C compiler itself, so the "typedef union"
+   statement above doesn't actually define YYSTYPE from the point of view
+   of the preprocessor.  This is ugly, and I'm sure there is a better way
+   to do things, but it works.
+
+ - Changes provided by Malcom Tobias to allow IRIX 32 or 64 bit compilation
+   flags to be passed down from the main genesis/src/Makefile.  Affects
+   Makefile.dist, sprng/SRC/Makefile, sprng/SRC/lcg64/Makefile, and
+   sprng/SRC/make.irix.
+
+* Bug fixes from April and May 2003:
+
+ - Fix to hines/hines_init.c submitted by Hugo Cornelis.  Fixes a bug
+   triggered under OS's that do not use gnu malloc, i.e. Mac OSX and
+   probably others, causing hsolve to give a 'bad access' violation.
+
+ - New version of kinetics library and Scripts/kinetikit (ver. 9) from
+   Upi Bhalla.  This fixes a problem creating pool objects with gcc 3.2.
+   Scripts/kinetics/PARMS.g has been modified to set form sizes appropriate
+   for a 1024 x 768 display.  Edit this file if you want larger forms for a
+   higher resolution display.
+
+ - Changes to Makefile.dist for IRIX 6.5 64-bit compile.
+
+ - Replaced C++ style "//-" comments with "/* ... */" for K&R compatiblility
+   in shell/shell_debug.c, shell_exec.c and ss/eval.c, parse.c.
+
+ - Included <errno.h> in convert/strsave.c and symtab.c, needed for gcc 3.2.
+
+ - Makefile.dist was modified so that the COPT define for the nxdefault target
+   contains "-DNO_X".  This is needed by the file kinetics/text.c, which
+   normally has some dependence on the XODUS xtext widget.
+
+ - kinetics/file_info.c has been modified to disable the relatively obscure
+   commands dirlist and maxfileversion when compiling under Solaris.  This is
+   because they make use of the functions scandir() and alphasort() that are
+   normally declared in /usr/include/dirent.h, except under Solaris.
+
+----------------------------------------
+DEVELOPMENT RELEASE 2.2.3 (aka 2.2 beta)
+All changes intended for 2.2 release
+----------------------------------------
+
+* Addition of Michael Vanier's parameter search library and elimination
+  of Upi Bhalla's obsolete parameter search commands.
+
+* Incorporation of numerous bug fixes and additions from Erik De
+  Schutter and Hugo Cornelis from their "Antwerp" version of GENESIS,
+  which is in turn based on GENESIS 2.1.  The main changes are:
+
+  - Full support of symmetric compartments (also in hsolve).
+  - The comptmode field is not used anymore (but it's still there for
+    compatibility).
+  - Corrected some spine utilities in readcell.  All the compartments in
+    a spine are now indexed; this was necessary because findsolvefield
+    could otherwise not find the synapse.
+  - Instantaneous gating of tab(2D)channels possible with the use of the
+    instant field.  Erik also included updated scripts for the traub91
+    tutorial which demonstrate the use of the instant field (three shell
+    variables are pre-defined) and uses symmetric compts in hsolve mode.
+    These have been incorporated into the Scripts/traub91 scripts.
+  - Supports single diffusion shells in a compartment.
+  - New dev object: calculator (allows you to add, subtract etc using
+    messages, no tables needed).
+  - New concen object: hillpump (like mmpump but you can specify a
+    Hill coefficient).
+  - Added a TUBE shape for concpools and updated readcell.
+  - TABSAVE and TABREAD now write/read platform independent binary files.
+  - hsolve chanmode 5: like chanmode 4 but normalizes the currents and
+    conductances stored in hsolve->givals array (for display purposes
+    only).
+  - Updates to readcell in tools/new_parser.c.
+
+* The automatic attempt to interpret unknown GENESIS commands as UNIX
+  shell commands inside {} is disabled by default unless the command is
+  the first on the command line.  Executing shell commands elsewhere
+  requires using "sh"; e.g., "echo {pwd}" does not work but "echo {sh
+  pwd}" does.  This removes a potentially dangerous effect if the user
+  mistypes a command such as "echo {rm * Ca}" instead of "echo {Rm *
+  Ca}".
+
+* Incorporation of Steve Van Hooser's 1998 changes to tools/new_parser.c
+  to implement "double endpoint" mode in .p files and to extend
+  "*lambda_warn" support to allow MIN and MAX parameters.
+
+* Full support for SPRNG 1.0, a library of fast random number
+  generators.  The SPRNG library is designed to select from among the
+  provided RNGs at compile time.  src/Makefile defaults to using the
+  Lagged Fibonacci Generator, which in testing proved to be fastest
+  while also having the longest random number sequence.  The SPRNG
+  random number generator can be selected at run-time (using the new
+  command setrand) instead of the previous Numerical Recipes-based
+  random number generation function.
+
+* Setrandfield has been moved into tools and its -exponential option now
+  works like planardelay's.
+
+* Implementation of the facsynchan object by Michael Vanier.
+
+* Complete reimplementation of xgif and ximage for displaying GIF
+  images.  The new version does not suffer from problems on displays
+  having more than 8-bit depths.  This fixes a problem with displaying
+  under Solaris 2.6 CDE, reported by Avrama Blackwell and others.  The
+  symptom was that calls to xgif would generate "X Error of failed
+  request: BadValue".
+
+* Incorporation of newest version of netCDF library (v. 3.4).  (Changes
+  provided by Upi Bhalla.)
+
+* Diskio support for FMT1 files by Venkat Jagadish.  NOTE: the
+  associated changes in XODUS result in diskio being a required
+  component for a full genesis.  NetCDF can still be excluded if
+  desired.
+
+* Reimplementation of GENESIS 1 xsimplot by Venkat Jagadish.
+
+* New XODUS object xfastplot plus various XODUS fixes from Upi Bhalla:
+
+  - Minor typecasting stuff in Xodus/widg to get a cleaner compile.
+  - Addition of the FastPlot widget, which is essentially an
+    oscilloscope widget: fast and economical.
+  - An XgEventStep routine in Initialize.c, which does a single
+    event rather than exhaust the pending X events. It can be safely
+    ignored, as it turned out to be too unweildy.
+  - Minor fix to xshape to correct buffer overruns.
+  - Commented out an irritating printf in the xtree. Lets Kinetikit
+    start out without warnings.
+  - Added callback to ximage to try to get it to respond to mouse
+    clicks. Not yet complete.
+  - Fix in xo_callb.c which protects against segvs in some situations.
+    Some stuff in hines, which may just be fixes applied on the CDROM
+    after I got my version.  I don't remember doing much there.
+  - A significant fix in hines_child.c which replaces some huge
+    dynamic arrays with static ones.  This enables it to run on alpha
+    Linux.
+  - Some awful hacks in the kinetics library, which make things go
+    about 2 to 4x as fast specially on newer CPUs by bypassing the usual
+    messaging.  Should be completely transparent to the user, and I have
+    not had trouble with them for over a year.  But you can decide.
+  - Added object substitution in sum_dump.c
+
+* Fixes to xfastplot implementation to solve X Windows errors on systems
+  using non-Pseudocolor visuals by default.
+
+* Incorporation of Dieter Jaeger's spike analysis library.  David
+  Bilitch did the work; he noted the following: "I've integrated the
+  spike analysis library with devices.  I've taken Dave Beeman's
+  suggestion and renamed doac and doxc to autocorr and crosscorr.  I
+  also fetched Dieter's versions of freq_monitor and peristim and made
+  these the default.  The old versions continue to be compiled in,
+  though they are not added as objects.  There are a couple of variables
+  in the devlib.g startup which can toggle between the old and new
+  versions (requiring a recompile).  I've also changed the class for
+  autocorr and crosscorr to device as Dieter suggested."
+
+* Enhancements to src/device/timetable.c from Dieter Jaeger.
+
+* New function "fileconnect" from Upi Bhalla, plus associated demo
+  scripts in Scripts/examples/fileconnect.
+
+* Changes to the normalization of ACTIVATION messages to a synchan, to
+  make them behave the same with hsolve as without.  Implementation and
+  mods to the Purkinje tutorial by Hugo Cornelis; fixes to the spinedemo
+  by Dave Beeman.
+
+* Addition of new function, "countelementlist", by Hugo Cornelis.  Using
+  a wildcard that expands a list like {argc} to more than 1000 elements
+  produced a core dump.  The new function allows scripts to count
+  elements in a list and thereby be used to let scripts behave more
+  smartly with large lists.
+
+* New actions OUT_OPEN and OUT_WRITE added to asc_file from Michael
+  Vanier.
+
+* Hitting ^V now prints the current version string.
+
+* Readcell now gives a different value for the axial resistance of a
+  spherical compartment in GENESIS 2.2 than it did in 2.1.  Ra is chosen
+  as being that of an equivalent cylinder C with the same surface and
+  volume as the sphere S, where lenC = 3/2 diaS and diaC = 2/3 diaS.
+  Changes by Erik De Schutter.
+
+* Large number of portability fixes to Makefiles and code for the
+  following: Solaris 2.6 and 2.7, Red Hat Linux 5.2 and 6.x, Debian
+  Linux, Mandrake Linux 7.0, SGI IRIX 6.5.3, 6.5.8 and 6.5.10, FreeBSD
+  4.1, and IBM AIX 4.2 and 4.3.
+
+* The default compilation flags when using gcc now include -O2 and sets
+  __NO_MATH_INLINES.
+
+* Fixes for outlib from Greg Hood.
+
+* Fixes to src/ss/eval.c from Michael Vanier to improve the traceback
+  messages.
+
+* Fixes from Greg Hood, Elliot Menschik and Chris Butson for compiling
+  GENESIS on the SGI Origin.
+
+* Fixes to hsolve from Greg Hood for compiling with optimization under
+  Red Hat Linux and the Cray T3E.
+
+* Fixes from Greg Hood for PGENESIS, including portability fixes for Red
+  Hat Linux and fixes to rvolumedelay and rvolumeweight.
+
+* Fixes to src/ss/script.l to fix compilation under Solaris using Sun's
+  yacc.
+
+* Fixes for tab2Dchannel bug discovered by Dave Beeman in Nov 1999 in
+  the pre-release DR 2.2.2.  The bug symptom is that Upi Bhalla's mitral
+  cell simulation produced NaN values for the tab2Dchannel X gate.
+
+* Fixes for src/oldconn/personal/expsum.c by Michael Vanier.
+* Fixes to remarg from Michael Vanier.
+
+* Fixes to randomize_value in newconn/delay.c from Michael Vanier.
+
+* Fix src/startup/schedule.g to add an init action to PID.
+
+* Fixes to newconn library delay2.c and weight2.c from David Beeman.
+
+* Fixes from Hugo Cornelis to src/out/spike_history.c.
+
+* Fixes from Hugo Cornelis to src/shell/shell_hash.c
+
+* Fix to the version command: it now returns a string value to avoid
+  displaying a version number like 2.09999...
+
+* Fix to pastechannel: it was using the full pathname of the source
+  channel when attempting to name the pasted channel in addmsg/sendmsg
+  message setup.  Now uses just the pasted channel name.
+
+* Fixes to synchan, hebbsynchan and facsynchan from Michael Vanier.
+
+* Fix to pathname(), which now allows many more concurrent pathname
+  strings to be in use.  The exact number is dependent on the pathname
+  lengths.  Currently allows up to 1000 chars concurrently.  This limit
+  is controlled by the PATHNAMES_BUF_LEN define, which may be overridden
+  by adding an appropriate define in the Makefile or suitable header
+  file.
+
+* Fix from Dave Beeman for a numerical error in the calculation of beta
+  in TabToFile (src/olf/new_interp.c).
+
+* Fix from Erik De Schutter to calculation of diffusion, involving
+  contact between shells.  This affected a few files in src/concen,
+  hines/hines_conc_init.c, and files in Scripts/examples/spinedemo/.
+
+* Fix by Dave Beeman to calculation error in tab2file in olf/new_interp.c.
+
+* Fixes to script_out by Hugo Cornelis.
+
+* Fix to hsolve by Hugo Cornelis that permits an hsolve DUPLICATE to be
+  performed from any working element if you use an absolute pathname as
+  the first call argument.  The new syntax is
+    call hsolve1 DUPLICATE hsolve2 duplic_path
+
+* Fixes to hsolve from Hugo Cornelis for a bug in which Vm is loaded too
+  late under some circumstances.
+
+* Fix to provide tabcurrent elements created by readcell with the needed
+  VOLTAGE and CHANNEL messages.
+
+* Fix by Hugo Cornelis for a bug in hines/hines_chip.c that caused hsolved
+  synchans to have inaccuracies in the calculated Gk for large time
+  steps.
+
+* Fix by Hugo Cornelis for a bug in newconn/synchan.c that caused the Gk
+  calculated by synchans to lag behind the current simulation time by one
+  time step.
+
+  NOTE: These fixes have not been applied to the obsolete channelC2 and
+  channelC3 objects.  Also, it should be noted that output objects (xplot,
+  asc_file, disk_out, etc.)  report the time from the previous step.  This
+  behavior has not been changed in GENESIS 2.2, because it may affect
+  simulations that do comparisons between values produced by asc_file,
+  disk_out, etc. with some existing files.
+
+* Addition to tools/new_parser.c by Jose Manuel Ibarz del Olmo to prevent a
+  negative shell volume, in case someone should assign a value of thick >
+  dia/2 to a Ca_concen when using readcell.
+
+* Fix to initialization in param/gen2spk.c by Lazarewicz Maciej.
+
+* Fixes for AIX from Claus Weiland and Alex Kozlov.
+
+* Fix to hines/hines_conc.c from Erik De Schutter for a bug that caused
+  numerical errors in simulations without buffers.
+
+* Eliminination of old parallel library and -parallel option in
+  src/tools/cell_sheet.c.
+
+* Numerous modification to top-level Makefile.dist & Makefile.<machine>,
+  including:
+
+  - Plain old "make" now does what "make all" previously did
+  - Eliminate warnings about "@echo: command not found"
+  - Fix "make install" to do a better job of installing into a
+    destination directory that is not the root of the GENESIS tree.
+
+* Fix to startup/Usermake from Christo Panchev for compiling
+  nongraphical version of GENESIS.
+
+* Introduction of src/contrib, which currently contains just one item,
+  Michael Vanier's version of xplot.
+
+* Removal of src/olf/hh_tabchan.c and corresponding changes in olflib.g
+  and related Makefiles.
+
+* Renaming of src/newconn/hebbsynchan3.c to newconn/hebbsynchan.c.
+
+* Renaming of src/newconn/newconn.g to src/newconn/newconnlib.g.
+
+* Renaming of src/newconn/synchan2.c to src/newconn/synchan.c.
+
+* Removal of no longer used files src/newconn/synutils_test.g and
+  src/newconn/synutils2_test.g.
+
+* Significant cleaning up of code throughout GENESIS to reduce or
+  eliminate various inconsistencies involving datatypes.
+
+* Significant cleaning up of all code to reduce the number of
+  compilation warnings.
+
+* Improvement of comments in src/Makefile and src/startup/Usermake about
+  the procedures for building GENESIS.
+
+* Usermake file now allows for building nxgenesis, not just regular
+  graphical genesis.
+
+* Enhancements to comments in src/Makefile.dist and src/README dealing
+  with some common problems involving alternate paths for some files or
+  libraries.
+
+* Verification of Y2K compliance to satisfy Springer-Verlag.
+
+
+----------------------------------------------
+DEVELOPMENT RELEASE 2.1.4 (aka 2.1 prerelease)
+All changes intended for 2.1 release
+----------------------------------------------
+
+    - Version number and main copyright updated to reflect real release
+
+    - Added user supplied Makefile settings for compiling 64-bit under
+      IRIX 6.x
+
+    - Postscript graph compression changes from Randy Gobbel
+
+    - stdlib.h added to sys/header.h and to convert/ files for
+      malloc() definitions
+
+    - Suppress definition of uchar type in diskio on AIX machines
+
+    - Add define for MACHINE type to diskio CFLAGS
+
+    - Extraneous \ in printf control string in hines/h_init.c removed
+
+    - Bug in newconn/synchan2.c which applies hsolve related correction
+      to next pending event time when a new event is being merged in
+      even when hsolve is not used is fixed.
+
+    - Added SET action to randomspike to calculate realrate whenever
+      rate or abs_refract change.
+
+    - Changes to accomodate new glibc version of Linux libc
+
+    - Type mismatch fixes (non-Xodus only)
+
+    - sbrk() return type fix which prevented aix compiles from working
+
+    - Missing CopyString() for the return value in do_rand_comp() added
+
+
+------------------------------------
+DEVELOPMENT RELEASE 2.1.3
+All changes intended for 2.1 release
+------------------------------------
+
+    - hsolve has been changed to allow calling the SETUP action when
+      using the hsolve as root of cell convention even though the
+      working element is not the hsolve.  (The code now temporarily
+      changes working element to the hsolve while scanning the hsolve
+      path.)
+
+    - bug in hines/hines.c calling write instead of fwrite fixed.
+
+    - findsolvefield and getsolvecompname now use G_getopt().
+
+    - a bug in which randomspike fails to output at the specified rate
+      for high spike rates (i.e. when rate approaches 1/abs_refract)
+      has been fixed.
+
+    - the kinetics library Makefile now has an install target
+
+    - the netcdf compile problem which appeared on Paragon, T3E,
+      Linux 1.2.1, Solaris and SGI have been fixed (the latter
+      three having been tested).
+
+    - the copyright message for netcdf now gives the correct path to
+      the full copyright file.
+
+    - added tabcurrent and hebbsynchan icons to xstartup.g
+
+    - the full DR 2.1.3 distribution also contains:
+
+	- updated Doc and Scripts directories
+
+	- the netcdf distribution included within the diskio library has
+	  been pared down to include only what is needed.
+
+
+------------------------------------
+DEVELOPMENT RELEASE 2.1.2
+All changes intended for 2.1 release
+------------------------------------
+
+    - Main Makefile changes
+        - now includes kinetics and diskio
+        - oldconn, kinetics and diskio are in an optional libraries section
+        - liblist, nxliblist and minliblist are now generated from the
+          makefile
+
+    - Usermake changes
+        - Autogenerates liblist
+        - USERLIB now lists library names rather than library obj files
+        - USEROBJ now lists library object files
+        - kinetics, diskio, oldconn and Xodus as optional libraries
+
+    - libsh now ignores comment lines with # in column 1
+
+    - README and src/README updated for 2.1
+
+    - Bunch of bug fixes sent in from PSC
+        - Additional T3E mods
+        - Incorrectly called functions
+        - Uninitilized variables
+        - unallocated memory accesses
+
+    - hines/hh_update.c contains an inline function which sometimes fails
+      to compile properly.  Added an INLINE macro which if set to nothing
+      (the default) will inhibit this inlining.  Add -DINLINE=inline to
+      CFLAGS to enable the inlining.
+
+    - Bug preventing hsolve from calling the HPROCESS action is fixed.
+    
+    - planarweight2 and planardelay2 added.  These versions require
+      specification of both the source and destination elements and
+      improve the speed of setting the weights and delays.
+
+    - Bug in synchans which would sometimes prevent delivery of spikes
+      is fixed.
+      
+    - Changed many comparisons in new_interp.c for setupalpha, et al for
+      == 0.0 to fabs(...) < SING_TINY.  SING_TINY is 1e-6.      
+
+    - A command callback mechanism was implemented to support calling
+      functions at exit.  This was used to ensure diskio files are closed
+      at normal exit.
+      
+    - Added icons in xstartup.g for new channel objects.
+
+
+------------------------------------
+DEVELOPMENT RELEASE 2.1.1
+All changes intended for 2.1 release
+------------------------------------
+
+    - Main Makefile changes to simplify building
+
+    - pgenesis patches from PSC
+
+	- T3E support
+
+	- new xview messages (you guys wanna write up some docs?)
+
+	- par_disk_out and par_asc_file
+
+	- -empty_ok option for setfield command
+
+	- code_sym now allows whitespace between indirection chars (i.e. '*')
+	  in structure fields, etc.
+
+	- a bunch of bug fixes (thanks!)
+
+    - permanent fix for the getopt problem; -DGETOPT_PROBLEM is history
+
+    - ddsyn is back in olflib.g; inadvertantly removed by Antwerp update
+
+    - readfile no longer issues an error when reaching EOF allowing use of
+      eof command
+
+    - Update of ShowInterpol() calls in various places to include new
+      dimension argument
+
+    - nxliblist and minliblist are back
+
+    - other bug fixes
+
+
+--------------------------------------------
+DEVELOPMENT RELEASE 2.1
+All changes are intended for the 2.1 release
+--------------------------------------------
+
+    - compartments/segments now have start and end coordinates (GELEMENT)
+
+    - New ghk and concen libraries
+
+    - 2D tables and tabchannels
+
+    - tabchannel SCALE_GBAR message renamed to ADD_GBAR
+
+    - res_asc_file: asc_file object that only outputs if time or value
+      changes fall outside a given range
+
+    - spike_history: outputs spike times to file in ascii format
+
+    - normalize_weights field for synchan (flags to divide by nsynapes)
+
+    - planarweight2; more efficient version of planarweight
+
+    - hines code improvements + support for new objects and synchans
+
+    - readcell changes for new objects, GELEMENTs, hsolve as cell root
+      element
+
+    - nesting of form widgets for grouping widgets on a form
+
+    - lots of fixes for bugs including
+
+	- disk_in skipping initial data points from ascii files
+
+	- compile problems for IRIX 6.x and AIX 4.1.5
+
+	- core dumps when running tutorials back to back
+
+	- usage handling for xps
+
+	- clock change on xgraph is now passed on to xplots
+
+	- xgraph overlays were not compatible with 1.4 semantics
+
+	- synapse memory allocation problems
+
+	- spurious warning from check about bad clock settings
+
+	- path lookup problems referencing element index ranges (eg elm[1-5])
+
+
+-------------------------
+DEVELOPMENT RELEASE 2.0.1
+-------------------------
+
+    - A bug in the MSGOUTLOOP macro which caused problems on DEC
+      Alphas has been fixed. (2.0.1)
+
+    - A bug in the XtVaSetValues() function causing problems on
+      DEC Alphas (and probably on other 64bit machines) has been
+      worked around by providing a fixed version of the Xt code
+      involved.  The Xt problem appears to exist in all X11 versions
+      through X11R6. (2.0.1)
+
+    - A number of additional DEC Alpha related fixes in the
+      Xodus/Draw library. (2.0.1)
+
+    - XoGetPixelFromString() now handles pixes correctly. (2.0.1)
+
+    - Fix for xlabel freeing unallocated memory. (2.0.1)
+
+    - xforms can now be nested allowing for grouping of widgets
+      within a form using a nested form. (2.1)
+
+    - Added special handling of first message in loading messages
+      from a dump. (2.0.1)
+
+    - Dump files now use the new -continue option to loadtab to
+      allow continuation of loading long lists of table values. (2.1)
+
+    - The element path wildcard routines will now process white
+      space separated lists of path specifications and include all
+      elements matching each path.  (Note that the commands still
+      take a single wildcard path argument and that the path list
+      must be passed in this single argument.) (2.1)
+
+    - A bug in special handling of the stdlib.h file for GNU gcc when
+      optimization is on caused the stdlib.h header to be skipped if
+      optimization was off.  This header is included in all cases now.
+      (2.0.1)
+
+    - The loadtab command for loading tables from dump files has a
+      -continue option to work around script language limitations on
+      command line length. (2.1)
+
+    - The loadtab -xy option now takes an xdivs argument. (2.0.1)
+
+    - The loadtab -xy option now uses doubles to load data to preserve
+      double precision. (2.0.1)
+
+    - The setupalpha command now detects singularities and corrects
+      those that can be corrected. (2.1)
+
+    - Tables now use the simulation step time if the stepsize field is
+      zero. (2.1)
+
+    - xcell now handles cells with symcompartments correctly. (2.0.1)
+
+    - xplot now handles expansion of plots greater than 200 point
+      correctly. (2.0.1)
+
+    - The planar and volume weight and delay functions for synchans
+      now accept an optional destpath argument to restrict the set
+      of synchans affected by the command. (2.1)
+
+    - The protections for various newconn object fields have become
+      more restrictive. (2.1)
+
+    - References to hebbsynchan2 have been removed (2.0.1)
+
+    - Fixes for synchan/hebbsynchan MOD message and frequency normalization
+      bugs. (2.0.1)
+
+-----------------------------------------------------------------------------
+RELEASE 2.0
+-----------------------------------------------------------------------------
+
+    This file contains information about changes introduced in updates
+    to GENESIS 2.0.  For information on changes from GENESIS 1.4 to
+    GENESIS 2.0, please see the GENESIS Reference Manual.
+
+------------------
+BETA 2.0, PATCH 19
+------------------
+
+    - Additional comments about SGIs in src/Makefile.dist
+
+    - Various changes in src/README regarding supported systems
+      and SGI issues.
+
+    - A bug in xview and xvar widgets affecting morphing of
+      shapes when the value range low and high values are
+      equal has been fixed.
+
+    - Xview update problems resulting in an incorrect initial
+      display are fixed.  The problem likely affected display
+      during the simulation as well.
+
+    - The xtree ADDMSGARROW problem in calling the script_add
+      and script_drop scripts with incorrect arguments has been
+      fixed.
+
+    - The Usermake reference to the doc file describing how to
+      compile user libraries changed to refer to the new file name.
+
+    - Xdefaults.example has been changed to use the same resource
+      values found in the fallback resources within Xodus.
+
+------------------
+BETA 2.0, PATCH 18
+------------------
+
+    - Copies of xshape objects no longer share the string field
+      values of the copied element.  Additional code to close
+      memory leaks in xshape resulted in freeing the fields from
+      the copied element.
+
+    - xcell was writing past the end of two allocated arrays.
+      Now allocates the correct array sizes.
+
+    - xdialog and xlabel now have COPY actions which copy string
+      field values.  Other widgets do not yet implement COPY actions,
+      but need to, since the internal Xt widget ends up being shared
+      between copies, but is destroyed if any one widget is deleted.
+
+    - NULL widget fields no longer set the corresponding Xt widget
+      resource to "nil".
+
+------------------
+BETA 2.0, PATCH 17
+------------------
+
+    - The -coords option for x1shape objects ended up setting the
+      npts field to the number of coords in the first argument
+      following the -coords option name.  This no longer happens.
+
+    - xview has been fixed so as not to change colors when the input
+      data is not changing.
+
+    - The hebsynchan object has been returned to the HebbSynchan
+      implementation, however, hebbsynchan2 is still removed.
+
+------------------
+BETA 2.0, PATCH 16
+------------------
+
+    - xcell was not calculating the width of the soma resulting in
+      the soma not appearing on the display.  xcell now calculates
+      the correct screen width.
+
+    - Additional xtree selection fixes from Upi Bhalla
+
+    - Code has been added to xvar and xview to avoid division
+      by zero if the low and high limit on input values are the
+      same.  In these cases, the color defined by the low limit
+      shape is used.
+
+    - xpixflags is now the official name for the pixflags conversion
+      command.  The old pixflags command name is retained for BC.
+
+    - The xpixflags command now uses the getopt() routines and its
+      usage message documents the negation operator as a tilde(~).
+
+    - A bug in xpixflags returning static storage after printing a
+      usage statement has been fixed to allocate the return value.
+
+    - Core leaks in setting of string fields in various widgets have
+      been patched.
+
+    - Added a -nox option to the genesis command line which results
+      in Xodus not being initialized.  A related command, xgetstat,
+      has been added which returns 0 if Xodus is not properly init-
+      ialized.
+
+    - The xon command has been removed.  The xinit command now maps
+      to a message indcating that xinit is no longer needed.  (We
+      wouldn't want scripts accidently calling the X11 xinit command!)
+
+    - A problem with X1compat handling multiple arguments to the x1shape
+      -coords create command option has been fixed.
+
+    - convert now removes the xinit command when converting scripts.
+
+    - Changes from Erik DeSchutter to handle INJECT messages in hsolve
+      chanmode 0/1.
+
+    - The hebbsynchan object is now using the HebbSynchan2 implementation
+      and there is no longer a hebbsynchan2 object.
+
+    - Deleting an element while it is the cwe will now immediately ce
+      to the root element.
+
+    - The Xdefaults.example file with values suitable for SGI systems
+      has been added.  It installs in the startup directory.
+
+    - Libmake has been modified to describe that use of the FUNCTIONS
+      file is no longer necessary, but also provides instructions for
+      setting up the Makefile to use an old FUNCTIONS file is desired.
+
+    - Usermake has been updated to include the oldconn library by
+      default.
+
+    - A bug in code_g resulting the hashfunc command setting the return
+      type of the function to void even when another return type is
+      given is fixed.
+
+    - readcell will now use full compartment volumes for Ca_concen if
+      the thick field is less or equal to zero or greater than the
+      compartment diameter.
+
+----------------------------
+BETA 2.0, PATCH 15
+Sat Jul 29 11:54:30 PDT 1995
+----------------------------
+
+    - A bug in gcc 2.6.3 stdlib.h causes a number of function type
+      definitions to be redeclared with incompatible types.  A work
+      around had been implemented in the affected files.
+
+    - Clean up of memory allocation of string resources.
+
+    - Colorscale colors are no longer freed when using a readonly
+      visual.
+
+    - Xshapes should correctly set fg colors.
+
+    - Various memory leak fixes.
+
+    - The execute command has been removed.
+
+    - The affweight and affdelay commands have been added to the oldconn
+      library.  These command should be used in lieu of "execute AffWeight"
+      and "execute AffDelay".
+
+    - The compartment and symcompartment object now initialize default
+      values for Rm and Cm to 1 to avoid divide by zero FPE errors for
+      uninitialized compartments.
+
+----------------------------
+BETA 2.0, PATCH 14
+Fri Jul 21 14:58:42 PDT 1995
+----------------------------
+
+	- Minor changes for compiling under HPUX.  There are still
+	  problems with XODUS on this platform.
+
+	- The CPG tutorial sersion using xvar objects should now
+	  display properly.
+
+	- Additional changes for xtree drag and drop operations have
+	  been made.
+
+	- The -coords option used in creating xshapes will now accept
+	  the coordinate list as multiple arguments.  Long coordinate
+	  lists should be broken into multiple arguments to avoid
+	  command argument length limitations.  The xstartup.g script
+	  has been updated accordingly and convert no longer combines
+	  multiple coordinate arguments into a single argument.
+
+	- The Ca_shell object has been merged into Ca_concen and the
+	  dia field from Ca_shell is called thick in Ca_concens.
+
+	- A bug in volumeconnect's handling of mask coordinate values has
+	  been fixed.
+
+	- The floatformat command no longer accepts %d as a valid format,
+	  which leaves %g and %f as the only valid formats.
+
+	- The echo command now verifies that the -format option value is
+	  a single %s conversion.  Other conversions or multiple conversions
+	  will be rejected.
+
+	- Lookup of C function addresses for functions not identified in
+	  a library startup script no longer fail under Linux.
+
+	- A arguments for a script named on the genesis command line are
+	  correctly passed to the executing script.
+
+	- Interupting execution of the .simrc or command line script will
+	  now place the user at the SLI prompt instead of exiting GENESIS.
+
+	- GENESIS no longer dumps core when given an incorrect syntax for
+	  indexing an array field of an element in setfield, etc.
+
+	- Memory leaks which occured on reset have been patched.
+
+	- Unknown channels which appear in a cell file now produce an
+	  appropriate error message from readcell.
+
+	- Pressing buttons while another script is in progress no longer
+	  results in unexpected script behaviour (e.g. widgets no longer 
+	  appear in the wrong form, elements which are expected to exist
+	  will, etc.).
+
+	- Linux make should no longer perform endless recursions in the
+	  oldconn directory.
+
+----------------------------
+BETA 2.0, PATCH 13
+Sat Jul  8 13:33:28 PDT 1995
+----------------------------
+
+	- X11R3 support in src/Makefile.dist has been removed as Xodus 2
+	  will not compile under anything less than X11R4.
+
+	- xcell fixes: single compartment cells now work correctly, auto
+	  calculation of diamax and diamin works for all autodia settings,
+	  settings for path/field/fieldpath fields no longer require a reset
+	  to take effect (inconsistent settings of these fields will be
+	  ignored).
+
+	- Multiple redraws of pixes resulting from setting pix fields have
+	  been reduced.
+
+	- The colorscale will now default to half black and half white rather
+	  than requiring that a table be loaded.
+
+	- xview now supports autoscaling as in Xodus 1
+
+	- xview core dump which would sometimes happen at reset have been
+	  fixed.
+
+	- drag/drop of xtree pixes no longer cause a core dump.
+
+	- X1compat will correctly initialize diarange and autodia fields
+	  of x1cells to values consistent with Xodus 1.
+
+	- The showalias command is now called showcommand.
+
+	- Indirect fields now call the correct SET actions.
+
+	- Callbacks to script commands which return a NULL string will
+	  no longer interrupt script execution with the message "CastToInt:
+	  NULL string".
+
+----------------------------
+BETA 2.0, PATCH 12
+Fri Jun 23 18:02:44 PDT 1995
+----------------------------
+
+	- The problems associated with Netkit.g and other xtree related scripts
+	  on SunOS and SGI-IRIX 5.2 should be fixed.
+
+	- Warning note to set the path field of xtree, xcell and xview elements
+	  as absolute path names will appear only if the path field has been 
+	  set relatively.
+
+	- Spurious error messages which occur when setting the path, field
+	  and fieldpath fields of xcell have been fixed.  Changes to these
+	  fields will not take effect until the next call to reset (or to
+	  an explicit call to the RESET action on the xcell).
+
+	- xcell will now accept character equivalents to its numeric
+	  settings for autodia as originally intended (e.g. 0 = f, 1 = s,
+	  2 = t, 3 = c).
+
+	- ReadCell now allows the user to build a cell under a neutral if it
+	  already exists and has no children.
+
+	- A problem in Makefile.dist which caused problems with FreeBSD's
+	  version of make has been fixed.
+
+	- The cell_sheet command no longer makes a direct call to
+	  CopyConnections() in the connection compatibility library.
+	  It should now be possible to compile GENESIS without the
+	  connection compatibility library (the default in Usermake).
+
+----------------------------
+BETA 2.0, PATCH 11
+Fri Jun 16 15:52:40 PDT 1995
+----------------------------
+
+	- A number of enhancements have been made to provide FreeBSD 
+	  compatibility to genesis. Thanks are due to Rich Murphy for all 
+	  his FreeBSD specific enhancements, which have been folded in to 
+	  the distribution.
+
+	- The xcell, xvar and the xview Xodus elements have a new color 
+	  calculation scheme that avoids arithmetic overflows. 
+
+	- Changes to the xtree widget to cleanly interpret and perform tasks 
+	  based on user-clicks have been implemented.
+
+	- Additional clean-ups and fixes for resource converters in Xodus. This
+	  should address some problems related to complaints on inability to
+	  allocate certain specified colors.
+
+	- A new warning message explains to the user that the path field for
+	  xview, xtree and xcell Xodus elements should contain an absolute pathname,
+	  if it does not find the elements specified in its path.
+
+	- xcell now correctly displays 2-compartmental cells.
+
+	- The Hodgkin-Huxley channels have code that defensively avoids 
+	  exponentiation of huge numbers and consequent overflows.
+
+	- Genesis will no longer exit when any command is piped through an
+	  external command (e.g more) and it is interrupted.
+
+----------------------------
+BETA 2.0, PATCH 10
+Mon Jun 12 16:32:24 PDT 1995
+----------------------------
+
+    - Fixes to additional problems with Xodus resource converters.
+      This will hopefully address a problem on DEC Alpha's where
+      the xcmds.g TestSuite script complains that it can't convert
+      certain xaxis resources and later dumps core.
+
+    - The xtext widget which is used for displaying help information
+      in various tutorials will now correctly display text containing
+      tab characters.
+
+    - A new GENESIS command line option -defaultcolor will cause
+      GENESIS to use the display's default colormap, even if the
+      default visual is readonly.  The net result is that colorscale
+      colors will be shared among multiple GENESIS processes, but
+      GENESIS will fail to allocate a colorscale if the default
+      colortable is full.
+
+    - A problem in specifying resource values for the background and
+      border pixels for windows has been fixed.  This may fix the
+      problems in running GENESIS on SGI which default to a TrueColor
+      visual.  The -defaultcolor option might also be usedful in
+      working around the SGI TrueColor problem.
+
+    - Toggling overlays on and off in the Neuron tutorial should no
+      longer result in a core dump.  This problem which manifested
+      itself under AIX on an IBM RS6000 machine is very general and
+      could have happened in any case where elements are deleted and
+      reset or resched is not run before stepping the simulation.
+
+----------------------------
+BETA 2.0, PATCH 9
+Fri Jun  2 17:24:00 PDT 1995
+----------------------------
+
+    - Deficiencies in Xodus' resource converter code have been fixed.
+      This may fix reported problems with the CPG tutorial where on
+      SGI's and some Linux systems the cells were drawn as arrows
+      rather than filled and on other Linux systems where some or
+      all of the shapes representing connections did not appear.
+
+    - Bug fixes to the hsolve object.  An implicit RESET of nernst
+      elements was causing a divide by zero error on DEC Alphas.
+      Error checking code has also been added for the [XYZ]power
+      values of tabchannels (within hsolve).
+
+----------------------------
+BETA 2.0, PATCH 8
+Tue May 30 18:18:02 PDT 1995
+----------------------------
+
+    - Bug fix for Makefile.alpha which resulted in a sh syntax error.
+
+----------------------------
+BETA 2.0, PATCH 7
+Fri May 26 10:29:09 PDT 1995
+----------------------------
+
+    - Additional problems in updating xdialog text when uncovered
+      by an obsuring widget have been fixed.
+
+    - The convert progrem now generates correct code in converting
+      the "set -env" command.
+
+    - An error in the patch 6 changes to disk_in to support the
+      1.4 xfileview functionality has been fixed.   This error
+      caused compiler errors under Linux (and probably anywhere
+      else using gcc) and would probably corrupt the heap on
+      other systems.
+
+    - The @node syntax for remote commands in parallel GENESIS
+      now allows commas to appear in the node specification.
+
+----------------------------
+BETA 2.0, PATCH 6
+Wed May 17 13:22:34 PDT 1995
+----------------------------
+
+    - A bug introduced in patch 5 affecting handling of Xodus geometry
+      values has been fixed.
+
+    - Makefile.dist now passes the RANLIB macro properly when "make
+      install" is run.
+
+    - The xview and disk_in objects have been modified so that together
+      they can support functionality equivalent to the GENESIS 1.4
+      xfileview widget.
+
+    - The xplot object now has an ADDPTS action which provides the same
+      functionality as the GENESIS 1.4 xaddpts command.
+
+    - The hsolve object now issues an appropriate error message when
+      the path field does not match any elements.
+
+    - Indexing outside the bounds of the string in a substring command
+      is detected and reported as an error.
+
+    - A bug in checking the indexing of pointer element fields resulting
+      in the message "invalid array indexing" for valid uses of indexing
+      a pointer value has been fixed.
+
+----------------------------
+BETA 2.0, PATCH 5
+Mon May  8 22:45:58 PDT 1995
+----------------------------
+
+    - Changes to Makefile.Linux supporting the setting of the YACC,
+      LEX and LEXLIB macros in the main Makefile which were omitted
+      in the previous patch have been added in this one.
+
+    - Xodus will no longer dump core when trying to create an xform
+      after failing to initialize Xodus.
+
+    - GENESIS no longer dumps core when the command "showobject xform"
+      is given.
+
+    - Additional modifications have been made to the handling of X11
+      visuals at Xodus initialization.  Xodus should no longer
+      produce an X protocol error on displays which default to a
+      TrueColor visual.
+
+    - The -holerange and -offset options to gen3dmsg now work as
+      advertised.
+
+    - The cmd@node syntax for parallel simulations will now accept
+      the same syntax for the node as other command arguments.  This
+      allows alot of freedom in specifying the node spec (e.g.
+
+	echo@{nodespec}
+	echo@{onenode},{anothernode}
+
+----------------------------
+BETA 2.0, PATCH 4
+Fri Apr 28 12:40:54 PDT 1995
+----------------------------
+
+    NOTICE
+    
+    The changes in this patch to Makefile.dist make it necessary for
+    all users to copy Makefile.dist to Makefile and reconfigure the
+    Makefile.
+
+    - As of this patch, all change notices will appear in this file.
+
+    - A bug in the handling of the command@node syntax for calling a
+      script function remotely has been fixed.
+
+    - A bug in the convert program which would have caused conversion
+      of string concatentaion using + to use the new @ operator to
+      fail has been fixed.  The bug could also have manifested itself
+      in a core dump on some systems.
+
+    - Two new command line options are now available.  The -execdir
+      option takes the following argument as a directory path into
+      which GENESIS will change before startup.  The -nice options
+      takes the following argument as a nice value to run GENESIS
+      at.  These options are used by the parallel library in starting
+      remote GENESIS nodes.
+
+    - The script language yacc and lex definition files have been
+      updated to work properly with the GNU bison and flex programs
+      which are used on Linux systems.  This should also allow systems
+      without yacc or lex to obtain and use the GNU programs.
+
+    - A problem in initializing plot colors from xgraph PLOT messages
+      which resulted in black plots, color name conversion error messages
+      and core dumps when using overlay mode has been fixed.
+
+    - Various updates to suggested settings in Makefile.dist have been
+      made affecting Solaris 2.4 w/gcc, DEC alpha, SGI and Linux systems.
+      There are also new macro settings to allow use of other yacc and
+      lex programs like GNU bison and flex.
+
+    - Xodus/Makefile now properly passes the RANLIB macro value to the
+      Xodus subdirectory Makefiles when "make install" is run.
+
+----------------------------
+BETA 2.0, PATCH 3
+Thu Apr 13 14:05:59 PDT 1995
+----------------------------
+
+    - src/Makefile.dist suggested settings for MACHINE=alpha have been
+      changed.
+
+    - Adding -DGETOPT_PROBLEM to CFLAGS in src/Makefile will avoid
+      problems with differences between the GENESIS getopt()
+      implementation and the standard library version.  If GENESIS will
+      not compile due to errors related to the getopt() function or the
+      optopt variable add -DGETOPT_PROBLEM to CFLAGS.  This is known to
+      be a problem on some alpha machines.
+
+    - A problem where xgraphs using the X message for phase plots would
+      not display anything unless resized or autoscaled has been fixed.
+      This problem is likely to have caused the same symptoms when no X
+      message is present.
+
+    - Bugs in the getsyndest and getsynsrc commands which caused GENESIS
+      to hang on Linux systems after finishing the command have been fixed.
+
+    - The include of search.h in convert/mapcommand.c which prevented a
+      successful compilation of the convert program on some Linux systems
+      has been removed.
+
+    - The convert program now handles conversion of set -env commands
+      better.  Code is generated which adds the named field if it
+      doesn't already exist.
+
+    - The Scripts/X1compat directory is now added by default to the
+      SIMPATH in the .simrc file.
+
+    - Plot colors and labels will no longer revert to the values given
+      in the PLOT message on a reset.  For example, if a plot color is
+      changed by setting the fg field of the xplot, a reset doesn't 
+      change it back to what the PLOT message color value.
+
+    - The cell file *set_compt_param command allows a script variable to
+      be used to set the compartment parameter.  The script variable may
+      be named directly or placed in curly braces as in SLI scripts.
+
+    - Functions supporting the old save and restore commands which
+      reference the system dependent etext, edata, etc. values have
+      been removed.  RS6000/AIX machines should compile now.
+
+    - An extraneous argument to both the XFillRectangle() and
+      XDrawSegments() functions in XoDraw.c have been removed.
+
+    - In Xodus/Xo/XoPS.c calls to XQueryFont incorrectly passing a GC
+      rather than a GID have been fixed.
+
+    - Additional problems with forms requiring placement by the
+      window manager have been fixed.
+
+    - Preprocessed output from the yacc and lex programs will not be
+      provided any longer.  Some systems have differing implementations
+      for these programs and fail at the link stage when using the
+      provided yacc and lex output.  The patch provides an update to
+      the yacc and lex input files which will cause them to be
+      reprocessed.
+
+----------------------------
+BETA 2.0, PATCH 2
+Fri Apr  7 21:56:32 PDT 1995
+----------------------------
+
+    NOTICE
+
+    Starting with this patch, the standard distribution version
+    of src/Makefile will appear as src/Makefile.dist.  This is
+    necessary as src/Makefile is customized by the user and a
+    patch to this file is bound to fail at some point.
+
+    Fixes
+
+    - GENESIS 2.0 now compiles correctly on IBM rs6000 systems
+      running AIX.  There is now a MACHINE=aix option in
+      src/Makefile.dist and a src/Makefile.aix.  Check the CFLAGS
+      options in src/Makefile.dist which are necessary for things
+      to work.
+
+    - The -lXaw in the XLIBS line in src/Makefile.dist has been
+      removed.  This caused at least one system to issue errors
+      for multiply defined symbols.  Xodus no longer uses any
+      of the Athena widgets.
+
+    - Graph axes now display single character titles correctly.
+
+    - A problem with widgets borders which caused in some instances
+      the borders not to display along the full length and height of
+      the widget has been fixed.
+
+    - The bg field of dialogs now set the entire background of the
+      dialog rather than a small area near the dialog's borders.
+
+    - A problem with the fvwm window manager which prevented any
+      keyboard input to widgets has been fixed.
+
+    - A bug which caused problems doing drag and drop operations on
+      Tree widgets has been fixed.
+
+    - Form widgets are now sized such that the width and height
+      given in a geometry string defined the total size of the
+      form including borders.  Previously, the width and height
+      determined the size of the usable form space inside the
+      borders.
+
+    - The hsolve element now initializes is Vm values at reset from
+      compartment initVm values rather than Em values.  It should
+      no longer be necessary to use the Vm_reset flag to initialize
+      an hsolve element.  NOTE: the Vm_reset field will be removed
+      in the near future.
+
+    - A problem where genesis and code_g were unable to find their
+      executable files at startup when . was not on the path and a
+      relative path was used has been fixed.
+
+    - Replacement functions for the index(), rindex() and bcopy()
+      functions in sys/system_deps.c compiled in for most SYSV
+      systems where written using ANSI C syntax.  They've been
+      replaced with K&R C code.
+
+    - A problem with the scaling of difpool elements in readcell
+      has been fixed.
+
+    Other Changes
+
+    - Several of the system specific src/Makefile.dist CFLAGS
+      settings didn't include -O which has been added as a default.
+
+    - Dialogs now allow use of the mouse to position the text cursor.
+
+----------------------------
+BETA 2.0, PATCH 1
+----------------------------
+
+    Fixes
+
+    - Problems preventing compilation of sim_main.c on some SYSV
+      systems due to a BSD specific library function call (setlinebuf)
+      has been fixed.
+
+    - A bug in sim_main.c in calling the simrc script at startup
+      has been fixed.  The bug affects all systems, but only caused
+      problems when using gcc under Solaris.
+
+    - Explicit uses of cc in the sys/Makefile have been changed to
+      use the CC macro defined in src/Makefile.  This fixes a problem
+      on systems using a C compiler which is not named cc.
+
+    - Version information has been updated to reflect the Beta
+      release version.
+
+    Other Changes
+
+    - The convert.man page has been updated to describe the
+      -noX1compat option to convert.  This is installed under
+      man/man1 on a make install.
+
+--------
+BETA 2.0
+--------
+
+    Known Problems
+
+    An asterix indicates that the problem should be fixed in the
+    first set of patches.
+
+    *   - Under Solaris sim/sim_main.c does not compile because the
+	  setlinebuf() function isn't in the standard C library.
+
+    *   - Systems using gcc or any other compiler not named cc will
+	  fail in compiling the code generator commands in sys as the
+	  makefile uses a hardcoded cc command.  This problem may be
+	  worked around by linking gcc (for example) to cc.
+
+	- Under Linux, the convert command may fail to compile as the
+	  header file search.h used in mapcommand.c cannot be found.
+	  This should not affect the compilation of GENESIS.
+
+	- The GENESIS graphical interface does not run properly on a
+	  StaticGrey visual.  The xdpyinfo command is useful in finding
+	  out what types of visuals your X-Windows system supports.
+
+

@@ -1,0 +1,28 @@
+Routine Name:	sh
+
+Description:	Issues operating system command from GENESIS shell.
+
+Usage:		sh command
+
+Example:	genesis > echo hello there
+		hello there
+		genesis > sh echo hello there
+		hello there
+		genesis > echo $DISPLAY
+		** Error - parse error
+		genesis > sh echo $DISPLAY
+		** Error - parse error
+		genesis > sh "echo $DISPLAY"
+		babel.bbb.edu:0
+		genesis >
+
+Notes:		You can issue most operating system commands just by typing
+		them at the GENESIS prompt (if the GENESIS interpreter does
+		not recognize them as GENESIS commands, it automatically
+		passes them on to the operating system for evaluation).
+		However, if you have a GENESIS routine with the same name as
+		an operating system command, you need to use the sh routine to
+		send the command directly to the operating system.
+
+See also:
+

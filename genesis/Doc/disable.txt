@@ -1,0 +1,28 @@
+Routine Name:	disable
+
+Description:	Disables an element and its children from participating in a
+		simulation.
+
+Usage:		disable  element
+
+Example:	disable /prototypes/mitral_cell
+
+Notes:		The specified elements are still accessible to basic
+                operations such as setfield and showfield, but they will not
+                participate in the simulation or be updated during the run of
+                the simulation (i.e., when you use the step routine).
+
+		You should run reset or resched after you disable an element
+                to be sure that the simulation properly takes into account the
+                disabling of the element.  (The resched command may be used to
+                recompute the simulation schedule in order to remove the
+                disabled element without resetting the simulation.  It is not
+                a good idea to call resched frequently, especially for large
+                simulations, as it does quite a bit of work.)
+
+                The disable command cannot be used with script_out elements.
+                If you need to disable a script_out element, it will be best
+                to use a more versatile extended object, instead.  (See
+                Extended.txt.)
+
+See also:	enable, step, reset

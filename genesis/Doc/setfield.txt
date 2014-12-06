@@ -1,0 +1,32 @@
+Routine Name:	setfield
+
+Description:	Sets value of field in data structure of specified element.
+
+Usage:		setfield  [pathname] field value [field value ... ...]
+
+		pathname	name of element; if wildcard path
+				specification, all elements referred to will
+				have their fields set to specified values
+				(default: current working element)
+
+		field		field in element data structure to which to
+				assign new value
+
+		value		value to assign specified field
+
+Example:	setfield /soma initVm -70.0
+		setfield /test[] x 10 y 20 // for all indexed elements test[i]
+		setfield x 10		// set value for current element
+
+		genesis >  setfield /neutral_test x 100 y 50
+		genesis >  showfield /neutral_test x y 
+		
+		[ /neural_test ]
+		x           = 100
+		y           = 50
+
+Notes:		You can define and add additional fields with the addfield
+		command.  These may then be set with the setfield command
+		just like the predefined fields.
+		
+See also:	getfield, getfieldnames, showfield

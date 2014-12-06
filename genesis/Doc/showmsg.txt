@@ -1,0 +1,30 @@
+Routine Name:	showmsg
+
+Description:	Displays list of incoming and outgoing messages of an element.
+
+Usage:		showmsg  element
+
+Example:	genesis > showmsg /cell/soma
+
+		INCOMING MESSAGES
+		MSG 0 from '/cell/soma/Na_squid_hh' type [0] 'CHANNEL' 
+			< Gk = 2.99968e-10 > < Ek = 0.045 >
+		MSG 1 from '/cell/soma/K_squid_hh' type [0] 'CHANNEL'
+			 < Gk = 1.03666e-08 > < Ek = -0.082 >
+
+		OUTGOING MESSAGES
+		MSG 0 to '/cell/soma/Na_squid_hh' type [0] 'VOLTAGE'
+			< Vm = -0.07 >
+		MSG 1 to '/cell/soma/K_squid_hh' type [0] 'VOLTAGE'
+			< Vm = -0.07 >
+		MSG 2 to '/data/voltage' type [0] 'PLOT' < data = -0.07 >
+			< name = volts > < color = red >
+
+
+Notes:		showmsg is usually used interactively, when debugging or
+		trying to understand a simulation, as it prints detailed
+		information to the screen.  Use getmsg within a simulation
+		script to return specific information.
+
+See also:	addmsg, deletemsg, getmsg
+

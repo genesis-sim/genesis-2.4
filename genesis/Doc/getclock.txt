@@ -1,0 +1,14 @@
+Routine Name:	getclock
+
+Description:	Returns value of the time interval for the specified clock.
+
+Usage:		clock-value = {getclock clock-number}
+
+Example:	genesis >  echo { getclock 0 }
+		5.000000e-05
+
+Notes:		The getclock routine returns the current value of the step
+                size for the specified clock (as a floating point number).
+
+See also:	showclocks, useclock, setclock
+

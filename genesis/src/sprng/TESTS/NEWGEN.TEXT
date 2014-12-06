@@ -1,0 +1,43 @@
+ 
+             Instructions for testing a new generator 
+             ----------------------------------------
+       http://www.ncsa.uiuc.edu/Apps/SPRNG/www/test-suite.html
+             (Section: Testing New Random Number Generators)
+Option 1
+--------
+
+1. The new generator must define the following three functions:
+
+   int *init_rng(int streamnum, int nstreams, int seed, int param);
+
+   double get_rn_dbl(int *stream);
+
+   int free_rng(int *stream);
+
+      where the streams are parameterized by 'streamnum', that is, different
+      streams are produced for different values of 'streamnum'.
+
+2. Install your library "libnewgen.a" in sprng/lib directory.
+
+3. Open file sprng/TESTS/Makefile.
+   Add "newgen" to the list on the line "LIBLIST ="... .
+
+4. Type 'make' in sprng/TESTS directory.
+
+Now, each type of test in TESTS has a new version that tests the 
+new generator.  The new version has the extension ".newgen".  For
+example, to run the equidistribution test on the new generator,
+type equidist.newgen.
+
+Option 2
+--------
+
+1. Define the macro READ_FROM_STDIN in the file sprng/TESTS/init_tests.c.
+
+2. Type 'make' in the TESTS directory.  
+
+Now the test programs will read input from standard input. If you
+redirect stdin from a file with floating point random numbers in ASCII
+from your generator, then these numbers will be tested. This procedure
+will not, however, work for the Ising model programs (Wolff and
+Metropolis.)

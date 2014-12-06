@@ -1,0 +1,116 @@
+Routine Name:	tab2file
+
+Description:	Utility function for writing one or more tables of an element
+		that uses interpol_structs (e.g. a table, tabchannel, xplot,
+		etc.) to an ascii file.  The output file has the entries for
+		the respective tables in successive positions. Various
+		specialized output modes let one do on-the-fly conversions of
+		the table entries.
+
+Usage:		tab2file file-name element table -table2 table -table3 table \
+		    -mode mode -nentries n -overwrite
+
+Arguments:      filename: name of ascii file to which the table contents
+			  will be written
+                element:  path of element containing the table
+                table:    name of interpol_struct within the element
+
+Options:        -table2 table
+                This option allows one to specify an additional table to write
+                into the  file. Entries are written alternately from the first
+                table and table2.  Note that table2 must be in the same
+                element as table.
+
+                -table3 table
+                This allows a third table. This option is similar to table2.
+
+		-mode mode
+		mode can be y (the default), xy, alpha, beta, tau, minf, or
+		index.  In modes alpha, tau, xy, or index, one table must be
+		specified.  In modes beta and minf, two tables must be
+		specified.
+
+		y:  The table contents are written one to a line, without
+		the x values.  If the -table2 or -table3 option is used,
+		then the entry for each table is written om the same line.
+
+                xy:  The table contents are written as one (x,y) pair per
+		line.
+
+                index: The table contents are written as one (i,y) pair per
+                line, where i is the index, which runs from 0 to nentries.
+
+                alpha: This mode, as well as beta, tau, and minf, assume that
+                the element containing the tables is a tabchannel, with each
+                gate having an A table containing alpha values, and a B table
+                containing values of alpha + beta.  When the table specified
+                is an A table, the alpha mode is the same as the xy mode,
+                giving an (x,alpha) pair per line.
+
+                beta: In this case, the A table is specified as the table, and
+                the B table is used with -table2.  Then the output is one
+                (x,beta) pair per line, with beta = B - A.
+
+                tau: Like the beta mode, the A table is specified as the
+                table, and the B table is used with -table2.  Then the output
+                is one (x,tau) pair per line, with tau = 1/(A + B).
+
+                minf: Like the beta mode, the A table is specified as the
+                table, and the B table is used with -table2.  Then the output
+                is one (x,minf) pair per line, with the steady state
+                activation minf = A/B = alpha/(alpha + beta).
+
+		-nentries n
+                The parameter n, or nentries, is more properly described as
+                xdivs, the number of divisions, with indices of the entries
+                running from 0 to n, so the actual number of entries is n + 1.
+                If the --nentries option is not used, the default is to
+                calculate n from the xivs field of the interpol_struct.  Some
+                objects (e.g. xplot) do not have an xdivs field of the
+                interpol_struct.  In this case, n must be specified as the
+                total number of entries - 1.
+
+		-overwrite
+                The default behavior is to append to the file file-name if it
+                already exists.  The overwrite option is used to create a new
+                file, overwriting the old one.
+
+Example:  (using the elements created by Scripts/tutorials/newtutorial3.g)
+
+/* create a file that looks like:
+    -0.100000       0.039416
+    -0.099950       0.039586
+    -0.099900       0.039756
+    ...
+    0.049900        0.975220
+    0.049950        0.975246
+    0.050000        0.975272
+*/
+tab2file mfile /cell/soma/K_hh_tchan X_A -table2 X_B -mode minf
+
+/* create a file that looks like:
+    0       7.462942
+    1       7.491676
+    2       7.520512
+    ...
+    2998    1099.018540
+    2999    1099.518456
+    3000    1100.018372
+*/
+tab2file ifile /cell/soma/K_hh_tchan X_A -mode index
+
+/* save an xplot (from Scripts/kinetikit/xgraphs.g) */
+    function do_save_plot(file)
+        str file
+        str plot = {getfield /parmedit/plot elmpath}
+        int x
+        x = {getfield {plot} npts} // Get the actual number of points
+        tab2file {file} {plot} xpts -table2 ypts -nentries {x - 1}
+        xhide /parmedit/plot
+    end
+
+Notes:          Elements having TABSAVE and TABREAD actions (e.g. tabchannel,
+                tab2Dchannel, and tabcurrent) can also call these actions
+                instead of using tab2file and file2tab.
+
+See also:	file2tab, interpol_struct documentation (Tables)

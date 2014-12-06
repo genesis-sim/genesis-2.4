@@ -1,0 +1,183 @@
+Object Type:  facsynchan
+ 
+Description:    Synaptically activated channel with synaptic facilitation 
+                and/or synaptic depression.
+
+Author:         Mike Vanier
+ 
+------------------------------------------------------------------------------
+ 
+ELEMENT PARAMETERS
+ 
+DataStructure:  fac_synchan_type  [in src/newconn/newconn_struct.h]
+ 
+Size:           252 bytes
+ 
+Fields:         activation         driving force ("transmitter") for channel
+                                   conductance
+                Ik                 channel current
+                Gk                 time varying channel conductance
+                Ek                 reversal potential of channel
+                tau1               first time constant of channel activation
+                tau2               second time constant of channel activation
+                gmax               peak channel conductance (but see Notes below)
+                nsynapses          number of incoming spike messages
+                                   (readonly)
+                event_buffer_size  size of event buffer (readonly)
+                pending_events     number of pending spike events in event 
+                                   buffer (readonly)
+                nodes_per_synapse  number of event nodes to allocate per 
+                                   synapse (default 1)
+                synapse            synapse buffer
+                fac_depr_on        flag: no fac/depr if 0
+                max_fac            upper limit on facilitation
+                fac_per_spike      synaptic facilitation per spike
+                fac_tau            time constant of synaptic facilitation
+                depr_per_spike     synaptic depression per spike
+                depr_tau           time constant of synaptic depression
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+ 
+Function:       FacSynchan  [in src/newconn/facsynchan.c]
+ 
+Classes:        segment channel synchannel
+
+Actions:        CREATE          Set default values and initialize object.
+                PROCESS         Update Gk, calculate Ik, update facilitation/
+                                depression state of synaptic weights.
+                RESET           Assign activation = 0, Gk = 0; calculate
+                                time-step-dependent coefficients; remove
+                                all pending SPIKE events; reset facilitation/
+                                depression state of synaptic weights.
+                RECALC          Recalculate time-step-dependent coefficients.
+                CHECK           Make sure tau1>0, tau2>0, gmax>0; make sure a 
+                                VOLTAGE message is present (in order to
+                                calculate Ik); make sure facilitation/ 
+                                depression parameters are reasonable.
+                SAVE2           Called by the save command.
+                RESTORE2        Called by the restore command
+                EVENT           Put a spike event into the event buffer.
+                ADDMSGIN        Add a new message.
+                DELETEMSGIN     Delete a message.
+                MSGINDELETED    Do cleanup after message is deleted.
+                RESETBUFFER     Reset size of event buffer to 
+                                (nodes_per_synapse * nsynapses) nodes.
+                DELETE          Delete the element.
+                COPY            Copies the element.
+ 
+Messages:       VOLTAGE         Vm
+                SPIKE
+ 
+------------------------------------------------------------------------------
+ 
+Notes:          The `facsynchan' object is a version of the synchan object
+                that can exhibit synaptic facilitation, synaptic depression,
+                or some combination of the two.
+
+                1) General information about synchans.
+
+                The `facsynchan' object, like all synchan objects, simulates a
+                time dependent synaptically activated ionic channel.  A
+                variable channel conductance `Gk' is activated by the
+                application of transmitter. This conductance then changes with
+                damped second-order characteristics with a time course given
+                by two time constants `tau1' and `tau2'.  This gives rise to
+                an alpha function/dual exponential conductance waveform for an
+                impulse spike input.  The channel also calculates channel
+                current (`Ik') and therefore needs the membrane state (`Vm').
+
+                Each SPIKE message to a synchan establishes a synaptic
+                connection and increments `nsynapses'.  The synapses are
+                numbered starting with 0, and each contains a field for a
+                synaptic weight and a propagation delay.  For example, the
+                weight of the first synaptic connection is held in the field
+                `synapse[0].weight' while the delay is `synapse[0].delay'.
+                `Gk' reaches a value (`gmax' * `weight') for a single event
+                delivered with a SPIKE message.  Note that even though
+                synapses are not elements, they do have fields that can be
+                accessed individually.  They can be thought of as
+                "sub-elements" or substructures of the element.  Note also
+                that `gmax' is not the absolute maximum conductance of the
+                synapse; it is just the maximum conductance given a single
+                synaptic connection with a weight of 1.0 only.  Multiple
+                synapses onto a particular synchan, weights higher than 1.0,
+                and/or synaptic facilitation can all give rise to total
+                conductances that are greater than `gmax'.
+
+                Any number of spike events can be pending per synapse.  The
+                `facsynchan' object stores all spike events in a buffer until
+                they are scheduled to occur.  If enough events come in to
+                overload the buffer, the buffer will dynamically expand to
+                enable storage of all events.  The size of the buffer in
+                events is stored in the `event_buffer_size' field which is
+                readonly.  The number of actual spikes in the buffer which
+                have not yet hit the channel are stored in the
+                `pending_events' field (also readonly).  The
+                `nodes_per_synapse' field controls how many large the event
+                buffer is initially.  The default is to have one node per
+                synapse, but if you expect a lot of events or very few events
+                you can change this number to be greater or less than the
+                default (1), respectively.  This will speed up the simulation
+                slightly in the first case and save memory in the second.  If
+                you leave this field alone the object will still work fine.
+                The "resetsynchanbuffers" command will cause all the buffers
+                in all synchan and derived objects to be reset to a size of
+                `nodes_per_synapse' * `nsynapses' (which will also cause all
+                pending events to be flushed).
+
+                The "copy" command will fail for any synchan type which is
+                receiving SPIKE messages.  The correct way to set up
+                simulations is to set up prototype cells which do not receive
+                any SPIKE messages on their synchans, copy these cells, and
+                then add the appropriate SPIKE messages (by hand or by using
+                planarconnect or volumeconnect).  We may eventually build a
+                more intelligent copy command which will permit copying of
+                synchans with SPIKE messages, but for now, don't do it.
+
+                2) Specific information about implementing synaptic
+                   facilitation and depression.
+
+                Each synapse, in addition to its `weight' and `delay' fields,
+                has two other fields called `fac' and `depr' which represent
+                the current level of synaptic facilitation and depression,
+                respectively.  Each time a spike hits, the facilitation and
+                depression values are incremented by a fixed amount
+                (`fac_per_spike' and `depr_per_spike', respectively) which can
+                be zero but not negative.  The facilitation and depression
+                values decay away with a time constant equal to `fac_tau' and
+                `depr_tau', respectively.  The effective synaptic weight when
+                a spike hits is calculated from these equations:
+
+                    wt_multiplier = max((1 + fac) / (1 + depr), max_fac)
+                    wt_effective  = wt * wt_multiplier
+
+                Thus, a `fac' value of 1.0 and a `depr' value of 0.0 will give
+                rise to a wt_multiplier value of 2.0 (assuming that `max_fac'
+                > 2.0), so the effective weight at that point in time will be
+                twice the listed synaptic weight.  The `max_fac' field allows
+                you to limit the amount that a particular synaptic weight can
+                grow; however, there is no limit to how low a weight can
+                shrink due to depression.  If `max_fac' is negative, there is
+                no maximum facilitation level.  This is the default (`max_fac'
+                = -1, to be precise).
+
+                You can switch facilitation/depression off by setting
+                `fac_dep_on' to 0.  The default is 1 (facilitation on).
+
+
+Example:        Scripts/examples/facsynchan/facdemo.g
+
+Bugs:           The SAVE2/RESTORE2 actions have not been tested and may 
+                contain bugs.  Please report any bugs you find.
+
+Caveats:        The facsynchan object is not supported by the cell reader
+                (readcell), so if it is to be used in a model described
+                by a cell parameter (.p) file, you will need to use it in
+                a prototype compartment that is included with the readcell
+                "*compt" option.
+
+See also:       synchan, resetsynchanbuffers, Connections, NewSynapticObjects,
+                readcell
+

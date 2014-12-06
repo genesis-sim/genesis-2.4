@@ -1,0 +1,110 @@
+A. Strassberg
+Caltech
+April 1992
+(ConClamp/README)
+
+ConClamp Demo
+- this GENESIS script simulates the response of a space-clamped
+patch of squid giant axon membrane to a step current injection.
+- the membrane consists of standard continuous and deterministic
+Hodgkin-Huxley gating particles.
+- a step current injection is applied to the membrane and
+the dynamics of this current injection I(t), the membrane voltage V(t),
+the membrane currents INa(t) and IK(t), and the ionic conductances
+gNa(t) and gK(t) are observed.
+
+I. Installment
+- the script for the UnClamp demo is contained within
+five files:
+                <sim_obj.g>
+                <forms.g>
+                <messages.g>
+                <graphs.g>
+                <ConClamp.g>
+
+- running the script <ConClamp.g> will initiate the simulation
+
+II. Units
+                time            ms
+                voltage         mV
+                current         pA
+                area            um2
+                conductance     pS
+                capacitance     pF
+                density         channels/um^2
+
+III. Simulation Operation
+- for given membrane surface area, Na and K channel densities,
+Na and K open channel conductances, membrane leakage conductance
+per unit area, leakage voltage,  membrane capacitance per unit area,
+initial injection current, step injection current,
+time and duration of current step, the simulation computes the
+dynamics of the membrane voltage based upon the standard lumped
+parallel circuit model used in compartmental modeling (see
+Strassberg and DeFelice, 1992, CNS Memo).  The response of the
+membrane currents and conductances also can be observed.
+
+IV. See Also
+
+        UnClamp/README
+        VClamp/README
+        ConVclamp/README
+
+        Strassberg and DeFelice, 1992, Neural Computation (submitted)
+        Strassberg and DeFelice, 1992, CNS Memo
+
+V.  Questions
+
+        Please send any questions to
+        strass@cns.caltech.edu
+
+==========================================================================
+
+
+A. Strassberg
+Caltech
+April 1992
+(ConVClamp.doc)
+
+ConVClamp Demo
+- this GENESIS script simulates the response of a voltage- and space-
+clamped patch of squid giant axon membrane to a step change in
+membrane voltage.
+- the membrane consists of standard continuous and deterministic
+Hodgkin-Huxley gating particles.
+
+I. Installment
+- the entire script for the VClamp demo is contained within the
+file <ConVClamp.g>.
+
+II. Units
+                time            ms
+                voltage         mV
+                area            um2
+                conductance     pS
+                density         channels/um^2
+
+III. Simulation Operation
+- for given membrane surface area, Na and K channel densities,
+Na and K open channel conductances, initial holding membrane
+voltage, and final holding membrane voltage after the voltage
+step, the simulation computes the behavior of the total membrane
+conductances to Na and to K, gNa(t) and gK(t) respectively.
+
+IV. See Also
+
+        VClamp/README
+        UnClamp/README
+        ConClamp/README
+
+        Strassberg and DeFelice, 1992, Neural Computation (submitted)
+        Strassberg and DeFelice, 1992, CNS Memo
+
+V.  Questions
+
+        Please send any questions to
+        strass@cns.caltech.edu
+
+
+
+==========================================================================

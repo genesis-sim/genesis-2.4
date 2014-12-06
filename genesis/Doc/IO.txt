@@ -1,0 +1,65 @@
+  7.  Input/Output (I/O) Routines
+
+  GENESIS offers several routines to read or write data from within the
+  GENESIS environment to an operating system file, or to prompt the user
+  for information.
+
+  ______________________________________________________________________
+  Routine     Description
+  ______________________________________________________________________
+  asciidata   Converts a FMT1 formatted binary file to ASCII.
+  closefile   Closes an ASCII file opened with the openfile command.
+  eof         Tests whether at end of currently opened file.
+  flushfile   Flushes buffered data to disk to insure that it gets written.
+  input       Obtains input from the user at the GENESIS prompt.
+  listfiles   Lists ASCII files currently opened by openfiles command.
+  logfile     Activates and deactivates logging of all commands issued in
+              a GENESIS session.
+  notes       Allows user to enter text notes into a file.
+  openfile    Opens ASCII file for reading or writing.
+  readfile    Reads a line of data from an opened ASCII file.
+  where       Returns name of operating-system directory in which specified
+              file is located.
+  writefile   Writes out ASCII data to currently opened file.
+  ______________________________________________________________________
+
+  7.1.  Saving Simulations to a File
+
+  The simdump command and its auxillary commands are used to dump an
+  entire simulation to a GENESIS script file, complete with the current
+  values of specified element fields.  This file may then be loaded into
+  GENESIS to recreate the simulation.  This is in contrast to the save
+  and restore commands, which are used for specified (or wildcarded)
+  elements in a simulation.
+
+  ______________________________________________________________________
+  Routine          Description
+  ______________________________________________________________________
+  enddump          Cleans up at the end of a dumpfile
+  initdump         Initializes the simulation dumping/undumping system
+  msgsubstitute    Allows undump of saved simulation with new message names
+  objsubstitute    Allows undump of saved simulation with new object names
+  restore          Restores element state stored in file with save routine
+  save             Saves current field values for specified element in a file
+  simdump          Dumps an entire simulation to a GENESIS script file
+  simobjdump       Sets up format for dumping/reading objects to a file
+  simundump        Creates an element and assigns values to its fields
+  substituteinfo   Lists substitutions from msgsubstitute/objsubstitute
+  swapdump         Mirrors initialization data when doing simulation dumps
+  ______________________________________________________________________
+
+  7.2.  Related GENESIS Objects
+
+  Often, one would like to write or read data at regular intervals,
+  using one of the available simulation clocks.  The GENESIS objects
+  asc_file, disk_out, and disk_in may be used for this purpose.  The
+  diskio, variable, and metadata objects provide the features of the
+  existing disk_in and disk_out objects to read and write data in the
+  portable binary NETCDF format.  This eases the interfacing of GENESIS
+  simulations with popular analysis and signal-processing tools such as
+  MATLAB, and makes it possible to use binary files produced by GENESIS
+  on multiple platforms.  For examples of ``clocked file I/O'', see the
+  documentation for these objects in the ``GENESIS Object Reference''.
+
+  The event_tofile and spikehistory objects are useful for recording
+  spike event times to a file.

@@ -1,0 +1,52 @@
+kinetikit: a GENESIS-XODUS based utility and interface for modeling
+	chemical kinetics and signaling pathways.
+
+                Copyright (C) 1995-2001 Upinder S. Bhalla 
+
+
+         Statement on Models and Experiments.
+
+    Animal experimentation is fundamental to research in biology.
+Certain groups claim that computer models can replace animal experiments.
+This is absurd. Computer models would be meaningless if it were not for
+the enormous amount of careful research that the scientific community has
+carried out on animal subjects over the years. All aspects of realistic
+models, from the theory to the parameters to the design of the interface,
+are based on experiments. While computer models can help with understanding
+and relating existing data, they can at best provide hints towards
+discovering hitherto unknown biological facts.
+    I am fully in support of the idea of using models as a supplement
+to understanding biological function when combined with laboratory work
+or a study course. I will be delighted if such a supplement can lead to more
+effective and humane use of animal subjects. However, I flatly disagree
+with the philosophy that this, or similar modeling tools, can replace
+animal experimentation as a means for extending our knowledge of biological
+systems. My objectives in writing this software are to promote scientific
+research in biology for the welfare of humanity, and such research involves
+living subjects. Please consider this program (kinetikit) as a product of
+animal experimentation.
+
+                      Upinder S. Bhalla.
+
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option) any later
+version. This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+for more details.
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+675 Mass Ave, Cambridge, MA 02139, USA.
+This copyright notice in its entirety, including the Statement on Models
+and Experiments, must be present in every copy of the software, and must
+be displayed on startup.
+
+Upinder S. Bhalla may be contacted at bhalla@ncbs.res.in
+
+GENESIS, the GEneral Neural SImulation System is copyrighted as follows:
+        Copyright 1988 - 2001, California Institute of Technology
+   Some components are copyright by the originating institution and are used
+   with the permission of the authors.
+

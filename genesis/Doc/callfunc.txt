@@ -1,0 +1,16 @@
+Routine Name:	callfunc 
+
+Description:	Allows you to call a function whose name is stored in a
+		string variable.
+
+Usage:		callfunc funcname ...
+
+Example:	genesis  > str foo = "echo"
+		genesis  > callfunc {foo} a b c
+		a b c
+
+
+Notes:		
+
+See also:	
+

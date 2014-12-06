@@ -1,0 +1,59 @@
+Routine Name:   scaletabchan
+
+Description:    Performs scaling and offsets of the tabchannel A and B tables
+                for a specified gate.
+
+Usage:          scaletabchan channel-element gate mode sx sy ox oy -duplicate
+
+                channel-element name of a the tabcahnnel
+                gate            gate to be modified; one of: X, Y, or Z
+                sx              x-axis (voltage) scale factor
+                sy              y-axis scale factor
+                ox              x-axis (voltage) offset
+                oy              y-axis offset
+                mode            one of: a[lpha] b[eta] t[au] m[inf]
+
+Example:        // double (spread out) the voltage range for the Na
+                // activation alpha rate constant.
+                scale_tabchan Na X alpha 2.0 1.0 0.0 0.0
+
+                // increase the K_dr activation time constant by 20%.
+                scaletabchan K_dr X tau 1.0 1.2 0.0 0.0
+
+                // shift the Na inactivation curve (Y gate) left by 5 mV.
+                scale_tabchan Na Y minf 1.0 1.0 -0.005 0.0
+
+                // increase the K_dr activation time constant by 0.1 sec.
+                scaletabchan K_dr X tau 1.0 1.0 0.0 0.1
+
+Notes:          The tabchannel internal tables for the specified gate are
+                modified to provide scalings and/or offsets to the voltage
+                dependent function specified by the mode.  Here, alpha and
+                beta are the Hodgkin-Huxley rate constants, tau is the time
+                constant for activation or inactivation, and minf is the
+                steady state activation or inactivation.  The effect of
+                applying these scalings and offsets may be viewed by using the
+                edit_channel menu of Neurokit.
+
+                Note that the scale and offset is always relative to the last
+                operation, and not to the original values.  One can reverse
+                changes in oy and sy because they just shift and scale the
+                table values.  However, ox and sx perform offsets and scaling
+                of the horizontal axes by moving data in the tables.  This can
+                cause data to spill out of the ends of the tables and be lost.
+                Thus, large changes in the x-axis should be avoided, if you
+                plan to reverse your changes.
+
+                In a large compartmental model or large network, one may have
+                many copies of a particular prototype channel.  Usually, one
+                wants these to behave identically.  It is also desirable to
+                minimize the amount of storage space used by the internal
+                tables.  For these reasons, copies of the channel which are
+                created by the copy command or by readcell use the same tables
+                as the original prototype, rather than creating new copies of
+                the tables.  This is true of all objects which contain tabular
+                fields.  Sometimes you may want to change just the one copy of
+                the channel.  In this case, use the "-duplicate" option with
+                scaletabchan.
+
+See also:       tabchannel, Tables.

@@ -1,0 +1,105 @@
+  14.  Synaptic Connections
+
+  Synaptic connections to neurons are established by sending a SPIKE
+  message from a spiking class element to a synchannel class element.
+  Typically, this means using a spikegen element to convert action
+  potentials to delta-function ``spike events'' and establishing a SPIKE
+  message to a synchan element.  The propagation delays and synaptic
+  weighting for each synaptic connection are stored in the synchan.
+
+  For example, to send somatic action potentials in cell1 to
+  ``Ex_channel'' in the dendrite compartment of cell2, one might use:
+
+    create spikegen /cell1/soma/spike
+    setfield /cell1/soma/spike thresh 0 abs_refract 0.010 output_amp 1
+    addmsg  /cell1/soma  /cell1/soma/spike  INPUT Vm
+
+    addmsg /cell1/soma/spike /cell2/dend/Ex_channel SPIKE
+    setfield /cell2/dend/Ex_channel synapse[0].weight 10 synapse[0].delay 0.005
+
+  Here, this synaptic connection is labeled as ``synapse[0]'', as it was
+  the first (of possibly several) to be established with the SPIKE mes-
+  sage.  A more detailed example is given in ``Scripts/tutorials/tuto-
+  rial4.g'', and is discussed in Chapter 15 of ``The Book of GENESIS''.
+  The ``Scripts/orient_tut'' directory contains examples of routines for
+  setting up networks of synaptically connected cells.  Further details
+  of the construction of neural circuits and networks are given in Chap-
+  ter 18 of ``The Book of GENESIS'' (second ed.).  Also see the synchan
+  documentation.
+
+  The following GENESIS routines are used for establishing and working
+  with synaptic connections:
+
+  ______________________________________________________________________
+  Routine               Description
+  ______________________________________________________________________
+  fileconnect           Makes synaptic connections using a weight matrix file.
+  getsyncount           Returns the number of synapses or SPIKE messages
+                        for synchan and spikegen objects.
+  getsyndest            Returns the destination path or index of a synapse
+                        given the source path and number of the SPIKE message.
+  getsynindex           Returns the synapse index in a synchan element
+                        given the source element.
+  getsynsrc             Returns the source path of a synapse given the
+                        destination and the synapse index.
+  normalizeweights      Sets the cumulative synaptic weight on a synaptic
+                        channel to a given or randomly selected value.
+  planarconnect         Connects one group of elements in a plane to another,
+                        using source and destination element lists and masks.
+  planardelay           Sets delays of a group of synapses receiving input
+                        from a list of presynaptic elements in a plane.
+  planardelay2          Faster version of planardelay; requires destination
+  planarweight          Sets weights of a group of synapses receiving input
+                        from a list of presynaptic elements in a plane.
+  planarweight2         Faster version of planarweight; requires destination
+  resetsynchanbuffers   Shrinks the event buffer down to its original size
+                        for synchan objects.
+  syndelay              Sets up delays of a group of postsynaptic objects.
+  volumeconnect         Connects one group of elements in a volume to another,
+                        using source and destination element lists and masks.
+  volumedelay           Sets delays of a group of synapses receiving input
+                        from a list of presynaptic elements in a volume.
+  volumedelay2          Faster version of volumedelay; requires destination.
+  volumeweight          Sets weights of a group of synapses receiving input
+                        from a list of presynaptic elements in a volume.
+  volumeweight2         Faster version of volumeweight; requires destination.
+  ______________________________________________________________________
+
+  Earlier versions of GENESIS used a different method of establishing
+  synaptic connections by means of axon objects (projections) which hold
+  the delays and weights for each connection.  This approach, which is
+  not recommended for new simulations, is illustrated in the
+  ``Scripts/MultiCell'' simulation.
+
+  The following obsolete routines (available in the Connection
+  Compatibility Library) are used with old-style axonal connections:
+
+  ______________________________________________________________________
+  Routine              Description
+  ______________________________________________________________________
+  affdelay             calculates an aggregate delay between elements
+                       separated by two paths, one fast-conducting and
+                       one slow-conducting
+  affweight            Calculates weights of projections along a path which
+                       decay exponentially in strength with distance.
+  connect              Creates connection between a projection and a segment,
+                       using connection element of a specified type.
+  cstat                Displays information about connections from a projection.
+  delete_connection    Deletes a connection between a projection and segment.
+  expsum               Returns exponentially weighted sum of connection
+                       weights according to the radial distance.
+  expweight            Sets weights of efferents from cell arrays made
+                       with createmap and connected with region_connect.
+  getconn              Returns axon connection weight and delay.
+  normalize_synapses   Sets the cumulative weight of axonal connections to
+                       a channel to a given or randomly selected value.
+  radialdelay          Sets delays of a group of synapses receiving input
+                       from a list of presynaptic elements in a plane.
+  region_connect       Connects one group of elements in a plane to another,
+                       using source and destination element lists and masks.
+  scaleweight          Adjusts the weight of a connection by a scaling factor.
+  setconn              Sets axon connection weight and delay.
+  showconn             Prints out weight or delay of axonal connection.
+  volume_connect       Connects one group of elements in a volume to another,
+                       using source and destination element lists and masks.
+  ______________________________________________________________________

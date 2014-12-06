@@ -1,0 +1,56 @@
+Object Type:	spikegen
+
+Description:	Performs threshold spike discrimination.
+		Generates an impulse each time an input crosses the
+		spike threshold at a maximal rate set by abs_refract.
+
+Author:		M. Wilson, Caltech 6/88, ave Bilitch 1/94
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	Spikegen_type  [in src/newconn/newconn_struct.h]
+
+Size:		88 bytes
+
+Fields:	
+		state		current spiking state
+		thresh		threshold level for spike generation
+		abs_refract	minimum interval between spikes
+		output_amp	spike event amplitude
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	SpikeEvent  [in src/newconn/spikegen.c]
+
+Class:		spiking
+
+Actions:	RESET			clear the history buffer, removing
+					any existing events
+		PROCESS			determine whether a spike is
+					generated, set the state to 0 for no
+					spike or to output_amp for a spike
+		CHECK 			make sure there is a source of input
+					to drive spike generation
+                RESTORE2		called by the restore command
+                SAVE2			called by the save command
+
+Messages:	INPUT  input 
+		THRESH threshold
+
+------------------------------------------------------------------------------
+
+Notes:		Simulates a thresholded spike generation mechanism. When the
+		input exceeds the specified threshold and there has not been a
+		spike for at least the interval specified by 'abs_refract' a
+		single spike event is generated with amplitude given by
+		'output_amp'.  The spikegen typically receives action
+		potentials from a compartment via the INPUT message and
+		sends spike events to a synchan or synchan2 element with
+		a SPIKE message.
+
+Example:	Scripts/tutorials/tutorial4.g
+

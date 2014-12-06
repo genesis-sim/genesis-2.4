@@ -1,0 +1,14 @@
+Routine Name:	cos
+
+Description:	Returns cosine for given angle (specified in radians).
+
+Usage:		cosine = {cos angle-in-radians}
+
+Example:	float x
+		x = {cos {3.14159/4}}
+
+Notes:		
+
+See also:	acos
+
+

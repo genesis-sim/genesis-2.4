@@ -1,0 +1,27 @@
+Routine Name:	argv
+
+Description:	An array of strings containing the arguments passed to
+		a function.
+
+Usage:		argv position-number
+
+Example:	
+
+function echoargs
+    int i
+    echo "Number of arguments = "{argc}
+    for(i=1;i<= {argc};i=i+1)
+        echo {argv {i}}
+    end
+end
+
+genesis > echoargs foo 5 1.23
+Number of arguments = 3
+foo
+5
+1.23
+
+Notes:		As with C, indices of argv should start with 1.
+
+See also:	argc, arglist, getarg, printargs
+

@@ -1,0 +1,128 @@
+Object Type:	crosscorr
+
+Description:	Computes the cross-correlation between two trains of
+		spike events. A histogram containing the count of
+		events for each bin is constructed.
+
+Author:		D. Jaeger, Caltech (9/92)
+		revised for Genesis v2.2 11/99
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	doxc_type  [in genesis/src/device/spike_struct.h]
+
+Size:		116 bytes
+
+Fields:		num_bins	(int) number of bins in histogram
+		binwidth	(float) binwidth in sec
+		reset_mode	(int) 0 or 1	
+		threshold	(float) input amplitude triggering spike event
+		*xcarray	(int)	histogram array containing data
+		no1spks		(int) number of spikes from source 1
+		no2spks		(int) number of spikes from source 2
+		*sp1times	(float) array of spike times from source 1
+		*sp2times	(float) array of spike times from source 2
+		curr1idx	(int) internal indexing
+		curr2idx	(int) internal indexing
+		calc1idx	(int) internal indexing
+		calc2idx	(int) internal indexing
+		maxspikes	(int) internal boundary condition
+		wintime		(float) internal boundary condition
+		dontnow		(int) internal condition
+		allocated	(int) internal condition
+
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Doxc  [in genesis/src/device/acxc.c]
+Classes:	device
+
+Actions:	PROCESS		update *spktimes, *xcarray, nospks
+		RESET		if reset_mode = 0, empties *spktimes but not
+					*xcarray
+				if reset_mode = 1, empties *spktimes and
+					recreates *xcarray
+
+Messages:	XSPIKE : signal amplitude from source 1	
+		YSPIKE : signal amplitdue from source 2	
+
+------------------------------------------------------------------------------
+
+Notes:
+		User must setfield num_bins (only even number of bins
+	are allowed) and binwidth (in sec) so that a data array
+	is created on RESET. The input is assumed to cross the amplitude
+	given in the threshold field only for one timestep to generate
+	a spike. Vm is not to be used as an input field. Valid inputs
+	may be derived from random, neutral or spike objects.
+		An internal spike time buffer is set up for a maximal
+	spike rate of 1000 events / second. A greater density of spikes
+	will lead to missing events in the histogram. 
+		The cross-corrlation table is updated with each timestep.
+	However, the first results will only be available after the
+	simulation time has reached the value of num_bins * binwidth.
+		The data are stored in *xcarray and can be accessed with
+	a getfield command (see example). The 0 delay time bin is stored in
+	the center of the histogram, i.e. for num_bins = 100, xcarray[49]
+	contains the 0 delay time bin.
+
+Example:	
+
+create autocorr /xc12
+setfield ^ binwidth 0.002 num_bins 200 threshold 0.5
+
+/* this example uses random object for input */
+create random /input1
+setfield ^ min_amp 1 max_amp 1 rate {in1_rate} reset 1 reset_value 0	 
+create random /input2
+setfield ^ min_amp 1 max_amp 1 rate {in1_rate} reset 1 reset_value 0
+
+addmsg /input1 /xc12 XSPIKE state
+addmsg /input2 /xc12 YSPIKE state
+
+/* To display data on a graph, use this function after creating the graph */
+function plotxc(source, dest, color)
+    str source, dest, color
+    int bins, minbin, maxbin, barval
+		
+    /*	display *xcarray of doxc element {source} on graph {dest}
+         The display could be made nicer than this.  */
+
+    bins = getfield {source}, num_bins
+    minbin = -({bins} / 2)
+    maxbin = {bins} / 2
+    setfield {dest} xmin {minbin} xmax {maxbin}
+    call {dest} RESET
+    for(i=minbin; i < maxbin; i = i + 1)
+    	 barval = {getfield {source}, xcarray[{{i}+{maxbin}}]}
+         addpts {dest} -plotname xcor -color {color} {i} 0
+    	 addpts {dest} -plotname xcor -color {color} {i} {barval}
+         addpts {dest} -plotname xcor -color {color} {i} 0
+    end
+end
+
+		
+------------------------------------------------------------------------------
+
+Notes:
+        User must setfield num_bins and binwidth (in sec) so
+    that a data array is created on RESET. The input is assumed to
+    cross the amplitude given in the threshold field only for one 
+    timestep to generate a spike. Vm is not to be used as an input field.
+    Valid inputs may be derived from random, neutral or spike objects.
+        An internal spike time buffer is set up for a maximal
+    spike rate of 1000 events / second. A greater density of spikes
+    will lead missed events in the histogram. 
+        The cross-corrlation histogram ought to be used with clock 0.
+    The first results will only be available after the
+    simulation time has reached the value of num_bins * binwidth.
+    This is due to the fact that any spike needs to be correlated
+    with other spikes across a time window of this duration.
+        The data are stored in *xcarray and can be accessed with
+    a getfield command (see example). 
+
+See also:  autocorr, interspike, peristim, Scripts/examples/spike/spikes.g

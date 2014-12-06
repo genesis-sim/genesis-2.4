@@ -1,0 +1,29 @@
+These are some experiments to try using the Cable Tutorial.  In each case,
+you should satisfy yourself that you understand what is happening in the
+various plots.
+
+1) Determine the electrotonic length of a dendritic compartment.  Change the
+   soma dimensions to make it the same size as a dendritic compartment.
+   Then make a uniform cable of electrotonic length L = 1.  Use an analytic
+   formula to predict the steady state V(0) for a constant injection current
+   I = 0.0001 uA to the soma.  Compare the observed attenuation factor
+   V(L)/V(0) to that predicted by theory.  Repeat for L = 0.5 and L = 2.
+   Can you explain any differences between theory and the simulation results?
+
+2) Use the above uniform cable and apply a brief (2 msec) current injection
+   to the soma.  Use the "Add/Remove Plots" option to plot V(t) from several
+   compartments in order to observe the transient attenuation.  Examine the
+   plot of log(V) vs. t and note that the response is not a simple
+   exponential.  Compare the results for L= 0.5 and L = 2.  How would
+   you estimate L from the time course of V(t)?
+
+3) Restore the default parameters and make a cable with ten dendritic
+   compartments.  Add a transient synaptic input gsyn(t) to compartment #10,
+   setting tsyn = 1 msec, peak gsyn = 1e-5 mS, and Vsyn = 50 mV.  Toggle
+   overlay to ON and compare the results to those obtained when the
+   synaptic input is delivered to the soma.  Why are the results different?
+
+4) Restore the uniform cable of exercise (2) and apply a synaptic input to
+   compartment #5, using the same input parameters as in exercise (3).  Use
+   a step of injection current at the soma to estimate Vsyn.  Apply cable
+   theory to correct this estimate for attenuation.

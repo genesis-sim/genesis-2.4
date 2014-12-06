@@ -1,0 +1,181 @@
+  15. Simulations
+
+  Broadly speaking, a GENESIS ``simulation'' consists of the following
+  components:
+
+  o  the complete collection of elements defined in the GENESIS
+     environment at the current time (except for elements excluded by
+     the disable routine); i.e., the elements that define the model, and
+     accessory elements
+
+  o  the object definitions that define how elements are to be
+     interpreted (e.g., definitions of objects, classes, and so forth)
+
+  o  the set of messages that provide the way information is passed
+     among elements
+
+  o  a schedule defining simulation activities and what elements are
+     affected
+
+  o  the set of simulation clocks defining the relative time for
+     activities
+
+  Sometimes, GENESIS users refer to a ``simulation'' as a specific step-
+  through of a given simulation setup (i.e., stepping through a
+  simulation, as defined above, over time) -- a ``run'' of a simulation.
+
+  15.1.  Running a Simulation
+
+  Many GENESIS routines help you construct simulations (see, for
+  example, Elements, Messages, Clocks, and so forth).  The table below
+  lists routines that specifically deal with preparing the simulation
+  for time-oriented runs:
+
+  ______________________________________________________________________
+  Routine      Description
+  ______________________________________________________________________
+  abort        Cleanly interrupts simulation in progress.
+  check        Checks various aspects of simulation for specification errors.
+  disable      Disables an element and its children from participating in a
+               simulation.
+  enable       Enables previously disabled elements to participate in a
+               simulation.
+  getstat      Returns time, step, or memory use as a function value.
+  reset        Resets simulation to initial conditions, including calling
+               RESET actions for individual elements in the simulation.
+  setmethod    Sets integration method for elements to use in simulation.
+  showstat     Reports statistics about current simulation (time, step,
+               stepsize, or memory use; or element resource use).
+  step         Advances the simulation by one or more steps.
+  stop         Completes current simulation step, stopping simulation.
+  ______________________________________________________________________
+
+  The step routine might be considered the central GENESIS routine -- it
+  runs the simulation, which is in a large part the whole point of
+  GENESIS.  In relation to the step routine, everything else you do in a
+  GENESIS simulation script is a preparation for running the simulation.
+
+  A typical sequence of events in running a simulation is as follows:
+
+  1. Set up the simulation environment (elements, messages, clocks,
+     etc.)  Often, you will use the ``readcell'' (readcell.txt) to
+     construct one or more cells from specifications contained in cell
+     parameter files.
+
+  2. Run the reset routine to establish the initial state for the run:
+
+              genesis > reset
+
+  3. Run the check routine to check for obvious specification errors:
+
+              genesis > check
+
+  If there are any errors, return to step 1 to revise the environment as
+  appropriate based on the check output.
+
+  4. Run the step routine with a small step number (e.g., step 10) to
+     test whether the simulation will run reasonably:
+
+              genesis > step 10
+
+  If the simulation fails or shows odd results, figure out where the
+  problem is and return to step 1.  Often, this will involve some exper-
+  imentation with the step size used for the global simulation clock, as
+  described in ``Simulation Clocks'' (Clocks.txt).
+
+  5. Run the reset routine to prepare for the full run:
+
+              genesis > reset
+
+  6. Having determined that your simulation clocks are using an
+     appropriate step size, run the step routine for a longer period of
+     time.  If you are not using graphics or interactive input, you may
+     wish to place your simulation job in the background.  For example:
+
+              genesis > step -time 10.0 -background
+
+  (The GENESIS prompt returns immediately but the simulation will have
+  started in the background, as you can confirm using the showjobs rou-
+  tine.)
+
+  You may wish to practice these steps using the simple GENESIS
+  programming example scripts in the ``Scripts/tutorials'' directory
+  before you try to build and run your own model.
+
+  15.1.1.  Explicit vs. Implicit Integration Methods
+
+  The documentation for ``setmethod'' (setmethod.txt) describes the
+  various numerical integration methods that may be used when GENESIS
+  performs a simulation.  The default Exponential Euler method is a good
+  compromise between speed, accuracy and ease of use for network models
+  and single cell models involving a small number of compartments.
+  Multi-compartmental models result in numerically ``stiff'' equations
+  that are best solved with one of the implicit (Backward Euler or
+  Crank-Nicholson) methods.  The implicit methods are much faster, and
+  allow the use of larger step sizes.  But, they must be used in
+  conjunction with the hsolve object, which takes over the computations
+  of compartments, symcompartments, tabchannels and other selected
+  element types.  (See the documentation for ``hsolve'' (hsolve.txt) and
+  the section on ``Simulation Clocks'' (Clocks.txt).)
+
+  The following routines are designed to be used with hsolve elements:
+
+     ______________________________________________________________________
+     Routine             Description
+     ______________________________________________________________________
+     findsolvefield      Used with hsolve for input/output of values
+     getsolvechildname   Finds hsolve child element names
+     getsolvecompname    Used with hsolve to find compartment names
+     ______________________________________________________________________
+
+  15.1.2.  Running a Simulation in the Background
+
+  To perform a GENESIS simulation in the background (for example if you
+  want to login from home over a modem, start a simulation, and logout
+  while the simulation continues to run), your simulation script should
+  use no graphics, and write all output to files.
+
+  Besides specifying the -nox option when starting genesis to avoid
+  starting XODUS, you also need to use the -notty and -batch options.
+  GENESIS will attempt to read from stdin after the .simrc and command
+  line script are completed.  The -batch option causes genesis to exit
+  rather than try to read stdin.  -notty will avoid doing any terminal
+  setup and cleanup procedures which can also cause this type of
+  behaviour.  You must specify both on the command line (i.e. neither
+  option implies the other).  In addition, you need to redirect output
+  (both stdout and stderr) to a file.   For example, a simple script
+  ``batchtest.g'' might look like:
+
+  //genesis script for a simple compartment simulation (Tutorial #1)
+  //batchtest.g
+
+  create neutral /cell
+  create compartment /cell/soma
+  setfield /cell/soma Rm 10 Cm 2 Em 25 inject 5
+
+  // send output to a file
+      create asc_file /out
+      setfield /out    flush 1    leave_open 1
+      setclock 1 1.0
+      useclock /out 1
+      addmsg       /cell/soma     /out       SAVE Vm
+
+  setclock 0 0.001 // this is to make it run slowly
+  reset
+  step 100 -time
+  exit
+
+  To run this script in the background (using the C shell), you would
+  use:
+
+      genesis -nox -batch -notty batchtest >& batch.log &
+
+  With the Bourne shell (or bash) it would be:
+
+      genesis -nox -batch -notty batchtest > batch.log 2>&1 &
+
+  When performing long simulation runs in the background, you can use a
+  ``disk_out'' (disk_out.txt), ``diskio'' (diskio.txt), or ``asc_file''
+  (asc_file.txt) element to save simulation results to disk at regular
+  intervals. To save the state of the model at the end of the run, use
+  the ``save'' (save.txt) or ``simdump'' (simdump.txt) command.

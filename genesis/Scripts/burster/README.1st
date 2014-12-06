@@ -1,0 +1,20 @@
+The main "README" file in this directory describes the simulation and tells
+how to run it.  It also serves as the "help file" for the on-line help.
+Further details of the tutorial and the theory behind it will be given in
+"The Book of GENESIS" by James M. Bower and David Beeman, to be published in
+December 1994 by TELOS/Springer.
+
+The simulation is designed to be used with GENESIS version 2.0 and the
+associated version of Neurokit.  The file "ASTchan_tut.g" contains the
+prototype channels for this model.  It is a slightly modified version of the
+updated and corrected neurokit/protypes/ASTchan.g file which accompanies
+GENESIS 2.0.
+
+If GENESIS has not yet been installed on your machine, refer to the main
+README file accompanying GENESIS or the printed documentation for GENESIS.
+The paths to necessary files should be set up as specified in the GENESIS
+README file, the necessary ".simrc" file should exist in your home
+directory, and X-windows should be started.  In order to access the the
+Neurokit simulation, your .simrc file should use the SIMPATH environment
+variable to set a path to the neurokit and neurokit/prototypes directories.
+(This is done in the usual default .simrc which is provided with GENESIS.)

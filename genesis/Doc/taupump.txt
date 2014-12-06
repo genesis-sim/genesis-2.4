@@ -1,0 +1,63 @@
+Object Type:	taupump
+
+Description:	Implementation of a simple pump with a variable time constant
+		of removal.  Should be coupled to a difshell, where the change
+                in concentration is computed.
+
+Author:		E. De Schutter, Caltech (11/90)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	taupump_type  [in /usr/genesis/src/concen/conc_struct.h]
+
+Size:		108 bytes
+
+Fields:		kP		pump rate = inverse of tau in s
+		Ceq		equilibrium concentration in mM
+		T_A		factor for Tau
+		T_B		exp factor for Tau
+		T_V		half-voltage for Tau
+                T_C             constant offset for Tau
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	TauPump  [in src/concen/taupump.c]
+
+Classes:	gate segment
+
+Actions:	INIT
+		PROCESS
+		RESET
+		CHECK
+
+Messages:	VOLTAGE Vm      
+------------------------------------------------------------------------------
+
+Notes:  
+
+The taupump and other ionic pumps provide various mechanisms to remove ions
+from a concentration shell (difshell).
+
+If a VOLTAGE message is received, carrying a membrane potential Vm (or any
+other parameter used to vary the pump rate), the time constant is given
+by tau = T_A*exp((Vm - T_V)/T_B) + T_C, and the pump rate is kP = 1.0/tau.
+If there is no VOLTAGE message, tau is fixed to T_C, or to T_A if T_C = 0.
+
+The pump rate kP and equilibrium concentration Ceq are sent with a
+TAUPUMP message to a difshell, which uses them to produce a change in
+its ion concentration dC/dt = -kPump*(C-Ceq).
+
+For a general description of buffered calcium diffusion see:
+De Schutter E., and Smolen P., "Calcium dynamics in large neuronal
+models", in Methods in neuronal modeling: From ions to networks
+(2nd edition), C. Koch and I. Segev editors, pp. 211-250 (1998).  The
+spinedemo simulation gives a detailed example of the use of the difshell,
+taupump, and fixbuffer objects for modeling calcium diffusion in dendritic
+spines.
+
+Example:	addmsg headpump0 headshell0 TAUPUMP kP Ceq
+
+See also:	difshell, fixbuffer, Scripts/examples/spinedemo

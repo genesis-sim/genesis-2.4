@@ -1,0 +1,29 @@
+Routine Name:	resched
+
+Description:	Assigns elements for simulation according to the
+                current simulation schedule. 
+
+Usage:		resched
+
+Example:	[from startup/schedule.g:]
+
+                deletetasks
+                ...
+                addtask Simulate /##[CLASS=device]      -action PROCESS
+                addtask Simulate /##[CLASS=output]      -action PROCESS
+                resched
+
+Notes:		If you have created any new objects you want included in the
+                current simulation schedule, you need to run resched so that
+                the new object will be made known to the simulator.  This
+                applies in particular to either compiled or extended objects
+                that have an INIT or PROCESS action.   (However, the reset
+                command also does an implicit resched.)
+
+                In the example, all simulation events are removed from the
+                schedule, and then new simulation tasks are listed in the
+                schedule.  (Only the last two are shown here.)  Finally,
+                resched is called in order to reread the simulation schedule
+                and schedule the listed element types for simulation.
+
+See also:       Schedules, addtask

@@ -1,0 +1,187 @@
+#!/usr/local/bin/perl -w
+# =================================================================
+# merge_ppm	V1.0	Mike Wijnants	06 SEP 2000
+# program to merge 2 ppm-files into 1
+# =================================================================
+use File::Basename;
+use File::stat;
+
+if ( !$ARGV[0] ) { usage() }
+
+# Body
+
+&ParseOptions;
+
+# each time glob is accessed, it returns te next value;
+# successive filenames that match the patern
+
+@files1 = glob("$in_folder1/*.ppm");
+@files2 = glob("$in_folder2/*.ppm");
+if (scalar(@files1) ne scalar(@files2)) 
+  {die "$in_folder1 and $in_folder2 need to have equal amout of files"} 
+
+foreach $in_file1 ( @files1 ) {
+  $in_file2 = shift(@files2);
+  $file = basename ($in_file1);
+    if ($verb) { print "** Merging : $in_file1 and $in_file2 to $out_folder/$file\n" }
+    if ($tall) { &merge_v } else { &merge_h } 
+  if ($single) { last }
+}
+
+# -----------------------------------------------------------------
+sub merge_h {
+  open (IN1,"$in_file1")  || die "Can't open file: $!" ;
+  unless (-s IN1) {print "ERROR : Zero file size, skipping $in_file1 !\n"; return}
+  
+  open (IN2,"$in_file2")  || die "Can't open file: $!" ;
+  unless (-s IN2) {print "ERROR : Zero file size, skipping $in_file1 !\n"; return}
+
+  open (OUT,">$out_folder/$file") || die "Can't open file: $out_folder/$file, $!" ;
+  #############
+  # first the header
+  #
+  foreach (1..4) {
+    $line = <IN1>;
+    print OUT $line;
+    $line = <IN2>; # read but do not use
+  }
+  ($col_1, $row_1) = (<IN1> =~ m/(\d*) (\d*)/);
+  ($col_2, $row_2) = (<IN2> =~ m/(\d*) (\d*)/);
+  if ($row_1 ne $row_2) { die "rows in $in_file1 <> rows in $in_file2\n"}
+  $col=$col_1 + $col_2;
+  $row=$row_1;
+  if ($vverb) { print "    NEW SIZE (col,row) $col $row\n" }
+  print OUT "$col $row\n";
+  ($max_grey1) = (<IN1> =~ m/(\d*)/);
+  ($max_grey2) = (<IN2> =~ m/(\d*)/);
+  if ($max_grey1 ne $max_grey2) { die "Maxgrey in $in_file1 <> $in_file2\n"}
+  print OUT "$max_grey1\n";
+
+  #############
+  # start cp from here
+  #
+  $i1=$i2=$i3=0;
+  while ($i3 < $row) {
+    $i3++;
+    while (defined ($line = <IN1>) ) {
+      if  ($line =~ /^(\d*) (\d*) (\d*)/) { $i1++ } 
+      print OUT $line;
+      if ($i1 == $col_1) { last }
+    }
+    $i1=0;
+    while (defined ($line = <IN2>) ) {
+      if  ($line =~ /^(\d*) (\d*) (\d*)/) { $i2++ } 
+      print OUT $line;
+      if ($i2 == $col_2) { last }
+    }
+    $i2=0;
+  }
+  close (IN1);
+  close (IN2);
+  close (OUT);
+}
+# -----------------------------------------------------------------
+sub merge_v {
+  open (IN1,"$in_file1")  || die "Can't open file: $in_file1, $!" ;
+  unless (-s IN1) {print "ERROR : Zero file size, skipping $in_file1 !\n"; return}
+  
+  open (IN2,"$in_file2")  || die "Can't open file: $in_file2, $!" ;
+  unless (-s IN2) {print "ERROR : Zero file size, skipping $in_file2 !\n"; return}
+
+  open (OUT,">$out_folder/$file") || die "Can't open file: $out_folder/$file, $!" ;
+  #############
+  # first the header
+  #
+  foreach (1..4) {
+    $line = <IN1>;
+    print OUT $line;
+    $line = <IN2>; # read but do not use
+  }
+  ($col_1, $row_1) = (<IN1> =~ m/(\d*) (\d*)/);
+  ($col_2, $row_2) = (<IN2> =~ m/(\d*) (\d*)/);
+  if ($col_1 ne $col_2) { die "cols in $in_file1 <> cols in $in_file2\n"}
+  $col=$col_1;
+  $row=$row_1 + $row_2;
+  if ($vverb) { print "    NEW SIZE (col,row) $col $row\n" }
+  print OUT "$col $row\n";
+  ($max_grey1) = (<IN1> =~ m/(\d*)/);
+  ($max_grey2) = (<IN2> =~ m/(\d*)/);
+  if ($max_grey1 ne $max_grey2) { die "Maxgrey in $in_file1 <> $in_file2\n"}
+  print OUT "$max_grey1\n";
+
+  #############
+  # start cp from here
+  #
+  while (defined ($line = <IN1>) ) { print OUT $line }
+  while (defined ($line = <IN2>) ) { print OUT $line }
+  close (IN1);
+  close (IN2);
+  close (OUT);
+}
+
+# -----------------------------------------------------------------
+sub ParseOptions {
+  $verb=$vverb=$tall=$single="";
+  while ($ARGV[0] =~/^\-./) {
+       if ($ARGV[0] eq '-v') { $verb=1; shift @ARGV }
+    elsif ($ARGV[0] eq '-V') { $verb=1; $vverb=1; shift @ARGV }
+    elsif ($ARGV[0] eq '-t') { $tall=1; shift @ARGV }
+    elsif ($ARGV[0] eq '-s') { $single=1; shift @ARGV }
+    else  { die "Unknown option : $ARGV[0]\n"}
+  }
+  $in_folder1 = $ARGV[0];
+  if (!defined($in_folder1)) {die "No input-directory set"}
+  shift @ARGV;
+  $in_folder2 = $ARGV[0];
+  if (!defined($in_folder2)) {die "No input-directory set"}
+  shift @ARGV;
+  $out_folder = $ARGV[0];
+  if (!defined($out_folder)) {die "No output-directory set"}
+  shift @ARGV;
+
+}
+
+# -----------------------------------------------------------------
+
+sub usage {
+  die <<HELP;
+
+DESCRIPTION
+     Reads 2 ppm's as input, the 2 files are merged to 1 ppm file.
+     
+     By default the image from <in-directory-1> is placed to the
+     left of the image from <in-directory-2> (landscape). The
+     image from <in-directory-2> can be placed underneath the
+     image from <in-directory-1> (tall).
+
+     $0 will merge all files in the <in-directory-1> with all the
+     files in <in-directory-2>. The resulting files are written 
+     in the <out-directory>. 
+
+
+Usage: $0 [options] <in-directory-1> <in-directory-2> <out-directory>
+
+Options:
+  -v : verbose
+  -V : be very verbose
+  -t : tall, place image 2 underneath image 1
+  -s : single, process first file only and stop
+HELP
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

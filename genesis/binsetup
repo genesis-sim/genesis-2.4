@@ -1,0 +1,18 @@
+#!/bin/sh -f
+
+# Script to create .simrc, .nxsimrc, and .minsimrc files with the proper
+# paths to the genesis installation
+
+INST_DIR=`pwd`
+CD_DIR=`pwd`
+
+# At some point, this script could be modified to take optional
+# arguments for CD_DIR (the location of the "genesis" files on a CDROM) and
+# INST_DIR (the place where genesis gets installed.
+
+# For now, assume that the script will be executed from within the installed
+# genesis directory.
+
+sed s:/usr/genesis:$INST_DIR:g < ${CD_DIR}/startup/simrc > $INST_DIR/.simrc
+sed s:/usr/genesis:$INST_DIR:g < ${CD_DIR}/startup/nxsimrc > $INST_DIR/.nxsimrc
+

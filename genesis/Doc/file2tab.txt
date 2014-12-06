@@ -1,0 +1,100 @@
+Routine Name:   file2tab
+
+Description:    Utility function for loading a file into an interpol struct
+		of an element
+
+Usage:          file2tab filename element table -table2 table -table3 table
+		-xy xdivs -skiplines number -calc_mode mode -autofill table
+
+Arguments:	filename: name of ascii file to load into table.  Entries
+                          must be separated by spaces, tabs or line breaks.
+                          Line breaks in input file are ignored. In other
+                          words, any number of numeric entries per line are
+                          allowed, and all are used.
+
+		element:  path of element containing the table
+		table:    name of interpol_struct within the element.
+
+Options:	-table2 table
+		This option allows one to specify an additional table to load 
+		the file into. Entries are loaded alternately into the first
+		table and table2. Note that table2 must be on the same
+		element as table. If there are an odd number of entries in
+		the file, the last one is not used.
+
+		-table3 table
+		This allows a third table. This option is similar to table2.
+
+		-xy xdivs
+		Uses xy mode for the table entries. Assumes that the points
+		are stored in the file as x,y pairs. Uses the xdivs argument
+		to set the table size, then figures out xmin, xmax
+		and sets the table limits and dx accordingly. Uses dx 
+		between all points and fills up table using linear
+		interpolation if the x,y pairs in the file are not evenly
+		spaced. Assumes x is monotonically increasing, behavior
+		in other situations is undefined.
+
+		-skiplines number
+		Skips "number" lines at the start of the file. Useful
+		for reading in 'xplot' files into a table, since these
+		files usually have headers.
+
+		-calc_mode mode
+		'mode' is an integer representing one of the legal
+                interpolation modes (0 = no interpolation, 1 = linear
+                interpolation, 2 = fixed, see interpol doc).
+
+		-autofill table
+		table is the name of an interpol_struct in which we wish
+		to place successive integers. Useful for displaying plots
+		from a single series of numbers in a file:
+
+		file2tab yvalue_file /form/graph/plot ypts -autofill xpts
+
+		will load the numbers in yvalue_file into ypts, and put
+		successive integers into xpts.
+
+Example:        This simple example illustrates loading an xplot file into
+		a table using different options to file2tab. In the first
+		case we end up with the x and y values alternating. In
+		the second case we end up with the y values only. In the 
+		third case we use the xy mode to load the values into a linear
+		table while preserving the x information.
+
+		Datafile name is xplot.data:
+
+		    /newplot
+		    /plotname "testplot"
+		    0 5
+  		    4 10
+		    8 5
+		    10 10
+
+		script file:
+
+  		    //genesis
+
+		    create table /tab1
+		    file2tab xplot.data /tab1 table -skiplines 2
+		    create table /tab2
+		    file2tab xplot.data /tab2 table -table2 table -skiplines 2
+		    create table /tab3
+		    file2tab xplot.data /tab3 table -skiplines 2 -xy 50
+
+		    showfield /tab1 *
+		    showfield /tab2 *
+		    showfield /tab3 *
+
+-----------------------------------------------------------------------------
+
+Notes:          The control fields of the interpol are set as follows:
+		xdivs:	for 1 table:	(num_entries -1)
+			for 2 tables:	(int)(num_entries / 2 -1)
+			for 3 tables:	(int)(num_entries / 3 -1)
+		xmin : 0
+		xmax : 1
+		calc_mode: defaults to 0 (lin-interp), but may be set on the
+			command line.
+
+See also:       tab2file, interpol_struct documentation (Tables), table

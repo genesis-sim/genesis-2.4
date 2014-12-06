@@ -1,0 +1,28 @@
+Routine Name:	substring
+
+Description:	Returns part of original string as new substring.
+
+Usage:		new-string = {substring string startindex [endindex]}
+
+		new-string	returned as new string created
+
+		string		original string
+	
+		startindex	integer indicating position of first character
+				in string to include in new string
+
+		endindex	integer indicating position of final character
+				in string to include in new string (default:
+				final character in string)
+
+Example:	genesis >  echo { substring "0123456789" 3 7 }
+		34567
+		genesis >  echo { substring "0123456789" 3 }
+		3456789
+
+Notes:		The substring routine can be useful in conjunction with other
+		routines (e.g., getpath) for constructing names based on part
+		of an element path name.
+
+See also:	strcat, strcmp, strncmp, strlen, findchar
+

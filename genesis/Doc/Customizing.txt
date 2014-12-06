@@ -1,0 +1,39 @@
+  21.  Customizing GENESIS
+
+  GENESIS was designed to be extensible.  If you find that the objects
+  provided by GENESIS do not serve your modeling needs, you can modify
+  the functionality of existing objects, or create entirely new types.
+  Likewise, you can extend the set of commands recognized by the SLI to
+  include your own commands.  You may do either of these within the
+  GENESIS scripting language, by creating extended objects (see
+  ``Extended Objects'' (Extended.txt)) and by defining script language
+  functions.
+
+  However, there are occasions when you will need the computational
+  efficiency and speed gained by compiling new object and command
+  definitions into your own customized version of GENESIS.  The speed
+  advantage of using a compiled object instead of a script-defined
+  extended object is most noticeable when it is necesssary to define a
+  new PROCESS action, as this action will be performed at each
+  simulation step.  If the simulation requires many elements made from
+  the object, then the setup time for the simulation may also be longer
+  when using script-defined objects.
+
+  A GENESIS object is simply a particular C structure definition that is
+  associated with a particular C function definition. Compiling these
+  for use by GENESIS is equivalent to compiling a new library.  When
+  compiling new libraries into GENESIS, it is best to leave the
+  ``official'' version of the ``genesis/src'' directory and its
+  subdirectories unmodified.  That way, you and other users will be able
+  to create private customized versions of GENESIS, without changing the
+  standard version.  Typically, you will create a directory to contain
+  your customized version of GENESIS, and one or more subdirectories to
+  contain libraries for your new GENESIS commands and objects.
+
+  There are two main steps involved in creating a customized version of
+  GENESIS which incorporates new commands or objects.  First, one must
+  create a library containing the the files which define the new
+  commands or objects.  Then, one or more libraries must be compiled
+  into the new ``genesis'' executable.  These two steps are described in
+  ``Defining New Objects and Commands'' (NewObjects.txt) and ``Compiling
+  a New Version of GENESIS'' (NewGenesis.txt).

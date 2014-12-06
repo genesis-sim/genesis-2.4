@@ -1,0 +1,19 @@
+Routine Name:	getenv
+
+Description:	Returns value of operating-system environmental variable.
+
+Usage:		str-value = {getenv environment-variable}
+
+Example:	genesis >  echo { getenv DISPLAY }
+		babel.bbb.edu:0
+
+Notes:		This is a GENESIS implementation of the operating system
+		printenv command, to have the value returned by the routine
+		rather than displayed directly to the user.  (GENESIS also
+		includes a version of printenv to have the value displayed
+		directly to the user.)  The getenv routine allows the value of
+		the particular operating system environmental variables to be
+		used as a data value within GENESIS.
+
+See also:	setenv, printenv
+

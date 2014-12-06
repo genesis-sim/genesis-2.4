@@ -1,0 +1,26 @@
+  6.  String Manipulation Routines
+
+  The following table lists the basic GENESIS routines for working with
+  text strings (i.e., variables declared as type str, or text enclosed
+  in quotes).
+
+  ______________________________________________________________________
+  Routine      Description
+  ______________________________________________________________________
+  chr          Returns ASCII character specified by number code.
+  countchar    Counts occurrences of specified character in string.
+  findchar     Returns location of specified character in a given string.
+  strcat       Returns new string as concatenation of two strings. *
+  strcmp       Compares two strings. **
+  strlen       Returns length of string in number of characters.
+  strncmp      Compares two strings up to specified number of characters. **
+  strsub       Returns a string with one substring replaced by another.
+  substring    Returns part of original string as new substring.
+  ______________________________________________________________________
+
+  * You can also concatenate strings using the GENESIS ``@'' operator.
+  ** You can also compare strings using the GENESIS relational operators
+
+  The getpath command with the -head and -tail options is often used
+  with the commands listed above in order to get element names or
+  partial path names.

@@ -1,0 +1,27 @@
+Routine name:	swapdump
+
+Description:	Mirrors initialization data for doing simulation dumps
+		using simdump.  Consider this situation: we have a dumpfile
+                that we want to read in, but at the same time we have
+                laboriously defined (using simobjdump) our favourite sets of
+                fields for all objects. Unfortunately the dumpfile has its own
+                set of simobjdumps, which will overwrite ours. So we use
+                swapdump, which puts our own simobjumps into storage, while we
+                read in the dumpfile.  Then we can do swapdump again to go back
+                to our original set of simobjdumps.
+
+Usage:		swapdump
+
+Example:	Complicated model is already set up, with its own preferences
+		for simobjdump. Now we want to read in a dumpfile called foo.g.
+
+		...
+		swapdump // put original simobjdump preferences into storage
+		include foo.g // read in dumpfile which has its own simobjdumps
+		swapdump // restore original simobjdump preferences
+		...
+		simdump bar.g -all	// Save combined model using original
+					// simobjdump preferences.
+Notes:		
+
+See also:       initdump, simdump, simobjdump, simundump

@@ -1,0 +1,32 @@
+Routine Name:	openfile
+
+Description:	Opens ASCII file for reading or writing.
+
+Usage:		openfile filename mode
+
+		filename	name of existing file to open for access from
+				other GENESIS file-manipulation routines
+
+		mode		mode in which to open file:
+				r to open file for read-only access;
+				w to open file for write-only access (this
+				wipes out any content of the file; see Notes);
+				a to open file for appending to the file
+				(existing content is not erased, but
+				writefiles are allowed)
+
+Example:	genesis >  openfile hello w
+		genesis >  writefile hello 10 20
+		genesis >  openfile oldfile r
+		genesis >  echo { readfile oldfile }
+
+Notes:		You can have up to 20 files opened simultaneously.
+
+		You can read data from an opened file using the readfile
+		routine, and write data to the file using the writefile
+		routine (if the file was opened for writing).
+
+		Beware: If you open a file for writing (mode w) that already
+		has text in it, that text will be DELETED!
+
+See also:	closefile, listfiles, readfile, writefile

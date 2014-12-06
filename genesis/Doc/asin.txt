@@ -1,0 +1,14 @@
+Routine Name:	asin
+
+Description:	Returns angle (in radians) corresponding to given sine.
+
+Usage:		angle-in-radians = {asin sine}
+
+Example:	genesis > echo {{ asin 0.5 }*(180/3.1415926)}
+                30.00000135
+
+Notes:		
+
+See also:	sin
+
+

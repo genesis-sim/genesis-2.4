@@ -1,0 +1,38 @@
+  3.  The GENESIS Script Language Interpreter
+
+  The GENESIS Script Language Interpreter (SLI) provides a framework in
+  which a simulation programmer can define and manipulate GENESIS
+  elements.  The SLI interprets statements in the GENESIS simulation
+  language, and constitutes the operating system ``shell'' at work when
+  you are running GENESIS.
+
+  The simulator shell is an interpretive operating environment which
+  lets you:
+
+  o  execute GENESIS routines (e.g., help, step, stop, openfile)
+
+  o  execute operating system shell commands (e.g., ls, cat, vi)
+
+  o  define variables (integer, floating point, or string types)
+
+  o  evaluate arithmetic expressions
+
+  o  invoke control structures such as conditionals and loops
+     (if...then, while, for, or foreach loops)
+
+  o  define and execute your own functions
+
+  You can perform these operations in either of two ways:
+
+  o  enter commands directly at the keyboard (the ``command line'')
+
+  o  read commands from text files (``scripts'')
+
+  User-defined SLI scripts are used to glue the pieces of a simulation
+  together.  XODUS graphical objects that you use to define the front
+  end of a simulation and GENESIS data handlers are all controlled from
+  SLI scripts.
+
+  The shell contains a library of basic commands which you can augment
+  through the addition of compiled C commands or interpreted SLI
+  functions.

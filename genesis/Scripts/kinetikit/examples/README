@@ -1,0 +1,73 @@
+Copyright Upinder S. Bhalla 1997-2005
+National Centre for Biological Sciences, 
+Bangalore, India.
+email: bhalla@ncbs.res.in
+
+This is the 'examples' directory for the kinetics package. Everything in this
+directory is copyrighted by Upinder S. Bhalla as shown above, and is released
+under the terms of the GNU Public License. Please see the COPYRIGHT notice
+in the kinetikit directory above for more details.
+
+Contents:
+
+README		: this file
+feedback.g	: Feedback model with bistability. Described in the tutorial
+			document and in the corresponding chapter for the
+			Book of GENESIS.  Run the model for a few hundred
+			seconds. It will be at zero activity throughout. Stop
+			it and now set Co (or n) of either X_prd or Y_prd to
+			1 micromolar (or 1 molecule, they are the same thing
+			in this volume). Note that we set Co, not CoInit. Now
+			continue the simulation (click start, not reset). You
+			will see a small transient response that decays back
+			to zero.  Now stop it again and set Co to 2, and
+			continue the simulation some more.  This time the
+			system will switch into the 'on' state with activity
+			in both X and Y. See if you can flip the system back
+			off (it is possible, but not easy).
+psearch.g	: Program for running parameter exploration on feedback model
+pkc.g		: Model of protein Kinase C regulation. The input molecules
+			are Ca, DAG, and AA, and by varying these you can
+			set the level of output activity (PKC-active).
+inhib_fb.g  	: Inhibitory feedback model, which also exhibits bistability.
+                        It has only a couple of minor changes with respect to
+                        the feedback.g model. This model also contains a table
+                        set up to give step inputs for generating a conc-eff
+                        curve. This table is not activated by default; you
+                        will need to double-click the table icon and turn the
+                        stimulus ON to get it to work.  The model has the very
+                        neat property that it will happily go into the
+                        metastable state when it is started up without any
+                        changes. If one now alters the last digit of the conc
+                        term on X or Y (or if you want to be really clean, on
+                        X_prd or Y_prd), the symmetry is broken and the system
+                        falls into one of the true bistable states. Try it
+                        out.
+iplot.xplot	: Resultant conc-eff curve for inhib_fb.g file.
+transport.g	: Example of using the transporter element. Requires
+			at least GENESIS 2.2. This simulates the translocation 
+			of an enzyme product to the nucleus, which results
+			in synthesis of a blocker, which is transported back
+			to the cytoplasm to block the enzyme. You get a nice
+			series of decaying oscillations.
+end_prd_inhib.g	: Example of end-product inhibition from the tutorial in
+            		sections 2, 3 and 4.
+group_epi.g	: Grouped version of end_prd_inhib model, from the tutorial
+			in section 5.
+y.data		: Example table I/O file with y point only on each line.
+xy.data		: Example table I/O file with x y pairs on each line.
+all117.g	: Example of monstrous research simulation from 
+			Bhalla and Iyengar, Science 1999. It will need
+			variable timesteps with small initial dt to run
+			properly.
+stoch_cycle.g	: Example of a stochastic simulation of a molecule which can
+			exist in 4 states. Initially there is only 1 molecule
+			present, and it flips between states. If you go to the
+			"Units" menu item and rescale the pool size up by
+			an order of magnitude, you can see stochastic 
+			transitions of 10 molecules in this system.
+
+These saved simulation "dump files" will start kkit, if you have added the
+kinetikit directory to your SIMPATH in the .simrc file, as described in
+kinetikit/README.  Then you may run them with with commands such as
+"genesis pkc.g".

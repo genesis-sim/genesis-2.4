@@ -1,0 +1,46 @@
+Object Type:	neutral
+
+Description:	empty object used for grouping
+
+Author:		Caltech
+
+ELEMENT PARAMETERS
+
+DataStructure:	element_type  [in src/sim/sim_struct.h]
+
+Size:		68 bytes
+
+Fields:		[none]
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	NULL [i.e., none]
+
+Classes:	element
+
+Actions:	[none]
+
+Messages:	[none]
+
+------------------------------------------------------------------------------
+
+Notes:		A set of default element types is distributed with GENESIS.
+		One of the simplest is the "neutral" object which can be
+		used to create an empty element used for grouping, much like
+		a directory in the UNIX file system.  It is often used to
+		represent a cell, containing subelements for compartments,
+		channels, etc.  Although it has no other fields, it has the
+		usual setable [x,y,z] coordinate fields possesed by other
+		objects.  This allows it to be given a position in a network.
+
+		The addfield, addaction, and addmsgdef commands can be used
+		to give a neutral element new fields, actions, and messages,
+		allowing it to be used as customizable element, or the basis
+		of an extended object
+
+Example:	
+
+See also:	
+

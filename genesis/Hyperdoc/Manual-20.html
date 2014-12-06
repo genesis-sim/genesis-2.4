@@ -1,0 +1,294 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: XODUS Mouse Clicks -- a summary of syntax conventions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-19.html">Previous</A>
+<A HREF="Manual-21.html">Next</A>
+<A HREF="Manual.html#toc20">Table of Contents</A>
+<HR>
+<H2><A NAME="Clicks"></A> <A NAME="s20">20. XODUS Mouse Clicks -- a summary of syntax conventions</A> </H2>
+
+<P><B>Author:</B> Upinder S. Bhalla, Mount Sinai School of Medicine.</P>
+
+<H2><A NAME="ss20.1">20.1 Conventions</A> </H2>
+
+<P>In the text, when I use the term ``widget'' or ``X widget'', it means
+the X widget implementation of the graphical user interface (GUI). The term
+``xodus'' refers to the GENESIS objects that control the corresponding
+X widgets.  When I say ``XODUS'', it means the combined GUI, including
+both the GENESIS objects, the X widgets, and the infrastructure that
+links them together.</P>
+
+
+<H2><A NAME="ss20.2">20.2 Overview</A> </H2>
+
+<P>In this version of XODUS, there has been a complete overhaul
+of how GUI events, such as mouse clicks, affect XODUS and GENESIS.
+The fundamental change is that GUI events are now mapped directly
+onto GENESIS actions, and are handled by the action mechanism in the
+xodus objects. I have also reimplemented the mechanism for calling
+script functions in response to GUI events. The previous XODUS 1 <EM>when</EM>
+functionality has been abandoned; instead all script calls are
+accessed through the <EM>script</EM> field of the widgets and pixes.
+The sequence of operations is :</P>
+<P>
+<OL>
+<LI> User action, e.g. a mouse click</LI>
+<LI> X generates an event</LI>
+<LI> Widget decides if it can use the event</LI>
+<LI> Widget passes event to a translator, using callbacks</LI>
+<LI> Translator invokes appropriate xodus action</LI>
+<LI> xodus object executes action</LI>
+<LI> If action call corresponds to a script function, the script
+function is executed.</LI>
+</OL>
+</P>
+<P>Script functions are suffixed with a GUI event identifier, which
+decides which events are allowed to call that script function.
+I have imposed a strict convention on argument passing into scripts,
+so that a great deal of relevant information is automatically available
+to the script function. This should greatly simplify writing user
+interfaces.</P>
+
+
+<H2><A NAME="ss20.3">20.3 Graphical User Interface Actions.</A> </H2>
+
+<P>A subset of X events (the exact subset is dependent on widget
+implementation) is mapped into xodus actions. If the xodus object is
+written so as to be able to execute that action as a script call, it
+invokes the script functions from the <EM>script</EM> field in the
+xodus element. If a function suffix matches the action, then the
+function is called.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+Action name </TD><TD>suffix(es) </TD><TD> Description</TD></TR><TR><TD>
+*B1DOWN </TD><TD>d1 d</TD><TD> Mouse button 1 was pressed</TD></TR><TR><TD>
+*B2DOWN </TD><TD>d2 d</TD><TD> Mouse button 2 was pressed</TD></TR><TR><TD>
+*B3DOWN </TD><TD>d3 d</TD><TD> Mouse button 3 was pressed</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+*B1UP </TD><TD>u1 u</TD><TD> Mouse button 1 was released in a toggle</TD></TR><TR><TD>
+*B2UP </TD><TD>u2 u</TD><TD> Mouse button 2 was released in a toggle</TD></TR><TR><TD>
+*B3UP </TD><TD>u3 u</TD><TD> Mouse button 3 was released in a toggle</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1DOUBLE </TD><TD>D1 D</TD><TD> Mouse button 1 double click</TD></TR><TR><TD>
+B2DOUBLE </TD><TD>D2 D</TD><TD> Mouse button 2 double click</TD></TR><TR><TD>
+B3DOUBLE </TD><TD>D3 D</TD><TD> Mouse button 3 double click</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1MOVE </TD><TD>m1 m</TD><TD> Motion with mouse button 1 pressed</TD></TR><TR><TD>
+B2MOVE </TD><TD>m2 m</TD><TD> Motion with mouse button 2 pressed</TD></TR><TR><TD>
+B3MOVE </TD><TD>m3 m</TD><TD> Motion with mouse button 3 pressed</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1ENTER </TD><TD>e1 e</TD><TD> Entry with mouse button 1 pressed</TD></TR><TR><TD>
+B2ENTER </TD><TD>e2 e</TD><TD> Entry with mouse button 2 pressed</TD></TR><TR><TD>
+B3ENTER </TD><TD>e3 e</TD><TD> Entry with mouse button 3 pressed</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1LEAVE </TD><TD>l1 l</TD><TD> Leave widget with mouse b1 pressed</TD></TR><TR><TD>
+B2LEAVE </TD><TD>l2 l</TD><TD> Leave widget with mouse b2 pressed</TD></TR><TR><TD>
+B3LEAVE </TD><TD>l3 l</TD><TD> Leave widget with mouse b3 pressed</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+KEYPRESS </TD><TD>k&lt;key&gt; k</TD><TD> Keyboard key &lt;key&gt; was pressed</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+XUPDATE </TD><TD>x</TD><TD> Widget was refreshed</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+XODRAG </TD><TD>drag y</TD><TD> Drag event, called on source widget</TD></TR><TR><TD>
+XODROP </TD><TD>drop p</TD><TD> Drop event, called on destination widget</TD></TR><TR><TD>
+XOWASDROPPED</TD><TD>wasdropped w</TD><TD> Called on source widget only if drop happened</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+XOCOMMAND </TD><TD>command c</TD><TD> Called from the script language</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>* The actions listed with an asterisk will also call the unadorned
+(i.e., no suffix) script command.</P>
+<P>NOTE: The B1DOWN/B2DOWN/B3DOWN event will always precede an event of which
+it is a subset. Thus, all double clicks will be preceded by a .d event, as
+will all drags.</P>
+<P>Not all widgets are able to handle all of the events listed above.
+The current capabilities are summarized below:
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+Widget</TD><TD>Form</TD><TD>Label</TD><TD>Button</TD><TD>Toggle</TD><TD>Dialog</TD><TD>Pixes</TD><TD>Draw</TD><TD>Graph</TD></TR><TR><TD>
+Action </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1DOWN</TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> +</TD></TR><TR><TD>
+B2DOWN</TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> +</TD></TR><TR><TD>
+B3DOWN</TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> +</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1UP</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> -</TD></TR><TR><TD>
+B2UP</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> -</TD></TR><TR><TD>
+B3UP</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> -</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1DOUBLE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> +</TD></TR><TR><TD>
+B2DOUBLE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> +</TD></TR><TR><TD>
+B3DOUBLE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> +</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1MOVE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+B2MOVE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+B3MOVE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1ENTER</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD></TR><TR><TD>
+B2ENTER</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD></TR><TR><TD>
+B3ENTER</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+B1LEAVE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+B2LEAVE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+B3LEAVE</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+KEYPRESS</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> - </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+XUPDATE</TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> +</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+XODRAG</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+XODROP</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> + </TD></TR><TR><TD>
+XOWASDROPPED</TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> - </TD><TD> - </TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+XOCOMMAND</TD><TD> - </TD><TD> - </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD><TD> + </TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+
+<H2><A NAME="ss20.4">20.4 Scripts and Actions: Assigning the <EM>script</EM> Field</A> </H2>
+
+
+<P>To the extent possible, the previous syntax with the <EM>script</EM>
+field will still work. In previous widgets, the ``script'' was not an
+accessible field, but could only be set on creation using the
+``<CODE>-script</CODE>'' option. Subsequently it could be modified using the
+when command, which was rather cumbersome.</P>
+<P>In most new widgets, there is a <EM>script</EM> field, and this can be
+set and modified with the usual GENESIS commands. The
+``<CODE>-script</CODE>'' option for setting it at creation time remains
+for backwards compatibility.</P>
+<P>There are two important additions to the obvious syntax of
+``<CODE>funcname arg1 arg2 ....</CODE>''.</P>
+
+<P>First, one can specify the action which calls the script using the
+appropriate suffix as defined above. For example, if one wished to have
+a script on element foo which was only called when button 2 was pressed,
+one could say:</P>
+<P>
+<PRE>
+     function testfunc(a,b,c)
+         echo {a} {b} {c}
+     end
+     .
+     .
+     .
+     setfield foo script &quot;testfunc.d2 a b c&quot;
+ 
+</PRE>
+
+Note that the suffix is NOT present in the function definition; in fact it is
+a syntax error. </P>
+<P>Second, one can concatenate multiple scripts using a semicolon ``;''
+separator:
+<PRE>
+     function anothertestfunc(a,b,c)
+         echo {a} {b} {c}
+     end
+     .
+     .
+     .
+     set foo script &quot;testfunc.d2 a b c ; anothertestfunc i j k&quot;
+ 
+</PRE>
+</P>
+<P>In this case, the element foo will say
+<PRE>
+                 a b c
+                 i j k
+ 
+</PRE>
+        
+when there is a button 2 click, and only
+<PRE>
+                 i j k
+ 
+</PRE>
+        
+when there is a button 1 click. </P>
+<P>Note that the scripts are executed in left-to-right order,
+which is what you would expect.</P>
+
+
+
+<H2><A NAME="ss20.5">20.5 Scripts and Actions: Arguments Passed to the <EM>script</EM> Function.</A> </H2>
+
+<P>A major enhancement to the GUI-GENESIS interface in GENESIS 2
+is that a number of useful variables can be passed into the <EM>script</EM>
+function as arguments.  These variables are specified using an
+extension of the old ``<CODE>funcname &lt;widget></CODE>'' syntax of
+previous versions.</P>
+<P>The options in this version are:
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+Option</TD><TD> Abbrev.</TD><TD> Variable</TD></TR><TR><TD>
+&lt;widget&gt;</TD><TD> &lt;w&gt;</TD><TD> Passes in full pathname of widget or</TD></TR><TR><TD>
+</TD><TD> </TD><TD> pix in which an event occurred.</TD></TR><TR><TD>
+&lt;name&gt;</TD><TD> &lt;n&gt; </TD><TD> Alias for &lt;widget&gt;</TD></TR><TR><TD>
+&lt;value&gt;</TD><TD> &lt;v&gt;</TD><TD> Value of widget if it has a state</TD></TR><TR><TD>
+</TD><TD> </TD><TD> or value field.</TD></TR><TR><TD>
+&lt;source&gt;</TD><TD> &lt;s&gt;</TD><TD> First widget to be clicked in a</TD></TR><TR><TD>
+</TD><TD> </TD><TD> drag-drop operation, i.e., source widget.</TD></TR><TR><TD>
+&lt;destination&gt;</TD><TD> &lt;d&gt;</TD><TD> End point of drag-drop operation.</TD></TR><TR><TD>
+&lt;SourceVal&gt;</TD><TD> &lt;S&gt;</TD><TD> Value of source widget. Only works</TD></TR><TR><TD>
+</TD><TD> </TD><TD> for drop and wasdropped options.</TD></TR><TR><TD>
+&lt;DestVal&gt;</TD><TD> &lt;D&gt;</TD><TD> Value of dest widget. Only works</TD></TR><TR><TD>
+</TD><TD> </TD><TD> for drop and wasdropped options.</TD></TR><TR><TD>
+&lt;x&gt;</TD><TD> &lt;x&gt;</TD><TD> x coordinate of event.</TD></TR><TR><TD>
+&lt;y&gt;</TD><TD> &lt;y&gt;</TD><TD> y coordinate of event.</TD></TR><TR><TD>
+&lt;z&gt;</TD><TD> &lt;z&gt;</TD><TD> z coordinate of event.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>These arguments can be interspersed with explicit arguments in any
+order, and can be repeated as often as required.
+Of course, not all of these arguments are relevant for all operations, or
+for all widgets. The arguments with a useful value are listed below:
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+Widget</TD><TD> Useful arguments</TD><TD> Notes</TD></TR><TR><TD>
+xbutton</TD><TD> &lt;w&gt;</TD><TD> </TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+xtoggle</TD><TD> &lt;w&gt; &lt;v&gt;</TD><TD> The value is the state of the xtoggle.</TD></TR><TR><TD>
+</TD><TD> </TD><TD> This field determines whether the</TD></TR><TR><TD>
+</TD><TD> </TD><TD> widget is now depressed (1) or raised (0). </TD></TR><TR><TD>
+</TD><TD> </TD><TD> Note that the .d and .u suffixed scripts</TD></TR><TR><TD>
+</TD><TD> </TD><TD> will only be called if state is 1 or 0</TD></TR><TR><TD>
+</TD><TD> </TD><TD> respectively, so that provides another</TD></TR><TR><TD>
+</TD><TD> </TD><TD> way of checking the toggle state.</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+xdialog</TD><TD> &lt;w&gt; &lt;v&gt;</TD><TD> The value is the string in the dialog box.</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+xdraw</TD><TD> &lt;w&gt; &lt;v&gt;</TD><TD> for .e, .D, .c suffixes.</TD></TR><TR><TD>
+</TD><TD> &lt;w&gt; &lt;v&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</TD><TD> for .d suffix</TD></TR><TR><TD>
+</TD><TD> &lt;w&gt; &lt;v&gt; &lt;s&gt; &lt;d&gt;</TD><TD> for .drop suffix</TD></TR><TR><TD>
+</TD><TD> &lt;x &gt;&lt;y&gt; &lt;z&gt;</TD><TD> </TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+xgraph </TD><TD> </TD><TD> Same as xdraw</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+xpixes</TD><TD> &lt;w&gt; &lt;v&gt;</TD><TD> for .D, .drag suffixes</TD></TR><TR><TD>
+</TD><TD> &lt;w&gt; &lt;v&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</TD><TD> for .d suffix</TD></TR><TR><TD>
+</TD><TD> &lt;w&gt; &lt;v&gt; &lt;s&gt; &lt;d&gt;</TD><TD> for .drop or .wasdropped suffix</TD></TR><TR><TD>
+</TD><TD> &lt;x&gt; &lt;y&gt; &lt;z&gt;</TD><TD> </TD></TR><TR><TD>
+</TD><TD> &lt;w&gt; &lt;v&gt; [args]</TD><TD> for .c suffix (args passed in to XOCOMMAND)</TD></TR><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>Note that in XOCOMMANDs, the arguments passed to the action ``<CODE>call
+pix XOCOMMAND arg1 arg2 ...</CODE>'' are appended to the variables
+passed into the script function.  One normally passes in at least one
+argument on the XOCOMMAND argument line to identify the context of the
+call.</P>
+<P>The example in the file <EM>clicks.g</EM> in the
+<EM>Scripts/examples/XODUS</EM> directory illustrates most of the
+options listed above, using as a script function the ``echo'' command
+to display all the arguments.</P>
+
+
+<HR>
+<A HREF="Manual-19.html">Previous</A>
+<A HREF="Manual-21.html">Next</A>
+<A HREF="Manual.html#toc20">Table of Contents</A>
+</BODY>
+</HTML>

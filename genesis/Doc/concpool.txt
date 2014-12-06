@@ -1,0 +1,94 @@
+Object Type:    concpool
+
+Description:    A "well-mixed" concentration pool without diffusion that can
+                have miscellaneous in/out flows (when coupled to other
+                objects).  It has better controls over size/volume than
+                Ca_concen and does not include its own equilibration
+                mechanisms.
+
+Author:         E. De Schutter BBF-UIA 4/94 - 3/99
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  concpool_type [in src/concen/conc_struct.h]
+
+Size:           132 bytes
+
+Fields:         C               concentration (calculated by concpool) in mM
+                prev_C          concentration at previous time step
+                Ceq             equilibrium concentration in mM
+                val             ionic valence
+                leak            constant in/outflow in mM/sec
+                shape_mode      Set to one of the predefined global variables
+                                SHELL=0, SLICE=SLAB=1, TUBE=2, USERDEF=3.
+
+                    SHELL: onion shell. Set len for cylindrical shell (zero
+                    length for spherical shell), dia (outer diameter of shell)
+                    and thick (thickness of shell); vol, is computed on RESET.
+
+                    SLICE (or SLAB): salami slices of cylinder.  Set dia
+                    (diameter of cylinder) and thick (thickness of slab), len
+                    is not used; vol is computed on RESET.
+
+                    TUBE: a cylinder with diameter dia and length len.  For
+                    concpools inside a difshell: make dia negative in the
+                    prototype; readcell will scale len so as to obtain an
+                    appropriate change in vol relative to the difshell.
+
+                    USERDEF: len, dia, thick are not used. Set vol field
+                    to desired pool volume.
+
+                len             shell length
+                dia             shell diameter
+                thick           shell thickness
+                vol             shell volume
+
+-----------------------------------------------------------------------
+SIMULATION PARAMETERS
+
+Function:       ConcPool [in src/concen/concpool.c]
+
+Classes:        concentration segment
+
+Actions:        RESTORE2  SAVE2  CHECK  RECALC  RESET  PROCESS  INIT
+
+Messages:       CONCEN      C             (sets C with a message)
+                STOREINFLUX flux          (flux into store in moles/sec;
+                                          increases C)
+                STOREOUTFLUX flux         (flux out of store in moles/sec;
+                                          decreases C)
+                BUFFER kBf kBb Bfree Bbound (fields sent from a buffer,
+                                                    e.g. a fixbuffer)
+                HILLPUMP    vmax Kd Hill  (sent from a hillpump; setting
+                                           Hill=1 is equivalent to an
+                                           MMMPUMP message from an mmpump)
+
+------------------------------------------------------------------------------
+
+Notes:
+
+Unlike the difshell, the concpool provides a single shell model of a
+"well-mixed" concentration pool without diffusion between shells.  As it can
+also couple to buffers and pumps, it provides for multiple mechanisms for
+calcium removal and has better controls over size/volume than the Ca_concen.
+
+The buffers (e.g, fixbuffer) interact with a difshell or concpool to model the
+binding of calcium to buffer molecules and to calculate the concentrations of
+free and bound ions using a kinetic scheme with forward and backward rate
+constants for the binding and release of calcium.  The BUFFER message from a
+buffer passes on the rate constants and the calculated free and bound
+concentrations so that the concpool may calculate the resulting ion
+concentration C.  Details of the fields that are passed to the concpool with
+messages from buffers and the hillpump are provided in the documentation for
+these objects.
+
+For a general description of buffered calcium diffusion see:  De Schutter E.,
+and Smolen P., "Calcium dynamics in large neuronal models", in Methods in
+neuronal modeling: From ions to networks (2nd edition), C. Koch and I. Segev
+editors, pp. 211-250 (1998).
+
+Example:
+
+See also:   difshell, fixbuffer, hillpump

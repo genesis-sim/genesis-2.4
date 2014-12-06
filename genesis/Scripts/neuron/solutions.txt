@@ -1,0 +1,96 @@
+Solutions for the suggested exercises to accompany the Neuron Tutorial
+
+QUESTION 1: In 20 words or less, what is the relationship between what you
+see in window #4 and window #3?  Why do you see action potentials in window
+#3 (Dendrite #1 Vm)?
+
+
+Ans: #4 Shows the Soma membrane potential and the action potentials arising
+in the soma.  In #3 (Dendrite #1 Vm) we are seeing passive properties.  The
+dendrite compartment is coupled through an axial resistance to the soma, and
+we see a smaller amplitude version of the soma Vm.
+
+QUESTION 2: In 10 words or less, what principle does the overlayed plot in
+window #2 demonstrate?  (There is a two-word phrase for this.)
+
+Ans: Temporal summation. (The plots of the conductance of the Dendrite #1
+excitatory channel show that for spike intervals of less than 3
+milliseconds, the conductance is able to build up to a point where the Vm in
+the soma has increased to a value which will trigger action potentials.)
+
+QUESTION 3: Make a plot of the input-output transfer function. That is, plot
+output rate vs input spikes rate.
+
+Ans: There is a fairly sharp threshold for the generation of multiple
+action potentials at an input rate of about 300 spikes/sec.  The curve tends
+to flatten out or saturate at input rates greater than 1000 spike/sec.  This
+is somewhat similar to the sigmoid curve used to represent the input/output
+relation in "connectionist" artificial neural networks.
+
+QUESTION 4: Using only the "synaptic weight for dendrite #1 inhibitory input"
+and the three "Source B" parameters (delay, width and interval, inhibit
+(suppress) the middle of the three action potentials produced by "Source A"
+input. You may not modify any "Source A" parameters, and both the first and
+last action potentials must remain. Answer the question by stating the
+parameter values you had to use and by submitting hard copy of window #2 if
+your system allows you to make prints of the screen.
+
+Ans: The initial set of parameters, (Source A: delay=10, width=50,
+interval=2, Dend #1 Exc. Wt.=12) and (Source B: delay=20, width=50,
+interval=10, Dend #1 Inh. Wt.=12), had little effect upon the generation of
+action potentials.  One solution of the problem is to reduce the source B
+burst width to 20 msec and to reduce the spike interval to 2 msec.
+
+QUESTION 5:  Toggle "Plot Soma" to "Plot Dendrite 2". Move the inhibitory
+input ("Source B") to Dendrite #2.
+
+For the above configuration, is the inhibitory synapse more or less
+effective at suppressing the middle action potential?  Defend your answer
+with numbers by varying the synaptic weights used in this configuration and
+the previous one.  Give reasons for the results which you see.
+
+Ans: Many of the solutions for QUESTION 4 will have the same effect for this
+new configuration.  However, to properly judge the relative effectiveness of
+the two configurations, we need to compare the minimum inhibitory synaptic
+weights or spike rates needed to suppress the middle spike.  With a Source B
+spike rate of 2 msec, as in the solution above, a minimum weight of 8.5 will
+be needed to suppress the middle spike. In this new configuration, a weight
+of at least 9 is required, because the stimulus is applied further from the
+soma.  Thus, the decrease in soma membrane potential will be less, due to
+the increased axial resistance and the shunting conductance in dentrite
+section #1.
+
+QUESTION 6:  Reverse the inputs. That is, place the excitatory input on
+dendrite #2 and the inhibitory input on dendrite #1.
+
+For the above configuration, is the inhibitory synapse more or less
+effective at suppressing the middle action potential?  Defend your answer in
+the same manner as in QUESTION 5, and explain the differences between this
+situation and the previous one.
+
+Ans: With a Source B spike interval of 2 msec as before, a synaptic weight
+of only 8 is sufficient to prevent the middle action potential from
+occuring.  For the reasons given in QUESTION 5, the effect of the inhibition
+will be greater when it is applied closer to the soma.
+
+QUESTION 7: Using various numbers of inserted segments, with a sub-threshold
+epsp at dendrite section #2, estimate the length constant, "lambda", for this
+dendrite.  Express your answer in units of "number of segments" and compare
+your result with the predictions of theory.
+
+Ans: Present an excitatory input to dendrite #2 from Source A with a weight
+of 10, using the default timing parameters (a spike interval of 10 msec).
+Compare the heights of the peaks of the membrane potential in the two
+dendrite sections by toggling the "Plot Soma/Plot Dend2" button to show the
+dendrite #2 membrane potential.  Use the "scale" buttons on the graphs to
+pick an appropriate vertical scale (-75 to -65 mV).  If we call the peak
+height V1 for dendrite #1 and V2 for dendrite #2, we should expect an
+attenuation with distance x given by V1/V2 = exp(-x/lambda).  If we measure
+x in terms of the number of cable segments, N, we have x = N+1, since we
+have to count dendrite #2 as well.  By progressively adding cable sections
+and plotting V1/V2 vs. x, we can find the value x=lambda at which
+V1/V2=0.37.  Depending upon the care with which the peak heights are
+measured, this produces values of the attenuation constant roughly in the
+range of 9 to 11.  Theory predicts that lambda is given by the square root of
+Rmem/Raxial.  For the values given for the dendrites in the "Cell
+Parameters" menu, this predicts lambda=10.0.

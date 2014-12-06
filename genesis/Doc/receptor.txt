@@ -1,0 +1,98 @@
+Object Type:	receptor
+
+Description:	takes the weighted sum of up to 10 odors to determine membrane
+		voltage and spike rates.
+
+Author:		U. S. Bhalla, Caltech (1/90)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	olf_receptor_type  [in src/olf/olf_struct.h]
+
+Size:		144 bytes
+
+Fields:		response	table of weights to apply to incoming odor
+                                messages
+
+		Vmin		minimum bound of membrane potential
+		Vmax		maximum bound of membrane potential
+		gain		scaling factor on input odors
+		Vm		calculated current membrane potential
+
+		min_rate	minimum bound of spike firing rate
+		max_rate	maximum bound of spike firing rate
+		state		spike flag; will be 1 if receptor has fired,
+				0 otherwise
+
+		activation	not used
+		transfer_form	not used
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	OlfReceptor  [in src/olf/receptor.c]
+
+Classes:	segment
+
+Actions:	INIT
+		PROCESS
+		RESET
+		RECALC
+		CHECK
+		SAVE2
+		RESTORE2
+
+Messages:	ODOR strength 		strength of odor
+		GAIN sensitivity 	sets gain field in element; globally
+					scales sensitivity of receptor to odors
+
+------------------------------------------------------------------------------
+
+Notes:		
+
+                The receptor is used as an olfactory receptor, taking a
+                weighted sum of up to 10 ODOR messages, to represent
+                components of olfactory stimulus. The weights are defined in
+                an array on the element, this enables one to construct any
+                combination of odor sensitivities on the neuron.  The output
+                is both in the form of a membrane potential and a spike.
+
+		The receptor element takes the weighted sum of up to 10 odors
+		to determine membrane voltage and spike rates. The odor inputs
+		arrive as messages. These can be scaled by the gain field
+		which can also be set by messages.  Each odor is weighted by
+		the appropriate entry in the response table.
+
+		response - table of 10 weights for incoming odor messages
+		(messages are multiplied by weights before being scaled by
+		gain and summed to get Vm).
+
+		Vm is meant to be the equivalent of membrane potential,
+		calculated by:
+
+		  sum [from i=0 to i=nodors-1] of odor_i x response[i] x gain
+
+		(always bounded by Vmin and Vmax). There is no time course
+		involved in Vm, it is simply recalculated every time step.
+
+		state is calculated in a probabilistic manner every time step
+		as follows:
+
+		  state is set to 1 if:
+
+                    min_rate + Vm * (max_rate - min_rate)  >
+		       a random number (calculated every time step)
+                         between 0 and 1
+
+		State is meant to be used as the origin of a message to an
+		axon, for connecting to other neurons.
+
+                This element had been largely superseded by the receptor2
+                element, which is is a much more realistic version of an
+                olfactory receptor protein-membrane channel complex.
+Example:	
+
+See also:	receptor2

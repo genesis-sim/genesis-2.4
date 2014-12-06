@@ -1,0 +1,72 @@
+Object Type:	ximage
+
+Description:	Displays a gif image in a form.
+
+Author:		Jason Leigh U Illinois @ Chicago / Upi Bhalla  Caltech Feb/93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	ximage_type [in src/Xodus/widg/ximage_struct.h]
+
+Size:		depends on the image
+
+Fields:		fg	Not used
+		bg	Not used
+		xgeom	Position of left edge of image.
+		ygeom	Position of upper edge of image.
+		wgeom	Width of image.
+		hgeom	Height of image.
+		srcx	left margin of image in gif file
+		srcy	top margin of image in gif file
+		dstx	left margin of image in widget
+		dsty	top margin of image in widget
+		script	Script function to execute on button event.
+		filename   name of gif file to load.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XImage [in src/Xodus/widg/ximage.c]
+
+Classes:	widget
+
+Actions:	
+		B1DOWN:	Button 1 pressed (left)
+		B2DOWN:	Button 2 pressed (middle)
+		B3DOWN:	Button 3 pressed (right)
+		ANYBDOWN: Any button pressed.
+		XUPDATE: update internal fields when
+			displayed widget is changed.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		An ximage can only be displayed in a form widget.
+		The ximage does not perform any computational operations,
+		but can issue script calls when the mouse is clicked in it.
+
+                srcx and srcy control the coordinates of the upper left corner
+                of the image to be displayed expressed relative to the origin
+                of the image itself.  dstx and dsty control the positioning of
+                the image relative to the parent form.  In the example below,
+                the changes to srcx and srcy would would strip out 40 pixels
+                from the left-side of the image and 50 pixels from the bottom
+                of the image.  The changes to dstx and dsty would shift the
+                image 40 pixels to the left and 20 pixels down from the parent
+                form.
+
+Example:
+		create xform /form [0,0,400,250]
+		create ximage /form/image [0,0,100%,100%] \
+			-filename xodus.gif  // in Scripts/examples/XODUS
+		xshow /form
+
+                // try these interactively, one at a time
+                setfield /form/image srcx 40 srcy -50
+                setfield /form/image dstx 40 dsty 20
+
+See also:	xgif, XODUS documentation, Mouse events documentation (Clicks)

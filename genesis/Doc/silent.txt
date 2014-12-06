@@ -1,0 +1,33 @@
+Routine Name:	silent
+
+Description:	Sets and returns flag which supresses certain information
+		displays to console.
+
+Usage:		silence-status = silent [silent-flag]
+
+		silent-flag	1 to suppress informative displays; 0 to
+				allow informative displays; 2 suppresses
+				startup messages.
+
+Example:	genesis >  echo { silent }
+		0
+		genesis >  silent 1
+		echo { silent }
+		1
+
+Notes:		Note that in the example above, the prompt is supressed after
+		the silent flag is set to 1.  Various routines use the
+		status of the silent flag to decide whether to print out
+		certain informative messages.
+		For
+		example, the routines related to element stack (pushe, pope,
+		stack) normally display the working element they deal with;
+		if silent is > 0, these routines will not echo that
+		information.  Within any SLI control structure, the flag
+		behaves as if it were one greater.  For example, if the
+		"step" command is used within a script function, the usual
+		message reporting the number of steps and cpu time is
+		supressed unless the flag is set to -1.
+
+See also:	debug
+

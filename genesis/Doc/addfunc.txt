@@ -1,0 +1,17 @@
+Command Name:	addfunc
+
+Description:	Binds a compiled C function to a name for reference as a
+		routine in the Genesis shell.
+
+Usage:		addfunc name function [type]
+
+Example:	addfunc do_myfunction myfunction
+		addfunc do_return_index getindex int
+
+Notes:		This library initialization command binds a compiled C
+		function to a name within GENESIS by which the function can
+		be called.  It is used when compiling new GENESIS libraries,
+		and is not recognized by the SLI when GENESIS is running.
+
+See also:	listcommands, showcommand
+

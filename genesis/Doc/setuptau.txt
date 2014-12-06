@@ -1,0 +1,89 @@
+Routine Name:   setuptau
+
+Description:    Sets up A and B tables of voltage-dependent gates based on
+                generic equations describing the form of the tau (time
+		constant) and minf (steady state activation) state constants.
+
+Usage:          setuptau channel-element gate AA AB AC AD AF BA BB BC BD BF \
+                   -size n -range min max
+
+                channel-element   This must be a tabgate or a tabchannel i.e.
+                                  a voltage-dependent gate or channel with
+                                  tabulated activation functions.
+
+                gate              The name of the gate (must be X, Y, or Z).
+
+                AA-AF             Coefficients A to F of the tau table 
+                                  (see below).
+
+                BA-BF             Coefficients A to F of the minf table 
+                                  (see below).
+
+                -size n           Number of divisions in the table 
+                                  (default = 3000).
+
+                -range min max    Range of the table (default: min = -0.100; 
+                                  max = 0.050).
+
+                
+                This routine makes it easy to set up the A and B tables of 
+                tabulated channels or gates (tabchannel or tabgate objects) 
+                when the equations describing the state constants tau and 
+                minf are of the form:
+
+                y(x) = (A + B * x) / (C + exp((x + D) / F))
+
+                Many standard channels have tau and minf parameters that can
+		be cast into this form.  In these cases to set up the tables
+		we can simply call setuptau with the parameter values as
+		arguments to the function.  Since there are both tau and minf
+		variables, we use the coefficients AA-AF to refer to the tau
+		variable and BA-BF to refer to the minf variable.
+
+		setuptau calls the TABCREATE action of the tabchannel or
+		tabgate to allocate tables with n divisions (n + 1 entries)
+		representing x values from min to max.  It then evalutes the
+		functions at these points to fill the tables.
+
+                tabgates have tables for the alpha and beta rate variables, so
+                the tau and minf values are used to calculate alpha = minf/tau
+                and beta = (1 - minf)/tau, and fill these tables.  The gates of
+                a tabchannel each have an A table that holds alpha values, and
+                a B table that contains alpha + beta.  These tables are filled
+                with A = minf/tau and B = 1/tau.
+
+                The tables are by default set up in "no interpolation" mode, 
+                which means that the process of finding the correct table
+                value is simply a lookup operation.  With 3000 divisions in 
+                the table (i.e. the table size is 3001) the lookup usually
+                provides sufficient accuracy.  If not, you can override this 
+                behavior; see the tabchannel documentation.  The range of the
+                activation variable is between -0.100 and 0.050 by default.
+                This is adequate for most voltage-dependent channels, but 
+                can be overridden using the -range option.
+
+Example:	see Scripts/neurokit/prototypes/newbulbchan.g
+
+Notes:		For tabgate elements, which represent only a single gate, the
+		 "gate" argument is ignored, but it should still be given as
+		X, Y, or Z.  The setupalpha command is similar to setuptau,
+		but uses the rate variables alpha and beta instead.
+
+          	If the tau and minf state constant of your channel cannot be
+		described using the above equation, you must fill the tables
+		with one of the other methods described in the tabchannel
+		documentation, or The Book of GENESIS, Chapter 19 (2nd ed.).
+
+                The state equation described above has a removable singularity
+                when C = -1 at the point x = -D (which is, unfortunately, a
+                common case).  In this case the routine may generate
+                inaccurate results due to roundoff errors.  We STRONGLY
+                RECOMMEND that if you must use a C value of -1 you check the
+                resulting activation curves by using Neurokit (in the "Edit
+                Channel" mode) to see if they look reasonable.  If they do
+                not then you will have to define the channel using a script
+                function as mentioned above.  Such a function will result in
+                a slower setup time for the channel but will be much more
+                accurate.
+
+See also:       tabchannel, tabgate, setupalpha, tweakalpha, tweaktau, Tables

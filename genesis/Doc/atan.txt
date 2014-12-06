@@ -1,0 +1,12 @@
+Routine Name:	atan
+
+Description:	Returns angle (in radians) corresponding to given tangent.
+
+Usage:		angle-in-radians = {atan tangent}
+
+Example:	genesis >  echo { atan 0.876 }
+
+Notes:		
+
+See also:	tan
+

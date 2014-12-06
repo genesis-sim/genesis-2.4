@@ -1,0 +1,25 @@
+Routine Name:	abs
+
+Description:	Returns absolute value of number.
+
+Usage:		positive-number = abs any-number
+
+		positive-number		returned as absolute value of
+					any_number
+
+		any-number		number (float or int) for which to
+					compute absolute value
+
+Example:	genesis >  echo { abs -22 }
+		22
+
+		genesis >  int x
+		genesis >  float y
+		genesis >  y = -33.333
+		genesis >  echo { abs {y} }
+		33.333000183
+		genesis >  x = {abs {y}}
+		genesis >  echo {x}
+		33
+
+Notes:		

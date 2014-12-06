@@ -1,0 +1,46 @@
+This is an introduction to the draw widget and some of the pixes
+that can be drawn in it.  Drag on the scrollbar of the text widget
+to scroll through the text.
+
+The first draw contains a number of shape pixes, demonstrating
+different drawmodes.
+
+The second draw contains assorted pixes
+
+Each draw widget can display its contents in several draw modes. These
+can be selected by the following keystrokes on the draw widget:
+x - looking down from the x axis, so that z is up and y is to the right
+y - looking down from the y axis, so that z is up and x is to the right
+z - looking down from the z axis, so that y is up and x is to the right
+o - Orthographic projection. Looking from any point in space, but without
+	perspective.
+X - like x, but with perspective.
+Y - like y, but with perspective.
+Z - like z, but with perspective.
+p - like o, but with perspective.
+
+
+Draws can zoom in and out using the < and > keys.
+
+Draws can move left, right, up and down using the arrow keys.
+
+In the o and p modes, draws can rotate in 3 d using shift-arrow keys.
+	q and a also rotate up and down.
+
+In the perpective modes, the square brackets set the position of the viewer.
+	The further in, the more extreme the perspective.
+
+Note that not all the features of perspective such as occluding bodies and
+vanishing objects when they are behind the viewer, have been implemented.
+
+The first draw demonstrates how one can implement drag-and-drop using
+shapes. You can click on objects and move them around in the draw.
+
+The second draw demonstrates a number of other pixes. If you click runit,
+you will see the var pix changing shape, and the plot pix plotting a
+graph. There is also an axis pix. In the graph widget, the axis and
+plot pixes are automatically placed appropriately, but if you want do
+put them in an ordinary draw widget you need to specify a lot of parameters.
+
+
+

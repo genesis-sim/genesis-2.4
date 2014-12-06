@@ -1,0 +1,17 @@
+Routine Name:	maxwarnings
+
+Description:	Sets (or displays) number of warning messages currently
+		allowed before a simulation is automatically stopped.
+
+Usage:		maxwarnings [number-of-warnings]
+
+Example:	genesis >  maxwarnings
+		max warnings = 20
+		genesis > maxwarnings 40
+		max warnings = 40
+
+Notes:		By default, the maximum number of warning messages allowed
+		before the system stops a simulation is 20.
+
+See also:	maxerrors, clearerrors
+

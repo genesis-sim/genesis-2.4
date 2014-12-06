@@ -1,0 +1,28 @@
+These are some combinations of parameters to try using the Neuron Tutorial.
+In each case, you should satisfy yourself that you understand what is
+happening in the various plots.  For more suggestions, consult the file
+"exercises.txt".
+
+1) Soma injection of 0.0002 uA (0.2 nA) with no synaptic inputs (default)
+
+2) With no injection currents, provide a set of spikes 10 msec apart from
+   source A (the default) to the excitatory input of dendrite compartment #1
+   (the one closest to the soma).  Use a weight of 10 synaptic connections.
+
+3) Decrease the spike interval from source A to 2 msec and repeat the above
+   experiment.  Toggling the "overlay" button to set overlay mode to ON and
+   then clicking on "RESET" before clicking on "STEP" will allow you to more
+   readily compare the two cases.  Try to understand what is happening in
+   some detail.
+
+4) Repeat the above experiment using an additional inhibitory input to
+   dendrite compartment #1 from source B.  Use a weight of 10 synaptic
+   connections and set the source B spike interval to 2 msec.
+   
+5) Provide a pulse of negative injection current to the soma (-0.0002 uA)
+   Examine and explain the soma plots after the end of the hyperpolarizing
+   pulse.
+
+6) Make use of the "Cable Compts." dialog box to devise a situation in which
+   a comparatively weak inhibition applied to dendrite #1 close to the soma
+   supresses a stronger excitation applied to the distal dendrite section #2.

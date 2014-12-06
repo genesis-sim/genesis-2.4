@@ -1,0 +1,44 @@
+Object Type:	RC
+
+Description:	A series resistance R, shunted by a capacitance C.
+
+Author:		M. Wilson, Caltech (6/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	RCunit_type  [in /usr/genesis/src/segment/seg_struct.h]
+
+Size:		96 bytes
+
+Fields:		V0	initial value of "state" (set on RESET)
+		R	series resistance
+		C	shunting capacitance
+		state	output value
+		inject	input value
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	RC_Unit  [in src/segment/rcunit.c]
+
+Classes:	segment
+
+Actions:	CHECK  PROCESS  RESET
+
+Messages:	INJECT inject (input-value)
+
+------------------------------------------------------------------------------
+
+Notes:		
+
+An RC element is often used as a low-pass filter, as with a voltage clamp
+circuit, in order to prevent a step change in the command voltage from
+causing numerical instabilities.
+
+Example:	Scripts/squid/squid_electronics.g
+
+See also:	
+

@@ -1,0 +1,71 @@
+Object Type:    mmpump
+
+Description:    Implementation of a simple pump with Michaelis Menten kinetics,
+                to be coupled to a difshell.
+
+Author:         E. De Schutter BBF-UIA 9/94 - 3/99
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	mmpump_type [in src/concen/conc_struct.h]
+
+Size:           108 bytes
+
+Fields:         Ik              computed electrogenic effect (if val!=0)
+                vmax            maximum pump velocity, scaled by mebrane
+                                surface area.  i.e., max ion flux in moles/sec.
+                val             charge of ion
+                Kd              half-maximal activating concentration in mM
+                mmconst         mmconst=vmax*val*FARADAY (calculated on reset)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	MMPump [in src/concen/mmpump.c]
+
+Classes:        gate segment
+
+Actions:        CHECK  RESET  PROCESS  INIT
+
+Messages:       CONCEN  C   (use for electrogenic effect only)
+                MMKD    Kd  (changes Kd value)
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The mmpump and other ionic pumps provide various mechanisms to remove ions
+from a concentration shell (difshell).   The mmpump is a simple model
+for the plasma membrane pump (PMCA) with Michaelis Menten kinetics.
+
+For a general description of buffered calcium diffusion and ionic pumps, see:
+De Schutter E., and Smolen P., "Calcium dynamics in large neuronal models", in
+Methods in neuronal modeling: From ions to networks (2nd edition), C. Koch and
+I. Segev editors, pp. 211-250 (1998).  Sec.  6.3.2 and Eq. 6.10 describe the
+Michaelis Menten pump, which may be used to model a Ca-ATPase pump.  This is
+also discussed in A. Zador, C. koch, and T. H. Brown, Proc. Natl. Acad. Sci.
+(USA) 87: 6718-6722 (1990).
+
+Note that this object does not compute anything by itself, unless the
+electrogenic action is simulated by specifying a non-zero value of val.  When
+coupled to a difshell with a MMPUMP message that sends the vmax and Kd field
+values, the difshell computes its change in ion concentration from dC/dt =
+-vmax*(C/(Kd + C))/vol.  This corresponds to De Schutter and Smolen Eq. 6.10,
+if the maximum pump velocity vmax has previously been multiplied by the
+membrane surface area, so that it is in moles/sec.
+
+The current outflow across the membrane due to the electrogenic effect of the
+pump can also be simulated by using a CONCEN message into the pump, and using
+a non-zero value for the valence (e.g. val = 2, for Ca++ ions).  In this case,
+the mmpump calculates Ik = mmconst * C/(Kd + C), where the constant mmconst is
+set to vmax * val * FARADAY on reset.  Note that, in contrast to the GENESIS
+channel objects, the Ik calculated by the mmpump has a positive sign for an
+outward current, rather than obeying the usual GENESIS convention of "inward
+positive".
+
+Example:	addmsg mmpump0 shell0 MMPUMP vmax Kd
+
+See also:       difshell, taupump, Scripts/examples/spinedemo

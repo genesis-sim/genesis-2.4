@@ -1,0 +1,269 @@
+                          X P L O T - version 1.5
+                          written by Matt Wilson
+						  hacked by Mike Vanier
+                    California Institute of Technology
+                             6/89 - present
+
+usage: xplot file [file ..][-title name][-usage]
+    [-bw][-inverse][-font name]
+    [-xlh # #][-ylh # #]
+    [-xtitle name][-ytitle name]
+    [-command str][-commandfile name]
+
+XPLOT takes data in the form of one or more ascii files
+each containing lists of coordinate values with single coordinate
+pairs and an optional error bar value on each line.
+Comments can be added by placing a % at the beginning of the line.
+
+    % comment
+    x         y     [error]
+    x1        y1    [error1]
+    ...
+
+For example
+    %
+    % data file with error bars
+    % x axis is time, y axis is amplitude
+    %
+    0        5.3    10
+    1        2.2    3.4
+
+or
+    %
+    % data file without error bars
+    % x axis is time, y axis is amplitude
+    %
+    0        5.3
+    1        2.2
+
+The following xplot commands can also be placed in data files
+one per line with no leading white space:
+
+/graphtitle     title           title for the graph
+/plotname       title           name for individual plot
+/xtitle         title           label for axes
+/ytitle         title
+/xdatarange     min max         data range used for autoscaling
+/ydatarange     min max
+/xrange         min max         range for graph window
+/yrange         min max
+/wxmin          val             min boundary for graph window
+/wymin          val
+/wxmax          val             max boundary for graph window
+/wymax          val
+/xaxisoffset    offset          offset for x axis of selected plot
+/yaxisoffset    offset          offset for y axis of selected plot
+/xoffset        offset          offset for selected plot
+/yoffset        offset
+/xgrid          [0/1]           hide/display grid lines
+/ygrid          [0/1]
+/xintcpt        intercept       location of y axis
+/yintcpt        intercept       location of x axis
+/xscale         scale           scale factor for x values
+/yscale         scale           scale factory for y values
+/escale         scale           scale factory for error values
+/xprecision     int             tick label precision for each axis
+/yprecision     int
+/xlo            int             cutoffs for data to be displayed
+/xhi            int
+/pointstyle     [0-6]
+/showaxis       [-4..4]         add/remove axes in graph quadrants I-IV
+/xlabels        [0/1]           disable/enable display of axis labels
+/ylabels        [0/1]
+/xrastaxis      [0/1]           add axes to offset plots
+/yrastaxis      [0/1]
+/psres          [0/1]           disable/enable data vs pixel resolution plots
+/psbox          [0/1]           place a box around the output plot
+/showpoints     [0/1]           show individual data points
+/showerror      [0/1]           show error bars
+/color          0-255           set the plot color
+/bargraph                       bar graph
+/scatter                        scatter plot
+/barwidth       width
+/barfilled
+/newplot                        begin definition of a new plot
+/deleteplot                     delete an existing plot
+/readfile       filename        read commands/data from a text file
+/savegraph      filename        saves the current graph to file
+/restoregraph   filename        restores a graph from a save file
+/snapmode       [0/1]           middle button gives cursor/nearest data coords
+/geometry       str             adjust window dimension/position
+/print                          send postscript output to the printer
+/printtofile    filename        send postscript output to the named file
+/setenv         var value       set an environment variable (e.g. PRINTER)
+/refresh                        refresh the display
+/select         plotnum         select the current plot by number
+/legends        int             0 = no legends; 1 = legends
+/showtitle      int             0 = hide title; 1 = show title
+/xtickinc       float           x tick increment
+/ytickinc       float           y tick increment
+/quit
+
+Multiple commands can be placed on a single line separated by a semi-colon.
+
+For example:
+
+    %/bargraph
+    %/barwidth .5
+
+    /graphtitle "Two Plots"
+    /xtitle xaxis ; /ytitle yaxis
+
+    %
+    % plot 1
+    %
+    /plotname "plot 1"
+    /color 100
+
+    0    2.3    5
+    1    5.5    3.2
+    2    6.4    1.2
+    3    9.8    0.5
+
+    %
+    % plot 2
+    %
+    /newplot
+    /plotname plot2
+    /color 200
+    /pointstyle 0
+
+    0    5
+    1    1.1
+    2    3.2
+    3    4.7
+
+    /geometry 100x300+10+20
+    /setenv PRINTER myprinter
+    /print
+
+
+While in XPLOT, entering key actions in the plot window will cause
+various actions to take place. Many commands take numeric arguments
+which are entered by typing the appropriate
+value in the plot window.
+
+                Key/button actions
+                ---------------------
+
+Buttons
+-------
+
+left            drag a zoom region
+middle          display the world coordinates of the current cursor location
+middle-drag     sweep a line between the click point and the release point
+right           display the world coordinates of the nearest point on the
+                currently selected plot
+
+<esc>   refers to the escape key
+<int>   refers to any integer
+<float> refers to any floating point number
+^       refers to the control character
+
+Keys
+----
+
+numeric arg/prefix  key     description
+-----------------------------------------------------------
+                    ?       help
+                    ^A      append the graph to a postscript file
+                    ^D      quit
+                    ^E      erase the label nearest the cursor measured
+                            from the beginning of the text
+                    ^L      refresh the display (clears temporary labels)
+<float>             ^O      pinch the plots together at the cursor
+                    ^S      select the plot closest to the cursor
+                    ^T      label at the cursor screen coordinates
+                    ^U      clear the current numeric argument
+                    ^W      label at the cursor world coordinates
+                    delete  delete the last keyboard character entered
+                    A       autoscale x or y axes independently
+                    D       move the plot down in the legend order
+                    F       write the graph to a postscript file
+                    I       pan the selected plot up (optional pan fraction)
+                    J       pan the selected plot left
+                    K       pan the selected plot right
+                    L       toggle the legends
+                    M       pan the selected plot down
+                    P       print the graph to a postscript printer
+                    T       toggle the title
+                    V       make all plots visible
+<float>             [       set the lower bound of the selected axis
+<float>             ]       set the upper bound of the selected axis
+                    >       zoom in
+                    <       zoom out
+                    a       autoscale to display all visible plots
+                    b       select the previous plot, hiding the current one
+                    c       select the next plot, hiding the current one
+                    g       toggle grid display
+<float>             i       pan the window up (optional pan fraction)
+<float>             j       pan the window left
+<float>             k       pan the window right
+                    l       toggle label display
+<float>             m       pan the window down
+                    o       automatically place the axes within the current
+                            window
+                    p       select the previous plot
+                    q       quit
+                    r       refresh the display
+optional<int>       s       select the next (or specified) plot
+                    t       make all plots invisible
+optional<int>       v       toggle visibility of the selected
+                            (or specified) plot
+                    x       make the x axis the currently selected axis
+                    y       make the y axis the currently selected axis
+                    *       selects all plots to be acted upon by
+                            by the operation that follows
+                    /       enters command mode
+<float>             |       set the intercept of the selected axis
+<float>             =       set data offset along selected axis of
+                            selected plot
+<esc>               ^L      refresh the display (clears all labels)
+<esc>               tab     toggle snap-to-data for middle-drag operations
+<int>   <esc>       A       set the axis title offset in pixels
+<esc>               B       toggle filled bars for selected plot
+<esc>               D       toggle draw line mode
+<int>   <esc>       L       set the line width
+<float> <esc>       R       faster raster (like doing many '=' operations)
+<int>   <esc>       T       set the tick label offset in pixels
+<esc>               a       toggle axis display
+<float> <esc>       b       set bar width (sets bar graph mode)
+<int>   <esc>       c       set linestyle/color of selected plot
+<esc>               d       toggle error bars
+<int>   <esc>       f       set tick label precision (negative numbers
+                            do auto formatting)
+<esc>               i       toggle inverse video
+<int>   <esc>       l       set type of selected axis (0=linear;1=log)
+optional<int> <esc> m       set plot mode (0=norm;1=bar;2=scatter)
+<esc>               o       toggle auto axis placement
+optional<int> <esc> p       set point style
+<esc>               r       toggle point display
+<float> <esc>       s       set y scale factor of selected plot
+<int>   <esc>       t       set number of ticks for selected axis.
+                            Negative numbers specify the number of
+                            pixels between ticks.
+<esc>               x       toggle individual axis for selected plot
+
+
+For example, to place the x axis at the y intercept of 10 you
+would type in the plot window
+
+    10 x |        [without spaces and without carriage return]
+
+to change it to -57.4
+
+    -57.4 |       [note that the x axis has already been selected
+                  and does not need to be respecified ]
+
+to place the y axis at the x intercept of 0
+
+    y 0 |         [note that the y can be performed any time prior to |]
+
+to display the data as a bar graph instead of a line plot
+
+    1 <esc> m
+
+to autoscale the window to display all the data (useful following zooms and
+pans)
+
+    a

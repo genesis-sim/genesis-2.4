@@ -1,0 +1,69 @@
+  8.  Elements
+
+  Elements are the basic computing and organizational entities available
+  to the user.  Elements are organized in a hierarchical structure
+  similar to a UNIX directory tree.  Each element embodies a specific
+  computation in the simulation.  This computation may implement part of
+  the model being simulated or may be part of the graphical interface or
+  file I/O.
+
+  The state of an element is contained in the element's fields.  Fields
+  may be of any C defined type.  A field protection facility provides
+  for both the visibility and accessability of the element fields.
+  Fields have default values which define the state of an element's
+  fields when the element is created.  The default values may be
+  changed, changing the initial values of elements created subsequently.
+
+  Elements may need information from other elements to perform their
+  calculations.  This information is gathered from the other elements'
+  fields via ``Messages'' (Messages.txt).
+
+  A set of default element types (called ``objects'') is distributed
+  with GENESIS.  These are used as templates for the creation of the
+  particular elements that are used in a GENESIS simulation.  One
+  example of an element type is the ``compartment'' object, which is
+  used to create sections of neural membrane in a cell model.  Another
+  example is an ``xform'' object used to create graphical form widgets
+  which might appear on the screen.  The GENESIS distribution currently
+  contains about 120 predefined objects.  These are summarized in
+  ``Objects'' (Objects.txt).
+
+  8.1.  Related Commands
+
+  The following  GENESIS routines are used for creating and working with
+  specific elements:
+
+  ______________________________________________________________________
+  Routine          Description
+  ______________________________________________________________________
+  addfield        Adds a new (extended) field to an element.
+  call            Allows an element to execute the function associated with
+                  the named action.
+  copy            Copies an element (and its children, if any) from one
+                  portion of the element tree to another.
+  create          Creates new element of specified element type.
+  createmap       Makes multiple copies of an element to form a 2-D array
+  delete          Deletes an element and all of its children.
+  deleteall       Deletes all existing elements. [not recommended]
+  deletefield     Deletes an extended field of an element.
+  egg             Generates coordinates for points on the surface of an ovoid.
+  exists          Tests for existence of specified element or field.
+  getfield        Returns value of field in data structure of specified element.
+  getfieldnames   Returns names of all existing fields in specified element.
+  isa             Tests to see if an element is derived from a specified object.
+  move            Moves an element and its children from one portion of the
+                  tree to another.
+  plane           Generates 3-d coordinates for a plane with specified
+                  dimensions and characteristics.
+  position        Sets xyz coordinates of an element and all of its children.
+  reclaim         Reclaims memory from deleted elements.
+  restore         Restores element state stored in file with save routine.
+  rotcoord        Rotates coordinates of elements in 3-d space.
+  save            Saves current field values for specified element in a file.
+  setfield        Sets value of field in data structure of specified element.
+  showfield       Displays value of field in data structure of specified element.
+  ______________________________________________________________________
+
+  Other commands related to GENESIS elements are described in the
+  sections on ``Hierarchical Structure'' (Tree.txt), ``Objects''
+  (Objects.txt), and ``Extended Objects'' (Extended.txt).

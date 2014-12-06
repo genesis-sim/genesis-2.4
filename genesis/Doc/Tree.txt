@@ -1,0 +1,157 @@
+  9.  Hierarchical Structure
+
+  Typically, simulations are constructed of many different types of
+  elements with different relationships to each other, mediated by the
+  exchange of messages.  In order to keep track of the structure of such
+  a simulation, elements are organized into a tree hierarchy similar to
+  that of the directory structure in the UNIX operating system.
+  Obviously, as a simulation becomes more sophisticated, this tree
+  structure can become many levels deep.  Nevertheless, if you organize
+  this structure properly, it will reflect the natural organization of
+  the system.
+
+  9.1.  The GENESIS Element Tree Hierarchy
+
+  Elements are stored in the GENESIS element tree.  A particular element
+  is uniquely identified by a path name.  The root of this tree has a
+  path of ``/''.  The user can attach elements to this tree (at first as
+  children of the root and then later as children of these children).
+  The structure mimics that of the UNIX file system.
+
+  9.2.  Traversing the Element Tree
+
+  You use the following GENESIS routines to navigate the element tree.
+
+  ______________________________________________________________________
+  Routine          Description
+  ______________________________________________________________________
+  ce               Changes the current working element.
+  el               Returns list of elements matching wildcard specification.
+  getelementlist   Alias for el routine.
+  getpath          Returns subpart of full element pathname.
+  le               Displays a list of elements in the element tree.
+  pope             Restores previously stacked element as current working
+                   element.
+  pushe            Saves current working element on stack (for later retrieval
+                   with pope) with option to go to new current working element.
+  pwe              Displays full pathname of current working element.
+  stack            Displays list of elements on working element stack.
+  ______________________________________________________________________
+
+  9.3.  Pathnames and Wildcards
+
+  Each element has a unique name which is fully specified by giving its
+  pathname within the hierarchy.  Pathnames are of the form:
+
+      name/name
+
+  or
+
+      /name/name
+
+  The first form specifies a path relative to the current element.  The
+  second form is an absolute path from the top or ``root'' of the hier-
+  archy.  By analogy with UNIX directory names, the name may be an
+  actual element name, ``.'' (the current element), or ``..'' (the par-
+  ent element).
+
+  Many commands can operate on more than a single element at a time.
+  Wildcard paths can be used to specify multiple elements which satisfy
+  the specified conditions.
+
+  A wildcard path is of the form
+
+      name[index][condition]
+
+  The wildcard name can be absent or can be one of
+
+      a#b    a?b    ##      #
+
+  If an index is specified, it can be one of
+
+    index:       []     [n]    [n-m]
+
+  One or more optional conditions may be specified in one of the forms
+
+      [field  operator value]
+      [CLASS  operator classname]
+      [OBJECT operator objectname]
+      [TYPE   operator objectname]
+      [ISA    operator objectname]
+
+  where the allowed operators are
+
+      = <> != > < >= <=
+
+  Field values are floating point numeric values. Class and object names are
+  strings.
+
+  Note that white space is NOT allowed anywhere in the wildcard
+  specification.  The # matches strings of any length while ? matches
+  single characters.  The ## is a special name which specifies searches
+  down the entire subtree rather than at a single level.
+
+  For example, a path that specified all elements that had name
+  beginning with ``cell'' with x coordinates greater than 5 and less
+  than 10 would be:
+
+      /cell#[x>5][x<10]
+
+  Note that the # and ## DO NOT expand indexed elements.  For example,
+  given the following list of elements:
+
+      /TEST[0] /TEST[1] /TEST[2] /TEST[3] /TEST[4] /THESE[0] /THESE[1]
+
+  The command
+
+      echo {el /#}
+
+  would produce only
+
+      /TEST /THESE
+
+  while
+
+      echo {el /#[]}
+
+  would give
+
+    /TEST /TEST[1] /TEST[2] /TEST[3] /TEST[4]
+    /THESE /THESE[1]
+
+  Note that /TEST is the same as /TEST[0].
+
+  The use of the ``[]'' wildcard notation for indexed elements is useful
+  for setting fields of indexed elements, for example,
+
+      setfield /randomspike[] rate 200
+
+  It can also be used with the addmsg command:
+
+      // Provide injection to soma of cell[0], cell[1], cell[2], etc.
+      addmsg /waveform /cell[]/soma INJECT output
+
+  A path that would specify all elements in the hierarchy that belong to
+  the channel class would be:
+
+      /##[CLASS=channel]
+
+  The OBJECT identifier (and its older name, TYPE) is used to specify
+  elements which were created from a given object.  For example,
+
+      setfield /##[OBJECT=xgraph] bg white
+
+  will set the background to white for all graphs which were created
+  from the xgraph object.  The X1compat libray of XODUS 1 compatible
+  objects and commands uses the xgraph object as the basis of an
+  extended object, x1graph.  Elements which are created from the x1graph
+  object will not be affected by the statement above.  The ISA identi-
+  fier is used instead of OBJECT to include elements created from
+  objects that were derived from a specified object.  For example,
+
+      setfield /##[ISA=xgraph] bg white
+
+  It is also possible to specify comma separated lists of wildcard path
+  specifications, for example:
+
+      showfield soma/#[OBJECT=Ca_concen],basal_8/#[OBJECT=Ca_concen] Ca

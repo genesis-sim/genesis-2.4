@@ -1,0 +1,23 @@
+Routine Name:	getpath
+
+Description:	Returns subpart of full element pathname.
+
+Usage:		head-string = {getpath name -head}
+		tail-string = {getpath name -tail}
+
+		head-string	full path leading to element, without actual
+				element name
+
+		tail-string	only actual element name, without full path
+
+		name		an element pathname
+
+Example:	genesis > echo {getpath /cell/soma/Na_channel -head}
+		/cell/soma/
+		genesis >  echo {getpath /cell/soma/Na_channel -tail}
+		Na_channel
+
+Notes:		You use getpath to extract the parent or head of a path.
+
+See also:	el, pwe, stack
+

@@ -1,0 +1,119 @@
+Object Type:	spikehistory
+
+Description:	
+
+The spikehistory object is used to record into an ASCII file the spikes
+produced by a neuron or by a network of neurons.  When the network is large or
+when it is simulated during several seconds, it becomes impractical to record
+the complete membrane potential traces of the constituent neurons through
+messagess to an asc_file or to a graph element. In addition, one is usually
+only interested in the spike responses, which could be compared with
+"extracellularly" recorded spike potentials.
+
+The occurrence of a spike must be sent from a spikegen element to the
+spikehistory element through a SPIKESAVE message, which is established with
+the usual addmsg command (no parameters needed). A SPIKESAVE message is an
+active message. This means that a nonzero state field of a spikegen element
+actively triggers the execution of the EVENT action of the spikehistory
+element. (Note that the spikehistory object does not have the usual PROCESS
+action, normally executed on each time step.) This EVENT action consists of
+adding a line to the ASCII file. The first item on each line is the
+identification of the spikegen element that sent the spike. Depending on the
+initialization value of the ident_toggle field of the spikehistory element,
+this item is either the index assigned to the spikegen element (or to its
+parents) in a map created with createmap (ident_toggle 0) or the full path
+name of the spikegen element (ident_toggle 1).  Each EVENT action triggered by
+a SPIKESAVE message adds another line.
+
+Author:		R. Maex, UI Antwerp (1/96) (reinoud@bbf.uia.ac.be)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	spikehistory_type  [in src/out/out_struct.h]
+
+Size:		88 bytes
+
+Fields:
+		filename	data file name to be written
+		fp		data file pointer
+		is_open		flag: is file currently open?
+		initialize	flag: has file been initialized?
+		leave_open	flag: leave file open? 1 leaves the file open
+                                all the time so you can write on it whenever
+                                you want (a good idea if the file is used
+                                frequently, but there is a limit to number of
+                                files which can be left open any any time);
+                                0 closes the file after every write to it
+                                (only useful if you have more than 30 files;
+                                this is slow)
+		append		flag: append data after resetting?
+		flush		flag: flush data to disk at each interval?
+                                1 forces program to send data to the disk at
+                                once and not store it in a buffer (slow but
+                                secure); 0 (default) writes data in a buffer
+                                (fast)
+		ident_toggle    flag: if zero,  output as an identifier
+                                the map index of the sending spikegen element;
+                                if non-zero, output the full path name
+                                of the sending spikegen element 
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	SpikeHistory  [in src/out/spike_history.c]
+
+Classes:	output
+
+Actions:	RESET  EVENT  SAVE
+
+Messages:	SPIKESAVE
+
+------------------------------------------------------------------------------
+
+Notes:
+
+When indices are used as sender specification, it is required that the
+sequence in which the SPIKESAVE messages are established to the spikehistory
+element be the same as the order of the sender elements in the map of sender
+elements. Indeed, the SpikeHistory EVENT action loops through the MsgIn list
+to find the sender element. It assumes that this loop index is the same as the
+index of the sender in the afferent map. This requires of course also that
+every map has its private spikehistory element!
+
+If the filename field is not set, the output file will be given the
+same name as the element which is created from the asc_file object.
+For binary data, use disk_out.
+
+Example with index specification:	
+
+   str cellpath = "/Granule"
+// read cell data from .p file
+   readcell Gran1M0.p {cellpath}
+
+// add a spikegen object
+   create spikegen {cellpath}/soma/spike
+   setfield {cellpath}/soma/spike thresh -0.02 \
+                                  abs_refract 0.005 \
+                                  output_amp 1
+   addmsg {cellpath}/soma {cellpath}/soma/spike INPUT Vm
+
+// create a map
+   create neutral /granule_cell_layer
+   createmap {cellpath} /granule_cell_layer \
+             20 1 -delta 1.0 0.0 -origin 0.0 0.0
+
+// create a spikehistory element
+   create spikehistory granule_cells.history
+   setfield granule_cells.history ident_toggle 0 \ // index specification
+                                  filename "granule_cells.spikes" \
+                                  initialize 1 leave_open 1 flush 1
+
+// add messages from the spikegen elements to the spikehistory element
+   addmsg /granule_cell_layer/Granule[]/soma/spike \
+          granule_cells.history SPIKESAVE
+
+
+See also:	asc_file, spikegen

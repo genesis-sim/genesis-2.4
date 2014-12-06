@@ -1,0 +1,51 @@
+Object Type:	diffamp
+
+Description:	Difference amplifier, takes two inputs and produces an
+		output proportional to their difference.
+
+Author:		M. Wilson, Caltech (2/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	diffamp_type  [in src/device/dev_struct.h]
+
+Size:		96 bytes
+
+Fields:		gain
+		saturation
+		plus
+		minus
+		output
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	DifferenceAmp  [in src/device/diffamp.c]
+
+Classes:	device
+
+Actions:	RESET		sets the output to zero
+		PROCESS		calculates and sets the output from the inputs
+
+Messages:	PLUS +input 
+		MINUS -input 
+		GAIN gain
+
+------------------------------------------------------------------------------
+
+Notes:
+
+Adds inputs from PLUS messages and subtracts those received with MINUS
+messages.  The output is this total, multiplied by gain, but limited to the
+range -saturation to +saturatation.  If there are no MINUS messages, the
+minus input is taken as zero.  Normally, the gain field is set using
+"setfield", but it may also be varied with a GAIN message.  This object also
+provides a convenient way to sum or scale quantities which are to be plotted
+by sending a PLOT message to an xgraph.
+
+Example:	
+
+See also:	

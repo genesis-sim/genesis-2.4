@@ -1,0 +1,85 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Neural Simulation Routines</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-11.html">Previous</A>
+<A HREF="Manual-13.html">Next</A>
+<A HREF="Manual.html#toc12">Table of Contents</A>
+<HR>
+<H2><A NAME="Neural"></A> <A NAME="s12">12. Neural Simulation Routines</A></H2>
+
+<P>       
+GENESIS offers many routines for working with components of neural simulation
+models.  The following tables summarize these routines:</P>
+
+<H2><A NAME="ss12.1">12.1 Buffer Routines</A></H2>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+clearbuffer </TD><TD> Removes events from the buffer of a buffer class element.</TD></TR><TR><TD>
+getinput </TD><TD> Gets synaptic input to place in a buffer.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#putevent">putevent </a> </TD><TD> Places events into the buffer of a buffer class element.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss12.2">12.2 Compartment Routines</A></H2>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+pastechannel </TD><TD>Copies a prototype channel to a compartment.</TD></TR><TR><TD>
+randcomp </TD><TD>Randomly selects a compartment from tree root.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#randcoord">randcoord </a> </TD><TD>Shuffles positions of compartments in a neuron.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#relposition">relposition </a> </TD><TD>Positions element and its child compartments based on</TD></TR><TR><TD>
+</TD><TD>messages rather than parent-child relationships.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss12.3">12.3 Miscellaneous Neural Routines</A></H2>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+balanceEm </TD><TD>Adjusts Em field to give no net membrane current at given</TD></TR><TR><TD>
+</TD><TD>voltage.</TD></TR><TR><TD>
+calcCm </TD><TD>Calculates the approximate total membrane capacitance (Cm)</TD></TR><TR><TD>
+</TD><TD>of a neuron.</TD></TR><TR><TD>
+calcRm </TD><TD>Calculates input membrane resistance (Rm) of neuron.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#cellsheet">cellsheet </a></TD><TD>Copies prototype cells into a 3-d sheet specified by</TD></TR><TR><TD>
+</TD><TD>coordinates in a file.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#createmap">createmap </a> </TD><TD>Makes multiple copies of an element to form a2-D array.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#egg">egg </a> </TD><TD>Generates coordinates for points on the surface of an ovoid.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#plane">plane </a> </TD><TD>Generates 3-d coordinates for a plane with specified</TD></TR><TR><TD>
+</TD><TD>dimensions and characteristics.</TD></TR><TR><TD>
+rallcalcRm</TD><TD>Calculates input membrane resistance (Rm) of neuron,</TD></TR><TR><TD>
+</TD><TD>using Rall's calculations.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#readcell">readcell </a></TD><TD>Constructs a cell from specifications in a cell</TD></TR><TR><TD>
+</TD><TD>parameter file.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setrandfield">setrandfield </a></TD><TD>Sets the specified field for the element randomly</TD></TR><TR><TD>
+</TD><TD>according to specified distribution.</TD></TR><TR><TD>
+setspatialfield</TD><TD>Sets the specified field for the element according to the</TD></TR><TR><TD>
+</TD><TD>Gaussian of the distance between the specified coordinate</TD></TR><TR><TD>
+</TD><TD>and element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#writecell">writecell </a></TD><TD>Writes the specification of a cell to a cell</TD></TR><TR><TD>
+</TD><TD>parameter file.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>Also see the routines for use with 
+<A HREF="Manual-26.html#tabchannel">tabchannel </a> and 
+<A HREF="Manual-26.html#tabgate">tabgate </a> elements in 
+<A HREF="Manual-17.html#Tables">Tables and Arrays</A>.</P>
+
+
+<HR>
+<A HREF="Manual-11.html">Previous</A>
+<A HREF="Manual-13.html">Next</A>
+<A HREF="Manual.html#toc12">Table of Contents</A>
+</BODY>
+</HTML>

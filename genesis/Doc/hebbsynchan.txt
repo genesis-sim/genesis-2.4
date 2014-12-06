@@ -1,0 +1,312 @@
+Object Type:    hebbsynchan
+ 
+Description:    Synaptically activated channel with a simple mechanism for
+		hebbian weight changes as a function of pre- and postsynaptic
+		activities.
+ 
+Author:         Mike Vanier 9/95; revised 4/96
+ 
+--------------------------------------------------------------------------------
+ 
+ELEMENT PARAMETERS
+
+DataStructure:  HebbSynchan_type  [in src/newconn/newconn_struct.h]
+ 
+Size:           296 bytes
+ 
+Fields:		activation         driving force (transmitter) for channel
+				   conductance
+                Ik                 channel current
+                Gk                 time varying channel conductance
+                Ek                 reversal potential of channel
+		tau1               first time constant of channel activation
+                tau2               second time constant of channel activation
+                gmax               peak channel conductance
+                frequency          random activation frequency (default = 0)
+                nsynapses          number of incoming spike messages (read only)
+		event_buffer_size  size of event buffer (read only)
+		pending_events     number of pending spike events in event
+                                   buffer (read only)
+		nodes_per_synapse  number of event nodes to allocate per
+                                   synapse (default = 1)
+                synapse            synapse buffer
+		pre_tau1	   rise time constant for presynaptic averaging
+		pre_tau2	   decay time constant for presynaptic averaging
+		pre_thresh_lo	   lower presynaptic threshold
+		pre_thresh_hi	   upper presynaptic threshold
+		avg_Vm		   averaged membrane potential (read only)
+		post_tau	   time constant for postsynaptic averaging
+		post_thresh_lo	   lower postsynaptic threshold
+		post_thresh_hi	   upper postsynaptic threshold
+		post_scale	   scaling factor for postsynaptic activities 
+		weight_change_rate rate of weight change (roughly in units/sec)
+		min_weight	   minimum weight
+		max_weight	   maximum weight  
+		change_weights	   flag: nonzero means weights can be changed 
+
+--------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+ 
+Function:       HebbSynchan  [in src/newconn/hebbsynchan.c]
+ 
+Classes:        segment channel synchannel
+ 
+Actions:        CREATE		   set synapse_size hidden field
+		INIT               assign activation = 0
+                PROCESS            update Gk, calculate Ik; calculate hebbian
+				   presynaptic and postsynaptic activities
+                RESET              assign activation = 0, Gk = 0; calculate
+                                   time-step-dependent coefficients
+                RECALC             recalculate time-step-dependent coefficients
+                CHECK              make sure tau1 > 0, tau2 > 0; make sure a 
+				   VOLTAGE message is present (in order to 
+				   calculate Ik); check hebbian fields, etc.
+                SAVE2              called by the save command
+                RESTORE2           called by the restore command
+		EVENT		   put a spike event into the event buffer
+		ADDMSGIN
+                DELETEMSGIN
+		MSGINDELETED
+		RESETBUFFER	   reset size of event buffer to 
+				   (nodes_per_synapse * nsynapses) nodes
+		DELETE		   delete the element
+		COPY		   copies the element
+ 
+Messages:       VOLTAGE            Vm
+		ACTIVATION         activation
+		RAND_ACTIVATION    probability amplitude
+                MOD                modulation
+		WEIGHT_CHANGE_MOD  modulation
+		SPIKE
+ 
+------------------------------------------------------------------------------
+
+Notes:          This object simulates a time-dependent synaptically
+                activated ionic channel.  A variable channel conductance Gk
+                is activated by the application of transmitter. This
+                conductance then changes with damped second-order
+                characteristics with a time course given by two time
+                constants tau1 and tau2.  This gives rise to an
+                alpha-function/dual-exponential conductance waveform for an
+                impulse spike input.  The channel also calculates channel
+                current Ik and therefore needs the membrane state (Vm).
+
+                Each SPIKE message to a synchan or hebbsynchan establishes a
+                synaptic connection and increments nsynapses.  The synapses
+                are numbered starting with 0, and each contains a field for a
+                synaptic weight and a propagation delay.  For example, the
+                weight of the first synaptic connection is held in the field
+                "synapse[0].weight".  Gk reaches a value gmax*weight for a
+                single event delivered with a SPIKE message.  Note that even
+                though synapses are not elements, they do have fields that can
+                be accessed individually.  They can be thought of as
+                "sub-elements" or substructures of the element.  The fields
+                the user should be concerned about in the synapse are "weight"
+                and "delay".
+
+                The above description is also true for the synchan object.
+                Hebbsynchans also have a "pre_activity" field, described
+                below.  Note that this field was named "pre_avg" in GENESIS
+                version 2.0.1.  The hebbsynchan object also updates the
+                synaptic weights of the synapses based on the presynaptic
+                "activities" (which are calculated separately for each
+                synapse) and the postsynaptic activity (which is the same for
+                all synapses which are part of a given hebbsynchan).  The
+                activities are artificial values which do not have a direct
+                relationship to any real biological entities; very loosely we
+                can think of the presynaptic activity as being the amount of
+                calcium current through an NMDA receptor while the
+                postsynaptic activity is derived from an average of the
+                postsynaptic membrane potential (which will affect NMDA
+                receptors in reality).  The pre- and postsynaptic activities
+                are used to update the weights in a roughly Hebbian manner
+                described below, which is similar but by no means identical to
+                the way NMDA-dependent LTP works.  For serious GENESIS
+                hackers, we have isolated the actual weight change algorithm
+                in a single function in "hebbsynchan.c" which can be altered
+                if you need a different algorithm.  If you want to calculate
+                pre- or postsynaptic activities differently you have to do a
+                lot more work.
+
+		The presynaptic activity is calculated by having each spike
+                generate a generalized alpha-function waveform with a
+                maximum size of 1 in the "pre_activity" field of the
+                synapse.  This is meant to be analogous to an NMDA channel
+                conductance so the rise and fall times should be slow; for
+                instance we might use pre_tau1 of 10 msec and pre_tau2 of
+                100 msec.  Note that this activity value doesn't mean that
+                there is a slow conductance being simulated here; it's just
+                used to determine a measure of presynaptic spiking
+                activity.  When weight updates occur, the presynaptic
+                activity relative to two thresholds (pre_thresh_lo and
+                pre_thresh_hi) are used to calculate the weight change (see
+                below).
+
+		Also at each time step, the membrane potential of the
+                compartment the hebbsynchan is connected to is used to
+                update the "avg_Vm" field.  This is done by running the Vm
+                of the compartment through a leaky integrator with a time
+                constant of post_tau.  When weight updates occur, the
+                postsynaptic activity relative to two thresholds
+                (post_thresh_lo and post_thresh_hi) are used to calculate
+                the weight change (see below).  Also, since presynaptic
+                activity values are dimensionless but avg_Vm has the
+                dimensions of volts, postsynaptic activities are internally
+                calculated by dividing the difference between avg_Vm and
+                the nearest threshold by "post_scale", which is also in
+                units of volts.  You can think of post_scale as the amount
+                that avg_Vm has to be above threshold to give a
+                postsynaptic activity of 1.0.
+
+		The 2-d space defined by the pre- and postsynaptic
+                activities are separated into 9 regions based on two
+                presynaptic and two postsynaptic thresholds (called
+                "pre_thresh_lo", "pre_thresh_hi", "post_thresh_lo", and
+                "post_thresh_hi").  The values of the thresholds are fixed
+                and are specified by the user.  The weight changes in each
+                of the nine regions are as follows:
+
+
+
+             ---------> Presynaptic activity ----->
+
+             low              medium              high
+
+Post-                 |                    |
+synaptic              |                    |
+activity:             |                    |
+             no       |     no change      |  decrease
+low        change     |                    |
+ |                    |                    |
+ |                    |                    |
+ |       -------------------------------------------------- <--- post_thresh_lo
+ |                    |                    |
+ |                    |                    |
+\|/       no change   |     no change      |  no change
+medium                |                    |
+ |                    |                    |
+ |                    |                    |
+ |                    |                    |
+ |       -------------------------------------------------- <--- post_thresh_hi
+ |                    |                    |
+ |                    |                    |
+\|/       decrease    |     no change      |  increase
+high                  |                    |
+                      |                    |
+                      |                    |
+                      |                    |
+
+                     ^^^                  ^^^
+                pre_thresh_lo          pre_thresh_hi
+
+
+                The diagram shows what happens for various combinations of
+                pre- and postsynaptic activities.  Note that if
+                pre_thresh_lo = pre_thresh_hi and post_thresh_lo =
+                post_thresh_hi then there are only four regions and the
+                weights will always be changing unless both presynaptic and
+                postsynaptic activities are below the thresholds.  The
+                weight change algorithm used converts pre_activity into a
+                value which is the difference between the pre_activity of
+                the synapse and the nearest threshold value i.e.
+
+		real_pre_activity = pre_activity - pre_thresh_hi 
+				  (if pre_activity > pre_thresh_hi), OR
+				  = pre_activity - pre_thresh_lo
+				  (if pre_activity < pre_thresh_lo;
+				   note that this gives a negative number), OR
+				  = 0 otherwise
+
+		Similarly, the weight change algorithm calculates a "real"
+		postsynaptic activity as follows:
+
+		real_post_activity = (avg_Vm - post_thresh_hi) / post_scale
+				   (if avg_Vm > post_thresh_hi), OR
+				   = (avg_Vm - post_thresh_lo) / post_scale
+				   (if post_activity < post_thresh_lo;
+				   note that this gives a negative number), OR
+				   = 0 otherwise
+
+		Note that the post_thresh values are both in units of
+		volts, like avg_Vm.
+
+		Once we have the "real" pre- and postsynaptic activities we
+		can update the weights.  Essentially the algorithm now is
+		just the Hebb algorithm:
+
+		weight_change = real_pre_activity * real_post_activity *
+				weight_change_rate * dt;
+
+		where dt is the time step size in seconds.  The
+		weight_change_rate is a field in the object and has units
+		of (1/time).  Thus the overall weight change is
+		dimensionless, as is the weight itself.  If
+		(real_pre_activity * real_post_activity *
+		weight_change_rate) equalled 1.0, then the weight would
+		increase roughly at the rate of 1 unit per second.  One
+		neat feature of this scheme is that if weight_change_rate
+		is negative you get an anti-Hebbian synapse.
+
+		Unfortunately, there's more to it than this.  There are
+		also two fields called "min_weight" and "max_weight" which
+		keep the weights of synapses connected to the hebbsynchan
+		within specified limits.  We could in theory just truncate
+		the weights if the weight change algorithm tried to push it
+		beyond the limits, but in order to make it more smooth the
+		weight change calculated above is modified depending on how
+		close you are to min_weight or max_weight.  The effect of
+		this is that the weight change rate is reduced when you
+		approach either limit.
+
+		There is also a field called "change_weights".  If this is
+		set to zero, no weight changes will occur.  Otherwise,
+		weight updates will occur according to the above algorithm.
+		In addition, hebbsynchans can receive a WEIGHT_CHANGE_MOD
+		message (or multiple messages of this type) which will
+		modify the effective value of weight_change_rate based on
+		the message value.  In this case the effective
+		weight_change_rate is the product of the value in the field
+		of the object and the value in the message.  The field
+		value is not changed.  Thus you can have, say, a
+		sinusoidally varying weight change rate by setting
+		weight_change_rate to 1.0 and adding a WEIGHT_CHANGE_MOD
+		message from a sine wave generator (funcgen object) where
+		the sine wave varies from 0 to 2.0, say.
+
+		The "copy" command will fail for any synchan or hebbsynchan
+		which is receiving SPIKE messages.  The correct way to set
+		up simulations is to set up prototype cells which do not
+		receive any SPIKE messages on their synchans, copy these
+		cells, and then add the appropriate SPIKE messages (by hand
+		or by using planarconnect or volumeconnect).  We are
+		working on a more "intelligent" copy command which will
+		permit copying of synchans with SPIKE messages, but for
+		now, don't do it.
+
+		Default values of hebbian parameters (SI units are assumed
+		here):
+
+		pre_tau1             0.010     // seconds
+		pre_tau2             0.100     // seconds
+		pre_thresh_lo        3.0                          
+		pre_thresh_hi        3.0                          
+		post_thresh_lo      -0.065     // Volts                
+		post_thresh_hi      -0.065     // Volts                
+		post_scale           0.002     // Volts    
+		weight_change_rate   1.0                                
+		min_weight           0.0                                       
+		max_weight           100.0                                     
+		change_weights       1             
+  		
+                The RESET action does not restore the weights to the original
+                (unlearned) values.  If you wish to re-run a simulation
+                starting from the initial state, write a script function that
+                sets the weights to the original values and then performs a
+                reset.
+
+
+Example:        Scripts/examples/hebb/hebb.g
+ 
+See also:       synchan, facsynchan, resetsynchanbuffers, Connections,
+                NewSynapticObjects

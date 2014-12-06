@@ -1,0 +1,293 @@
+	Piriform : Neural simulation of piriform cortex
+	Tutorial version 2.0
+
+		Developed by Matt Wilson 1988
+		Embellished with graphical interface by Alex Protopapas, 1995
+		Documentation and conversion to GENESIS 2.0 by Alex Protopapas
+		California Institute of Technology,
+			Written under Genesis/Xodus
+
+
+1	INTRODUCTION.
+
+	The piriform cortex is a three layered cortical area which receives
+its input from the olfactory bulb and makes connections with the
+olfactory bulb, entorhinal cortex, olfactory tubercle, superior
+colliculus, peri-amygdaloid cortex, endopiriform nucleus, thalamus, as
+well as neocortical areas.  It is unique among cortical sensory areas
+in that its afferent input does not pass through the thalamus first.  Unlike
+the six layered neocortex found in mammals, it has only three layers
+(as does the hippocampus) and is believed to be phylogenetically
+older.  The principal neuron of the olfactory cortex is the pyramidal
+cell which receives afferent input from the bulb and makes connections
+with other local and distant pyramidal cells within the piriform 
+cortex.  A number of inhibitory neurons also exist which act on the proximal 
+and distal dendrites of the pyramidal cells.  Because of the presence of dense 
+intrinsic connections (reminiscent of some abstract neural network models), 
+and the presence of LTP, some researchers have suggested that piriform
+cortex may act as an associative memory.
+
+	This simulation was originally constructed by Matt Wilson in an effort
+to realistically model the activity and computational capacity of olfactory
+(or piriform) cortex.  Although the original simulation was used to model a
+wide variety of cortical behavior (memory, current source density
+results, etc), this tutorial has been simplified for the sake of computational
+speed and pedagogical ease. In it's current state, the simulation can
+be used to study the basis of EEG patterns found experimentally.
+
+	The simulation consists of 135 pyramidal cells, 135 feedforward
+inhibitory cells (K mediated inhibition), and 135 feedback inhibitory cells
+(Cl mediated inhibition) all in a 15 x 9 array.  The pyramidal cells consist 
+of five compartments where each compartment receives a distinct kind of 
+synaptic input and is located in a different sublayer of the cortex.  The 
+inhibitory cells are modeled with only one compartment.  Input from the bulb 
+is modeled as random activity entering the cortex via the lateral olfactory 
+tract(LOT) in much the same way it does in the biological system.  Connections 
+between the bulb and cortex are shown below:
+
+   ROSTRAL                 					CAUDAL
+					_________________________
+					|		   	|
+					|			|
+					|     piriform cortex	|
+					|			|
+					|_______________________|
+					    |   |   |   |   |	
+       _________________		    |   |   |   |   |     LOT
+      (			|		    |   |   |   |   |  collaterals
+     (	olfactory bulb	|------------------------------------
+      (_________________|     LOT
+
+In the biological system there is also extensive feedback from the piriform
+cortex to the olfactory bulb; however, this is not modeled here.  For 
+connectivity within the cortex, see the menu window when you load the 
+simulation into genesis.
+
+
+2	GETTING STARTED
+
+	After reading the introduction, type "genesis Piriform."  You should
+see a large colorful menu window appear in the upper left hand corner of your
+screen.  Press the help button at the bottom of the window.  The help window
+contains the same text that you are reading now.
+
+	The menu window contains the neural circuit diagram on which the 
+model is based.  To interpret the graphical symbols used in the menu window,
+press the legend button at the bottom of the help window.   You may notice
+that the different segements of the pyramidal cell are labeled with Roman
+numerals (Ia, III, etc.).  The numerals correspond to the layer of the
+piriform cortex in which the segment is found, with layer I being at the
+surface of the cortex and layer III in deep cortex.  
+
+
+2.1	Simulating Data
+
+	The simulation can operate in two modes: SIMULATE and PLAYBACK.  To 
+make sure you are in SIMULATE mode, check the toggle (looks just like a 
+button) on the lower left corner of the menu window.  If it reads SIMULATE,
+you are already in SIMULATE mode.  If it reads PLAYBACK, press the toggle 
+so that it reads SIMULATE.  Now press the "simulate" button next to the mode 
+toggle.  A window titled "simulate" should appear over the button with the 
+same name.  The first field in this window is "step size (msec)".  As its 
+name implies, this field controls the simulation step size.  The default is 
+set at .1 msec of simulation time.  Increasing the step size too much will 
+reduce the accuracy of your data but will speed up running time.  Conversely, 
+decreasing step size should increase accuracy at the expense of run time.
+A decision regarding step size should be based on the speed of your computer
+and the desire for accuracy.  "simulation duration" and "data directory name"
+should be self explanatory.  The field "output rate (msec)" controls the
+rate at which data is written to the disk.  The default setting of 1.0 
+indicates that data will be written every 1.0 msec of simulated time.
+
+			   ***IMPORTANT***
+
+        In order to create the data files, you will have to be in
+a directory for which you have "write" permission.  You must also copy
+the file "test_dir" from the tutorial directory to the directory where
+you will be storing your data.  To do this from the tutorial
+directory, type: "cp test_dir [your directory]" .  Now go to the
+window where you are running GENESIS and type: "cd [your directory]" .
+All of this must be done BEFORE you press the "start simulation"
+button.
+
+	To begin the simulation, press "reset" and then "start simulation".  
+If you wish to stop the simulation at any point, press "stop".  To continue, 
+press "continue simulation".  If you wish to start a new simulation in which
+you will store data to a different directory, use the "start simulation"
+option rather that "continue simulation".  Because of the size of the 
+simulation, it takes quite some time to run.  You can find out how much of the
+simulation is completed by pressing "simulation status".  The data you are now
+generating will be stored to a subdirectory called "default." 
+
+	The time it takes to complete the simulation can vary tremendously 
+depending on the speed of your machine.  Simulating 500 msec of data will
+take only 5 minutes on a SPARC 10 but will take 20 minutes on a Sun IPC.
+To determine how long it takes to complete the simulation, look at the 
+window from which you are running genesis, it should list a real time 
+START TIME and END TIME after the simulation is complete.
+
+	There are two classes of parameters that you can change in this model,
+synaptic weight and synaptic channel open time.  You can change the current 
+settings by clicking on the synapses in the menu window.  To see how this
+works, click on the synapse coming from the feedback inhibitory cell (fb). 
+A window titled "fb to pyr synapse" should pop up.  Change the "fb_pyr" field
+from "1.0" to "0.5".  Now go to the "simulate" window and type
+"fb_pyr_0.5" in the "data directory name" field.  Click on "reset"
+then "start simulation" to begin the simulation.
+
+
+2.2  	Playing back simulation results.
+
+	If you wish to see your results, you must change to PLAYBACK mode.  To
+do this go to the mode toggle in the lower left corner of the menu window
+and click on it so that it reads "PLAYBACK".  Now you must decide what it is
+you wish to look at.  
+
+	If you wish to look at field potentials (including eeg's), then click 
+on the "field potential" button in the upper right corner of the menu window. 
+This should display a window consisting of a number of toggles and buttons.  
+The toggles located under the "fp's generated by synaptic currents" label 
+allow you to display the field potentials generated by individual synaptic 
+currents.  If you click onto more than one toggle this will add the clicked 
+potentials together.  For example, click on "supIb" and "deepIb", then click on
+"display."  Then display the full eeg by clicking on "eeg".
+
+	Below the button labeled "field potential" is one labeled "spike
+count".  Click on this and then click on "pyramidal" on the window that comes
+up.  The spike count graph plots the number of spikes that occur over the
+entire network over time.  You can choose to count the spikes of pyramidal,
+feedback inhibitory, or feedforward inhibitory cells.  This is useful in
+determining how the activity of a particular cell class correlates to the
+eeg pattern.  
+
+	Underneath the "spike count" is a button labeled "full cell view".
+After clicking on it, you should notice a "parameter" and "row" field on the
+window which comes up.  The "full cell view" option permits you to view an
+animation of the activity in a row of cells in the network.  You can view
+three "parameters" with this option: membrane potential (Vm), transmembrane
+current (Im), and synaptic conductance (Gk).  The "row" field specifies the
+row of cells you can look at.  Now press "display" without changing the 
+default values for the fields.  In the upper right corner of the screen, you
+should see a window containing 15 vertical rows.  Each row represents a single
+cell in the network.  Each row consists of five cellular compartments, 
+oriented apical (top) to basal (bottom).
+
+	In order to display results concerning single compartments, you must
+click on the buttons inside the pyramidal cell.  Go to the "supIb" button and 
+click.  Now click on "network view" on the "supIb_options" window.  The
+"network view" option allows you to display an animation of network activity
+as if you were looking along the axis running perpendicular to the surface 
+of the simulated brain.  Whenever you choose the "network view" option you
+are only looking at an array of single compartments from all the pyramidal
+cells in the simulation.  In this case, for example, you are only looking
+at the supIb compartments.  You have three options in the
+"supIb_network" window: Vm (membrane potential), Im (transmembrane
+current), and synaptic conductance.  Click on "synaptic conductance
+(Na), then on the cancel button below it.  An array of 15x9 rectangles
+should appear on the right side of the screen.  Each rectangle
+represents a single compartment.  Go back to the "supIb_options"
+window and click onto "total synaptic conductance (Na)".  This should
+generate a graph which measures the summed synaptic conductance over 
+the entire network.  Although this is a measure which is unrealistic from the 
+perspective of the physiologist, it gives us an idea of how active a synaptic
+system is at any given time.  A similar range of options exist for the other
+compartments and also for the feedforward and feedback interneurons.  The only
+difference in network viewing for the inhibitory cells is that there is no
+"Im" option.
+
+	Finally, we are ready to display the results of our simulation.  Click
+on the "playback" button.  The playback window contains four fields: "clock"
+which measures playback time in msec of simulated time, "playback step size"
+sets the rate at which data is displayed (the larger the step size the faster
+, but also choppier, the display), "playback duration", and "data directory"
+which are both self-explanatory.  To begin playback, click "reset" then
+"run" and watch the fun begin.  If you feel you need to get another look at
+things, click on "reset" and "run" again.  The "step" button allows you to
+execute playback one step at a time. 
+
+	This simulation also allows you to view data from two different 
+data directories simultaneously.  This is useful for comparing simulation
+results before and after some set of parameters has been changed.  In 
+section 2.1 we generated two sets of data.  The first used the default 
+settings for the parameters and the second halved the input to the pyramidal 
+cell from the feedback inhibitory cell.  To compare eeg responses from
+these two simulation runs, cancel all the display windows on the left side
+of the screen.  Now go to the "playback" window and enter "default" in the 
+"data directory" field.  If you recall, this directory contains the results
+from the simulation with the default parameters.  Now pop up a an eeg display
+and a spike count for pyramidal cells.  Go back to the "playback" window and
+type "fb_pyr_0.5" in the "data directory" field.  This directory contains results
+from the simulation in which we halved the input from the feedback inhibitory
+cell.  Now display another eeg and pyramidal spike count window.  You may 
+notice that the titles of these windows differ from the previous ones in that
+they end with ".fb_pyr_0.5" instead of ".default".  In general, the directory which 
+contains the displayed data appears following the dot in the window title.
+Now playback the results and note the differences.  How are things different?
+Can you make any speculations about why they might be different?  If not,
+try displaying some other relevant data which might help give you some more
+insight.
+
+	For more information about this simulation, see the chapter
+"Dynamical Properties of Cerebral Cortical Networks" in The Book of 
+GENESIS.   
+
+3	Glossary
+
+	Im 	transmembrane current
+	Vm 	membrane potential
+	Gk	conductance
+	pyr	pyramidal cell
+	ff	feedforward inhibitory cell (inhibition is K mediated)
+	fb	feedback inhibitory cell (inhibition is Cl mediated)
+
+	Layers in Piriform Cortex:
+
+		Ia	most superficial layer in the piriform cortex, this 
+			is also the layer where afferent fibers and input 
+			from ff's forms synapses on the pyramidal cell
+		supIb   just deep of Ia, where association fibers from rostral
+		  	pyramidal cells synapse onto other pyramidal cells
+		deepIb	just deep of supIb, where association fibers from 
+			caudal pyramidal cells synapse onto other
+			pyramidal cells
+		II	just deep of deepIb, this layer contains the cell 
+			bodies of the superficial pyramidal cells, the somata 
+			of the pyramidal cells in the model receive input 
+			from fb's.
+		III	just deep of II, this is the deepest layer in 
+			olfactory cortex and is the site of connections 
+			between local pyramidal cells, this layer also 
+			contains the somata of deep pyramidal cells.
+  
+
+
+REFERENCES
+
+Wilson, M. and Bower, J.M. 1992, Simulating cerebral cortical networks:
+    oscillations and temporal interactions in a computer simulation of
+    piriform (olfactory) cortex.  J. Neurophysiol.  67: 981-995.
+
+Wilson, M. (1990) CIT Thesis, Ph.D. thesis, California Institute of
+    Technology, Pasadena.
+
+Wilson, M. and Bower, J.M. 1989, The Simulation of Large-Scale Neural
+    Networks, in Methods in Neuronal Modeling, Chapter 9, edited by C. Koch
+    and I.  Segev, MIT Press.
+
+Wilson, M. and Bower, J.M. 1988, A Computer Simulation of Olfactory Cortex
+    with Functional Implications for Storage and Retrieval of Olfactory
+    Information, in Neural Information Processing Systems, edited by
+    D. Anderson, American Institute of Physics.
+
+
+
+TO LEARN MORE ABOUT THE PIRIFORM CORTEX:
+
+Haberly, L. B. 1990, Olfactory Cortex, in The Synaptic Organization of
+    the Brain, edited by Gordon Shepherd, Oxford University Press.
+
+
+
+TO LEARN MORE ABOUT THE TUTORIAL
+
+See chapter 9 of the Book of GENESIS.

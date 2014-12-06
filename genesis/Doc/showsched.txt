@@ -1,0 +1,19 @@
+Routine Name:	showsched
+
+Description:	Displays current working simulation schedule.
+
+Usage:		showsched
+
+Example:	genesis > showsched
+
+		WORKING SIMULATION SCHEDULE
+
+                [1] Simulate  /##[CLASS=segment]      -action INIT
+                [2] Simulate  /##[CLASS=segment][CLASS!=membrane][CLASS!=gate]
+                    [CLASS!=concentration][CLASS!=concbuffer] -action PROCESS
+                [3] Simulate    /##[CLASS=membrane]     -action PROCESS
+                [4] Simulate    /##[CLASS=output]       -action PROCESS
+
+Notes:		
+
+See also:       Schedules, addtask

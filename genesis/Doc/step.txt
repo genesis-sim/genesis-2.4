@@ -1,0 +1,37 @@
+Routine Name:	step
+
+Description:	Advances the simulation by one or more steps.
+
+Usage:		step [steps-or-time] -time -verbose -background
+
+		steps		number of steps to advance simulation
+
+		time		time by which to advance simulation
+
+		-time		interpret the first argument as time
+
+		-verbose	use verbose mode (display status of simulation
+				at each step)
+
+		-background	run simulation as background process, and
+				return user to GENESIS shell
+
+Example:	step 100
+		step 5 -v
+		step 25.4 -t -b
+
+		genesis >  step
+		time = 1.000000 ; step = 1
+		completed 1 steps in 0.000000 cpu seconds
+
+Notes:		When run in the background, the simulation is still sensitive
+		to ^C.  Generating a ^C interrupt can cause the simulation to
+		abnormally terminate a step giving erroneous results.  To halt
+		an simulation in progress, use the stop routine.
+
+		Only one simulation can be started at any given time. A
+		background simulation must already be running. The showjobs
+		routine will display this status (as the Simulate function).
+
+See also:	stop, showstat, reset, check
+

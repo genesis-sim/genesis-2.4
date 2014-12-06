@@ -1,0 +1,20 @@
+Routine Name:	getsolvechildname
+
+Description:	Returns the name of the child stored at the index value
+		inside the hines solver.
+
+Usage:		getsolvechildname hsolve_element index
+
+Example:
+                genesis > showfield /cell/solve nchildren
+                [ /cell/solve ]
+                nchildren            = 2
+
+                genesis > echo {getsolvechildname /cell/solve 1}
+                /cell/soma/K_mit_tchan
+                genesis > echo {getsolvechildname /cell/solve 2}
+                /cell/soma/Na_mit_tchan
+
+Notes:		Mainly used for debugging.
+
+See also:       hsolve, getsolvecompname, findsolvefield

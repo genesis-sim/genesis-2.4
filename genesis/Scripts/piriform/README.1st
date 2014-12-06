@@ -1,0 +1,24 @@
+The Piriform tutorial was created by Alex Protopapas as a ``user-friendly''
+adaptation of the research simulation used by Wilson and Bower to model the
+processing of olfactory inputs to the piriform cortex.  This scaled-down
+version of the original simulation uses 135 each of pyramidal cells,
+feedforward and feedback inhibitory interneurons, arranged in a 9 x 15
+array.  The local connections are shown in the neural circuit diagram which
+appears at the left of the screen.  To run the simulation, type "genesis
+Piriform" and click on the box labeled "help" when it appears.  The text for
+the on-line help is contained in the "piriform.help" file, which may also be
+printed.  References to the Wilson and Bower papers are given at the end of
+the file.  The theory and the neurobiology underlying this simulation are
+explained in detail in Chapter 9 of "The Book of GENESIS".  If you run the
+simulation from a directory for which you do not have write permission, you
+must "cd" to a writeable directory before clicking on "start simulation".
+You must also copy the file "test_dir" from the tutorial directory to the
+directory where you wish to store your data.
+
+
+KNOWN BUGS
+
+When xviews display nominally zero values, pixes within the display
+still change color, but do so uniformally.  This is most likely due to
+floating point inaccuracies.
+

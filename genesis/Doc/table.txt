@@ -1,0 +1,335 @@
+Object Type:	table
+
+Description:	A table with a couple of message slots for adding
+		dependencies on other fields.
+		The table can be used in several modes, depending on the
+		step_mode field. These include:
+
+		    Table lookup - incoming messages are used as an 
+			index to the contents of the table. The output
+			is calculated using interpolation if the appropriate
+			mode is selected in the interpol_struct.
+
+		    Function generation - The table steps through
+			its entries and emits the values. The
+			stepsize determines the rate at which the table is
+			scanned. Again, interpolation may be used.
+
+		    Output buffering - Input message values arriving at the
+			table are stored on each timestep, and the table index
+			is incremented, till the table is full
+
+                    Delay line - Input message values arriving at the table
+                        are stored on each timestep, using the table as a
+                        ring buffer.  The output is the input from an earlier
+                        time.
+
+		    Spike output buffering - Input message values arriving at
+			the table are checked for threshold crossing. If
+			they pass, then the current simulation time is
+			stored in a table entry, and the table index
+			incremented.
+
+		    Monitoring a large number of incoming messages -
+			Input message values are placed into successive
+			or defined table entries on every clock tick. This
+			is made much more useful because of a hack which
+			allows the table values to be sent backwards along
+			the messages using the TAB2FIELDS action.
+
+		The usual options for interpol_struct manipulations are
+		available for the table. These include special set options
+		for setting an entire interpol_struct at a time, file-
+		interface commands like tab2file and file2tab, and the
+		loadtab command for filling the table from the command line.
+
+Author:		U. S. Bhalla, Caltech (2/90)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	table_type  [in src/olf/olf_struct.h]
+
+Size:		80 bytes (minimum)
+
+Fields:	input		input field to table, usually set by
+			messages.  If step_mode=1, input field keeps
+			track of the current position in the table
+
+	output		output value
+	table		interpol struct for table; assigned by
+			TABCREATE
+	alloced		internal flag for table allocation
+	step_mode	This flag selects between several modes of
+			operation of the table.
+			0 = TAB_IO - Default mode. Table does lookup.
+			1 = TAB_LOOP - Table acts as a function
+				generator, looping back to the beginning
+				when all the entries have been scanned.
+				The input field is incremented by
+				step_size on each timestep, and
+				is used to perform the lookup.
+			2 = TAB_ONCE - Table acts as a function
+				generator, terminating when
+				all the entries have been scanned.
+				At this stage the output is fixed
+				at the last entry in the table.
+			3 = TAB_BUF - Table acts as a buffer. 
+				Incoming msg values are stored in
+				successive table entries on each
+				timestep. The output field keeps
+				track of the table index.
+			4 = TAB_SPIKE - Table acts as a buffer
+				for spike times. Incoming msg values
+				are checked for crossing a 
+				threshold, which is stored in the
+				'stepsize' field. If they pass,
+				then the simulation time is stored
+				in the table entry. The output
+				field keeps track of the table index.
+			5 = TAB_FIELDS - Table acts as a buffer for
+				many incoming messages. If the
+				messages are INPUT messages, each
+				message value is placed in a successive
+				table entry. If the messages are INPUT2,
+				then the second slot of the message
+				holds the table index.
+				The TAB2FIELDS action will go
+				back along these messages and place
+				the table values into the source fields.
+				This option does not work in parallel
+				or with extended fields.
+
+                        6 = TAB_DELAY - Table acts as a delay line. Input to
+                                the table arrives from the INPUT message as
+                                usual, and output from the table is available
+                                at the 'output' field as usual. The delay is
+                                implemented as a simple ring buffer, in which
+                                the 'input' field indexes the table to specify
+                                which entry should receive input and supply
+                                output. The 'input' field is incremented by
+                                one each timestep.  (This is unlike the
+                                TAB_BUF mode, where the current sample number
+                                is stored in the 'output' field.)  The
+                                duration of the delay is therefore equal to
+                                xdivs * dt, where xdivs is the size of the
+                                interpol struct and dt is the timestep of the
+                                clock used by the table.  Note that the
+                                'stepsize' field is not used, and that the
+                                contents of the table are NOT erased on RESET.
+                                This restriction is necessary in case a
+                                predefined input is required in the delay
+                                line. If the user wishes to wipe out the table
+                                then the command "setfield /table table ===0"
+                                will set all entries to zero.  (See the
+                                documentation for Tables for an explanation of
+                                this enhanced setfield syntax.)
+
+	stepsize	increment to input for stepping through table
+			with each clock tick in step_modes 1 and 2.
+			In the case of step_mode 4, stepsize acts
+			as the spike threshold.
+
+                        In step_modes 1 and 2, stepsize can also be
+                        set to zero to use the current simulation time
+                        to look up a value. The table uses the sum of
+                        the current simulation time and the value of the
+                        'input' field. This is designed for generating
+                        a predefined stimulus waveform controlled by
+                        the simulation time, even if the timesteps are
+                        changing. Thus, if the input field has value -3,
+                        and the simulation time is 10, the stimulus waveform
+                        will be looked up for a time of 7. In this manner,
+                        by using negative values in the input field, one
+                        can delay the start of a stimulus waveform.
+
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	TableFunc  [in src/olf/table.c]
+
+Classes:	segment
+
+Actions:	PROCESS 
+		RESET
+		SET
+		TABCREATE	Must be called to allocate the interpol_struct
+				of the table.
+
+				syntax:
+				  call table TABCREATE xdivs xmin xmax
+
+				This produces a table with indices from 0 to
+				xdivs, i.e. xdvivs + 1 entries
+                		which span the range xmin to xmax.
+
+
+		TABFILL		Expands the table by using interpolation
+				on the existing table entries.
+
+				syntax: 
+				  call table TABFILL xdivs fill_mode
+
+				xdivs + 1 specifies the number of entries that
+				the expanded table should have.
+
+				fill_mode is one of
+				    0 = B-spline fill (default)
+				    1 = C_Spline fill (not yet implemented)
+				    2 = Linear fill
+
+		TAB2FIELDS	Sends values from the table back to the
+				originating element fields, only works with
+				the TAB_FIELDS stepmode.
+
+				syntax:
+					call table TAB2FIELDS
+
+		TABOP		Carries out an operation on the entries in
+				the table, putting the result in the 
+				'output' field.
+
+				syntax:
+				  call table TABOP op [min max]
+
+				where op is the operation to perform and
+				min and max are the x range on the table
+				on which to operate
+
+				The available operations are:
+					a = average
+					m = min
+					M = Max
+					r = range (i.e., max - min)
+					s = slope
+					i = intercept
+					f = freq
+					S = Sqrt(sum of squares)
+
+		DUMP		Saves the table fields and interpol entries
+				in a script-readable file. This is an 
+				internal action only.
+
+Messages:	INPUT input-value-for-lookup
+		SUM value-to-sum-onto-output
+		PRD value-to-multiply-output-by
+		INPUT2 input-value-for-table index-for-value-to-go-to
+
+------------------------------------------------------------------------------
+
+Notes:		A table with a couple of message slots for adding dependencies
+		on other fields. The table for the object is created using
+		tabcreate.
+
+		Does a table lookup with interpolation. Also permits one to
+		modify the table with sum and product messages, so as to
+		extend the dimensionality of the table.
+
+		The table element is a way of defining arbitrary input-output
+		functions.  It is based on the interpol_struct described
+		above, and provides the simplest form of access to it.  Other
+		values (possibly generated by other tables) may be summed or
+		multiplied into the output value by means of messages, to
+		permit pseudo-multidimensional functions to be generated by
+		the table. Tables can also be used as function generators.
+
+		The array with the table values has to be explicitly allocated
+		using the TABCREATE function. Copies of a table use the
+		original array unless a new array is explicitly allocated.
+		Basically:
+
+		  output = lookup[input] * (prd values) + (sum values)
+
+		TABCREATE
+
+		The syntax for tables is simple, since there is only one
+		interpol_struct to worry about:
+
+		  call <element> TABCREATE <xdivs> <xmin> <xmax>
+
+		This call creates the interpol_struct data structure, which is
+		rather badly named ``table''.
+
+		Scaling tables
+
+		When the fields table->sx, table->sy, table->ox, table->oy
+		are set, the table element automatically scales on the
+		entries in the interpol_struct array so as to avoid scaling
+		computations during simulations.
+
+Example : Using the TAB_FIELDS options
+============================CUT HERE======================================
+
+//genesis
+// This example illustrates the use of the TAB_FIELDS options in
+// the table element.
+// First, we create a bunch of neutrals. The createmap command
+// lays them out in a 10x10 square array with unit spacing.
+createmap neutral /foo 10 10 -object
+ 
+// Then we create a table
+create table /bar
+call /bar TABCREATE 100 0 100
+ 
+// We now assign the TAB_FIELDS step_mode. In this mode, incoming
+// messages are sent to successive table entries, and updated
+// on every clock tick.
+setfield /bar step_mode 5 // TAB_FIELDS
+addmsg /foo/proto[] /bar INPUT x
+ 
+reset
+step // To do the clock tick and assign the table values.
+ 
+int i
+ 
+/* Here we show the x fields */
+echo
+echo Showing x fields before:
+for (i = 0; i < 100; i = i + 1)
+        echo {getfield /foo/proto[{i}] x} " " -n
+end
+ 
+// Here we show that the table entries are now equal to the
+// x fields
+echo
+echo Showing table array
+for (i = 0; i < 100; i = i + 1)
+        echo {getfield /bar table->table[{i}]} " " -n
+end
+ 
+// here we add 0.5 to each of the values in the table array.
+for (i = 0; i < 100; i = i + 1)
+        setfield /bar table->table[{i}] \
+                {{getfield /bar table->table[{i}]} + 0.5}
+end
+ 
+ 
+// here we call the action in the table which goes back through
+// the messages and puts the new values in the source fields,
+// in this case the x coords of the array of neutrals.
+call /bar TAB2FIELDS
+ 
+// Here we look to see what happened.
+echo
+echo Showing x fields after:
+ 
+for (i = 0; i < 100; i = i + 1)
+        echo {getfield /foo/proto[{i}] x} " " -n
+end
+ 
+echo
+
+============================CUT HERE======================================
+
+Bugs:           All of the interpolation options depend on an internal field
+                of the interpol_struct, called invdx, which is set up during
+                table allocation using TABCREATE. Unfortunately this field is
+                not updated upon subsequent manipulations of the table or
+                interpol structure. Invdx has the value 1/dx where dx = (xmax
+                - xmin)/xdivs. To work around the bug please explicitly set it
+                when you need to use the interpolation options.
+
+See also:	Interpol documentation (Tables).

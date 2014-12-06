@@ -1,0 +1,147 @@
+Object Type:	tabcurrent
+
+Description:    A non-ohmic ionic current that provides instantaneous values
+                for Ik and the slope conductance Gk from 2-D tables.
+
+Author:		E. De Schutter, BBF-UIA 2/95-6/98
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	tab_current_type [in src/olf/olf_struct.h]
+
+Size:		120 bytes
+
+Fields:         Ik              channel current (calculated)
+                Gk              channel conductance (calculated)
+                Ek              channel reversal potential (calculated)
+                Gbar            scaling factor for Gk and Ik
+                Gindex          specifies role of x and y for G_tab and I_tab
+                alloced         flag (= 2 when both tables have been allocated
+                surface         compartment surface area used with DOMAINCONC
+                G_tab           2-D table for Gk
+                I_tab           2-D table for Ik
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	TabCurrent [in src/olf/tabcurrent.c]
+
+Classes:	channel segment
+
+Actions:	TABREAD  TABSAVE  TABCREATE  SHOW  CHECK  PROCESS  RESET
+
+Messages:	VOLTAGE     voltage     [membrane voltage of compartment]
+                CONCEN      concen      [alias for CONCEN1]
+                CONCEN1     concen      [ion concentration sent to channel]
+                CONCEN2     concen      [ion concentration sent to channel]
+                DOMAINCONC  Ik scale    [ion current from another channel, to
+                                        be multiplied by scale, and divided by
+                                        the surface field]
+                ADD_GBAR    Gbar        [increment to be added to Gbar]
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The tabcurrent object provides a fairly general way to compute non-ohmic
+currents that depend on voltage or (more typically) both voltage and
+concentration.  The resulting current Ik and conductance Gk are obtained (with
+interpolation, by default) from the two-dimensional tables I_tab and G_tab,
+which are then scaled by the Gbar value.  The cell reader (readcell) sets the
+Gbar value by multiplying the conductance density specified in a cell
+parameter file by the compartment area, as is does for other channels.
+
+Unlike the tabchannel or tab2Dchannel, it is not assumed that the current
+obeys Ohm's law and is proportional to the membrane potential Vm.  However, a
+compartment (or symcompartment) will expect a channel element to provide Gk
+and the reversal potential Ek in a "CHANNEL Gk Ek" message, and use these to
+calculate the incoming ionic current from Ik = Gk*(Ek - Vm).  In order for a
+tabcurrent element to be used like a channel, the G_tab table must contain
+values that will produce the proper result for Ik when this calculation is
+performed.  This may be done by making the assumption that over a single time
+step, Gk and Ek vary slowly compared to Vm.  Then the approximation can be
+made that dIk/dVm = - Gk, and that Ek = (Ik + Gk*Vm)/Gk.  Thus, Ek is
+calculated by the tabcurrent object, rather than being set by the user or by
+an incoming message.  Note that the sign of the current expresses the GENESIS
+convention that current flow into a compartment is positive.
+
+Thus, the I_tab table should be filled with values of Ik/Gbar and the G_tab
+table should be filled with -dI_tab/dVm.  GENESIS has two commands, setupNaCa
+and setupghk, that will create and fill these tables for the special cases of
+the Na-Ca exchanger pump and the Goldman-Hodgkin-Katz constant field equation.
+
+For other cases, you will have to create and fill the tables yourself.
+A table is allocated by calling the the TABCREATE function, for example:
+
+  call mytabcurrent TABCREATE I_tab {xdivs} {xmin} {xmax} {ydivs} {ymin} {ymax}
+
+As the I_tab and G_tab tables are related, and must have the same dimensions,
+calling TABCREATE for one of them automatically allocates memory for the
+other.  Thus, it is not necessary to call TABCREATE again for G_tab.  As with
+the table2D and tab2Dchannel objects, xdivs and ydivs refer to the number of
+divisions in the tables, with the first index running from 0 to xdivs and the
+second one from 0 to ydivs.
+
+The tables are filled by commands of the form:
+
+    setfield mytabcurrent I_tab->table[{i}][{j}] {Ivalue}
+    setfield mytabcurrent G_tab->table[{i}][{j}] {Gvalue}
+
+The source code for setupNaCa and setupghk (in src/concen/tabcurrent.c)
+provides examples of filling the tables using C, rather than the scripting
+language.  This would be a good starting point for adding your own GENESIS
+commands for setting up specialized non-ohmic currents.
+
+By default, objects that use tables have the calc_mode for the tables set to
+LIN_INTERP (a pre-defined global variable equal to one), so that linear
+interpolation is performed at run time, allowing the use of a smaller table.
+In the unlikely event that you want to disable interpolation, set the
+calc_mode to NO_INTERP (zero).  For example:
+
+    setfield mytabcurrent G_tab->calc_mode {NO_INTERP}
+    setfield mytabcurrent I_tab->calc_mode {NO_INTERP}
+
+The TABSAVE and TABREAD functions may be called to save the channel tables to
+a file to be read in when making a subsequent simulation run.  These are
+described in the documentation for the tabchannel.
+
+The units to be used when setting the Gbar field depend on the units used for
+the G_tab table, and should be chosen to that it results in the proper units
+of conductance for Gk, e.g. Siemens.  For example, the setupNaCa command
+creates I_tab with units of (mM)^4 and G_tab with units of (mM)^4/Volts Then,
+Gbar should be in units of Amperes/(mM)^4.
+
+The Gindex field is similar to the Xindex, Yindex, and Zindex fields of the
+tab2Dchannel, and is used to specify which message refers to the x variable
+and which refers to the y variable when performing the table lookups.  The
+Gindex field may be assigned to one of the pre-defined global variables
+VOLT_INDEX, C1_INDEX, C2_INDEX, DOMAIN_INDEX, VOLT_C1_INDEX, VOLT_C2_INDEX,
+VOLT_DOMAIN_INDEX, C1_C2_INDEX, and DOMAIN_C2_INDEX.
+
+The first four of these are used when a gate depends on only one variable.  In
+this case, xdivs should be set to zero for that gate, and the y variable
+(corresponding to the second index) used to fill the I_tab and G_tab tables.
+Then, the prefix (VOLT, C1, C2 or DOMAIN) specifies whether the VOLTAGE,
+CONCEN1, CONCEN2, or DOMAINCONC message is used to provide the y variable.
+The remaining five of these index variables are of the form x_y_INDEX, and
+similarly specify which of two messages are used to specify the x and y
+variables.  Thus if Gindex is set to VOLT_C1_INDEX, a VOLTAGE message would
+specify the x variable of the I_tab and G_tab tables, and a CONCEN1 message
+would specify the y variable.
+
+In principle, any of these values for Gindex are allowed by the tabcurrent
+object.  But, a VOLTAGE message is required in order to calculate Ek.
+Although tabcurrent does not check to be sure that the VOLTAGE message is used
+as an index into the tables, the tables would have to depend on voltage, in
+order to have G_tab = -dI_tab/dV.  So, in practice, Gindex is restricted to be
+VOLT_INDEX, VOLT_C1_INDEX, VOLT_C2_INDEX, or VOLT_DOMAIN_INDEX.  The most
+common use of tabcurrent is when Ik depends on both membrane potential Vm and
+an ionic concentration.  Then, both VOLTAGE and CONCEN1 (or CONCEN) messages
+are used, and Gindex is set to VOLT_C1_INDEX.
+
+Example:	
+
+See also:	tab2Dchannel, setupNaCa, setupghk, Tables

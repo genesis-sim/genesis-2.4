@@ -1,0 +1,94 @@
+GENESIS Python tools
+====================
+
+This directory (gpython-tools) contains a collection of stand-alone
+Python-based graphical utilities for plotting, visualizing, and
+analyzing the output of GENESIS 2 and GENESIS 3 (G-3) simulations.
+There is nothing specific about GENESIS in these Python scripts, other
+than the format of the plain text files that contain the simulation
+output.  The scripts are well documented and commented, and may be
+modified for use with other data.
+
+They may be run from this directory with the sample data files, or
+you may copy them to a directory on your search path (e.g. ~/bin or
+/usr/local/bin).
+
+These tools and files are described in the `README file <README.html>`_
+
+Getting started with Python
+---------------------------
+
+The explanations of these example Python scripts assume a "beginner's"
+knowledge of Python programming, equivalent to a weekend spent looking
+through a book on introductory Python programming and experimenting
+with the examples.  There are also many good tutorials and examples on
+the web.  With this basic knowledge of Python syntax and what follows
+in this tutorial, you should have the information you need to modify
+these examples to create your own versions to do what you want.
+
+Here are some useful links for learning how to program in Python:
+
+The best entry point for finding Python tutorials at any level or
+depth is the `Beginner's Guide to Python
+<https://wiki.python.org/moin/BeginnersGuide>`_.
+
+The `official Python documentation site <http://docs.python.org>`_ has
+a well-organized index to the available documentation.  The `Python
+Tutorial <http://docs.python.org/tutorial/>`_ is also a good starting
+place.  Be sure to read the chapter on *Classes*, as most scripts that
+are based on Matplotlib and other Python analysis and display libraries
+use the object-oriented features of Python.  The `Matplotlib web site
+<http://matplotlib.sourceforge.net/>`_ has a large collection of example
+scripts with accompanying images of the results.
+
+A short book on introductory Python programming that doesn't try to give
+too much detail would be a good preparation for digging into more detailed
+documentation from the web. At some point, you will want to consult the
+`Python Language Reference <http://docs.python.org/reference/>`_.  This
+will be useful for looking up syntax that you don't understand in an
+example.
+
+Here is a list of software packages that should be installed in order to 
+use these scripts:
+
+* Python (http://python.org) will usually be installed by your operating
+  system package manager.
+* Matplotlib (http://sourceforge.net/projects/matplotlib) provides Matlab-like
+  functionality as Python functions and classes
+* Scipy and Numpy (http://scipy.org/) provide scientific computing and
+  fast array manipulation routines.
+* wxPython (http://www.wxpython.org/) implements the platform-independent
+  graphical wxWidgets set.
+
+* IPython (http://ipython.org/) provides a better alternative to the standard
+  python shell, with many features such as:
+
+    - automatic history
+    - very good built-in help
+    - command completion
+    - dynamic object introspection
+    - integration with numerical and scientific computing tools
+    - web notebook
+    - can be used as a simulator shell (e.g. G-3, Topographica)
+    - the '--pylab' option gives access to Scipy and Pylab
+
+IPython is not needed to run any of these scripts, but it is useful for
+interactive development, debugging, and trying out ideas.
+
+The packages above can usually be installed through the package manager
+for your version of Linux, rather than downloaded through the links above.
+However, these links are your first stop for documentation.
+
+Scripting examples
+------------------
+
+The gpython-tools/examples directory contains some simple example
+Python scripts and data files that were used in the January 2014
+LASCON Python Tutorial.  They are described in the `README
+<examples/README.html>`_ file, along with suggested exercises.
+
+Dave Beeman
+Thu Jul 17 15:14:33 MDT 2014
+
+
+

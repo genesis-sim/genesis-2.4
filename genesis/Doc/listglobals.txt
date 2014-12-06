@@ -1,0 +1,29 @@
+Routine Name:	listglobals
+
+Description:	Lists currently defined GENESIS global variables and their
+		current values.
+
+Usage:		listglobals [global-symbols] -functions -variables
+
+		-variables	only show variables (types int, float, str)
+		-functions	only show functions (type function)
+				
+		(Uses last switch on line; if no switches, shows both
+		functions and variables.  If the name is given, it shows
+		only that global-symbol.)
+
+Example:	genesis >  listglobals
+		int             B_SPLINE_FILL = 0
+		int             C_SPLINE_FILL = 1
+		int             LINEAR_FILL = 2
+
+
+Notes:		Four datatypes are recognized in listglobals:
+
+			int
+			float
+			str
+			function
+
+See also:	echo, Variables, Functions
+

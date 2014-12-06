@@ -1,0 +1,135 @@
+Routine Name:	planarweight
+
+Description:	Sets the weight fields on groups of synapses between
+		specified lists of elements.  Most often used to set
+		weights on groups of synapses that have been set up
+		by calling the "planarconnect" command.  This function
+		can assign groups of synapses to a fixed weight, can
+		assign weights in proportion to the distances between
+		pre- and postsynaptic elements, and can add various
+		types of randomness to weight values.
+
+Usage:		planarweight sourcepath [destination_path] \
+		-fixed weight                              \
+		-decay decay_rate max_weight min_weight    \
+		-uniform scale                             \
+		-gaussian stdev maxdev                     \
+		-exponential mid max                       \
+		-absoluterandom
+
+		sourcepath  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages connecting the
+			pre- and postsynaptic elements (i.e. the presynaptic
+			elements).  These must be of class "spiking" and are 
+			usually spikegen or randomspike objects.
+
+		destination_path  A wildcarded list of elements which must be
+			synchans or objects derived from synchan.  If this
+			(optional) argument is given, only the weights between 
+			the given set of pre- and postsynaptic elements will
+			be set by this command.  If this argument is not
+			given, then all the synapses receiving SPIKE messages
+			from the presynaptic elements will have their weights
+			set by this command.  NOTE: this optional argument is 
+			new and is not documented in the Book of GENESIS.
+
+		-fixed weight  -- This option sets all the synaptic weights in
+		        question to be equal to "weight".
+
+		-decay decay_rate max_weight min_weight  -- This option sets
+		        the synaptic weights in question to be proportional to
+			the distance between the source and destination 
+			elements according to the equation:
+
+			weight = (max_weight - min_weight) * 
+			  exp(-decay_rate * distance) + min_weight
+
+			For planarweight, the distance is measured as:
+
+			distance = 
+			  sqrt((x_src - x_dest)^2 + (y_src - y_dest)^2)
+
+			where x_src is the x component of the source element,
+			x_dest is the x component of the destination element,
+			and so on.  Note that the z component is not taken
+			into account, which is unrealistic.  volumedelay
+			uses the z component as well.
+
+		The next four options are used to add random components to the
+		weights established using the -fixed or -decay options.  How
+		these random components are added to the weights is explained
+		below.
+
+		-uniform scale  -- This option gives a random number taken 
+			from a uniform distribution in the range 
+			{-scale, scale}.
+
+		-gaussian stdev maxdev  -- This option gives a random number
+			taken from a gaussian distribution centered on zero,
+			with a standard deviation equal to "stdev" and with
+			a maximum value of "maxdev".  The maximum value is
+			used to limit the random component to a given range.
+
+		-exponential mid max  -- This option gives a random number
+			taken from an exponential distribution with a 
+			minimum value of zero, a 1/e point of "mid" and a 
+			maximum value of "max".  This is mainly for backwards
+			compatibility with genesis 1.4.
+
+		-absoluterandom  This option alters the way the random number
+			is combined with the nominal weight to give the actual
+			weight, as described below.
+
+		Once a random component has been created for a given weight, 
+		it is used to set the weight as follows.  If the 
+		-absoluterandom option has not been selected the weight is set 
+		to be:
+
+		final_weight = weight + (weight * random_number)
+
+		Whereas if the -absoluterandom option has been selected then
+		we have
+
+		final_weight = weight + random_number
+
+		Thus the default is to have the amount of randomness as a 
+		constant proportion of the weight value.
+
+Example:	[modified from the Orient_tut simulation:]
+
+		planarweight /retina/recplane/rec[]/input \
+			     -decay 0.5 10.0 0.1          \
+			     -gaussian 0.1 0.3
+
+		This command will set the size of the weights of synapses 
+		that are receiving their inputs from 
+		/retina/recplane/rec[]/input.  It gives exponentially decaying
+		weights with a maximum size of 10.0, a minimum size of 0.1,
+		and a decay rate of 0.5.  It also specifies that gaussian
+		noise be added to the weights with a mean value of 0.1 
+		(which represents 10% of the original weight, since 
+		-absoluterandom has not been selected) and a maximum value of
+		0.3 (which is 30% of the original weight value).
+
+Notes:		The "destination_path" optional argument is new and is not
+		documented in the Book of Genesis.
+
+		This routine calculates distance using only the x and y 
+		coordinates of the element positions.  It is convenient for
+		objects laid out in planar arrays but ignoring the z
+		direction is somewhat unrealistic.  volumeweight is identical 
+		to planarweight except that it uses the positions of elements 
+		in three dimensions to calculate distances and is thus more 
+		realistic.
+
+		The weights are never allowed to go negative even if a large
+		negative random component is added.  Negative weights are set
+		to zero.
+
+		The options -fixed and -decay are mutually exclusive.  The 
+		different random options -uniform, -gaussian, and -exponential
+		are also mutually exclusive.
+
+See also:	volumeweight, planarconnect, planardelay; Chapter 18
+                of the Book of GENESIS (2nd ed.) has a lengthy discussion on
+                this and related commands.

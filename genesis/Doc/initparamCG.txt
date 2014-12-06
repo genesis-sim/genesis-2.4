@@ -1,0 +1,52 @@
+Routine Name:   initparamCG
+
+Description:    Initializes a number of fields involving a single parameter
+                for the paramtableCG object.
+
+Usage:          initparamCG path param type range center label
+
+                path:   The location of the parameter search object in
+                        the element hierarchy.
+
+                param:  The numerical index of the parameter whose ranges
+                        etc. are to be set.
+
+                type:   The type of the parameter; 0 = additive,
+                        1 = multiplicative.
+
+                range:  The range of the parameter.  For additive
+                        parameters, this is a maximum offset from the
+                        center value; for multiplicative parameters, it's
+                        a maximum scaling factor.  In other words, for
+                        additive parameters the full parameter range is
+                        [center - range, center + range] while for
+                        multiplicative parameters it's equal to
+                        [center / range, center * range].  The range
+                        value must be >= 0.
+
+                center: The original value of the parameter, which is also
+                        the center of the range to be searched over.
+
+                label:  A string which is the name of the parameter.  This
+                        is useful for identifying the parameter in a text
+                        file output by the SAVEBEST or DISPLAY actions.
+
+
+Return value:   int; 0 for failure and 1 for success.
+
+Examples:           initparamCG /CG_object  0  1  2.0  1.0  "Na Gbar"
+
+                This sets parameter 0 to be a multiplicative parameter
+                (type 1) with a range of 2.0 (from 0.5 to 2.0 times the
+                center value) with a center value of 1.0.  The label
+                indicates that this parameter represents the maximum
+                conductance of a sodium channel.  The label is just for
+                reference and has no effect on the search process.
+
+Notes:          This routine (and the other initparamXX routines) are
+                shortcuts to set a number of parameter-related fields
+                simultaneously.  All of these fields can also be set
+                manually, but it's usually much more convenient to use
+                these functions.
+
+See also:       Parameter Search (Param), Paramtable, paramtableCG

@@ -1,0 +1,47 @@
+Routine Name:	le
+
+Description:	Displays a list of elements in the element tree.
+
+Usage:		le [path] -recursive -type
+
+		path		pathname of element (default: current
+				element);  path cannot include wildcards
+
+		-r		recursively display entire tree starting
+				at given element
+
+		-t		display object type along with element name
+				(type will be included in curly braces just
+				after element name)
+
+Example:	genesis > le / -t
+		*proto {neutral} 	output {neutral}   
+		cell/ {neutral} 	data/ {xform}   
+
+
+		genesis > le / -r
+		*proto 		output   
+		cell/ 		data/   
+
+		/cell:
+		soma                                    
+
+		/data:
+		voltage/ 	RESET   
+		RUN 		QUIT   
+
+		/data/voltage:
+		x_axis 		y_axis   
+		title 		volts   
+		current                                 
+
+
+Notes:		Unlike the listings produced by the analogous operating-system
+		command "ls", the listings produced by the le routine show
+		elements not in alphabetical order, but in the order in which
+		they were created.
+
+		In the le listings, items preceded by an asterisk (e.g.,
+		*proto) will not participate in simulations (see the enable
+		and disable routines for control of this).
+

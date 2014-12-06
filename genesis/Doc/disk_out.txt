@@ -1,0 +1,221 @@
+Object Type:	disk_out
+
+Description:	
+
+The disk_out object is used to write data to a file in a special binary
+format.  This is done at every time step of the clock which is assigned.
+These files are usually used with a disk_in object and the xview widget or
+the xgraph widget to "replay" the results of a simulation.  An external
+program (or your own compiled GENESIS function) can write files in this
+format in order to provide a convenient interface to the display
+capabilities of XODUS.
+
+Author:		M. Wilson, Caltech (6/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	file_type  [in src/out/out_struct.h]
+
+Size:		88 bytes
+
+Fields:		filename	data file name to be written
+		fp		data file pointer
+		is_open		flag: is file currently open?
+		initialize	flag: has file been initialized?
+		leave_open	flag: leave file open? 1 leaves the file open
+				all the time so you can write on it whenever
+				you want (a good idea if the file is used
+				frequently, but there is a limit to number of
+				files which can be left open any any time);
+				0 closes the file after every write to it
+				(only useful if you have more than 30 files;
+				this is slow)
+		append		flag: append data after resetting?
+		flush		flag: flush data to disk at each interval?
+				1 forces program to send data to the disk at
+				once and not store it in a buffer (slow but
+				secure); 0 (default) writes data in a buffer
+				(fast)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	FileOutput  [in src/out/out_file.c]
+
+Classes:	output
+
+Actions:
+        SAVE  DELETE  PROCESS  RESET
+
+Messages:	SAVE data
+
+------------------------------------------------------------------------------
+
+Notes:
+
+If the filename field is not set, the output file will be given the same
+name as the element which is created from the disk_out object.  Use asc_file
+for writing the data in ASCII format.
+
+Example:
+
+(from Scripts/orient_tut/V1_output.g)
+
+function do_disk_out(diskpath,srcpath,field)
+  str name
+  create disk_out /output/{diskpath}
+  setfield /output/{diskpath} leave_open 1  flush 1
+  addmsg {srcpath} /output/{diskpath} SAVE {field}
+end
+
+do_disk_out vert_disk /lgn/vert/soma[] Vm
+do_disk_out horiz_disk /lgn/horiz/soma[] Vm
+
+Also see the example in Scripts/examples/XODUS/fileview/generate.g.
+
+Normally, you need not be concerned with the format of the files produced
+by a disk_out element.  However, you may wish to write either a GENESIS
+function or an external program which produces an output file which can
+be displayed with an xview widget.  The code which writes a disk_out
+file can be found in /usr/genesis/src/out/out_file.c, and the code which
+reads the data from the file can be found in /usr/genesis/src/out/out_view.c.
+
+The following two C programs describe this format and show how to write and
+read these data files.
+
+------------------------------------------------------------------------------
+
+/* diskwrt.c - a demo program to write a sample file "test_disk" in the
+GENESIS "disk_out" format, to be viewed with the xfileview widget.  */
+
+#include <stdio.h>
+#include <math.h>
+
+main()
+{
+FILE *fpr;
+int width = 5;
+int height = 5;
+float start = 0.0;
+float dt = 1.0;
+float x, y, data;
+int ntimes;
+
+fpr = fopen("test_disk", "w");
+headerwrt(start, dt, width, height, fpr);
+
+data = 0.0;     /* make some bogus data */
+for (ntimes = 0; ntimes < 20; ntimes++)
+    for (y = 0.0; y < height; y++) {
+        for (x = 0.0; x < width; x++) {
+            data = x*x + y*y + height*ntimes;
+            fwrite (&data, sizeof (float),1, fpr);
+        }
+}
+fclose(fpr);
+} /* end main */
+
+headerwrt(start, deltat, width, height, fp)
+/* Header for files compatible with GENESIS disk_out
+"FMT1" - 80 byte null terminated character string as identifying label
+start - starting time - float
+dt - time step - float
+ndata - number of data points per time step - int
+datatype - int code for data type - disk_out uses only FLOAT = 4, but
+        display routines can use DOUBLE = 5, INT = 3, SHORT = 2.
+x1,y1,z1,x2,y2,z2,....,xndata,yndata,zndata - x,y,z coordinates for icon
+        representing each data point - float
+The header is then followed by data -  ndata values for each time step,
+        with the data type specified by "datatype".
+*/
+
+float start, deltat;
+int   width, height;
+FILE *fp;
+{
+char label[80];
+float strt, dt;
+int ndata, datatype;
+float x, y, z;
+float dx = 2.0;         /* horiz spacing between icons */
+float dy = 2.0;         /* vert spacing between icons */
+int i, j;
+
+    strt = start;       /* use local variables so addresses are correct */
+    dt = deltat;        /* otherwise fwrite gets wrong start and deltat  */
+
+    strcpy(label,"FMT1");
+    fwrite (label, sizeof (char),80, fp);
+    fwrite (&strt, sizeof (float),1, fp);
+    fwrite (&dt, sizeof (float),1, fp);
+    ndata = width*height;
+    fwrite (&ndata, sizeof (int),1, fp);
+    datatype = 4;       /* use float data */
+    fwrite (&datatype, sizeof (int),1, fp);
+    z = 0.0;            /* 2-D display */
+    for (j=0, y = 0.0; j < height; j++) {
+        for (i=0, x = 0.0; i < width; i++) {
+            fwrite (&x, sizeof (float),1, fp);
+            fwrite (&y, sizeof (float),1, fp);
+            fwrite (&z, sizeof (float),1, fp);
+            x = x + dx;
+        }
+        y = y + dy;
+    }
+}
+------------------------------------------------------------------------------
+
+/* diskrd.c - Reads and displays the header information of files produced by
+the GENESIS disk_out widget */
+
+#include <stdio.h>
+
+main(argc,argv)
+int     argc;
+char    **argv;
+{
+char    label[100];
+float   fval;
+int     i;
+int ndata;
+int datatype;
+FILE    *fp;
+
+    if(argc < 2){
+        printf("usage: %s filename\n",argv[0]);
+        exit();
+    }
+    if((fp = fopen(argv[1],"r")) == NULL){
+        printf("unable to find file '%s'\n",argv[1]);
+        exit();
+    }
+    /*    read in the file header    */
+    fread(label,sizeof(char),80,fp);
+    /*    check the label    */
+    if(strncmp("FMT1",label,4) != 0){
+        printf("file '%s' is not a valid FMT1 data file\n",argv[1]);
+        fclose(fp);
+        exit();
+    }
+
+    /*    starting time    */
+    fread (&fval, sizeof (float),1,fp);
+    printf("%-20s = %e\n","start time",fval);
+    /*   time step    */
+    fread (&fval, sizeof (float),1,fp);
+    printf("%-20s = %e\n","time step",fval);
+    /*    number of data points    */
+    fread (&ndata, sizeof (int),1,fp);
+    printf("%-20s = %d\n","ndata points",ndata);
+    /** data type    */
+    fread (&datatype, sizeof (int),1,fp);
+    printf("%-20s = %d\n","data type",datatype);
+    fclose(fp);
+}
+----------------------------------------------------------------------------
+
+See also:	disk_in, asc_file
+

@@ -1,0 +1,29 @@
+Routine Name:	getsyndest
+
+Description:	Returns a string which is the path of the postsynaptic
+		element which receives the nth SPIKE message sent by the
+		given presynaptic element.  Can also return the index of
+		the synapse on this element.
+
+Usage:		getsyndest presynaptic-element spikemsg-number -index
+
+		presynaptic-element  The element sending SPIKE messages to
+		        postsynaptic targets.
+
+		spikemsg-number The number of the SPIKE message whose
+			destination we want.  This can be obtained by getmsg
+			or showmsg.
+
+		-index This option returns the index of the synapse which
+			receives the SPIKE message on the destination
+			element.
+
+Example:	str dest  = {getsyndest input[0]/spike 0}
+		int index = {getsyndest input[0]/spike 0 -index}
+		setfield {dest} synapse[{index}].weight 10.0
+
+Notes:		getsynindex can also be used to get the index of a synapse
+		if you know the names of the pre- and postsynaptic elements.
+
+See also:	getsyncount, getsynindex, getsynsrc, BoG chapter 17
+

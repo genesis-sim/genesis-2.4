@@ -1,0 +1,16 @@
+Routine Name:	version
+
+Description:	Returns the GENESIS version number.
+
+Usage:		version_number = {version}
+
+Example:
+		if ({version} < 2.0)
+		    echo "This simulation requires version 2.0 or later"
+		    exit
+		end
+
+Notes:	
+
+See also:	
+

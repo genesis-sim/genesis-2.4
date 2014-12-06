@@ -1,0 +1,262 @@
+  20.  XODUS Mouse Clicks -- a summary of syntax conventions
+
+  Author: Upinder S. Bhalla, Mount Sinai School of Medicine.
+
+  20.1.  Conventions
+
+  In the text, when I use the term ``widget'' or ``X widget'', it means
+  the X widget implementation of the graphical user interface (GUI). The
+  term ``xodus'' refers to the GENESIS objects that control the
+  corresponding X widgets.  When I say ``XODUS'', it means the combined
+  GUI, including both the GENESIS objects, the X widgets, and the
+  infrastructure that links them together.
+
+  20.2.  Overview
+
+  In this version of XODUS, there has been a complete overhaul of how
+  GUI events, such as mouse clicks, affect XODUS and GENESIS.  The
+  fundamental change is that GUI events are now mapped directly onto
+  GENESIS actions, and are handled by the action mechanism in the xodus
+  objects. I have also reimplemented the mechanism for calling script
+  functions in response to GUI events. The previous XODUS 1 ``when''
+  functionality has been abandoned; instead all script calls are
+  accessed through the ``script'' field of the widgets and pixes.  The
+  sequence of operations is :
+
+  1. User action, e.g. a mouse click
+
+  2. X generates an event
+
+  3. Widget decides if it can use the event
+
+  4. Widget passes event to a translator, using callbacks
+
+  5. Translator invokes appropriate xodus action
+
+  6. xodus object executes action
+
+  7. If action call corresponds to a script function, the script
+     function is executed.
+
+  Script functions are suffixed with a GUI event identifier, which
+  decides which events are allowed to call that script function.  I have
+  imposed a strict convention on argument passing into scripts, so that
+  a great deal of relevant information is automatically available to the
+  script function. This should greatly simplify writing user interfaces.
+
+  20.3.  Graphical User Interface Actions.
+
+  A subset of X events (the exact subset is dependent on widget
+  implementation) is mapped into xodus actions. If the xodus object is
+  written so as to be able to execute that action as a script call, it
+  invokes the script functions from the ``script'' field in the xodus
+  element. If a function suffix matches the action, then the function is
+  called.
+
+  ______________________________________________________________________
+  Action name    suffix(es)      Description
+  ______________________________________________________________________
+  *B1DOWN        d1 d            Mouse button 1 was pressed
+  *B2DOWN        d2 d            Mouse button 2 was pressed
+  *B3DOWN        d3 d            Mouse button 3 was pressed
+  *B1UP          u1 u            Mouse button 1 was released in a toggle
+  *B2UP          u2 u            Mouse button 2 was released in a toggle
+  *B3UP          u3 u            Mouse button 3 was released in a toggle
+  B1DOUBLE       D1 D            Mouse button 1 double click
+  B2DOUBLE       D2 D            Mouse button 2 double click
+  B3DOUBLE       D3 D            Mouse button 3 double click
+  B1MOVE         m1 m            Motion with mouse button 1 pressed
+  B2MOVE         m2 m            Motion with mouse button 2 pressed
+  B3MOVE         m3 m            Motion with mouse button 3 pressed
+  B1ENTER        e1 e            Entry with mouse button 1 pressed
+  B2ENTER        e2 e            Entry with mouse button 2 pressed
+  B3ENTER        e3 e            Entry with mouse button 3 pressed
+  B1LEAVE        l1 l            Leave widget with mouse b1 pressed
+  B2LEAVE        l2 l            Leave widget with mouse b2 pressed
+  B3LEAVE        l3 l            Leave widget with mouse b3 pressed
+  KEYPRESS       k<key> k        Keyboard key <key> was pressed
+  XUPDATE        x               Widget was refreshed
+  XODRAG         drag y          Drag event, called on source widget
+  XODROP         drop p          Drop event, called on destination widget
+  XOWASDROPPED   wasdropped w    Called on source widget only if drop happened
+  XOCOMMAND      command c       Called from the script language
+  ______________________________________________________________________
+
+  * The actions listed with an asterisk will also call the unadorned
+  (i.e., no suffix) script command.
+
+  NOTE: The B1DOWN/B2DOWN/B3DOWN event will always precede an event of
+  which it is a subset. Thus, all double clicks will be preceded by a .d
+  event, as will all drags.
+
+  Not all widgets are able to handle all of the events listed above.
+  The current capabilities are summarized below:
+
+  ______________________________________________________________________
+  Widget         Form   Label   Button   Toggle   Dialog   Pixes   Draw   Graph
+  ______________________________________________________________________
+  Action
+  B1DOWN          -      -       +        +        +        +       +      +
+  B2DOWN          -      -       +        +        +        +       +      +
+  B3DOWN          -      -       +        +        +        +       +      +
+
+  B1UP            -      -       -        +        -        -       -      -
+  B2UP            -      -       -        +        -        -       -      -
+  B3UP            -      -       -        +        -        -       -      -
+
+  B1DOUBLE        -      -       -        -        -        +       +      +
+  B2DOUBLE        -      -       -        -        -        +       +      +
+  B3DOUBLE        -      -       -        -        -        +       +      +
+
+  B1MOVE          -      -       -        -        -        -       -      -
+  B2MOVE          -      -       -        -        -        -       -      -
+  B3MOVE          -      -       -        -        -        -       -      -
+
+  B1ENTER         -      -       -        -        -        -       +      +
+  B2ENTER         -      -       -        -        -        -       +      +
+  B3ENTER         -      -       -        -        -        -       +      +
+
+  B1LEAVE         -      -       -        -        -        -       -      -
+  B2LEAVE         -      -       -        -        -        -       -      -
+  B3LEAVE         -      -       -        -        -        -       -      -
+
+  KEYPRESS        -      -       -        -        +        -       -      -
+
+  XUPDATE         +      +       +        +        +        +       +      +
+
+  XODRAG          -      -       -        -        -        +       -      -
+  XODROP          -      -       -        -        -        +       +      +
+  XOWASDROPPED    -      -       -        -        -        +       -      -
+
+  XOCOMMAND       -      -       +        +        +        +       +      +
+  ______________________________________________________________________
+
+  20.4.  Scripts and Actions: Assigning the ``script'' Field
+
+  To the extent possible, the previous syntax with the ``script'' field
+  will still work. In previous widgets, the ``script'' was not an
+  accessible field, but could only be set on creation using the
+  ``-script'' option. Subsequently it could be modified using the when
+  command, which was rather cumbersome.
+
+  In most new widgets, there is a ``script'' field, and this can be set
+  and modified with the usual GENESIS commands. The ``-script'' option
+  for setting it at creation time remains for backwards compatibility.
+
+  There are two important additions to the obvious syntax of ``funcname
+  arg1 arg2 ....''.
+
+  First, one can specify the action which calls the script using the
+  appropriate suffix as defined above. For example, if one wished to
+  have a script on element foo which was only called when button 2 was
+  pressed, one could say:
+
+       function testfunc(a,b,c)
+           echo {a} {b} {c}
+       end
+       .
+       .
+       .
+       setfield foo script "testfunc.d2 a b c"
+
+  Note that the suffix is NOT present in the function definition; in
+  fact it is a syntax error.
+
+  Second, one can concatenate multiple scripts using a semicolon ``;''
+  separator:
+
+       function anothertestfunc(a,b,c)
+           echo {a} {b} {c}
+       end
+       .
+       .
+       .
+       set foo script "testfunc.d2 a b c ; anothertestfunc i j k"
+
+  In this case, the element foo will say
+
+                   a b c
+                   i j k
+
+  when there is a button 2 click, and only
+
+                   i j k
+
+  when there is a button 1 click.
+
+  Note that the scripts are executed in left-to-right order, which is
+  what you would expect.
+
+  20.5.  Scripts and Actions: Arguments Passed to the ``script'' Function.
+
+  A major enhancement to the GUI-GENESIS interface in GENESIS 2 is that
+  a number of useful variables can be passed into the ``script''
+  function as arguments.  These variables are specified using an
+  extension of the old ``funcname <widget>'' syntax of previous
+  versions.
+
+  The options in this version are:
+
+  ______________________________________________________________________
+  Option           Abbrev.    Variable
+  ______________________________________________________________________
+  <widget>         <w>        Passes in full pathname of widget or
+                              pix in which an event occurred.
+  <name>           <n>        Alias for <widget>
+  <value>          <v>        Value of widget if it has a state
+                              or value field.
+  <source>         <s>        First widget to be clicked in a
+                              drag-drop operation, i.e., source widget.
+  <destination>    <d>        End point of drag-drop operation.
+  <SourceVal>      <S>        Value of source widget. Only works
+                              for drop and wasdropped options.
+  <DestVal>        <D>        Value of dest widget. Only works
+                              for drop and wasdropped options.
+  <x>              <x>        x coordinate of event.
+  <y>              <y>        y coordinate of event.
+  <z>              <z>        z coordinate of event.
+  ______________________________________________________________________
+
+  These arguments can be interspersed with explicit arguments in any
+  order, and can be repeated as often as required.  Of course, not all
+  of these arguments are relevant for all operations, or for all
+  widgets. The arguments with a useful value are listed below:
+
+  ______________________________________________________________________
+  Widget     Useful arguments       Notes
+  ______________________________________________________________________
+  xbutton    <w>
+
+  xtoggle    <w> <v>                The value is the state of the xtoggle.
+                                    This field determines whether the
+                                    widget is now depressed (1) or raised (0).
+                                    Note that the .d and .u suffixed scripts
+                                    will only be called if state is 1 or 0
+                                    respectively, so that provides another
+                                    way of checking the toggle state.
+
+  xdialog    <w> <v>                The value is the string in the dialog box.
+
+  xdraw      <w> <v>                for .e, .D, .c suffixes.
+             <w> <v> <x> <y> <z>    for .d suffix
+             <w> <v> <s> <d>        for .drop suffix
+             <x ><y> <z>
+
+  xgraph                            Same as xdraw
+
+  xpixes     <w> <v>                for .D, .drag suffixes
+             <w> <v> <x> <y> <z>    for .d suffix
+             <w> <v> <s> <d>        for .drop or .wasdropped suffix
+             <x> <y> <z>
+             <w> <v> [args]         for .c suffix (args passed in to XOCOMMAND)
+
+  ______________________________________________________________________
+
+  Note that in XOCOMMANDs, the arguments passed to the action ``call pix
+  XOCOMMAND arg1 arg2 ...'' are appended to the variables passed into
+  the script function.  One normally passes in at least one argument on
+  the XOCOMMAND argument line to identify the context of the call.
+
+  The example in the file ``clicks.g'' in the ``Scripts/examples/XODUS''
+  directory illustrates most of the options listed above, using as a
+  script function the ``echo'' command to display all the arguments.

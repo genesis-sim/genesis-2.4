@@ -1,0 +1,156 @@
+  3.2.  Creating Variables
+
+  In GENESIS, you create a variable by entering a variable ``type''
+  specifier at the command line, followed by the variable name (a script
+  identifier), optionally followed by a value to assign to the variable:
+
+      variable-type variable-name [= expression]
+
+  You can create any of three types of variables at the GENESIS shell:
+
+  ______________________________________________________________________
+  Type      Meaning                                    Example Value
+  ______________________________________________________________________
+  int       integer number                             5, 18, 6000, -34
+  float     double precision floating-point number     5.0, 3.14, -2001.4
+  str       character string                           five, 5.0, hello
+  ______________________________________________________________________
+
+  Here are some examples of correct variable declarations:
+
+    genesis > int a
+    genesis > float PI = 3.141593
+    genesis > float myfloat = 2*PI
+    genesis > float floatstr = "6.3"
+    genesis > str hi = "hello there"
+
+  Note that case is significant for variable names (as in other areas):
+  ``PI'' is different from ``Pi'', which is different from ``pi''.  Also
+  note that the character sequence ``6.3'' could be the value of either
+  a floating point variable or a string variable.
+
+  Once you have defined a variable, you can change its value using an
+  assignment statement:
+
+    variable-name = expression
+
+  For example:
+
+    genesis > a = 40
+    genesis > myfloat = a + 2*PI
+    genesis > hi = "The value of myfloat = " @ myfloat
+
+  Note that GENESIS does not have array variables.  However, it has sev-
+  eral objects that contain internal data structures that may be used as
+  arrays.  Further details are given in the documentation for ``Tables
+  and Arrays'' (Tables.txt).
+
+  3.2.1.  Local and Global Variables
+
+  Variables declared in a function are local to the function.  Those
+  declared outside of a function in a script (or script that is included
+  with the ``include'' statement) are global variables.  When a value is
+  assigned to a global variable, it will affect any statements or
+  functions that follow this assignment.  One often refers to
+  ``constants'' in a GENESIS script.  These are not true constants, but
+  are just variables thatare not expected to take on new values during
+  the course of a simulation.
+
+  Good object-oriented programming style discourages the use of global
+  variables.  When possible, it is best to localize variables within
+  functions, or to use oject fields to store values.  However, it is
+  often useful to use global variables in order to make them easily
+  accessible throughout the simulation scripts.  Scripts that create
+  prototype channels (see ``Scripts/neurokit/prototypes'') usually
+  define global variables for ionic reversal potentials, and the cell
+  reader (readcell) makes use of the global variables RM, CM, RA and
+  EREST_ACT.
+
+  GENESIS provides the following routines for accessing global script
+  variables.
+
+  ______________________________________________________________________
+  Routine       Description
+  ______________________________________________________________________
+  addglobal     Declares a global variable; variable name may be a variable.
+  getglobal     Returns global variable value; variable name may be a variable.
+  listglobals   Lists currently defined global variables and functions.
+  setglobal     Sets value of global variable; variable name may be a variable.
+  ______________________________________________________________________
+
+  3.2.2.  Using Variables (The echo Command)
+
+  Script variable values are retrieved by using the variable name in the
+  context of an expression.  Expressions are formed using variable names
+  and operators in the usual way.  (See ``Operators'' (Operators.txt).)
+  In some contexts, the value of a variable or an expression must be
+  evaluated by by enclosing it in curly brackets in order to distinguish
+  between the string of characters and the value represented by the
+  character string.  This is particularly true when the expression is to
+  be evaluated as an argument of a GENESIS routine or script language
+  function.  (See ``Functions'' (Functions.txt).)
+
+  The echo routine is useful for seeing how an expression will be
+  evaluated:
+
+    genesis > float pi = 3.14159
+    genesis > float y
+
+    genesis > y = pi/4
+    genesis > echo y
+    y
+    genesis > echo {y}
+    0.7853975
+    genesis > echo pi/4
+    pi/4
+    genesis > echo {pi/4}
+    0.7853975
+    genesis > echo {sin y}    // WRONG!
+    0
+    genesis > echo {sin {y}}  // CORRECT
+    0.7071063519
+
+  As with many languages, GENESIS will cast expressions involving both
+  floating point and integer variables to floating point.  It will also
+  convert a string to a float if the string is a valid representation of
+  a number.  For example,
+
+    genesis > int i = 5
+    genesis > int j = 2
+    genesis > float x = 2
+    genesis > str num = "5"
+    genesis > echo {i/j}
+    2
+    genesis > echo {i/x}
+    2.5
+    genesis > echo {num/2}
+    2.5
+    genesis > num = "i/x"
+    genesis > echo {num}
+    i/x
+    genesis > echo {{num}/2}
+    ** Error - CastToFloat: Error casting 'i/x', using 0.0
+    0
+
+  Often it is useful to use a string variable name to hold the name of a
+  global variable.  For example, one may want to pass the name of a
+  global variable to a function that declares, sets, or retrieves the
+  value of the variable.  However, normal GENESIS syntax for
+  declarations and assignments does not permit a variable a name to be
+  specified by a string variable.  The last three of the following
+  GENESIS statements are illegal, and will produce error messages:
+
+    str name = "foo"
+    float x
+
+    float {name}  // want "float foo"
+    {name} = 5.5  // want "foo = 5.5"
+    x = {{name}}   // want "x = foo", or equivalently, "x = {foo}"
+
+  The correct way to accomplish these results is to use the routines for
+  accessing global script variables with the name of the global variable
+  held in a string variable.
+
+    addglobal float {name}
+    setglobal {name} 5.5
+    x = {getglobal {name}}

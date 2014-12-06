@@ -1,0 +1,24 @@
+Routine Name:	addmsg
+
+Description:	Establishes message links between two elements.
+
+Usage:		addmsg source-element dest-delement msg-type [msg-fields]
+
+Example:	addmsg  /cell/dend /cell/soma      RAXIAL Ra previous_state
+		addmsg  /cell/soma /cell/dend      AXIAL  previous_state
+		addmsg  /cell/soma /graphs/Vmgraph PLOT   Vm *voltage *red
+
+Notes:		addmsg sets up communication links to pass information
+		between elements.  Messages flow along message links created
+		by the addmsg routine each time a simulation timestep is
+		executed.
+
+		For example, an asymmetric compartment connected to another
+		asymmetric compartment needs to send both its axial
+		resistance, Ra, and its membrane potential at the previous
+		simulation step to the second compartment.  In order to update
+		its state, it needs to receive the second compartment's
+		previous membrane potential.
+
+See also:	deletemsg, showmsg, getmsg, gen3dmsg, dd3dmsg
+

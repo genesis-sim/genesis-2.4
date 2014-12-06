@@ -1,0 +1,31 @@
+! $Id: Xdefaults.example,v 1.1.1.1 2005/06/14 04:38:34 svitak Exp $
+!
+! This is a sample set of widget color and font specification to go into
+! your .Xdefaults or .Xresources file.  You may merge them into your existing
+! X resources with the command "xrdb -merge .Xdefaults".  The colors given here
+! are the same as those used as the XODUS defaults, but you may edit them to
+! give you the colors you like. The font size resource will be particularly
+! important for users of IRIX 5.3 as its version of X windows apparently uses
+! a much larger default font size.
+
+genesis*Button*Foreground:              black
+genesis*Button*Background:              LightSteelBlue
+genesis*Button*Font:                    7x13bold
+genesis*Graph*Background:               LightSteelBlue
+genesis*Graph*Foreground:               black
+genesis*Graph*ForegroundError:          black
+genesis*Label*Foreground:               black
+genesis*Label*Background:               LightSteelBlue
+genesis*Label*Font:                     7x13bold
+genesis*Dialog*Background:              LightSteelBlue
+genesis*Dialog*Font:                    7x13bold
+genesis*Form*Background:                LightSteelBlue
+genesis*Form*titleBackground:           LightSteelBlue
+genesis*Draw*Background:                LightSteelBlue
+genesis*Shape*Foreground:               black
+genesis*Shape*Font:                     7x13bold
+genesis*Axis*Foreground:                black
+genesis*Axis*Font:                      7x13bold
+genesis*Plot*Foreground:                black
+genesis*Tree*Foreground:                black
+genesis*Tree*Font:                      7x13bold

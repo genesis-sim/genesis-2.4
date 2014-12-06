@@ -1,0 +1,56 @@
+Object Type:    SynE_object
+ 
+Description:    Implements electrical synaptic transmission in the leech
+ 
+Author:         J. Lu and A. Hill, Calabrese Lab, 5/99
+ 
+------------------------------------------------------------------------------
+ 
+ELEMENT PARAMETERS
+ 
+DataStructure:  SynE_type  [in src/newconn/SynGS_struct.h]
+ 
+Size:           148 bytes
+ 
+Fields:         TauPre       Tau for RC filter of presynaptic Vm
+                TauPost      Tau for RC filter of presynaptic Vm
+                Vpre         RC filtered presynaptic Vm
+                Vpost        RC filtered postsynaptic Vm
+                Gbar         maximal conductance
+                rectify      0 = no rectify, 1 = pass pos., -1 pass neg.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+ 
+Function:       SynE  [in src/newconn/SynE.c]
+ 
+Classes:        device synchannel
+ 
+Actions:        RESTORE2  SAVE2  CHECK  RESET  PROCESS  INIT
+ 
+Messages:       VOLTAGE         presynaptic membrane potential
+                POSTVOLTAGE     postsynaptic membrane potential
+ 
+------------------------------------------------------------------------------
+ 
+Notes:          Simulates electrical synaptic transmission designed
+                specifically for leech HN cells, based on the synchan object.
+		Needs presynaptic and postsynaptic membrane potential as
+		input.  The output is the synaptic current that is added to
+		the postsynaptic compartment via an inject message.  In
+		addition, the pre- and postsynaptic membrane potentials can be
+		lowpass filtered with an RC circuit.  The time contants can be
+		set for both potentials. The synapse is unidirectional, that
+		is, the current is injected into only the postsynaptic cell.
+		To make a bidirectional synapse, another element must be
+		created.  The synapse can be configured to be non-rectifying
+		(passes both positive and negative current) or retifying
+		(passes only either positive or negative current).  This is
+		done by setting the rectify field to 0 for non-retifying, 1
+		for passes positve current, or -1 for passes negative current.  
+
+Example:        See http://calabreselx.biology.emory.edu/software.html.
+
+See also:       synchan, SynG_object, SynS_object
+

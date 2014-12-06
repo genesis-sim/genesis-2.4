@@ -1,0 +1,30 @@
+Routine Name:	pushe
+
+Description:	Saves current working element on stack (for later retrieval
+		using pop), with option to go to new current working element.
+
+Usage:		pushe [path]
+
+		path		pathname of element to make new current
+				working element (default: leave pushed
+				element as current working element)
+
+Example:	genesis >  ce /output
+		genesis >  pushe /mitral
+		/mitral
+		genesis >  pwe
+		/mitral
+		genesis >  ce /
+		genesis >  pope
+		/output
+
+Notes:		This routine ("push element") is analogous to the
+		operating-system shell "pushd" feature for directories.
+
+		pushe is used to change element to a new working element while
+		saving the location of the current working element on a stack.
+		The pope routine can then be used to return to the element path
+		stored on the stack.
+
+See also:	pope, stack
+

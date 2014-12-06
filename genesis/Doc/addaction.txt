@@ -1,0 +1,54 @@
+Routine Name:	addaction
+
+Description:	Adds a named action to the action table used by element types.
+
+Usage:		addaction name action_func
+		addaction name id-number
+
+Example:	addaction  NEWACTION  10
+		addaction  K_squid_hh K_squid_hh_SET
+		(see Scripts/tutorials/hhchan_K.g)
+
+Notes:		Each object in a simulation is capable of performing one or
+		more "actions".  An action can be described as an operation
+		that an object performs on its data. Actions are defined
+		within compiled functions which are attached to each object.
+		(You can display a list of actions which an object can perform
+		and the function(s) which perform using the showobject
+		routine.)  For instance, objects of type compartment can
+		perform the actions:
+
+	        RESTORE2  SAVE2  SET  CHECK  RESET  PROCESS  INIT  
+
+		(The actions are actually performed by an underlying C
+		function associated with the compartment element type.)
+
+		You use the addaction routine to add the named action to the
+		action table.  Actions are passed to the handler routines
+		associated with each type of GENESIS object.  The handler is
+		expected to perform the necessary actions when a given action
+		type is passed to it by the simulator.
+
+		For the most part this routine will only be used when adding
+		new object types which require use of additional (non-default)
+		actions already known to GENESIS.
+
+		You use the addaction routine to define new actions to be used
+		by elements.  There are a number of predefined actions 
+		which are typically used by objects. PROCESS is one of them.
+		New actions can be added in any object. Use the 'addaction'
+		routine in the object definition script to inform the
+		simulator of the new action. The case number assigned to new
+		actions is relatively arbitrary as long as it does not
+		conflict with the case numbers of other actions defined in the
+		object.  (you should get a compiler error if there is a
+		conflict). 
+
+		When used as a GENESIS command, addaction is primarily used
+		in the construction of extended objects.  It is also used as
+		a library intialization command during the compilation of
+		GENESIS libraries.
+
+See also:	object, Extended Objects (Extended), Defining New
+		Objects and Commands (NewObjects)
+

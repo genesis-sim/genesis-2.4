@@ -1,0 +1,75 @@
+Object Type:    concchan
+
+Description:    Concentration-driven membrane channel. Equivalent
+                to 1-D diffusion of molecules across a membrane. The
+                concchan, like the enzyme, is a property of a pool and so
+                each concchan should be attached to a pool which specifies
+                the number of concchans.
+
+Author:         U. S. Bhalla MSSM Aug/93
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	[in src/kinetics/kin_struct.h]
+
+Size:           124 bytes
+
+Fields:
+                A, B            Internal state variables, used to
+                                communicate with pools. A represents
+                                increase in the pool n, B is the decrease.
+                perm            Permeability
+                gmax            conductance (not currently used)
+                n               number of concchans
+                Vm              potential across channel (not currently used)
+                use_nernst      flag (not currently used)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	[in src/kinetics/concchan.c]
+
+Classes:        segment
+
+Actions:        SET  PROCESS  RESET
+
+Messages:
+                SUBSTRATE   n vol  Number of molecules in substrate pool
+                PRODUCT     n vol  Number of molecules in product pool
+                NUMCHAN     n      Number of concchans specified by pool
+                Vm          Vm     Sets the Vm field (not currently used)
+
+------------------------------------------------------------------------------
+
+Notes:          The concchan allows the substrate and product pools to diffuse
+
+                back and forth.  The state variables A and B are used in the
+                return messages to the substrates and products.  (However the
+                roles of A and B are reversed for the product pools).
+
+                If there are both substrate and product pools (as evidenced by
+                having both a SUBSTRATE and a PRODUCT message to the
+                concchan), the SUBSTRATE message calculates conc1 = n/vol, and
+                PRODUCT calculates conc2 = n/vol.  Here, n/vol represents the
+                density of molecules in the pool, not the density of conchans.
+                Then A and B are set to
+
+                        A = conc2 * perm * n
+                        B = conc1 * perm * n
+
+                where n is the number of concchans.
+
+Example:	// numerically attach the chan to the pool
+                addmsg {pool} {chan} NUMCHAN n
+                // Attaches the pool to the chan as a substrate
+                addmsg {chan} {pool} REAC A B
+                addmsg {pool} {chan} SUBSTRATE n vol
+
+                // Attaches the pool to the chan as a product
+                addmsg {chan} {pool} REAC B A
+                addmsg {pool} {chan} PRODUCT n vol
+
+See also:	pool

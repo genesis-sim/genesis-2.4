@@ -1,0 +1,13 @@
+Routine Name:	pow
+
+Description:	Returns a number raised to a specified power.
+
+Usage:		raised-value = {pow number power)
+
+Example:	genesis >  echo { pow 10 3 }
+		1000
+
+Notes:		
+
+See also:	exp
+

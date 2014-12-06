@@ -1,0 +1,17 @@
+Routine Name:	rand
+
+Description:	Returns a random number falling in a specified range.
+
+Usage:		number = { rand lo hi}
+
+Example:	genesis >  echo { rand 0 1 }
+		0.2742720246
+		genesis >  echo { rand 0 1 }
+		0.5690608621
+		genesis >  echo { rand 0 100 }
+		32.53029251
+
+Notes:		
+
+See also:	randseed
+

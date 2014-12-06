@@ -1,0 +1,3911 @@
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Fri, 06 Jan 2006 20:31:22 -0600
+Common version:   0.68
+Selected version: 0.71
+Working version:  Release1.3.2(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+The file `Purk2M9s.p.config' was renamed to `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+*** Action on file [W: library/cells/purkinje_eds1994/Purk2M9s.p.config, C: Purk2M9s.p.config, S: library/cells/purkinje_eds1994/Purk2M9s.p.config]
+Copied working file `library/cells/purkinje_eds1994/Purk2M9s.p.config' to `library/cells/purkinje_eds1994/obsolete/Purk2M9s.p.config.v0'
+Replace file [W: library/cells/purkinje_eds1994/Purk2M9s.p.config, C: Purk2M9s.p.config, S: library/cells/purkinje_eds1994/Purk2M9s.p.config] by rule 3
+
+*** Action on file `XCLib.s'
+Copied working file `XCLib.s' to `obsolete/XCLib.s.v0'
+Replace file `XCLib.s' by rule 3
+
+The file `psmall.p.config' was renamed to `library/cells/purkinje_eds1994/psmall.p.config'
+*** Action on file [W: library/cells/purkinje_eds1994/psmall.p.config, C: psmall.p.config, S: library/cells/purkinje_eds1994/psmall.p.config]
+No prompt for file [W: library/cells/purkinje_eds1994/psmall.p.config, C: psmall.p.config, S: library/cells/purkinje_eds1994/psmall.p.config] by rule 1
+
+The file `Purkinje4M9.p' was renamed to `library/cells/purkinje_eds1994/Purkinje4M9.p'
+*** Action on file [W: library/cells/purkinje_eds1994/Purkinje4M9.p, C: Purkinje4M9.p, S: library/cells/purkinje_eds1994/Purkinje4M9.p]
+No prompt for file [W: library/cells/purkinje_eds1994/Purkinje4M9.p, C: Purkinje4M9.p, S: library/cells/purkinje_eds1994/Purkinje4M9.p] by rule 1
+
+*** Action on file `xgraph.g'
+Copied working file `xgraph.g' to `obsolete/xgraph.g.v0'
+Merge file `xgraph.g' by rule 2, conflicts created
+
+*** Action on file `xcell.g'
+Copied working file `xcell.g' to `obsolete/xcell.g.v0'
+Replace file `xcell.g' by rule 3
+
+*** Action on file `utility.g'
+No prompt for file `utility.g' by rule 1
+
+*** Action on file `settings.g'
+No prompt for file `settings.g' by rule 4
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+The file `psmall.p' was renamed to `library/cells/purkinje_eds1994/psmall.p'
+*** Action on file [W: library/cells/purkinje_eds1994/psmall.p, C: psmall.p, S: library/cells/purkinje_eds1994/psmall.p]
+No prompt for file [W: library/cells/purkinje_eds1994/psmall.p, C: psmall.p, S: library/cells/purkinje_eds1994/psmall.p] by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `makeconfig.g'
+Copied working file `makeconfig.g' to `obsolete/makeconfig.g.v0'
+Delete file `makeconfig.g' by rule 10
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 4
+
+The file `small.p' was renamed to `library/cells/purkinje_eds1994/small.p'
+*** Action on file [W: library/cells/purkinje_eds1994/small.p, C: small.p, S: library/cells/purkinje_eds1994/small.p]
+No prompt for file [W: library/cells/purkinje_eds1994/small.p, C: small.p, S: library/cells/purkinje_eds1994/small.p] by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 4
+
+*** Action on file `control.g'
+Copied working file `control.g' to `obsolete/control.g.v0'
+Replace file `control.g' by rule 3
+
+*** Action on file `config.g'
+Copied working file `config.g' to `obsolete/config.g.v0'
+Replace file `config.g' by rule 3
+
+The file `cell.g' was renamed to `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+*** Action on file [W: library/cells/purkinje_eds1994/purkinje_eds1994.g, C: cell.g, S: library/cells/purkinje_eds1994/purkinje_eds1994.g]
+Copied working file `library/cells/purkinje_eds1994/purkinje_eds1994.g' to `library/cells/purkinje_eds1994/obsolete/purkinje_eds1994.g.v0'
+Replace file [W: library/cells/purkinje_eds1994/purkinje_eds1994.g, C: cell.g, S: library/cells/purkinje_eds1994/purkinje_eds1994.g] by rule 3
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+Copied working file `actions.g' to `obsolete/actions.g.v0'
+Replace file `actions.g' by rule 3
+
+*** Action on file `TUTORIAL.g'
+Copied working file `TUTORIAL.g' to `obsolete/TUTORIAL.g.v0'
+Merge file `TUTORIAL.g' by rule 2
+
+*** Action on file `README'
+Copied working file `README' to `obsolete/README.v0'
+Merge file `README' by rule 2, conflicts created
+
+The file `Purk_syn.g' was renamed to `library/channels/Purk_syn.g'
+*** Action on file [W: library/channels/Purk_syn.g, C: Purk_syn.g, S: library/channels/Purk_syn.g]
+No prompt for file [W: library/channels/Purk_syn.g, C: Purk_syn.g, S: library/channels/Purk_syn.g] by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+The file `Purk_cicomp.g' was renamed to `library/segments/Purk_cicomp.g'
+*** Action on file [W: library/segments/Purk_cicomp.g, C: Purk_cicomp.g, S: library/segments/Purk_cicomp.g]
+No prompt for file [W: library/segments/Purk_cicomp.g, C: Purk_cicomp.g, S: library/segments/Purk_cicomp.g] by rule 1
+
+The file `Purk_chansave.g' was renamed to `library/channels/Purk_chansave.g'
+*** Action on file [W: library/channels/Purk_chansave.g, C: Purk_chansave.g, S: library/channels/Purk_chansave.g]
+No prompt for file [W: library/channels/Purk_chansave.g, C: Purk_chansave.g, S: library/channels/Purk_chansave.g] by rule 1
+
+The file `Purk_chanload.g' was renamed to `library/channels/Purk_chanload.g'
+*** Action on file [W: library/channels/Purk_chanload.g, C: Purk_chanload.g, S: library/channels/Purk_chanload.g]
+No prompt for file [W: library/channels/Purk_chanload.g, C: Purk_chanload.g, S: library/channels/Purk_chanload.g] by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+Copied working file `help.txt' to `obsolete/help.txt.v0'
+Merge file `help.txt' by rule 2, conflicts created
+
+The file `Purk2M9s.p' was renamed to `library/cells/purkinje_eds1994/Purk2M9s.p'
+*** Action on file [W: library/cells/purkinje_eds1994/Purk2M9s.p, C: Purk2M9s.p, S: library/cells/purkinje_eds1994/Purk2M9s.p]
+No prompt for file [W: library/cells/purkinje_eds1994/Purk2M9s.p, C: Purk2M9s.p, S: library/cells/purkinje_eds1994/Purk2M9s.p] by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `TODO'
+No prompt for file `TODO' by rule 1
+
+*** Action on file `TUTORIAL'
+Copied working file `TUTORIAL' to `obsolete/TUTORIAL.v0'
+Delete file `TUTORIAL' by rule 7
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file [directory:contrib]
+No prompt for file [directory:contrib] by rule 1
+
+*** Action on file `contrib/README'
+No prompt for file `contrib/README' by rule 1
+
+*** Action on file `contrib/passive/fileio_act.g'
+No prompt for file `contrib/passive/fileio_act.g' by rule 1
+
+*** Action on file `contrib/passive/Purk_pconst.g'
+No prompt for file `contrib/passive/Purk_pconst.g' by rule 1
+
+*** Action on file `contrib/passive/PASSIVE.g'
+No prompt for file `contrib/passive/PASSIVE.g' by rule 1
+
+*** Action on file `contrib/passive/ACTIVE.g'
+No prompt for file `contrib/passive/ACTIVE.g' by rule 1
+
+*** Action on file [directory:patches]
+No prompt for file [directory:patches] by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch'
+No prompt for file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch'
+No prompt for file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-xtree.1.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-xtree.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch' by rule 1
+
+*** Action on file `patches/README'
+No prompt for file `patches/README' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+Add file `library/segments/axon.g' by rule 14
+
+*** Action on file `library/segments/dendrite.g'
+Add file `library/segments/dendrite.g' by rule 14
+
+*** Action on file `library/segments/soma.g'
+Add file `library/segments/soma.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle1.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle1.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle2.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle2.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1_v2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1_v2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat1.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat1.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat3.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat3.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat2.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat2.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p.config'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p.config' by rule 14
+
+*** Action on file `library/segments/compartment.g'
+Add file `library/segments/compartment.g' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig.g' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig1.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig1.g' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig2.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig2.g' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig3.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig3.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle3.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle3.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/gp_pc1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle4.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle4.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle5.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle5.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat5.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat5.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat4.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat4.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p.config' by rule 14
+
+*** Action on file `xcellnamerequester.g'
+Add file `xcellnamerequester.g' by rule 14
+
+*** Action on file `library/channels/Purk_chan.g'
+Add file `library/channels/Purk_chan.g' by rule 14
+
+*** Action on file `purkinje.log'
+Do nothing with file `purkinje.log' by rule 14
+
+*** Action on file `prcs.merge'
+Do nothing with file `prcs.merge' by rule 11
+
+*** Action on populate ignore element `\.a$'
+Add populate ignore element `\.a$' by rule 14
+
+*** Action on populate ignore element `core$'
+Add populate ignore element `core$' by rule 14
+
+*** Action on populate ignore element `Templates.DB'
+Add populate ignore element `Templates.DB' by rule 14
+
+*** Action on populate ignore element `~$'
+Add populate ignore element `~$' by rule 14
+
+*** Action on populate ignore element `\.tab$'
+Add populate ignore element `\.tab$' by rule 14
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+Add populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 14
+
+*** Action on populate ignore element `simulation.status'
+Add populate ignore element `simulation.status' by rule 14
+
+*** Action on populate ignore element `\.emacs\.desktop'
+Add populate ignore element `\.emacs\.desktop' by rule 14
+
+*** Action on populate ignore element `\.deps'
+Add populate ignore element `\.deps' by rule 14
+
+*** Action on populate ignore element `obsolete'
+Add populate ignore element `obsolete' by rule 14
+
+*** Action on populate ignore element `\.o$'
+Add populate ignore element `\.o$' by rule 14
+
+*** Action on populate ignore element `TAGS'
+Add populate ignore element `TAGS' by rule 14
+
+*** Action on populate ignore element `\.gz$'
+Add populate ignore element `\.gz$' by rule 14
+
+*** Action on populate ignore element `.simrc'
+Add populate ignore element `.simrc' by rule 14
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Fri, 06 Jan 2006 21:08:54 -0600
+Common version:   0.71
+Selected version: 0.72
+Working version:  Release2-1.1(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+Copied working file `xgraph.g' to `obsolete/xgraph.g.v0'
+Merge file `xgraph.g' by rule 2
+
+*** Action on file `xcell.g'
+Copied working file `xcell.g' to `obsolete/xcell.g.v0'
+Replace file `xcell.g' by rule 3
+
+*** Action on file `utility.g'
+Copied working file `utility.g' to `obsolete/utility.g.v0'
+Replace file `utility.g' by rule 3
+
+*** Action on file `settings.g'
+Copied working file `settings.g' to `obsolete/settings.g.v0'
+Merge file `settings.g' by rule 2
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+Copied working file `mapping.g' to `obsolete/mapping.g.v0'
+Replace file `mapping.g' by rule 3
+
+*** Action on file `info.g'
+Copied working file `info.g' to `obsolete/info.g.v0'
+Merge file `info.g' by rule 2
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+Copied working file `credits.txt' to `obsolete/credits.txt.v0'
+Merge file `credits.txt' by rule 2, conflicts created
+
+*** Action on file `control.g'
+Copied working file `control.g' to `obsolete/control.g.v0'
+Replace file `control.g' by rule 3
+
+*** Action on file `config.g'
+Copied working file `config.g' to `obsolete/config.g.v0'
+Replace file `config.g' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+Copied working file `library/cells/purkinje_eds1994/purkinje_eds1994.g' to `library/cells/purkinje_eds1994/obsolete/purkinje_eds1994.g.v0'
+Replace file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 3
+
+*** Action on file `bounds.txt'
+Copied working file `bounds.txt' to `obsolete/bounds.txt.v0'
+Replace file `bounds.txt' by rule 3
+
+*** Action on file `actions.g'
+Copied working file `actions.g' to `obsolete/actions.g.v0'
+Replace file `actions.g' by rule 3
+
+*** Action on file `TUTORIAL.g'
+Copied working file `TUTORIAL.g' to `obsolete/TUTORIAL.g.v0'
+Merge file `TUTORIAL.g' by rule 2
+
+*** Action on file `README'
+No prompt for file `README' by rule 4
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+No prompt for file `help.txt' by rule 4
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+Copied working file `bounds.g' to `obsolete/bounds.g.v0'
+Replace file `bounds.g' by rule 3
+
+*** Action on file `TODO'
+No prompt for file `TODO' by rule 1
+
+*** Action on file `stack.g'
+Copied working file `stack.g' to `obsolete/stack.g.v0'
+Replace file `stack.g' by rule 3
+
+*** Action on file [directory:contrib]
+No prompt for file [directory:contrib] by rule 1
+
+*** Action on file `contrib/README'
+No prompt for file `contrib/README' by rule 1
+
+*** Action on file `contrib/passive/fileio_act.g'
+No prompt for file `contrib/passive/fileio_act.g' by rule 1
+
+*** Action on file `contrib/passive/Purk_pconst.g'
+No prompt for file `contrib/passive/Purk_pconst.g' by rule 1
+
+*** Action on file `contrib/passive/PASSIVE.g'
+Copied working file `contrib/passive/PASSIVE.g' to `contrib/passive/obsolete/PASSIVE.g.v0'
+Replace file `contrib/passive/PASSIVE.g' by rule 3
+
+*** Action on file `contrib/passive/ACTIVE.g'
+Copied working file `contrib/passive/ACTIVE.g' to `contrib/passive/obsolete/ACTIVE.g.v0'
+Replace file `contrib/passive/ACTIVE.g' by rule 3
+
+*** Action on file [directory:patches]
+No prompt for file [directory:patches] by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch'
+Copied working file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' to `patches/obsolete/purkinje-0.58-purkinje-parpat-storage-film.3.patch.v0'
+Replace file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' by rule 3
+
+*** Action on file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch'
+No prompt for file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch'
+No prompt for file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-xtree.1.patch'
+Copied working file `patches/purkinje-0.39-purkinje-xtree.1.patch' to `patches/obsolete/purkinje-0.39-purkinje-xtree.1.patch.v0'
+Replace file `patches/purkinje-0.39-purkinje-xtree.1.patch' by rule 3
+
+*** Action on file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch' by rule 1
+
+*** Action on file `patches/README'
+No prompt for file `patches/README' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle.g' by rule 9
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle1.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle1.g' by rule 9
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle2.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle2.g' by rule 9
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1_v2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1_v2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat1.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat1.g' by rule 9
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat3.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat3.g' by rule 9
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat2.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat2.g' by rule 9
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat.g' by rule 9
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p.config'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p.config' by rule 6
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig.g' by rule 9
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig1.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig1.g' by rule 9
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig2.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig2.g' by rule 9
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig3.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig3.g' by rule 9
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle3.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle3.g' by rule 9
+
+*** Action on file `library/cells/purkinje_turtle/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/gp_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle4.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle4.g' by rule 9
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle5.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle5.g' by rule 9
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat5.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat5.g' by rule 9
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat4.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat4.g' by rule 9
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p.config' by rule 6
+
+*** Action on file `xcellnamerequester.g'
+Copied working file `xcellnamerequester.g' to `obsolete/xcellnamerequester.g.v0'
+Replace file `xcellnamerequester.g' by rule 3
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Fri, 06 Jan 2006 21:42:21 -0600
+Common version:   0.72
+Selected version: 0.73
+Working version:  Release2-1.3(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+No prompt for file `xgraph.g' by rule 4
+
+*** Action on file `xcell.g'
+No prompt for file `xcell.g' by rule 1
+
+*** Action on file `utility.g'
+No prompt for file `utility.g' by rule 1
+
+*** Action on file `settings.g'
+No prompt for file `settings.g' by rule 4
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 4
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 4
+
+*** Action on file `control.g'
+No prompt for file `control.g' by rule 1
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+No prompt for file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 1
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+No prompt for file `actions.g' by rule 1
+
+*** Action on file `TUTORIAL.g'
+No prompt for file `TUTORIAL.g' by rule 4
+
+*** Action on file `README'
+No prompt for file `README' by rule 4
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+No prompt for file `help.txt' by rule 4
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `TODO'
+No prompt for file `TODO' by rule 1
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file [directory:contrib]
+No prompt for file [directory:contrib] by rule 1
+
+*** Action on file `contrib/README'
+No prompt for file `contrib/README' by rule 1
+
+*** Action on file `contrib/passive/fileio_act.g'
+No prompt for file `contrib/passive/fileio_act.g' by rule 1
+
+*** Action on file `contrib/passive/Purk_pconst.g'
+No prompt for file `contrib/passive/Purk_pconst.g' by rule 1
+
+*** Action on file `contrib/passive/PASSIVE.g'
+No prompt for file `contrib/passive/PASSIVE.g' by rule 1
+
+*** Action on file `contrib/passive/ACTIVE.g'
+No prompt for file `contrib/passive/ACTIVE.g' by rule 1
+
+*** Action on file [directory:patches]
+No prompt for file [directory:patches] by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch'
+No prompt for file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch'
+No prompt for file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-xtree.1.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-xtree.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch' by rule 1
+
+*** Action on file `patches/README'
+No prompt for file `patches/README' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle1.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle1.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle2.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle2.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1_v2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1_v2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat1.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat1.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat3.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat3.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat2.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat2.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p.config'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p.config' by rule 6
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig.g' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig1.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig1.g' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig2.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig2.g' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig3.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig3.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle3.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle3.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/gp_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle4.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle4.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle5.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle5.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat5.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat5.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat4.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat4.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p.config' by rule 6
+
+*** Action on file `xcellnamerequester.g'
+No prompt for file `xcellnamerequester.g' by rule 1
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+Do nothing with file `purkinje.log' by rule 2
+
+*** Action on file `prcs.merge'
+Do nothing with file `prcs.merge' by rule 2
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+Add file `library/cells/example/example.p.config' by rule 14
+
+*** Action on file `library/cells/example/passive.g'
+Add file `library/cells/example/passive.g' by rule 14
+
+*** Action on file `library/cells/example/example.p'
+Add file `library/cells/example/example.p' by rule 14
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Fri, 06 Jan 2006 21:56:29 -0600
+Common version:   0.73
+Selected version: 0.74
+Working version:  Release2-1.4(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+Copied working file `ArchCopy' to `obsolete/ArchCopy.v0'
+Replace file `ArchCopy' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+No prompt for file `xgraph.g' by rule 4
+
+*** Action on file `xcell.g'
+No prompt for file `xcell.g' by rule 1
+
+*** Action on file `utility.g'
+No prompt for file `utility.g' by rule 1
+
+*** Action on file `settings.g'
+No prompt for file `settings.g' by rule 4
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 4
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 4
+
+*** Action on file `control.g'
+No prompt for file `control.g' by rule 1
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+No prompt for file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 1
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+No prompt for file `actions.g' by rule 1
+
+*** Action on file `TUTORIAL.g'
+No prompt for file `TUTORIAL.g' by rule 4
+
+*** Action on file `README'
+No prompt for file `README' by rule 4
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+No prompt for file `help.txt' by rule 4
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `TODO'
+No prompt for file `TODO' by rule 1
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file [directory:contrib]
+No prompt for file [directory:contrib] by rule 1
+
+*** Action on file `contrib/README'
+No prompt for file `contrib/README' by rule 1
+
+*** Action on file `contrib/passive/fileio_act.g'
+No prompt for file `contrib/passive/fileio_act.g' by rule 1
+
+*** Action on file `contrib/passive/Purk_pconst.g'
+No prompt for file `contrib/passive/Purk_pconst.g' by rule 1
+
+*** Action on file `contrib/passive/PASSIVE.g'
+No prompt for file `contrib/passive/PASSIVE.g' by rule 1
+
+*** Action on file `contrib/passive/ACTIVE.g'
+No prompt for file `contrib/passive/ACTIVE.g' by rule 1
+
+*** Action on file [directory:patches]
+No prompt for file [directory:patches] by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch'
+No prompt for file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch'
+No prompt for file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-xtree.1.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-xtree.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch' by rule 1
+
+*** Action on file `patches/README'
+No prompt for file `patches/README' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle1.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle1.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle2.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle2.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1_v2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1_v2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat1.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat1.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat3.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat3.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat2.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat2.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p.config'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p.config' by rule 6
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig.g' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig1.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig1.g' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig2.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig2.g' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig3.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig3.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle3.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle3.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/gp_pc1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle4.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle4.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle5.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle5.g' by rule 6
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p.config' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat5.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat5.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat4.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat4.g' by rule 6
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p.config' by rule 6
+
+*** Action on file `xcellnamerequester.g'
+No prompt for file `xcellnamerequester.g' by rule 1
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+No prompt for file `library/cells/example/passive.g' by rule 1
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Thu, 26 Jan 2006 15:46:00 -0600
+Common version:   Release2-1-2.2
+Selected version: 0.89
+Working version:  Release2-1-2.2(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+Copied working file `ArchCopy' to `obsolete/ArchCopy.v0'
+Replace file `ArchCopy' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+Do nothing with file `XCLib.s' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+Copied working file `xgraph.g' to `obsolete/xgraph.g.v0'
+Replace file `xgraph.g' by rule 3
+
+*** Action on file `xcell.g'
+Copied working file `xcell.g' to `obsolete/xcell.g.v0'
+Replace file `xcell.g' by rule 3
+
+*** Action on file `utility.g'
+Copied working file `utility.g' to `obsolete/utility.g.v0'
+Replace file `utility.g' by rule 3
+
+*** Action on file `settings.g'
+Copied working file `settings.g' to `obsolete/settings.g.v0'
+Replace file `settings.g' by rule 3
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `control.g'
+Copied working file `control.g' to `obsolete/control.g.v0'
+Replace file `control.g' by rule 3
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+No prompt for file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 1
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+Copied working file `actions.g' to `obsolete/actions.g.v0'
+Replace file `actions.g' by rule 3
+
+*** Action on file `TUTORIAL.g'
+Copied working file `TUTORIAL.g' to `obsolete/TUTORIAL.g.v0'
+Replace file `TUTORIAL.g' by rule 3
+
+*** Action on file `README'
+No prompt for file `README' by rule 1
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+No prompt for file `help.txt' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `TODO'
+No prompt for file `TODO' by rule 1
+
+*** Action on file `prcs.merge'
+Do nothing with file `prcs.merge' by rule 3
+
+*** Action on file `stack.g'
+Copied working file `stack.g' to `obsolete/stack.g.v0'
+Replace file `stack.g' by rule 3
+
+*** Action on file [directory:contrib]
+No prompt for file [directory:contrib] by rule 1
+
+*** Action on file `contrib/README'
+No prompt for file `contrib/README' by rule 1
+
+*** Action on file `contrib/passive/fileio_act.g'
+No prompt for file `contrib/passive/fileio_act.g' by rule 1
+
+*** Action on file `contrib/passive/Purk_pconst.g'
+No prompt for file `contrib/passive/Purk_pconst.g' by rule 1
+
+*** Action on file `contrib/passive/PASSIVE.g'
+No prompt for file `contrib/passive/PASSIVE.g' by rule 1
+
+*** Action on file `contrib/passive/ACTIVE.g'
+No prompt for file `contrib/passive/ACTIVE.g' by rule 1
+
+*** Action on file [directory:patches]
+No prompt for file [directory:patches] by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch'
+No prompt for file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch'
+No prompt for file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch'
+No prompt for file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-xtree.1.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-xtree.1.patch' by rule 1
+
+*** Action on file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch'
+No prompt for file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch' by rule 1
+
+*** Action on file `patches/README'
+No prompt for file `patches/README' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+Copied working file `library/segments/dendrite.g' to `library/segments/obsolete/dendrite.g.v0'
+Replace file `library/segments/dendrite.g' by rule 3
+
+*** Action on file `library/segments/soma.g'
+Copied working file `library/segments/soma.g' to `library/segments/obsolete/soma.g.v0'
+Replace file `library/segments/soma.g' by rule 3
+
+*** Action on file `library/segments/compartment.g'
+Copied working file `library/segments/compartment.g' to `library/segments/obsolete/compartment.g.v0'
+Replace file `library/segments/compartment.g' by rule 3
+
+The file `xcellnamerequester.g' was renamed to `xcell_name_requester.g'
+*** Action on file [W: xcell_name_requester.g, C: xcellnamerequester.g, S: xcell_name_requester.g]
+Copied working file `xcell_name_requester.g' to `obsolete/xcell_name_requester.g.v0'
+Replace file [W: xcell_name_requester.g, C: xcellnamerequester.g, S: xcell_name_requester.g] by rule 3
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+Do nothing with file `purkinje.log' by rule 3
+
+*** Action on file [symlink:cell.g]
+Do nothing with file [symlink:cell.g] by rule 3
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+No prompt for file `library/cells/example/passive.g' by rule 1
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc1.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle1.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle1.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle2.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle2.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/turtle_pc2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/turtle_pc2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1_v2.p'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1_v2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat1.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat1.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat3.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat3.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat2.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat2.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/rat_pc1.p.config'
+Do nothing with file `library/cells/purkinje_rat/rat_pc1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig.g' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig1.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig1.g' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig2.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig2.g' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc2.p.config'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc3.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc3.p' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/gp_pc1.p'
+Do nothing with file `library/cells/purkinje_guineapig/gp_pc1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_guineapig/purkinje_guineapig3.g'
+Do nothing with file `library/cells/purkinje_guineapig/purkinje_guineapig3.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle3.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle3.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/gp_pc1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/gp_pc1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle4.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle4.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p2.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_1.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/purkinje_turtle5.g'
+Do nothing with file `library/cells/purkinje_turtle/purkinje_turtle5.g' by rule 14
+
+*** Action on file `library/cells/purkinje_turtle/TurtlePC062504_2.p'
+Do nothing with file `library/cells/purkinje_turtle/TurtlePC062504_2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p.config' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat5.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat5.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_2.p'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_2.p' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/purkinje_rat4.g'
+Do nothing with file `library/cells/purkinje_rat/purkinje_rat4.g' by rule 14
+
+*** Action on file `library/cells/purkinje_rat/RatPC062504_1.p.config'
+Do nothing with file `library/cells/purkinje_rat/RatPC062504_1.p.config' by rule 14
+
+*** Action on file `output.g'
+Add file `output.g' by rule 14
+
+*** Action on file `simulation_sequence.g'
+Add file `simulation_sequence.g' by rule 14
+
+*** Action on file `input.g'
+Add file `input.g' by rule 14
+
+*** Action on file `cell_path.g'
+Add file `cell_path.g' by rule 14
+
+*** Action on file `compare.g'
+Do nothing with file `compare.g' by rule 14
+
+*** Action on file `compartment_current.g'
+Do nothing with file `compartment_current.g' by rule 14
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+Add populate ignore element `^simulation_sequences' by rule 14
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Wed, 08 Feb 2006 15:00:56 -0600
+Common version:   Release2-2.2
+Selected version: 0.91
+Working version:  Release2-2.2(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+Copied working file `xgraph.g' to `obsolete/xgraph.g.v0'
+Replace file `xgraph.g' by rule 3
+
+*** Action on file `xcell.g'
+Copied working file `xcell.g' to `obsolete/xcell.g.v0'
+Replace file `xcell.g' by rule 3
+
+*** Action on file `utility.g'
+Copied working file `utility.g' to `obsolete/utility.g.v0'
+Replace file `utility.g' by rule 3
+
+*** Action on file `settings.g'
+Copied working file `settings.g' to `obsolete/settings.g.v0'
+Replace file `settings.g' by rule 3
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+Copied working file `library/cells/purkinje_eds1994/psmall.p' to `library/cells/purkinje_eds1994/obsolete/psmall.p.v0'
+Replace file `library/cells/purkinje_eds1994/psmall.p' by rule 3
+
+*** Action on file `mapping.g'
+Copied working file `mapping.g' to `obsolete/mapping.g.v0'
+Replace file `mapping.g' by rule 3
+
+*** Action on file `info.g'
+Copied working file `info.g' to `obsolete/info.g.v0'
+Replace file `info.g' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+Copied working file `credits.txt' to `obsolete/credits.txt.v0'
+Replace file `credits.txt' by rule 3
+
+*** Action on file `control.g'
+Copied working file `control.g' to `obsolete/control.g.v0'
+Replace file `control.g' by rule 3
+
+*** Action on file `config.g'
+Copied working file `config.g' to `obsolete/config.g.v0'
+Replace file `config.g' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+Copied working file `library/cells/purkinje_eds1994/purkinje_eds1994.g' to `library/cells/purkinje_eds1994/obsolete/purkinje_eds1994.g.v0'
+Replace file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 3
+
+*** Action on file `bounds.txt'
+Copied working file `bounds.txt' to `obsolete/bounds.txt.v0'
+Replace file `bounds.txt' by rule 3
+
+*** Action on file `actions.g'
+Copied working file `actions.g' to `obsolete/actions.g.v0'
+Replace file `actions.g' by rule 3
+
+*** Action on file `TUTORIAL.g'
+Copied working file `TUTORIAL.g' to `obsolete/TUTORIAL.g.v0'
+Replace file `TUTORIAL.g' by rule 3
+
+*** Action on file `README'
+Copied working file `README' to `obsolete/README.v0'
+Replace file `README' by rule 3
+
+*** Action on file `library/channels/Purk_syn.g'
+Copied working file `library/channels/Purk_syn.g' to `library/channels/obsolete/Purk_syn.g.v0'
+Replace file `library/channels/Purk_syn.g' by rule 3
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+Copied working file `library/segments/Purk_cicomp.g' to `library/segments/obsolete/Purk_cicomp.g.v0'
+Replace file `library/segments/Purk_cicomp.g' by rule 3
+
+*** Action on file `library/channels/Purk_chansave.g'
+Copied working file `library/channels/Purk_chansave.g' to `library/channels/obsolete/Purk_chansave.g.v0'
+Replace file `library/channels/Purk_chansave.g' by rule 3
+
+*** Action on file `library/channels/Purk_chanload.g'
+Copied working file `library/channels/Purk_chanload.g' to `library/channels/obsolete/Purk_chanload.g.v0'
+Replace file `library/channels/Purk_chanload.g' by rule 3
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+Copied working file `help.txt' to `obsolete/help.txt.v0'
+Replace file `help.txt' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+Copied working file `library/cells/purkinje_eds1994/Purk2M9s.p' to `library/cells/purkinje_eds1994/obsolete/Purk2M9s.p.v0'
+Replace file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 3
+
+*** Action on file `bounds.g'
+Copied working file `bounds.g' to `obsolete/bounds.g.v0'
+Replace file `bounds.g' by rule 3
+
+*** Action on file `TODO'
+No prompt for file `TODO' by rule 1
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 1
+
+*** Action on file `stack.g'
+Copied working file `stack.g' to `obsolete/stack.g.v0'
+Replace file `stack.g' by rule 3
+
+*** Action on file [directory:contrib]
+Delete file [directory:contrib] by rule 7
+
+*** Action on file `contrib/README'
+Copied working file `contrib/README' to `contrib/obsolete/README.v0'
+Delete file `contrib/README' by rule 7
+
+*** Action on file `contrib/passive/fileio_act.g'
+Copied working file `contrib/passive/fileio_act.g' to `contrib/passive/obsolete/fileio_act.g.v0'
+Delete file `contrib/passive/fileio_act.g' by rule 7
+
+*** Action on file `contrib/passive/Purk_pconst.g'
+Copied working file `contrib/passive/Purk_pconst.g' to `contrib/passive/obsolete/Purk_pconst.g.v0'
+Delete file `contrib/passive/Purk_pconst.g' by rule 7
+
+*** Action on file `contrib/passive/PASSIVE.g'
+Copied working file `contrib/passive/PASSIVE.g' to `contrib/passive/obsolete/PASSIVE.g.v0'
+Delete file `contrib/passive/PASSIVE.g' by rule 7
+
+*** Action on file `contrib/passive/ACTIVE.g'
+Copied working file `contrib/passive/ACTIVE.g' to `contrib/passive/obsolete/ACTIVE.g.v0'
+Delete file `contrib/passive/ACTIVE.g' by rule 7
+
+*** Action on file [directory:patches]
+Delete file [directory:patches] by rule 7
+
+*** Action on file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch'
+Copied working file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch' to `patches/obsolete/purkinje-0.58-purkinje-purkinje-film.1.patch.v0'
+Delete file `patches/purkinje-0.58-purkinje-purkinje-film.1.patch' by rule 7
+
+*** Action on file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch'
+Copied working file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' to `patches/obsolete/purkinje-0.58-purkinje-parpat-storage-film.3.patch.v0'
+Delete file `patches/purkinje-0.58-purkinje-parpat-storage-film.3.patch' by rule 7
+
+*** Action on file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch'
+Copied working file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch' to `patches/obsolete/purkinje-0.55-purkinje-AnyChanMode.2.patch.v0'
+Delete file `patches/purkinje-0.55-purkinje-AnyChanMode.2.patch' by rule 7
+
+*** Action on file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch'
+Copied working file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch' to `patches/obsolete/purkinje-0.43-purkinje-SimulationActions.1.patch.v0'
+Delete file `patches/purkinje-0.43-purkinje-SimulationActions.1.patch' by rule 7
+
+*** Action on file `patches/purkinje-0.39-purkinje-xtree.1.patch'
+Copied working file `patches/purkinje-0.39-purkinje-xtree.1.patch' to `patches/obsolete/purkinje-0.39-purkinje-xtree.1.patch.v0'
+Delete file `patches/purkinje-0.39-purkinje-xtree.1.patch' by rule 7
+
+*** Action on file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch'
+Copied working file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch' to `patches/obsolete/purkinje-0.39-purkinje-ActivePassive.2.patch.v0'
+Delete file `patches/purkinje-0.39-purkinje-ActivePassive.2.patch' by rule 7
+
+*** Action on file `patches/README'
+Copied working file `patches/README' to `patches/obsolete/README.v0'
+Delete file `patches/README' by rule 7
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+Copied working file `xcell_name_requester.g' to `obsolete/xcell_name_requester.g.v0'
+Replace file `xcell_name_requester.g' by rule 3
+
+*** Action on file `library/channels/Purk_chan.g'
+Copied working file `library/channels/Purk_chan.g' to `library/channels/obsolete/Purk_chan.g.v0'
+Replace file `library/channels/Purk_chan.g' by rule 3
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 1
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+Copied working file `library/cells/example/passive.g' to `library/cells/example/obsolete/passive.g.v0'
+Replace file `library/cells/example/passive.g' by rule 3
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+Copied working file `output.g' to `obsolete/output.g.v0'
+Replace file `output.g' by rule 3
+
+*** Action on file `simulation_sequence.g'
+Copied working file `simulation_sequence.g' to `obsolete/simulation_sequence.g.v0'
+Replace file `simulation_sequence.g' by rule 3
+
+*** Action on file `input.g'
+Copied working file `input.g' to `obsolete/input.g.v0'
+Replace file `input.g' by rule 3
+
+*** Action on file `cell_path.g'
+Copied working file `cell_path.g' to `obsolete/cell_path.g.v0'
+Replace file `cell_path.g' by rule 3
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Mon, 20 Feb 2006 14:12:10 -0600
+Common version:   0.91
+Selected version: 0.93
+Working version:  Release2-2.3(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+No prompt for file `xgraph.g' by rule 1
+
+*** Action on file `xcell.g'
+No prompt for file `xcell.g' by rule 1
+
+*** Action on file `utility.g'
+No prompt for file `utility.g' by rule 1
+
+*** Action on file `settings.g'
+No prompt for file `settings.g' by rule 1
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `control.g'
+No prompt for file `control.g' by rule 1
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+No prompt for file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 1
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+No prompt for file `actions.g' by rule 1
+
+*** Action on file `TUTORIAL.g'
+No prompt for file `TUTORIAL.g' by rule 1
+
+*** Action on file `README'
+No prompt for file `README' by rule 1
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+Copied working file `help.txt' to `obsolete/help.txt.v1'
+Replace file `help.txt' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `TODO'
+No prompt for file `TODO' by rule 1
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+No prompt for file `xcell_name_requester.g' by rule 1
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+No prompt for file `library/cells/example/passive.g' by rule 1
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+No prompt for file `output.g' by rule 1
+
+*** Action on file `simulation_sequence.g'
+No prompt for file `simulation_sequence.g' by rule 1
+
+*** Action on file `input.g'
+No prompt for file `input.g' by rule 1
+
+*** Action on file `cell_path.g'
+No prompt for file `cell_path.g' by rule 1
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Mon, 20 Feb 2006 16:27:13 -0600
+Common version:   0.93
+Selected version: 0.96
+Working version:  Release2-2.4(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+Copied working file `xgraph.g' to `obsolete/xgraph.g.v1'
+Replace file `xgraph.g' by rule 3
+
+*** Action on file `xcell.g'
+Copied working file `xcell.g' to `obsolete/xcell.g.v1'
+Replace file `xcell.g' by rule 3
+
+*** Action on file `utility.g'
+Copied working file `utility.g' to `obsolete/utility.g.v1'
+Replace file `utility.g' by rule 3
+
+*** Action on file `settings.g'
+Copied working file `settings.g' to `obsolete/settings.g.v1'
+Replace file `settings.g' by rule 3
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+Copied working file `mapping.g' to `obsolete/mapping.g.v1'
+Replace file `mapping.g' by rule 3
+
+*** Action on file `info.g'
+Copied working file `info.g' to `obsolete/info.g.v1'
+Replace file `info.g' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `control.g'
+Copied working file `control.g' to `obsolete/control.g.v1'
+Replace file `control.g' by rule 3
+
+*** Action on file `config.g'
+Copied working file `config.g' to `obsolete/config.g.v1'
+Replace file `config.g' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+Copied working file `library/cells/purkinje_eds1994/purkinje_eds1994.g' to `library/cells/purkinje_eds1994/obsolete/purkinje_eds1994.g.v1'
+Replace file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 3
+
+*** Action on file `bounds.txt'
+Copied working file `bounds.txt' to `obsolete/bounds.txt.v1'
+Replace file `bounds.txt' by rule 3
+
+*** Action on file `actions.g'
+Copied working file `actions.g' to `obsolete/actions.g.v1'
+Replace file `actions.g' by rule 3
+
+*** Action on file `TUTORIAL.g'
+Copied working file `TUTORIAL.g' to `obsolete/TUTORIAL.g.v1'
+Replace file `TUTORIAL.g' by rule 3
+
+*** Action on file `README'
+Copied working file `README' to `obsolete/README.v1'
+Replace file `README' by rule 3
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+
+*** Merge incomplete
+
+
+*** Continuuing merge of project purkinje
+
+User:             hugo
+Date:             Mon, 20 Feb 2006 16:27:38 -0600
+Common version:   0.93
+Selected version: 0.96
+Working version:  Release2-2.4(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+No prompt for file `help.txt' by rule 5
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+Copied working file `bounds.g' to `obsolete/bounds.g.v1'
+Replace file `bounds.g' by rule 3
+
+*** Action on file `TODO'
+Copied working file `TODO' to `obsolete/TODO.v0'
+Delete file `TODO' by rule 7
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file `stack.g'
+Copied working file `stack.g' to `obsolete/stack.g.v1'
+Replace file `stack.g' by rule 3
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+Copied working file `xcell_name_requester.g' to `obsolete/xcell_name_requester.g.v1'
+Replace file `xcell_name_requester.g' by rule 3
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+Copied working file `library/cells/example/passive.g' to `library/cells/example/obsolete/passive.g.v1'
+Replace file `library/cells/example/passive.g' by rule 3
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+Copied working file `output.g' to `obsolete/output.g.v1'
+Replace file `output.g' by rule 3
+
+*** Action on file `simulation_sequence.g'
+Copied working file `simulation_sequence.g' to `obsolete/simulation_sequence.g.v1'
+Replace file `simulation_sequence.g' by rule 3
+
+*** Action on file `input.g'
+Copied working file `input.g' to `obsolete/input.g.v1'
+Replace file `input.g' by rule 3
+
+*** Action on file `cell_path.g'
+Copied working file `cell_path.g' to `obsolete/cell_path.g.v1'
+Replace file `cell_path.g' by rule 3
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Mon, 20 Feb 2006 16:37:52 -0600
+Common version:   0.96
+Selected version: 0.97
+Working version:  Release2-2.5(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+No prompt for file `xgraph.g' by rule 1
+
+*** Action on file `xcell.g'
+No prompt for file `xcell.g' by rule 1
+
+*** Action on file `utility.g'
+No prompt for file `utility.g' by rule 1
+
+*** Action on file `settings.g'
+No prompt for file `settings.g' by rule 1
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `control.g'
+No prompt for file `control.g' by rule 1
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+No prompt for file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 1
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+No prompt for file `actions.g' by rule 1
+
+*** Action on file `TUTORIAL.g'
+No prompt for file `TUTORIAL.g' by rule 1
+
+*** Action on file `README'
+No prompt for file `README' by rule 1
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+Copied working file `help.txt' to `obsolete/help.txt.v2'
+Replace file `help.txt' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+No prompt for file `xcell_name_requester.g' by rule 1
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+No prompt for file `library/cells/example/passive.g' by rule 1
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+No prompt for file `output.g' by rule 1
+
+*** Action on file `simulation_sequence.g'
+No prompt for file `simulation_sequence.g' by rule 1
+
+*** Action on file `input.g'
+No prompt for file `input.g' by rule 1
+
+*** Action on file `cell_path.g'
+No prompt for file `cell_path.g' by rule 1
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Tue, 21 Feb 2006 09:51:54 -0600
+Common version:   0.97
+Selected version: 0.98
+Working version:  Release2-2.6(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+Copied working file `xgraph.g' to `obsolete/xgraph.g.v2'
+Replace file `xgraph.g' by rule 3
+
+*** Action on file `xcell.g'
+Copied working file `xcell.g' to `obsolete/xcell.g.v2'
+Replace file `xcell.g' by rule 3
+
+*** Action on file `utility.g'
+Copied working file `utility.g' to `obsolete/utility.g.v2'
+Replace file `utility.g' by rule 3
+
+*** Action on file `settings.g'
+Copied working file `settings.g' to `obsolete/settings.g.v2'
+Replace file `settings.g' by rule 3
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+Copied working file `mapping.g' to `obsolete/mapping.g.v2'
+Replace file `mapping.g' by rule 3
+
+*** Action on file `info.g'
+Copied working file `info.g' to `obsolete/info.g.v2'
+Replace file `info.g' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `control.g'
+Copied working file `control.g' to `obsolete/control.g.v2'
+Replace file `control.g' by rule 3
+
+*** Action on file `config.g'
+Copied working file `config.g' to `obsolete/config.g.v2'
+Replace file `config.g' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+Copied working file `library/cells/purkinje_eds1994/purkinje_eds1994.g' to `library/cells/purkinje_eds1994/obsolete/purkinje_eds1994.g.v2'
+Replace file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 3
+
+*** Action on file `bounds.txt'
+Copied working file `bounds.txt' to `obsolete/bounds.txt.v2'
+Replace file `bounds.txt' by rule 3
+
+*** Action on file `actions.g'
+Copied working file `actions.g' to `obsolete/actions.g.v2'
+Replace file `actions.g' by rule 3
+
+*** Action on file `TUTORIAL.g'
+Copied working file `TUTORIAL.g' to `obsolete/TUTORIAL.g.v2'
+Replace file `TUTORIAL.g' by rule 3
+
+*** Action on file `README'
+No prompt for file `README' by rule 1
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+No prompt for file `help.txt' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+Copied working file `bounds.g' to `obsolete/bounds.g.v2'
+Replace file `bounds.g' by rule 3
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file `stack.g'
+Copied working file `stack.g' to `obsolete/stack.g.v2'
+Replace file `stack.g' by rule 3
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+Copied working file `xcell_name_requester.g' to `obsolete/xcell_name_requester.g.v2'
+Replace file `xcell_name_requester.g' by rule 3
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+Copied working file `library/cells/example/passive.g' to `library/cells/example/obsolete/passive.g.v2'
+Replace file `library/cells/example/passive.g' by rule 3
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+Copied working file `output.g' to `obsolete/output.g.v2'
+Replace file `output.g' by rule 3
+
+*** Action on file `simulation_sequence.g'
+Copied working file `simulation_sequence.g' to `obsolete/simulation_sequence.g.v2'
+Replace file `simulation_sequence.g' by rule 3
+
+*** Action on file `input.g'
+Copied working file `input.g' to `obsolete/input.g.v2'
+Replace file `input.g' by rule 3
+
+*** Action on file `cell_path.g'
+Copied working file `cell_path.g' to `obsolete/cell_path.g.v2'
+Replace file `cell_path.g' by rule 3
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Tue, 21 Feb 2006 10:06:32 -0600
+Common version:   0.98
+Selected version: 0.99
+Working version:  Release2-2.9(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+Copied working file `ArchCopy' to `obsolete/ArchCopy.v0'
+Replace file `ArchCopy' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+No prompt for file `xgraph.g' by rule 1
+
+*** Action on file `xcell.g'
+No prompt for file `xcell.g' by rule 1
+
+*** Action on file `utility.g'
+No prompt for file `utility.g' by rule 1
+
+*** Action on file `settings.g'
+No prompt for file `settings.g' by rule 1
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `control.g'
+No prompt for file `control.g' by rule 1
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+No prompt for file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 1
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+No prompt for file `actions.g' by rule 1
+
+*** Action on file `TUTORIAL.g'
+No prompt for file `TUTORIAL.g' by rule 1
+
+*** Action on file `README'
+No prompt for file `README' by rule 1
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+No prompt for file `help.txt' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+No prompt for file `xcell_name_requester.g' by rule 1
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+No prompt for file `library/cells/example/passive.g' by rule 1
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+No prompt for file `output.g' by rule 1
+
+*** Action on file `simulation_sequence.g'
+No prompt for file `simulation_sequence.g' by rule 1
+
+*** Action on file `input.g'
+No prompt for file `input.g' by rule 1
+
+*** Action on file `cell_path.g'
+No prompt for file `cell_path.g' by rule 1
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Tue, 21 Feb 2006 17:01:45 -0600
+Common version:   0.99
+Selected version: 0.100
+Working version:  Release2-2.10(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+No prompt for file `xgraph.g' by rule 1
+
+*** Action on file `xcell.g'
+No prompt for file `xcell.g' by rule 1
+
+*** Action on file `utility.g'
+No prompt for file `utility.g' by rule 1
+
+*** Action on file `settings.g'
+No prompt for file `settings.g' by rule 1
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+No prompt for file `credits.txt' by rule 1
+
+*** Action on file `control.g'
+No prompt for file `control.g' by rule 1
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+No prompt for file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 1
+
+*** Action on file `bounds.txt'
+No prompt for file `bounds.txt' by rule 1
+
+*** Action on file `actions.g'
+No prompt for file `actions.g' by rule 1
+
+*** Action on file `TUTORIAL.g'
+No prompt for file `TUTORIAL.g' by rule 1
+
+*** Action on file `README'
+No prompt for file `README' by rule 1
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+Copied working file `help.txt' to `obsolete/help.txt.v3'
+Replace file `help.txt' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 4
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+No prompt for file `xcell_name_requester.g' by rule 1
+
+*** Action on file `library/channels/Purk_chan.g'
+No prompt for file `library/channels/Purk_chan.g' by rule 1
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 4
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+No prompt for file `library/cells/example/passive.g' by rule 1
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+No prompt for file `output.g' by rule 1
+
+*** Action on file `simulation_sequence.g'
+No prompt for file `simulation_sequence.g' by rule 1
+
+*** Action on file `input.g'
+No prompt for file `input.g' by rule 1
+
+*** Action on file `cell_path.g'
+No prompt for file `cell_path.g' by rule 1
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+
+
+*** Beginning merge of project purkinje
+
+User:             hugo
+Date:             Mon, 14 Aug 2006 14:34:35 -0500
+Common version:   Release2-2.11
+Selected version: multi-cell-views.15
+Working version:  Release2-2.11(w)
+
+*** Action on file `ArchMake'
+No prompt for file `ArchMake' by rule 1
+
+*** Action on file `ArchCopy'
+No prompt for file `ArchCopy' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p.config'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p.config' by rule 1
+
+*** Action on file `XCLib.s'
+No prompt for file `XCLib.s' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p.config'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p.config' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/Purkinje4M9.p'
+No prompt for file `library/cells/purkinje_eds1994/Purkinje4M9.p' by rule 1
+
+*** Action on file `xgraph.g'
+Copied working file `xgraph.g' to `obsolete/xgraph.g.v0'
+Replace file `xgraph.g' by rule 3
+
+*** Action on file `xcell.g'
+Copied working file `xcell.g' to `obsolete/xcell.g.v0'
+Replace file `xcell.g' by rule 3
+
+*** Action on file `utility.g'
+Copied working file `utility.g' to `obsolete/utility.g.v0'
+Replace file `utility.g' by rule 3
+
+*** Action on file `settings.g'
+Copied working file `settings.g' to `obsolete/settings.g.v0'
+Replace file `settings.g' by rule 3
+
+*** Action on file `rainbow3'
+No prompt for file `rainbow3' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/psmall.p'
+No prompt for file `library/cells/purkinje_eds1994/psmall.p' by rule 1
+
+*** Action on file `mapping.g'
+No prompt for file `mapping.g' by rule 1
+
+*** Action on file `info.g'
+No prompt for file `info.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/small.p'
+No prompt for file `library/cells/purkinje_eds1994/small.p' by rule 1
+
+*** Action on file `credits.txt'
+Copied working file `credits.txt' to `obsolete/credits.txt.v0'
+Replace file `credits.txt' by rule 3
+
+*** Action on file `control.g'
+Copied working file `control.g' to `obsolete/control.g.v0'
+Replace file `control.g' by rule 3
+
+*** Action on file `config.g'
+No prompt for file `config.g' by rule 1
+
+*** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+Copied working file `library/cells/purkinje_eds1994/purkinje_eds1994.g' to `library/cells/purkinje_eds1994/obsolete/purkinje_eds1994.g.v0'
+Replace file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 3
+
+*** Action on file `bounds.txt'
+Copied working file `bounds.txt' to `obsolete/bounds.txt.v0'
+Replace file `bounds.txt' by rule 3
+
+*** Action on file `actions.g'
+Copied working file `actions.g' to `obsolete/actions.g.v0'
+Replace file `actions.g' by rule 3
+
+*** Action on file `TUTORIAL.g'
+Copied working file `TUTORIAL.g' to `obsolete/TUTORIAL.g.v0'
+Replace file `TUTORIAL.g' by rule 3
+
+*** Action on file `README'
+Copied working file `README' to `obsolete/README.v0'
+Replace file `README' by rule 3
+
+*** Action on file `library/channels/Purk_syn.g'
+No prompt for file `library/channels/Purk_syn.g' by rule 1
+
+*** Action on file `Purk_const.g'
+No prompt for file `Purk_const.g' by rule 1
+
+*** Action on file `library/segments/Purk_cicomp.g'
+No prompt for file `library/segments/Purk_cicomp.g' by rule 1
+
+*** Action on file `library/channels/Purk_chansave.g'
+No prompt for file `library/channels/Purk_chansave.g' by rule 1
+
+*** Action on file `library/channels/Purk_chanload.g'
+No prompt for file `library/channels/Purk_chanload.g' by rule 1
+
+*** Action on file `XCLib.u'
+No prompt for file `XCLib.u' by rule 1
+
+*** Action on file `help.txt'
+Copied working file `help.txt' to `obsolete/help.txt.v0'
+Replace file `help.txt' by rule 3
+
+*** Action on file `library/cells/purkinje_eds1994/Purk2M9s.p'
+No prompt for file `library/cells/purkinje_eds1994/Purk2M9s.p' by rule 1
+
+*** Action on file `bounds.g'
+No prompt for file `bounds.g' by rule 1
+
+*** Action on file `prcs.merge'
+No prompt for file `prcs.merge' by rule 1
+
+*** Action on file `stack.g'
+No prompt for file `stack.g' by rule 1
+
+*** Action on file `perl/scrop_ppm'
+No prompt for file `perl/scrop_ppm' by rule 1
+
+*** Action on file `perl/merge_ppm'
+No prompt for file `perl/merge_ppm' by rule 1
+
+*** Action on file `perl/label_ppm'
+No prompt for file `perl/label_ppm' by rule 1
+
+*** Action on file `perl/krop_ppm'
+No prompt for file `perl/krop_ppm' by rule 1
+
+*** Action on file `perl/crop_ppm'
+No prompt for file `perl/crop_ppm' by rule 1
+
+*** Action on file `library/segments/axon.g'
+No prompt for file `library/segments/axon.g' by rule 1
+
+*** Action on file `library/segments/dendrite.g'
+No prompt for file `library/segments/dendrite.g' by rule 1
+
+*** Action on file `library/segments/soma.g'
+No prompt for file `library/segments/soma.g' by rule 1
+
+*** Action on file `library/segments/compartment.g'
+No prompt for file `library/segments/compartment.g' by rule 1
+
+*** Action on file `xcell_name_requester.g'
+No prompt for file `xcell_name_requester.g' by rule 1
+
+*** Action on file `library/channels/Purk_chan.g'
+Copied working file `library/channels/Purk_chan.g' to `library/channels/obsolete/Purk_chan.g.v0'
+Replace file `library/channels/Purk_chan.g' by rule 3
+
+*** Action on file `purkinje.log'
+No prompt for file `purkinje.log' by rule 1
+
+*** Action on file [symlink:cell.g]
+No prompt for file [symlink:cell.g] by rule 1
+
+*** Action on file `library/cells/example/example.p.config'
+No prompt for file `library/cells/example/example.p.config' by rule 1
+
+*** Action on file `library/cells/example/passive.g'
+Copied working file `library/cells/example/passive.g' to `library/cells/example/obsolete/passive.g.v0'
+Replace file `library/cells/example/passive.g' by rule 3
+
+*** Action on file `library/cells/example/example.p'
+No prompt for file `library/cells/example/example.p' by rule 1
+
+*** Action on file `output.g'
+Copied working file `output.g' to `obsolete/output.g.v0'
+Replace file `output.g' by rule 3
+
+*** Action on file `simulation_sequence.g'
+No prompt for file `simulation_sequence.g' by rule 1
+
+*** Action on file `input.g'
+Copied working file `input.g' to `obsolete/input.g.v0'
+Replace file `input.g' by rule 3
+
+*** Action on file `cell_path.g'
+No prompt for file `cell_path.g' by rule 1
+
+*** Action on file `configuration/main.g'
+Add file `configuration/main.g' by rule 14
+
+*** Action on file `configuration/pf_beam.g'
+Add file `configuration/pf_beam.g' by rule 14
+
+*** Action on file `configuration/background.g'
+Add file `configuration/background.g' by rule 14
+
+*** Action on file `configuration/excitation_demo.g'
+Add file `configuration/excitation_demo.g' by rule 14
+
+*** Action on file `license.txt'
+Add file `license.txt' by rule 14
+
+*** Action on file `TUTORIAL_excitation_demo.g'
+Add file `TUTORIAL_excitation_demo.g' by rule 14
+
+*** Action on populate ignore element `\.a$'
+No prompt for populate ignore element `\.a$' by rule 1
+
+*** Action on populate ignore element `core$'
+No prompt for populate ignore element `core$' by rule 1
+
+*** Action on populate ignore element `Templates.DB'
+No prompt for populate ignore element `Templates.DB' by rule 1
+
+*** Action on populate ignore element `^simulation_sequences'
+No prompt for populate ignore element `^simulation_sequences' by rule 1
+
+*** Action on populate ignore element `~$'
+No prompt for populate ignore element `~$' by rule 1
+
+*** Action on populate ignore element `\(\(^#\)\|\(/#\)\).*#$'
+No prompt for populate ignore element `\(\(^#\)\|\(/#\)\).*#$' by rule 1
+
+*** Action on populate ignore element `\.tab$'
+No prompt for populate ignore element `\.tab$' by rule 1
+
+*** Action on populate ignore element `simulation.status'
+No prompt for populate ignore element `simulation.status' by rule 1
+
+*** Action on populate ignore element `\.emacs\.desktop'
+No prompt for populate ignore element `\.emacs\.desktop' by rule 1
+
+*** Action on populate ignore element `TAGS'
+No prompt for populate ignore element `TAGS' by rule 1
+
+*** Action on populate ignore element `\.o$'
+No prompt for populate ignore element `\.o$' by rule 1
+
+*** Action on populate ignore element `obsolete'
+No prompt for populate ignore element `obsolete' by rule 1
+
+*** Action on populate ignore element `\.deps'
+No prompt for populate ignore element `\.deps' by rule 1
+
+*** Action on populate ignore element `\.gz$'
+No prompt for populate ignore element `\.gz$' by rule 1
+
+*** Action on populate ignore element `.simrc'
+No prompt for populate ignore element `.simrc' by rule 1
+
+
+*** Merge complete
+

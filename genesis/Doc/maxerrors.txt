@@ -1,0 +1,17 @@
+Routine Name:	maxerrors
+
+Description:	Sets (or displays) number of errors currently allowed before
+		a simulation is automatically stopped.
+
+Usage:		maxerrors [number-of-errors]
+
+Example:	genesis >  maxerrors
+		max errors = 10
+		genesis >  maxerrors 30
+		max errors = 30
+
+Notes:		By default, the maximum number of errors allowed before the
+		system stops a simulation is 10.
+
+See also:	maxwarnings, clearerrors
+

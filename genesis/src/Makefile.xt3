@@ -1,0 +1,311 @@
+# $Id: Makefile.xt3,v 1.2 2006/01/11 06:25:53 svitak Exp $
+#
+# GENESIS/XODUS : network simulator
+#
+# YOU MUST NOT EDIT THIS MAKEFILE TO CONFIGURE GENESIS!
+# All configuration is in the file Makefile.
+#
+# $Log: Makefile.xt3,v $
+# Revision 1.2  2006/01/11 06:25:53  svitak
+# Added Tutorials to list of things installed.
+#
+# Revision 1.1  2005/09/29 19:31:10  ghood
+# created for Cray XT3 (loosely based on Makefile.t3d)
+#
+# Revision 1.3  2005/08/08 10:42:23  svitak
+# Changed full path $(TEST) to unpathed test.
+#
+# Revision 1.2  2005/07/29 15:47:11  svitak
+# Relocated common targets to Makefile.BASE. Some architectures were making
+# in sys and shell, then all the subdirs. If you find this needs to be done
+# for your architecture, please submit a bug report at:
+# http://sourceforge.net/tracker/?func=add&group_id=141069&atid=748364
+#
+# Eliminated use of COPT in favor of CFLAGS_IN.
+#
+# Added architecture-dependent flags for compilation of SPRNG libraries to
+# corresponding Makefiles.
+#
+# Changed INSTALL to INSTALLDIR to avoid confusion with INSTALL executable.
+#
+# Added TEST variable to allow different location of 'test' executable.
+#
+# Made TMPDIR setting more prominent.
+#
+# Updated instructions for making genesis.
+#
+# Revision 1.1.1.1  2005/06/14 04:38:27  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.16  2000/06/07 05:24:33  mhucka
+# 1) Instead of MACH_DEP_FLAGS (which no longer seems to serve a purpose),
+#    now using LDFLAGS.
+# 2) Cleaned up a lot of the diagnostic print statements.
+#
+# Revision 1.15  2000/05/29 02:10:39  mhucka
+# Fixed "make install" directive, which was actually screwed up.
+#
+# Revision 1.14  2000/05/26 23:39:30  mhucka
+# Added INSTALLBIN.
+#
+# Revision 1.13  2000/05/26 22:19:49  mhucka
+# Need to copy Doc, src and other dirs during "make install".
+#
+# Revision 1.12  2000/05/19 20:08:48  mhucka
+# Need to pass value of SPRNG_LIB to make clean.
+#
+# Revision 1.11  2000/05/19 18:16:27  mhucka
+# Made it pass value of MACHINE to submakefiles during "make clean".
+#
+# Revision 1.10  2000/04/24 07:10:43  mhucka
+# Added another library parameter to handle things like the SPRNG library.
+#
+# Revision 1.9  1999/12/02 00:42:24  mhucka
+# Moved the setting of TERMCAP and TERMOPT to the top-level Makefile,
+# because at least in one case (Linux), users may have to customize the
+# value depending on which version of Linux they're running.  We want to
+# avoid having users have to modify the Makefile.MACHINE files.
+#
+# Revision 1.8  1999/10/17 23:58:35  mhucka
+# Removed XVERSION symbol definition.  It turns out it's not used anywhere.
+#
+# Revision 1.7  1998/01/15 03:17:37  venkat
+# Included-the-DISKIOSUBDIR-macro-to-be-passed-down-to-lower-level-subdirectories
+#
+# Revision 1.6  1997/07/18  19:03:58  dhb
+# Changes from PSC: create nxliblist.t3d on the fly
+#
+# Revision 1.5  1997/06/13 00:36:54  dhb
+# Added @ to suppress command echoing of echo commands
+#
+# Revision 1.4  1996/06/28 23:11:23  dhb
+# Fixed passing of correct LIBORDER macro value (e.g. RANLIB value) for
+# install targets.
+#
+# Revision 1.3  1996/06/18  07:07:08  dhb
+# Support for AR macro.
+#
+# Revision 1.2  1996/05/23  22:55:53  dhb
+# T3D/E port
+#
+# Revision 1.1  1996/05/20  22:03:03  dhb
+# Initial revision
+#
+#
+# Log: Makefile.alpha,v
+# Revision 1.3  1995/05/31  01:09:25  dhb
+# Fixed typo in libs target action which caused a sh syntax error.
+#
+# Revision 1.2  1995/04/29  01:11:24  dhb
+# Added handling of YACC, LEX and LEXLIB macros to define the
+# yacc and lex programs and the lex libraries respectively.
+#
+# Revision 1.1  1995/03/27  18:41:41  dhb
+# Initial revision
+#
+# Revision 1.8  1994/12/20  23:37:43  dhb
+# Fixed XINCLUDE handling.
+#
+# Revision 1.7  1994/12/06  01:45:40  dhb
+# Added the XINCLUDE macro
+#
+# Revision 1.6  1994/04/14  14:51:50  dhb
+# Now passes RANLIB macro down in install targets
+#
+# Revision 1.5  1994/04/04  21:25:45  dhb
+# Added RANLIB macro to handle systems without ranlib.
+#
+# Moved compiler depended macro settings to src/Makefile.
+#
+# Revision 1.4  1994/03/22  23:56:31  dhb
+# Changed codeg target to code_g (the actual program name).
+#
+# Revision 1.3  1994/03/21  18:25:36  dhb
+# Changes to make code_g program
+#
+# Revision 1.2  1993/10/19  18:53:27  dhb
+# RCS changes and libsh --> ./libsh
+#
+#
+
+XT3_MACH	=	Linux
+XT3_CC		=	$(CC)
+XT3_CFLAGS	=	$(CFLAGS_IN)
+XT3_LD		=	$(LD)
+XT3_LF		=       $(LDFLAGS)
+XT3_LLIBS	=	$(LIBS) $(EXTRALIBS)
+
+XT3FE_MACH	=	Linux
+XT3FE_CC	=	gcc
+XT3FE_CFLAGS    =       -O2
+XT3FE_LD	=	ld
+XT3FE_LF	=       
+
+
+##
+## sprng may need different flags in order to compile.
+## In general, it can be optimized at a higher level than genesis code.
+##
+RNG_CFLAGS = $(XT3_CFLAGS) -DLittleEndian -D$(MACHINE)
+
+SIMLIB		= ../lib
+XODUSLIB	= xodus
+KINETICSLIB	= kin
+KINETICSDIR	= kinetics
+KINETICSOBJ	= $(KINETICSDIR)/kinlib.o
+
+# XT3BASECODE =	ss/ss.o \
+#		sim/simlib.o \
+#		sys/utillib.o \
+#		shell/shelllib.o \
+#		par/parlib.o
+
+# XT3CONNLIBOBJ	=	oldconn/axon/axonlib.o \
+#			oldconn/synapse/synlib.o \
+#			oldconn/personal/perlib.o \
+#			oldconn/sim/simconnlib.o \
+#			oldconn/tools/toolconnlib.o
+
+# XT3OBJLIBS	=	buffer/buflib.o \
+#			segment/seglib.o \
+#			hh/hhlib.o \
+#			device/devlib.o \
+#			out/outlib.o \
+#			olf/olflib.o \
+#			tools/toollib.o \
+#			concen/conclib.o \
+#			hines/hineslib.o \
+#			user/userlib.o \
+#			pore/porelib.o \
+#			newconn/newconnlib.o \
+#			param/paramlib.o \
+#			$(DISKIOOBJ) \
+#			$(KINETICSOBJ)
+
+# for creating nxliblist.xt3
+#XT3LOADLIBS	=	output \
+#			hh \
+#			devices \
+#			buffer \
+#			segment \
+#			user \
+#			olf \
+#			tools \
+#			concen \
+#			hines \
+#			pore \
+#			newconn \
+#			param \
+#			$(DISKIOLIB) \
+#			$(KINETICSLIB)
+
+NXGENESIS =	nxloadlib.o \
+		$(BASECODE) \
+		$(OBJLIBS)
+
+MINGENESIS =	minloadlib.o \
+		$(BASECODE)
+
+FULLDIR =	startup $(SUBDIR)
+NXDIR =		startup $(NXSUBDIR)
+MINDIR =	startup $(MINSUBDIR)
+
+# =========================================================================
+
+default:
+	@echo "This is not the top level makefile"
+
+nxdefault:
+	@echo "This is not the top level makefile"
+
+mindefault:
+	@echo "This is not the top level makefile"
+
+genesis: 
+	@echo "X11 not supported on XT3, make nxdefault instead"
+
+nxgenesis: nxlibs $(NXGENESIS)
+	$(XT3_CC) $(XT3_CFLAGS) $(NXGENESIS) $(XT3_LLIBS) -o nxgenesis
+	@echo "Non-X GENESIS Compiled -- All Done"
+
+mingenesis: minlibs $(MINGENESIS)
+	$(XT3_CC) $(MINGENESIS) $(XT3_LLIBS) -o mingenesis
+	@echo "Minimal GENESIS Compiled -- All Done"
+
+code_g:
+	@rm -f sys/*.o sys/*.a ss/*.o ss/*.a shell/*.o shell/*.a
+	@(echo cd sys; cd sys; make CC="$(XT3FE_CC)" LD="$(XT3FE_LD)" CPP="$(CPP)" LDFLAGS="$(XT3FE_LF)" OS="$(OS)" MACHINE="$(XT3FE_MACH)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(XT3FE_CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)"  default; cd ..)
+	@(echo cd ss; cd ss; make CC="$(XT3FE_CC)" LD="$(XT3FE_LD)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(XT3FE_LF)" OS="$(OS)" MACHINE="$(XT3FE_MACH)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(XT3FE_CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)"  default; cd ..)
+	@(echo cd shell; cd shell; make CC="$(XT3FE_CC)" LD="$(XT3FE_LD)" CPP="$(CPP)" LDFLAGS="$(XT3FE_LF)" OS="$(OS)" MACHINE="$(XT3_MACH)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(XT3FE_CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)"  code_g; cd ..)
+	@(echo cd sys; cd sys; make CC="$(XT3FE_CC)" LD="$(XT3FE_LD)" CPP="$(CPP)" LDFLAGS="$(XT3FE_LF)" OS="$(OS)" MACHINE="$(XT3FE_MACH)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(XT3FE_CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)"  code_g; cd ..)
+	@rm -f sys/*.o sys/*.a ss/*.o ss/*.a shell/*.o shell/*.a
+	@echo "code_g Compiled"
+
+nxlibs:
+	cp diskio/interface/netcdf/netcdf-3.4/src/macros.xt3.make diskio/interface/netcdf/netcdf-3.4/src/macros.make
+	cp diskio/interface/netcdf/netcdf-3.4/src/libsrc/ncconfig.xt3.h diskio/interface/netcdf/netcdf-3.4/src/libsrc/ncconfig.h
+#	@(for i in $(NXSUBDIR); do if ( [ $$i != "convert" ] && [ $$i != "oldconn" ] ); then echo cd $$i; cd $$i; make CC="$(XT3_CC)" TMPDIR="$(TMPDIR)" SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" LD="$(XT3_LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(XT3_LF)" OS="$(OS)" MACHINE="$(XT3_MACH)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(XT3_CFLAGS)"; cd ..; fi; done)
+	@(for i in $(NXSUBDIR); do echo cd $$i; cd $$i; make CC="$(XT3_CC)" TMPDIR="$(TMPDIR)" SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" LD="$(XT3_LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(XT3_LF)" OS="$(OS)" MACHINE="$(XT3_MACH)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(XT3_CFLAGS)"; cd ..; done)
+	@echo "Non-X Libs Compiled"
+
+minlibs:
+	@(for i in $(MINSUBDIR); do echo cd $$i; cd $$i; make CC="$(XT3_CC)" TMPDIR="$(TMPDIR)" SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" LD="$(XT3_LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(XT3_LF)" OS="$(OS)" MACHINE="$(XT3_MACH)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(XT3_CFLAGS)"; cd ..;done)
+	@echo "Minimal Libs Compiled"
+
+.c.o:
+	$(XT3_CC) $(XT3_CFLAGS) -D$(MACHINE) -c $(SIMINCLUDE) $<
+
+# nxliblist.xt3: Makefile.xt3
+#	rm -f nxliblist.xt3
+#	(for i in $(NXLOADLIBS); do echo $$i >> nxliblist.xt3; done)
+
+#nxloadlib.c: nxliblist.xt3
+#	./libsh < nxliblist.xt3 > nxloadlib.c
+
+nxloadlib.c: nxliblist
+	./libsh < nxliblist > nxloadlib.c
+
+minloadlib.c: minliblist
+	./libsh < minliblist > minloadlib.c
+
+cleandist:
+	@echo "You must run cleandist from the toplevel makefile"
+
+clean:
+	@(for i in $(SUBDIR); do echo cd $$i; cd $$i; make SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" MACHINE="$(MACHINE)" SPRNG_LIB="$(SPRNG_LIB)" clean; cd ..;done)
+	-(rm -rf genesis       loadlib.o    loadlib.c)
+	-(rm -rf nxgenesis   nxloadlib.o  nxloadlib.c)
+	-(rm -rf mingenesis minloadlib.o minloadlib.c)
+	@echo "Done with Cleaning"
+
+copydirs:
+	@(if test ! ../Tutorials -ef $(INSTALLDIR)/Tutorials ; then \
+		echo "Copying Tutorials directory to $(INSTALLDIR) ..."; \
+		cp -rp ../Tutorials $(INSTALLDIR); \
+	@(if test ! ../Scripts -ef $(INSTALLDIR)/Scripts ; then \
+		echo "Copying Scripts directory to $(INSTALLDIR) ..."; \
+		cp -rp ../Scripts $(INSTALLDIR); \
+	fi)
+	@(if test ! ../Doc -ef $(INSTALLDIR)/Doc ; then \
+		echo "Copying Doc directory to $(INSTALLDIR) ..."; \
+		cp -rp ../Doc $(INSTALLDIR); \
+	fi)
+	@(if test ! ../Hyperdoc -ef $(INSTALLDIR)/Hyperdoc ; then \
+		echo "Copying Hyperdoc directory to $(INSTALLDIR) ..."; \
+		cp -rp ../Hyperdoc $(INSTALLDIR); \
+	fi)
+	@(if test ! ../src -ef $(INSTALLDIR)/src ; then \
+		echo "Copying src directory to $(INSTALLDIR) ..."; \
+		cp -rp ../src $(INSTALLDIR); \
+	fi)
+
+nxinstall: copydirs
+	@(for i in $(NXDIR); do if ( [ $$i != "convert" ] && [ $$i != "oldconn" ] ); then echo cd $$i; cd $$i; make LIBORDER="$(RANLIB)" MACHINE=$(XT3_MACH) SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" INSTALLDIR=$(INSTALLDIR) INSTALLBIN=$(INSTALLBIN) RANLIB="$(RANLIB)" install; cd ..; fi; done)
+	@cp nxgenesis $(INSTALLDIR)
+	@echo "Done with non-X install"
+
+mininstall: copydirs
+	@(for i in $(LMINDIR); do echo cd $$i; cd $$i; make SPRNG_LIB=$(SPRNG_LIB) LIBORDER="$(RANLIB)" MACHINE=$(XT3_MACH) INSTALLDIR=$(INSTALLDIR) INSTALLBIN=$(INSTALLBIN) RANLIB="$(RANLIB)" install; cd ..;done)
+	@cp mingenesis $(INSTALLDIR)
+	@echo "Done with minimal install"
+

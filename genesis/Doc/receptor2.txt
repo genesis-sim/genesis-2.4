@@ -1,0 +1,103 @@
+Object Type:	receptor2
+
+Description:	Olfactory Receptor. Takes weighted sum of any number of
+		messages to get the activation for a channel. The messages
+		represent components of an olfactory stimulus.
+
+Author:		U. S. Bhalla, Caltech (1/90)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	olf_receptor2_type  [in src/olf/olf_struct.h]
+
+Size:		172 bytes
+
+Fields:		response	table of weights to be set for each odor
+		nodors		number of odors
+		tau1		open time constant of channel
+		tau2		close time constant of channel
+		gmax		peak conductance
+		Ik		channel current
+		modulation	scale all odors; gain control on responses
+		Gk              resulting channel conductance
+		Ek		equilibrium potential
+
+                activation      channel activation calculated from incoming
+                                messages
+
+		allocated	internal flag
+		X		state variable for time response
+		Y		state variable for time response
+		xconst1		internal variable, not normally set by user
+		xconst2		internal variable, not normally set by user
+		yconst1		internal variable, not normally set by user
+		yconst2		internal variable, not normally set by user
+		norm		internal variable, not normally set by user
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	OlfReceptor2  [in src/olf/receptor2.c]
+
+Classes:	segment
+		channel
+
+Actions:	INIT
+		PROCESS
+		RESET
+		RECALC
+		SET
+		CHECK
+		SAVE2
+		RESTORE2
+
+Messages:	VOLTAGE Vm 		usual message from parent compartment
+				        to channel to tell what the membrane
+                                        potential is
+
+		ODOR activation odor_no describes odor; activation = strength
+					of particular odor; odor_no = integer
+                                        specifying response table index having
+                                        weight for that odor
+
+		MODULATION modulation	sets modulation field; provides means
+					for scaling the overall sensitivity of
+                                        receptor up or down
+
+------------------------------------------------------------------------------
+
+Notes:		Does a weighted sum of odors to get activation
+		of a channel with usual conductance properties.
+
+		The receptor2 element is a much more realistic version of an
+                olfactory receptor protein-membrane channel complex than the
+                receptor element. The receptor2 is a channel similar to the
+                synchan element, except that this channel responds to odors
+                via ODOR messages, and does not have synapses with weights and
+                delays.
+
+                Any number of odor messages may be sent to the receptor2.
+                They are scaled by the weights in the response table, and then
+                their summed effects act as the activation of the channel. The
+                channel has the usual time courses and conductance fields, and
+                can be incorporated into membrane compartments just like
+                ordinary synaptic channels.
+
+Example:	Scripts/neurokit/prototypes/newbulbchan.g
+
+                Here is a section of script that puts random numbers from 0
+                to 1 in each of the entries of the response array. You will
+                need to set the other fields (especially modulation) to
+                sensible values, of course.
+
+                create receptor2 /foo
+                setfield /foo nodors 10
+                int i
+                for (i = 0; i < 10; i = i + 1)
+                    setfield /foo response[{i}] {rand 0 1}
+                end
+
+See also:	receptor

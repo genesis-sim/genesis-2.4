@@ -1,0 +1,58 @@
+  12.  Neural Simulation Routines
+
+  GENESIS offers many routines for working with components of neural
+  simulation models.  The following tables summarize these routines:
+
+  12.1.  Buffer Routines
+
+  ______________________________________________________________________
+  Routine        Description
+  ______________________________________________________________________
+  clearbuffer     Removes events from the buffer of a buffer class element.
+  getinput        Gets synaptic input to place in a buffer.
+  putevent        Places events into the buffer of a buffer class element.
+  ______________________________________________________________________
+
+  12.2.  Compartment Routines
+
+  ______________________________________________________________________
+  Routine         Description
+  ______________________________________________________________________
+  pastechannel    Copies a prototype channel to a compartment.
+  randcomp        Randomly selects a compartment from tree root.
+  randcoord       Shuffles positions of compartments in a neuron.
+  relposition     Positions element and its child compartments based on
+                  messages rather than parent-child relationships.
+  ______________________________________________________________________
+
+  12.3.  Miscellaneous Neural Routines
+
+  ______________________________________________________________________
+  Routine           Description
+  ______________________________________________________________________
+  balanceEm         Adjusts Em field to give no net membrane current at given
+                    voltage.
+  calcCm            Calculates the approximate total membrane capacitance (Cm)
+                    of a neuron.
+  calcRm            Calculates input membrane resistance (Rm) of neuron.
+  cellsheet         Copies prototype cells into a 3-d sheet specified by
+                    coordinates in a file.
+  createmap         Makes multiple copies of an element to form a2-D array.
+  egg               Generates coordinates for points on the surface of an ovoid.
+  plane             Generates 3-d coordinates for a plane with specified
+                    dimensions and characteristics.
+  rallcalcRm        Calculates input membrane resistance (Rm) of neuron,
+                    using Rall's calculations.
+  readcell          Constructs a cell from specifications in a cell
+                    parameter file.
+  setrandfield      Sets the specified field for the element randomly
+                    according to specified distribution.
+  setspatialfield   Sets the specified field for the element according to the
+                    Gaussian of the distance between the specified coordinate
+                    and element.
+  writecell         Writes the specification of a cell to a cell
+                    parameter file.
+  ______________________________________________________________________
+
+  Also see the routines for use with tabchannel and tabgate elements in
+  ``Tables and Arrays'' (Tables.txt).

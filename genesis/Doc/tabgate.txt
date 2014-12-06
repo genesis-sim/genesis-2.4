@@ -1,0 +1,126 @@
+Object Type:	tabgate
+
+Description:	A gate with tabulated dependencies on any field for
+		opening and closing.
+
+Author:		U. S. Bhalla, Caltech (2/90)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	tab_gate_type  [in src/olf/olf_struct.h]
+
+Size:		96 bytes
+
+Fields:		activation	input field, usually accessed by messages
+		m		state of gate
+		alpha		rate variable table filled by TABCREATE
+		alpha_alloced	internal flag for table allocation
+		beta		rate variable table filled by TABCREATE
+		beta_alloced	internal flag for table allocation
+		instantaneous	flag for looking at instantaneous response
+
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	TabGate  [in src/olf/tabgate.c]
+
+Classes:	segment
+		gate
+
+Actions:	PROCESS 
+		CHECK
+		RESET 
+                SET
+                SAVE2
+                RESTORE2
+		TABCREATE 
+                TABFILL
+		CALC_MINF
+		CALC_ALPHA
+		CALC_BETA
+
+Messages:	VOLTAGE compartment-voltage
+		SUM_ALPHA value-to-sum-onto-alpha-func
+		PRD_ALPHA value-to-multiply-alpha-func-by
+		SUM_BETA value-to-sum-onto-beta-func
+		PRD_BETA value-to-multiply-beta-func-by
+		EREST resting-potential-for-resets
+
+Notes:		A gate with tabulated dependencies on any variable for opening
+		and closing. Voltage and ion concentration are the most common
+                variables for dependencies.  The tabgate object is very
+                similar to the vdep_gate object, except that it uses tables
+                for the voltage and other dependencies. It also has message
+                slots for additional dependencies.  It is normally used to
+                send MULTGATE messages to a vdep_channel.  However, this
+                combination has been largely supplanted by the tabchannel
+                object.
+
+		A gate state is calculated from the following differential
+                equation:
+
+		  dm/dt = alpha(1 - m) - beta * m
+
+		The alpha and beta functions are implemented as tables and
+		therefore have to be explicitly allocated using the TABCREATE
+		function. Copies of tabgate use the original arrays unless new
+		arrays are explicitly allocated.
+
+		The TABCREATE function
+
+		TABCREATE here is different from the table element since we
+		need to specify which table to create:
+
+		  call <element> TABCREATE <alpha/beta> <xdivs> <xmin> <xmax>
+
+		This call creates an array on alpha or on beta with xdivs
+		entries, which spans the range xmin to xmax. Values outside
+		this range are linearly extrapolated using the nearest 2 table
+		entries.
+
+		The TABFILL function
+
+                TABFILL expands the table by using interpolation on the
+		existing table entries.  The syntax is different from the
+		table element, as one has to specify the array (alpha or beta)
+		being filled:
+
+		  call <element> TABFILL <alpha/beta> <xdivs> <fill_mode>
+
+                xdivs + 1 specifies the number of entries that the expanded
+		tables should have.
+
+                fill_mode is one of
+                    0 = B-spline fill (default)
+                    1 = cubic spline fill (not yet implemented)
+                    2 = Linear fill
+
+		Scaling tables
+
+		When the fields alpha->sx, alpha->sy, alpha->ox, alpha->oy,
+		and the corresponding fields on beta are set, the table
+		element automatically scales on the entries in the
+		interpol_struct array so as to avoid scaling computations
+		during simulations.
+
+                The CALC_ALPHA, CALC_BETA, and CALC_MINF functions
+
+                The CALC_ALPHA, CALC_BETA, and CALC_MINF actions are used with
+                calls of the form
+
+			y = {call <element> CALC_ALPHA  <x-value>}
+
+		In order to access values of alpha, beta or m_inf (the steady
+		state activation, alpha/(alpha + beta)) for a particular value
+		of the dependent variable.  This feature is most often used
+		for making plots of these quantities.  Note that the
+		activation time constant can be calculated from tau = 1/(alpha
+		+ beta).
+
+Example:	see Scripts/neurokit/prototypes/traub91chan.g
+
+See also:	Interpol documentation (Tables), tabchannel, vdep_channel

@@ -1,0 +1,118 @@
+Object Type:	izcell
+
+Description:	Implementation of the Izhikevich simple spiking neuron
+		model.  The parameters A, B, C, and D are used to produce a
+		wide variety of action potential shapes and firing patterns.
+
+Author:		Dave Beeman 8/04
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	izcell_type [in src/segment/seg_struct.h]   
+
+Size:		140 bytes
+
+Fields:		Vm	    cell potential
+		u           internal variable used to calculate Vm
+		A           A parameter
+		B           B parameter
+		C           C parameter
+		D           D parameter
+		Vmax        maximum action potential height (default: 0.03 V)
+		coeff0      constant term in dv/dt (default: 140)
+		coeff1      coeff of v in dv/dt (default: 5000)
+		coeff2      coeff of v*v in dv/dt (default:40000)
+		inject      injected current density * 100  (A/m^2)
+		state	    set to 1 if cell fired this time step, otherwise 0
+
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	IzCell [in src/segment/izcell.c]
+
+Classes:	membrane segment
+
+Actions:	CHECK  RESET  PROCESS  INIT
+
+Messages:	INJECT	    inject
+		CHANNEL	    Gk Ek
+
+
+------------------------------------------------------------------------------
+
+Notes:
+
+This is an implementation of the Izhikevich simple spiking neuron model,
+described in: Eugene M. Izhikevich, "Simple Model of Spiking Neurons",
+IEEE Trans. Neural Networks 14:1569-1572 (2003).  The "membrane potential"
+Vm is  determined from the equation:
+
+   dVm/dt = coeff2*Vm*Vm + coeff1*Vm + coeff0 - u + I
+
+where I is the total incoming 'current' from injection or other sources, with
+du/dt = A*(B*Vm - u), and the spike reset condition:
+
+   if (Vm >= Vmax) then Vm = C; u = u + D
+
+Some typical values of A, B, C, D, and inject are:
+
+ A      B       C      D     inject
+ 20    200   -0.065    6       14      tonic spiking
+ 20    250   -0.065    6       0.5     phasic spiking
+ 20    250   -0.050    2       15      tonic bursting
+ 20    250   -0.055    2      0.05     phasic bursting
+ 10    200   -0.065    8       30      spike frequency adaptation
+ 20    200   -0.065    8       10      RS regular spiking rat motor cortex
+100    200   -0.065    2       10      FS fast spiking rat motor cortex
+ 20    200   -0.055    4       10      IB intrinsically bursting motor cortex
+ 20    250   -0.065    2       10      LTS low threshold spiking
+ 20    250   -0.065    0.05    10*     TC thalamocortical
+* fires a burst for injection step from -10 to 0
+
+These values, and the default values of Vmax, coeff2, coeff1, and coeff0
+will produce SI units of Vm and time in volts and seconds.  To use mV and
+msec, divide A, B, and coeff1 by 1000, multiply C and Vmax by 1000, multiply
+coeff2 by 1e-6, and leave D, coeff0, and inject unchanged.
+
+In a normal neural compartment with a finite membrane area and membrane
+capacitance Cm, the 'I' term in the equation for dVm/dt would be Im/Cm.
+In terms of CM, the membrane capacitance per unit membrane area,
+    Im/Cm = Idens(Amp/area)* area/[CM*area] = Idens/CM
+where Idens is the entering current per unit membrane area.  For CM
+approximated by 0.01 F/m^2, a rough estimate of the value of injection current
+to use when comparing with experiments, or compartmental neuron models, would
+be Idens*100, where Idens is the injection current in Amperes divided by the
+membrane area in square meters.  Note that, unlike the compartment object,
+the inject field and INJECT message operate independently, each adding to I.
+
+Likewise, conductance densities should be scaled by a factor of 100 when
+coupling a GENESIS channel to an izcell.  For example, the gmax of a
+synchan should be 100*gdens (S/m^2).  The GENESIS synchan, hebbsynchan,
+facsynchan, or other channel object may be coupled to an izcell in the
+same way as to a compartment, using a CHANNEL message to send Gk and Ek to
+the izcell, and a VOLTAGE message to send the izcell Vm to the channel.
+A spikegen object would be used to send spikes to a synchan on another cell.
+A simple way to connect izcell objects into a pulse-coupled network would be
+to use the state field of an izcell to trigger a pulsegen, which would be
+used to inject a delayed current pulse into another izcell.
+
+Example:	
+
+create izcell /library/cell
+setfield /library/cell A 20 B 200 C -0.065 D 6 inject 14 Vmax 0.030
+pushe /library/cell
+// Make a prototype excitatory channel, "Ex_channel"
+make_Ex_channel     /* synchan with Ek = 0.045, tau1 = tau2 = 3 msec */
+setfield Ex_channel gmax {gmax}
+addmsg   Ex_channel  . CHANNEL Gk Ek
+addmsg   .  Ex_channel VOLTAGE Vm
+create spikegen spike
+setfield spike thresh 0  abs_refract 0.001  output_amp 1
+addmsg  .  spike  INPUT Vm
+pope
+
+See also:	Scripts/examples/izcell, compartment, synchan

@@ -1,0 +1,40 @@
+Routine Name:	setmethod
+
+Description:	Sets integration method for elements to use in simulation.
+
+Usage:		setmethod [path] method
+
+		path		path of element for which to set integration
+				method (if omitted, specified method is
+				applied to all elements in the simulation)
+
+		method		integer identifying integration method to use:
+				 -1  Forward Euler
+				  0  Exponential Euler (default)
+				  2  2nd order Adams-Bashforth predictor
+				  3  3rd order Adams-Bashforth predictor
+				  4  4th Adams-Bashforth predictor
+				  5  5th order Adams-Bashforth predictor
+				 10  Backward Euler
+				 11  Crank-Nicholson
+
+Example:	setmethod /cell/##[OBJECT=compartment] 2
+
+Notes:		The method used is stored within the "object" data structure
+		of the element.  For example:
+
+		genesis > showfield /cell/soma object->method
+		[ /cell/soma ]
+		object->method       = 2
+
+		The default Exponential Euler method is a good compromise
+		between speed, accuracy and ease of use for network models
+		and single cell models involving a few compartments.
+		Multi-compartmental models result in numerically "stiff"
+		equations which are best solved with one of the implicit
+		(Backward Euler or Crank-Nicholson) methods.  The implicit
+		methods must used in conjunction with the hsolve object,
+		which takes over the computations of compartments,
+		tabchannels and other selected element types.
+
+See also:	hsolve

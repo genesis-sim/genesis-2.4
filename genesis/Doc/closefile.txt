@@ -1,0 +1,17 @@
+Routine Name:	closefile
+
+Description:	Closes an ASCII file opened with the openfile routine.
+
+Usage:		closefile filename
+
+Example:	openfile myfile w
+		writefile myfile 10 20 30
+		closefile myfile
+
+Notes:		When you open a file using openfile, you work on a copy of
+		the file.  The closefile routine writes your changes back
+		into the actual file and eliminates it from the list of open
+		files.  (Closefile is automatically called for all opened
+		files when you exit from GENESIS).
+
+See also:	openfile, listfiles, writefile

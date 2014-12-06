@@ -1,0 +1,193 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Hierarchical Structure</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-8.html">Previous</A>
+<A HREF="Manual-10.html">Next</A>
+<A HREF="Manual.html#toc9">Table of Contents</A>
+<HR>
+<H2><A NAME="Tree"></A> <A NAME="s9">9. Hierarchical Structure</A></H2>
+
+<P>Typically, simulations are constructed of many different types of elements
+with different relationships to each other, mediated by the exchange of
+messages.  In order to keep track of the structure of such a simulation,
+elements are organized into a tree hierarchy similar to that of the directory
+structure in the UNIX operating system.  Obviously, as a simulation becomes
+more sophisticated, this tree structure can become many levels deep.
+Nevertheless, if you organize this structure properly, it will reflect the
+natural organization of the system.</P>
+
+<H2><A NAME="ss9.1">9.1 The GENESIS Element Tree Hierarchy</A></H2>
+
+<P>Elements are stored in the GENESIS element tree.  A particular element is
+uniquely identified by a path name.  The root of this tree has a path of ``/''.
+The user can attach elements to this tree (at first as children of the root
+and then later as children of these children).  The structure mimics that of
+the UNIX file system.</P>
+
+
+<H2><A NAME="ss9.2">9.2 Traversing the Element Tree</A></H2>
+
+<P>You use the following GENESIS routines to navigate the element tree.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#ce">ce </a> </TD><TD>Changes the current working element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#el">el </a> </TD><TD>Returns list of elements matching wildcard specification.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getelementlist">getelementlist </a></TD><TD>Alias for el routine.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getpath">getpath </a> </TD><TD>Returns subpart of full element pathname.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#le">le </a> </TD><TD>Displays a list of elements in the element tree.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#pope">pope </a> </TD><TD>Restores previously stacked element as current working</TD></TR><TR><TD>
+</TD><TD>element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#pushe">pushe </a></TD><TD>Saves current working element on stack (for later retrieval</TD></TR><TR><TD>
+</TD><TD>with pope) with option to go to new current working element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#pwe">pwe </a> </TD><TD>Displays full pathname of current working element.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#stack">stack </a> </TD><TD>Displays list of elements on working element stack.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss9.3">9.3 Pathnames and Wildcards</A></H2>
+
+<P>Each element has a unique name which is fully specified by giving its pathname
+within the hierarchy.  Pathnames are of the form:
+<PRE>
+    name/name
+</PRE>
+
+or
+<PRE>
+    /name/name
+</PRE>
+
+The first form specifies a path relative to the current element.  The second
+form is an absolute path from the top or ``root'' of the hierarchy.
+By analogy with UNIX directory names, the name may be an actual
+element name, ``.'' (the current element), or ``..'' (the parent element).</P>
+<P>Many commands can operate on more than a single element at a time.  Wildcard
+paths can be used to specify multiple elements which satisfy the specified
+conditions.</P>
+
+<P>A wildcard path is of the form
+<PRE>
+    name[index][condition]
+</PRE>
+
+The wildcard name can be absent or can be one of
+<PRE>
+    a#b    a?b    ##      #
+</PRE>
+
+If an index is specified, it can be one of
+<PRE>
+  index:       []     [n]    [n-m]
+</PRE>
+
+One or more optional conditions may be specified in one of the forms
+<PRE>
+    [field  operator value]
+    [CLASS  operator classname]
+    [OBJECT operator objectname]
+    [TYPE   operator objectname]
+    [ISA    operator objectname]
+</PRE>
+</P>
+<P>where the allowed operators are
+<PRE>
+    = &lt;&gt; != &gt; &lt; &gt;= &lt;=
+</PRE>
+</P>
+<P>Field values are floating point numeric values. 
+   Class and object names are strings.
+</P>
+<P>Note that white space is NOT allowed anywhere in the wildcard
+specification.  The # matches strings of any length while ? matches
+single characters.  The ## is a special name which specifies
+searches down the entire subtree rather than at a single level.</P>
+<P>For example, a path that specified all elements that had name beginning
+with ``cell'' with x coordinates greater than 5 and less than 10 would
+be:
+<PRE>
+    /cell#[x&gt;5][x&lt;10]
+</PRE>
+</P>
+
+<P>Note that the # and ## DO NOT expand indexed elements.  For
+example, given the following list of elements:
+<PRE>
+    /TEST[0] /TEST[1] /TEST[2] /TEST[3] /TEST[4] /THESE[0] /THESE[1] 
+</PRE>
+
+The command
+<PRE>
+    echo {el /#}
+</PRE>
+
+would produce only
+<PRE>
+    /TEST /THESE
+</PRE>
+
+while 
+<PRE>
+    echo {el /#[]}
+</PRE>
+
+would give
+<PRE>
+  /TEST /TEST[1] /TEST[2] /TEST[3] /TEST[4]
+  /THESE /THESE[1]
+</PRE>
+
+Note that <CODE>/TEST</CODE> is the same as <CODE>/TEST[0]</CODE>.</P>
+<P>The use of the ``<CODE>[]</CODE>'' wildcard notation for indexed elements
+is useful for setting fields of indexed elements, for example,
+<PRE>
+    setfield /randomspike[] rate 200
+</PRE>
+
+It can also be used with the addmsg command:
+<PRE>
+    // Provide injection to soma of cell[0], cell[1], cell[2], etc.
+    addmsg /waveform /cell[]/soma INJECT output
+</PRE>
+</P>
+<P>A path that would specify all elements in the hierarchy that
+belong to the channel class would be:
+<PRE>
+    /##[CLASS=channel]
+</PRE>
+</P>
+<P>The OBJECT identifier (and its older name, TYPE) is used to specify
+elements which were created from a given object.  For example,
+<PRE>
+    setfield /##[OBJECT=xgraph] bg white
+</PRE>
+
+will set the background to white for all graphs which were created
+from the xgraph object.  The X1compat libray of XODUS 1 compatible
+objects and commands uses the xgraph object as the basis of an
+extended object, x1graph.  Elements which are created from the x1graph
+object will not be affected by the statement above.  The ISA
+identifier is used instead of OBJECT to include elements created from
+objects that were derived from a specified object.  For
+example,
+<PRE>
+    setfield /##[ISA=xgraph] bg white
+</PRE>
+
+It is also possible to specify comma separated lists of wildcard path
+specifications, for example:
+<PRE>
+    showfield soma/#[OBJECT=Ca_concen],basal_8/#[OBJECT=Ca_concen] Ca
+</PRE>
+</P>
+
+<HR>
+<A HREF="Manual-8.html">Previous</A>
+<A HREF="Manual-10.html">Next</A>
+<A HREF="Manual.html#toc9">Table of Contents</A>
+</BODY>
+</HTML>

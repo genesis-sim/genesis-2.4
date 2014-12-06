@@ -1,0 +1,80 @@
+  4.  Basic Routines
+
+  The GENESIS shell provides a framework in which a simulation
+  programmer can define and manipulate GENESIS elements.  But the shell
+  also includes a number of generally useful routines.  The table below
+  lists some of these routines.  (For more detailed descriptions of any
+  GENESIS routine, refer to the reference section for the specific
+  routine.)
+
+  ______________________________________________________________________
+  Routine       Description
+  ______________________________________________________________________
+  addalias      Associates alternative name with existing GENESIS routine.
+  addescape     Adds an escape-key macro binding.
+  echo          Prints out its arguments to the console.
+  exit          Exits from GENESIS, terminating any simulation in progress.
+  h             Displays the contents of the command-history buffer.
+  help          Displays help on GENESIS topics.
+  listescape    Lists available escape-key/command-sequence bindings.
+  quit          Alias for exit routine.
+  setprompt     Sets string to use as prompt for GENESIS shell.
+  version       Returns the version of GENESIS being used.
+  ______________________________________________________________________
+
+  The GENESIS routines used for interacting with the operating system
+  include the following:
+
+  ______________________________________________________________________
+  Routine    Description
+  ______________________________________________________________________
+  cd         Changes current working operating system directory.
+  cpu        Displays current cumulative cpu usage for user and system time.
+  getdate    Returns operating system date-time.
+  getenv     Returns value of operating-system environmental variable.
+  printenv   Displays value of operating-system environmental variable.
+  setenv     Set value of operating system environmental variable.
+  sh         Issues operating system command from GENESIS shell.
+  tset       A normal UNIX tset.
+  ______________________________________________________________________
+
+  The GENESIS routines used for adding new routines to the environment
+  include the following:
+
+  ______________________________________________________________________
+  Routine        Description
+  ______________________________________________________________________
+  callfunc       Calls a function whose name is stored in a string variable.
+  listcommands   Displays list of routines currently recognized by GENESIS.
+  showcommand    Displays name of C function invoked by a GENESIS command.
+  ______________________________________________________________________
+
+  The GENESIS routines used for script programming include the
+  following:
+
+  ______________________________________________________________________
+  Routine       Description
+  ______________________________________________________________________
+  addglobal     Declares a global variable; variable name may be a variable.
+  argc          Returns argument count (number of arguments passed to the
+                procedure).
+  arglist       Converts list of items into an argument list.
+  argv          Returns procedure arguments as an array of strings.
+  clearerrors   Resets error count to 0.
+  debug         Sets (or displays) the debug level used by some routines.
+  debugfunc     Sets (or displays) the debug level for a specific routine.
+  error         Print error message.
+  getarg        Returns specified item from an argument list.
+  getglobal     Returns global variable value; variable name may be a variable.
+  include       In a script, reads in the contents of another GENESIS script.
+  listglobals   Lists currently defined global variables and functions.
+  maxerrors     Sets (or displays) number of errors currently allowed before
+                a simulation is automatically stopped.
+  maxwarnings   Sets (or displays) number of warning messages currently
+                allowed before a simulation is automatically stopped.
+  printargs     Displays its arguments with argument numbers.
+  setglobal     Sets value of global variable; variable name may be a variable.
+  silent        Sets/clears flag which supresses certain information
+                displays to console.
+  warning       Print warning message.
+  ______________________________________________________________________

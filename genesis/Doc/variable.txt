@@ -1,0 +1,312 @@
+Object Type:	variable
+
+Description:
+
+The variable object allows the user to manipulate the actual
+simulation data that is in an existing file or write new data into
+it. It responds to incoming SAVE messages to write data to the file
+and users can use its 'output' field to send messages to other
+elements to display traces and so on.  The functionality to replay
+data in a variable on through an xview element is currently not in
+place.
+
+Values may need to be stored in a single variable at every time
+step. File formats(including netcdf) allow variables to be arrays
+so multiple values can be stored.  The access of individual values in
+a variable is done by indexing it. This index is associated with the
+value of the simulation time.
+
+As an example, if the Vm of the soma is saved every time step for 100 steps, 
+
+ * values will be stored sequentially along the array. Assuming the
+   clockrate of the variable object (rate of acquisition) is 1.0
+   second, Vm at the 0th, 45th and 99th second can be got from
+   value[0], value[45] and value[99] respectively.
+
+ * Now if the rate at which the data was saved i.e the clockrate of
+   the variable object was set at 1e-03 (1 msec), the above values
+   would reflect the Vm values at times 0, 45 and 99 milliseconds
+   respectively.
+
+ * A better way for the user to establish/understand this relationship
+   can be achieved through the 'input' and 'output' fields of the
+   variable.  The input field values represent the actual time values
+   and the output field reflects the value corresponding to the input,
+   i.e the value corresponding to a specific time instant.
+
+ * In the previous example for the acquisition rate being 1 msec, one
+   could set the input field to 45e-03 and expect to show a valid
+   output value.  However if the input were set to just 45 (45 secs),
+   the output value will be undefined (usually a very large +ve number
+   or an extremely small +ve number not equal to 0. This indeterminate
+   value depends on the file format used as well as the operating
+   system in which it is executing)
+
+ * The append field in the diskio element also has an effect on how these
+   values should be interpreted. See Doc/diskio.txt for an explanation.
+
+ * Another important issue to note is that interpolated values will
+   not be returned for inputs that do not match the time instants
+   precisely.  For instance, if the input field were set to 45.5 e-03,
+   the value returned in the output field will be the one that
+   corresponds to the prior time instant, in this case 45msec and not
+   a value interpolated between values at 45 msec and 46 msec.
+
+ * Also, for a correct acquisition of data at proper time instants,
+   the clockrate of the variable object should match that of the
+   parent diskio.  If this is not the case, a reset would print a
+   warning to this effect but continue to function without crashing
+   the sytem. However, the values returned by the output values will
+   not directly correspond to the actual simulation time instant at
+   which the value was saved.
+
+
+The file itself has to be initially opened or created by the parent
+diskio object.  In other words, a variable can be created only as the
+child of a diskio object. The results of a simulation stored in the
+file can be replayed through an xgraph widget by sending the
+appropriate message and data(output field) to it from the variable
+object. At present, the mechanics to replay data written by the
+variable object through an xview/xvar widget are not in place but will
+be made available in the near future.
+
+NOTE: Variable objects can be created only for fileformats that
+	support creation of arbitrary variables, such as
+	Netcdf. Variables and metadata CANNOT BE CREATED ARBITRARILY
+	for FMT1 files, for example.
+
+	For purposes of consistency, however, when SAVE messages are
+	directly sent to the diskio object, the autoSAVE_diskio and
+	auto3-DPosSAVE_diskio child elements are automatically created
+	in both cases. These should NOT BE MANIPULATED but can be used
+	to inspect values in the file.
+
+	Since FMT1 files do not support the notion of arbitrary
+	variables the 'input' and 'output' fields are hidden and the
+	other fields are made readonly.
+
+
+Author:		V.Jagadish (9/96)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS: 
+
+DataStructure:	Gen_Variable_Type [in src/diskio/diskio_struct.h]
+
+Size: 		120 bytes	
+
+Fields:		datatype The type of the value(s) held in the variable 
+		- The list of valid types are specified in the notes
+		section.  - Defaults to 'float64' (64-bit float) if
+		not specified in the create command line - readonly
+		for FMT1 files
+
+		size		The maximum number of data values the object 
+				can hold.
+				- Can be specified on the create command 
+				  line with the -size option.
+				- The special size value 'unlimited' allows 
+				  any number of values to be written into 
+				  the variable.
+				- Defaults to 'unlimited' if not specified.
+				- If the datatype is char8 (8-bit char) the 
+				  user could provide a string as the argument 
+				  to the 'value' field without specifying a  
+				  size or index, and the size (which is the 
+ 				  number of chars in the string including the 
+ 				  trailing '\0') is internally 
+				  calculated and set in this field.
+				- readonly for FMT1 files
+
+		value		The value(s) held by the variable. 
+				- Since variables 
+				  can hold an array of values or a single one,
+				  an index (with the genesis-style indexing 
+				  mechanism) needs to be specified while 
+				  setting or showing this field. The index 
+				  defaults to 0 if not specified, the 
+				  exception to it being the case that the
+				  datatype is 'char8'.
+				- If the type is 'char8', not
+				  specifying an index would translate
+				  to mean the entire string and
+				  individual indices would return the
+				  character at that location.(See
+				  examples)
+				- Multiple argument values can be
+				  specified for this field (see
+				  examples) and the values will be
+				  accessed starting with index 0.
+				- The default value is undefined for all 
+				  data types 
+				- readonly for FMT1 files
+
+		input		This field stores the actual simulation time
+				for analog traces. In combination 
+				with the output field it thus provides a way 
+				for the user to see what trace (output) value 
+				is associated with a particular simulation
+				time value(input). - See examples.
+				- Datatype of this field is hard-coded as 
+				  float64 (64-bit float)
+				- Default value is 0
+				- hidden for FMT1 files
+				
+		output		This read-only field serves as the data for 
+				outgoing messages from the variable object to 
+				other elements such as xgraph. The value 
+				of this field always reflects the one 
+				associated with the particular simulation 
+				time value stored in the input field. It 
+				acquires also the value specified through the 
+				incoming SAVE message to the variable object.
+				- Datatype of this field is hard-coded as
+				  float64 (64-bit float)
+				- Default value would be the value of the 
+				  variable corresponding to the default 
+				  input field value of 0 seconds. 
+				  (starting simulation time) 
+				- hidden for FMT1 files
+					 
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:		Gen_Variable [in src/diskio/gen_variable.c]
+
+Classes:		output
+
+Actions:		CREATE PROCESS RESET SET SHOW ADDMSGIN
+
+			FLUSH: 
+			UPDATE: allows the object to commit to the file on disk 
+				by writing out its contents
+				
+			DELETE: allows committing to the file on disk, 
+				if necessary and then deletes the
+				object and any children but does not
+				delete the underlying variable or any
+				of its attributes on file.
+
+Messages:		SAVE data
+			- An incoming message of this type to the variable
+			  object indicates that the value of the field 
+			  (specified in the 'data' argument) of the source
+			  element needs to be saved in it. 
+			- These values will be stored in the value field 
+			  and the output field of the variable every time 
+			  step and if the variable is an array
+			  the location for this value is determined according
+			  to the current time as explained earlier.
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The default variable is an unlimited size array of 64-bit floating point 
+values and associated with the actual simulation time. 
+So, if the -size option is not specified while creating a variable 
+the size would be internally set to 'unlimited' but an attempt to show
+the size field would show a number. This number is the maximum number of 
+elements written so far, maybe in another variable associated with
+the simulation time. If no values had been written or if this were the first 
+variable created, then the size would indicate 0. Any number of values 
+could be subsequently set on this variable.
+
+In order to create a scalar variable (that holds a single value) not 
+associated with time, use the -valuetype option with 'scalar' 
+as the argument. There is, however, no field named valuetype.
+
+The datatype field stores the type of the variable as a string. The 
+types are chosen to be as generic as possible. They are not based on 
+the usual 'C' data types but rather on the user's perspective.
+Table 1.1 shows the valid datatype names and what they mean to 
+the user.
+Please note that not all these types are supported by all file formats.
+An error to that effect will be printed if a variable of an unsupported 
+type is attempted to be created. Netcdf, in particular does not allow 
+resetting of datatypes or sizes for variables at all and an error will 
+be issued if setfield attempts to change the values of these fields.
+
+Table 1.1 - Valid datatypes 
+
+Name				Description
+____		|		___________
+		|
+		|
+uint8		|		8-bit unsigned int
+		|
+int8		|		8-bit signed int
+		|
+uint16		|		16-bit unsigned int
+		|
+int16		|		16-bit signed int
+		|
+uint32		|		32-bit unsigned int
+		|
+int32		|		32-bit signed int
+		|
+uint64		|		64-bit unsigned int
+		|
+int64		|		64-bit signed int
+		|
+float32		|		32-bit float
+		|	
+float64		|		64-bit float
+		|
+uchar8		|		8-bit unsigned char
+		|
+char8		|		8-bit signed char
+		|	
+char16		|		16-bit (unicode) char
+		|
+string		|		string type (i.e not an array of chars)
+		|
+________________+______________________________________________________
+
+Examples:
+
+create diskio /dout -filename "testfile.nc" -accessmode w
+
+create variable /dout/stringvar -datatype char8 -value "This is a string variable";
+showfield /dout/stringvar value // Would display the whole string
+showfield /dout/stringvar value[1] // Would display the character h
+
+create variable /dout/fixedsizevar -size 3 -datatype float64 -value \
+"1.0 2.0 3.0"
+
+create variable /dout/scalarvar -valuetype scalar -datatype int32 \
+-value 10
+
+create variable /dout/variablesizevar -datatype float32 -value  \
+"100.0 200.0 300.0"
+showfield /dout/variablesizevar value[0] value[2] 
+showfield /dout/variablesizevar value[3] // This would show a very large +ve or
+					 // -ve number => undefined
+
+setfield /dout/variablesizevar value[0] 150.0 value[2] 250.0
+showfield /dout/variablesizevar value[0] value[2]
+
+create xform /f
+create xgraph /f/g
+
+addmsg /path/to/some-element /dout/variablesizevar SAVE <some-element-field>
+addmsg /dout/variablesizevar /f/g PLOT output *<plotname> *<color>
+
+step 100
+
+setfield /dout/variablesizevar input 30
+showfield /dout/variablesizevar output
+
+delete /dout
+
+For a clear example dealing with the SAVE message and replays, 
+please see :
+	Scripts/examples/diskiolib/variable/generate.g
+	Scripts/examples/diskiolib/variable/replaygraph.g
+
+------------------------------------------------------------------------------
+
+See also:	diskio, metadata 

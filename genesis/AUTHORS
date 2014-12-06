@@ -1,0 +1,103 @@
+*****************************************************************************
+**
+** GENESIS:     The General Neural Simulation System
+**
+** Written by:
+**              Upinder S. Bhalla
+**              David H. Bilitch
+**              Erik De Schutter
+**              Michael Hucka
+**              Venkat Jagadish
+**              Mark E. Nelson
+**              John D. Uhley
+**              Michael Vanier
+**              Matthew A. Wilson
+**
+** under the direction of:
+**              James M. Bower
+**
+** XODUS graphical interface by:
+**              Upinder S. Bhalla
+**              Venkat Jagadish
+**              Jason Leigh
+**              Maneesh Sahani
+**
+** Parallel library development by:
+**              Upinder S. Bhalla
+**              Erik De Schutter
+**              Nigel Goddard
+**              Greg Hood
+**
+** Development work for Intel i860-based Parallel Machines by :
+**              Michael D. Speight
+**
+** X11R4 upgrade modifications by:
+**              Randall D. Smith
+**
+** X11R5 and X11R6 upgrade modifications by:
+**              Rich Murphey
+**              Diana K. Smetters
+**
+** Libraries by:
+**              Upinder S. Bhalla
+**              Erik De Schutter
+**              Dieter Jaeger
+**              Venkat Jagadish
+**              Mark E. Nelson
+**              Adam Strassberg
+**              Matt Wilson
+**
+** Numerical methods enhancements by:
+**              Upinder S. Bhalla
+**              Erik De Schutter
+**              Bruce P. Graham
+**
+** Synapse Library development by:
+**              Michael Vanier
+**
+** Parameter Search library development by:
+**              Michael Vanier
+**
+** Modifications to run under Microsoft Windows with Cygwin by:
+**		Sergio Daicz
+**              Gilles Detillieux
+**
+** Modifications to run on the Apple under Mac OS
+**              Alfonso Delgado-Reyes
+**              Josef Svitak
+**		Jan Pieczkowski
+**		Boris Marin
+**
+** Implementation of hsolvable STDP
+**              Dave Beeman
+**              Hugo Cornelis
+**
+** Addition of autoconf to automate Makefile construction
+**              Jan Pieczkowski
+**              Boris Marin
+**
+** Script Demos and Tutorials by:
+**              Dave Beeman
+**              Upinder S. Bhalla
+**              Sharon Crook
+**              Erik De Schutter
+**		Hugo Cornelis
+**              Mark E. Nelson
+**              Alex Protopapas
+**              Michael Vanier
+**              Matt Wilson
+**
+**  Copyright 1988 - 2001 by the California Institute of Technology
+**
+**  GENESIS is free software; you can redistribute it and/or modify it
+**  under the terms of the GNU General Public License (GPL) as published by
+**  the Free Software Foundation.  Portions of this program are in library
+**  form and are covered by the GNU Lesser General Public License (LGPL).
+**  Recent additions to the libraries are copyright by other institutions or
+**  authors, and are covered by the GPL, LGPL, or other GPL-compatible
+**  licenses.
+**
+**  Please see the file "COPYRIGHT" for details of the copyrights and
+**  licenses that apply to GENESIS and its libraries.
+**
+*****************************************************************************

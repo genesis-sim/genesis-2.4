@@ -1,0 +1,138 @@
+Object Type:    symcompartment
+
+Description:    Axially symmetric compartment. Ra is divided into
+		two equal components across the compartment.
+
+Author:         M. Wilson, Caltech (6/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  symcompartment_type  [in src/segment/seg_struct.h]
+
+Size:           132 bytes
+
+Fields:         Rm              total membrane resistance
+                Cm              total membrane capacitance
+                Em              membrane resting potential
+                Ra              axial resistance
+                inject          injected current in membrane
+                dia             compartment diameter
+                len             compartment length              
+                Vm              voltage across the membrane
+                previous_state  Vm at previous time step
+                Im              approximation to the total membrane current
+                initVm          initial value to set Vm on reset
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:       SymCompartment  [in src/segment/symcompartment.c]
+
+Classes:        segment
+                membrane
+
+Actions:        INIT            assign previous_state = Vm
+                PROCESS         update Vm, calculate Im
+                RESET           assign Vm = Em, set internal constants
+                                depending on the types of incoming messages.
+                CHECK           make sure Rm>0, Cm>0, Ra>0
+                SAVE2
+                RESTORE2
+
+Messages:       CHANNEL Gk Ek   delivers the conductance and equilibrium
+                                potential of channel within the compartment
+                INJECT inject   sets the inject field to the message value
+                EREST Em        sets the Em  field to the message value
+
+                CONNECTHEAD   Ra Vm  used to connect to the child compartment
+                CONNECTTAIL   Ra Vm  used to connect to the parent compartment
+                CONNECTCROSS  Ra Vm  used to cross-connect the first
+                                     compartments after a  binary or multiple
+                                     branch.
+                RAXIAL Ra Vm    alias for CONNECTTAIL
+                AXIAL Ra Vm     alias for CONNECTHEAD; note that for the
+                                asymmetric compartment, AXIAL only receives Vm.
+                RAXIAL2 Ra Vm   alias for CONNECTHEAD
+                RAXIALC Ra Vm   alias for CONNECTCROSS
+
+------------------------------------------------------------------------------
+
+Notes:          Like the compartment object, the symcompartment simulates
+                a section of passive membrane or cable. The potential across
+                the membrane is given by Vm. There is a leakage path for
+                current through the resistance Rm. This resistance is in
+                series with a leakage battery Em, and there is a membrane
+                capacitance in parallel with Rm and Em. This compartment can
+                be coupled to other compartments with an axial resistance Ra,
+                which is divided into two pieces of resistance Ra/2 on either
+                side of the point having the potential Vm.  In most respects,
+                the symcompartment is similar to the asymetric compartment
+                object, and its use is more fully described in the
+                documentation for compartment.  However, the division of Ra
+                requires different messages to be used when linking
+                symcompartments.
+
+                For linear chains of symmetric compartments, all of the
+                connection messages are equivalent, and all compartments may
+                be linked by exchanging RAXIAL messages.  However, for
+                branched structures, the the incoming current must be
+                calculated differently, depending on whether it is from a
+                parent, child, or connected sibling in the tree of
+                compartments, using the messages described above.  Because of
+                this added complexity, it is best to use the readcell routine
+                with a cell parameter file when constructing cells with
+                symcompartments.  This will link the compartments with the
+                proper messages.
+
+                Prior to GENESIS version 2.2, the CONNECTSPHERE message was
+                use to connect a cylinder to a sphere, assuming that all the
+                dendrites are distributed perfectly over the soma/sphere.
+                This is now performed automatically by readcell, and this
+                message is no longer needed.  Using CONNECTHEAD or CONNECTTAIL
+                instead connects all denrites to one point on the soma/sphere.
+
+                A note on spherical compartments by Erik De Schutter:  If you
+                use readcell, spherical compartments will have zero length (a
+                GENESIS convention) and the Ra field will NOT be zero.  This
+                means that the (small) resistive component of the spherical
+                compartment will be used in computing the axial current
+                between the spherical soma and dendrite.  This is very
+                different from the asymmetric case (where the connections are
+                usually arranged to go through the larger Ra of the adjacent
+                dendritic cylinder instead of the small soma Ra).  This may
+                look strange for the case of a single dendrite.  It makes more
+                sense in the case of an apical and basal dendrite: if synaptic
+                current flows from one to the other, one imagines that the
+                soma has some effect.  Note also that whether you use a
+                CONNECTCROSS message between cylindrical compartments onto the
+                same sphere really should depend on their topological
+                relation.  For example, basal dendrites should probably be
+                cross-connected to each other but not to an apical one.
+                readcell will issue all the possible CONNECTCROSS messages
+                automatically, so you may want to delete some which are not
+                consistent with your intended topology.
+
+                The compartment Im is the sum of axial currents and injected
+                current only.  The (transmembrane) channel currents or the
+                leakage current are not included.  For a multicompartment
+                cell, under a quasistatic approximation (C*dV/dt is small), Im
+                is approximately equal to the sum of the channel and leakage
+                currents, due to charge conservation.  This approximation is
+                used in the efield object (see efield.txt) to allow Im to be
+                used to calculate external field potentials.  The exception to
+                this is when Im is calculated with hsolve in chanmode 4.  In
+                that case, Im is directly calculated as the sum of the channel
+                currents and leakage current though Rm.
+
+                As of GENESIS version 2.2, symcompartments may be used
+                with the hsolve method, allowing the use of fast implicit
+                numerical integration methods.
+
+Example:        Use the showmsg command to examine the messages to and from
+                /CA3/soma, /CA3/apical_10, /CA3/basal_8, etc. in the traub91
+                simulation.
+
+See also:       compartment, readcell

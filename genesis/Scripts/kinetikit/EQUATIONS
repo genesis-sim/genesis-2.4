@@ -1,0 +1,51 @@
+The maths of components in kinetikit is rather simple:
+
+Reactions are just the usual binding/conversion reaction kinetics:
+        kf
+A + B <----> C
+        kb
+
+comes out as
+
+d[A]/dt = -kf[A][B] + kb[C]
+
+and so on.
+
+Kinetikit currently gives units both in your preferred units (typically with
+dimensions of amount in micromolar and time in seconds), and also in units of
+molecule numbers (#) and time in seconds. The internal calculations use the
+latter.
+
+Enzymes are implemented using an explicit ES complex:
+         k1         k3
+E + S <=====> E.S -----> P
+        k2
+
+For convenience, we also convert these to and from the Michaelis-Menten terms:
+
+Km = (k2 + k3)/k1
+kcat = k3
+There is an additional ratio term we use, 
+ratio = k2/k3
+which is typically set to 4.
+
+Units are as above. k1 has 1/(#.sec) and k2 and k3 are 1/sec. It scales
+appropriately with more substrates.
+
+Kinetikit also allows users to select the classical Michaelis-Menten rate laws
+for enzymes. (an option that used to be called hidden/available in kkit, now
+more reasonably named). Here the rate is the usual form:
+
+rate = [E].[S].kcat / (Km + [S])
+
+
+
+Channels:
+Let us have Aout, Ain, as the ion, and channel protein conc P
+
+then flux = dAout/dt = -(Aout/vol_out - Ain/vol_in) * perm * P
+
+Note that in this case all calculations are in # of molecules, so I have not
+put in the square brackets.
+
+Perm is the permeability parameter.

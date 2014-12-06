@@ -1,0 +1,944 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>GENESIS 2.4 Reference Manual- chemesis</TITLE>
+<META NAME="generator" CONTENT="txt2html v1.28">
+</HEAD>
+<BODY>
+
+<A HREF="Manual-17.html">Previous</A>
+<A HREF="Manual-18.html">Next</A>
+<A HREF="Manual.html#toc17.5">Table of Contents</A>
+<HR>
+
+<H2><A NAME="chemesis"><A NAME="s17.5">The 'chemesis' library of GENESIS objects</A></H2>
+
+<P>
+'chemesis' is a library of objects for creating models of biochemical
+reactions, second messengers, and calcium dynamics.
+
+<P>
+This library is based on chemesis version 2.5, and was developed and contributed
+to the GENESIS 2.4 libraries by K. T. (Avrama) Blackwell. The main website for
+the latest chemesis source code, tutorials, simulation scripts, and lecture
+slides is http://krasnow1.gmu.edu/CENlab/software.html.
+
+<P>
+Demonstration scripts and tutorials may be found in genesis/Scripts/chemesis.
+The source code for these objects and their data structure is given in
+genesis/src/chemesis.
+
+<H2><A NAME="section-1.1.">chemesis provides the following objects:</A></H2>
+
+<P>
+ cicr: computes state variables associated with calcium release channels, either
+ the ryanodine or ip3 receptor channel
+
+<P>
+ cicrflux: computes ion flow through ip3 or Ryr receptor channel from the smooth
+ endoplasmic reticulum (SER) and the cytosol.
+
+<P>
+ conservepool: calculates concentration &amp; quantity in a compartment by
+ subtracting the conc/quantity of all other forms of the molecule
+
+<P>
+ diffusion: calculates flux across the shared/connected surface areas
+
+<P>
+ enzyme: implements a reaction pool, and the two coupled reactions implementing
+ and enzyme reaction
+
+<P>
+ feedback: calculates enhancement or reduction in an enzyme activity by another
+ substrance
+
+<P>
+ mmenz: simplified michaelis-menton enzyme reaction
+
+<P>
+ mmpump2: Michaelis-Menten pump. unlike mmpump, this object calculates flux due
+ to the pump
+
+<P>
+ ncx: implements two different forms of a sodium-calcium exchanger
+
+<P>
+ reaction: computes kf*substrates and kb*products for nth order reactions.
+
+<P>
+ rhodopsin: quite a complicated object for calculating stochastic activation and
+ inactivation of rhodopsin molecules
+
+<P>
+ rxnpool: accumulates changes in quantity and concentration from many other
+ chemesis objects and then calculates the new concentration This object is
+ similar to pool (kinetikit) and functions similar to compartment, which
+ accumulates current fluxes.
+
+<P>
+ wgtavg: An object to calculate a weighted average, such as mean calcium in a
+ set of shells.
+
+<P>
+Note that chemesis does not require you to work in SI units, but if you don't,
+you need to set various units fields on all the objects, and you must use a set
+of consistent units.
+
+<H2><A NAME="section-1.2.">Documentation for the objects is given below:</A></H2>
+
+<PRE>
+Object Type:      cicr
+datatype          IP3R_type
+function          cicrpool()
+class             [ gate ] [ segment ] 
+size              224 bytes
+author            A. Blackwell ERIM Aug 96; revised GMU Aug 99
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>CHECK  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [5] CONSERVE      xconc     /* fraction of other states */
+      [4] CALCIUM       caconc     /* concentration of calcium */       
+      [3] IP3           ip3conc   /* concentration of ip3 */    
+      [2] GSTATE        kbgamma conc /* back rate const and conc in gamma dir */
+      [1] BSTATE        kbbeta conc  /* back rate const and conc in beta dir */
+      [0] ASTATE        kbalpha conc /* back rate const and conc in alpha dir */
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             activation                
+             fraction        fraction of channel in state        
+             previous_state            
+             alpha           forward rate constant in alpha direction        
+             beta            forward rate constant in beta direction        
+             gamma           forward rate constant in gamma direction        
+             alpha_state     if ip3 is bound (1) or not (0) for this state       
+             beta_state      if calcium is bound (1) or not (0) to open part for this state       
+             gamma_state     if calcium is bound(1) or not (0) to closed part for this state       
+             conserve        flag indicating a conserve pool       
+             xinit           initial value       
+             xmin            minimum value, typically 0      
+             xmax            maximum value, typically 1
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+cicr computes state variables associated with calcium release channels, either
+the ryanodine or ip3 receptor channel.  Create one element for each receptor
+state, thus ip3 receptor of DeYoung and Keizer requires 8 cicr elements.  cicr
+calculates the fraction of receptors in each state, the flux is calculated using
+a cicrflux element.  Transitions between ASTATE are dependent on IP3
+concentration (a required message for cicr) thus only BSTATE and GSTATE
+elements, which transitions are calcium dependent, are created for ryanodine
+receptor channel.
+
+<HR>
+
+<PRE>
+Object Type:      cicrflux
+datatype          flux_type
+function          cicrflux()
+class             [ channel ] [ segment ] 
+size              184 bytes
+author            A. Blackwell ERIM Aug 96; revised GMU Dec 99; GMU Mar 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>CHECK  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [2] IP3R              ip3r  //fraction of open channels
+      [1] CONC2             conc2 
+      [0] CONC1             conc1 
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             activation                
+             maxflux        single channel flux (cm/time) * number of channels * Surface area (cm^2)       
+             deltaflux1     maxflux*openfraction*(conc1-conc2), send value to A of rxnpool 2        
+             deltaflux2     maxflux*openfraction*(conc2-conc1), send value to A of rxnpool 1        
+             power          exponent; fraction open = ip3r^power       
+             units          1 for moles, 1e-3 for mmoles, 1e-6 for umoles       
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+cicrflux computes ion flow through ip3 or Ryr receptor channel from the smooth
+endoplasmic reticulum (SER) and the cytosol.  This requires at least two
+rxnpools, one tracking calcium in the SER and one tracking calcium in the
+cytosol.  All three messages are required.  the IP3R message is really just the
+fraction field from whichever cicr element is the conducting state
+
+<P>
+return messages as follows: <BR>
+addmsg from cicrflux object to pool 1 RXN0MOLES deltaflux2 
+addmsg from cicrflux object to pool 2 RXN0MOLES deltaflux1 
+
+<HR>
+
+<PRE>
+Object Type:      conservepool
+datatype          conserve_type
+function          conservepool()
+class             [ concentration ] [ segment ] 
+size              248 bytes
+author            A. Blackwell ERIM Aug 96; revised GMU Dec 99; GMU Mar 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>CHECK  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [2] VOLUME            volume /* volume of compartment */
+      [1] MOLES             moles /* quantity of other forms */
+      [0] CONC              conc /* concentration of other forms */
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             activation                
+             previous_state            
+             Conc            concentration of molecule       
+             quantity        quantity of molecules
+             Qinit           initial quantity of molecule        
+             Qtot            total quantity of this and other forms of molecule       
+             Cinit           initial concentration       
+             Cmin            minimum concentration       
+             Ctot            total concentration of this and other forms of molecule        
+             volume          used to convert from concentration to quantity and vice versa        
+             type            whether specifying quantity or concentration of molecule       
+             units           1 for moles, 1e-3 for mmoles, 1e-6 for umoles      
+             Dunits          1 for meters, 1e-4 for cm, etc       
+             VolUnitConv     Dunits^3, converts volume to SI       
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+Implementation of pool for conserved molecules. If type = 0, computes
+concentration of molecule which is the total conc less the conc in all
+other states. If type = 1, computes quantity of molecule which is the
+total quantity less the quantity in all other states.  Then computes
+concentration by dividing by volume.
+
+<HR>
+
+<PRE>
+Object Type:      diffusion
+datatype          diffusion_type
+function          diffusion()
+class             [ channel ] [ segment ] 
+size              184 bytes
+author            A. Blackwell GMU Dec 97; revised GMU Dec 99; GMU Mar 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>CHECK  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [1] POOL2             len2 area2 conc2 /* pool 1 dimensions &amp; Conc */
+      [0] POOL1             len1 area1 conc1 /* pool 2 dimensions &amp; Conc*/
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             D                diffusion constant    
+             difflux1         D*area/len*conc21 send value to A field of pool 2      
+             difflux2         D*area/len*conc2, send value to A field of pool 1    
+             units            1 for moles, 1e-3 for mmoles, 1e-6 for umoles       
+             Dunits           1 for meters, 1e-4 for cm, etc       
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+Diffusion is an object used to computes flux of molecules due to diffusion
+through shared surface between two rxnpools. This object can implement both 1-D
+and 2-D diffusion, and sums the fluxes between each pair of rxnpools. 2D
+diffusion is implemented among a set of cylindrical shells, with the surface
+area of the side of the cylinder stored in SAside, and surface area of inside
+and outside of the shell stored in SAout and SAin of the rxnpool (desribed
+below). Thus, diffusion helps the rxnpool to implements the equation:
+
+<P>
+       Sum over i (Conc1i-Conc2i)*Mean(area1i,area2i)/((len1i+len2i)/2)
+
+<P>
+Each diffusion element calculates<BR>
+(Conc1i-Conc2i)*Mean(area1i,area2i)/((len1i+len2i)/2) for a pair of adjacent
+rxnpools.  Their shared surface areas do not need to be identical. The mean
+surface area is calculated as geometric mean, not arithmetic mean.
+
+
+<P>
+Each diffusion needs a pair of messages, one from each rxnpool (pool1 and
+pool2).  Each message must contain the appropriate surface area (i.e. the area
+of the surface facing the other rxnpool), the length of the rxnpool, and the
+concentration. Each diffusion object then sends a pair of messages back to the
+rxnpools,
+
+<PRE>
+         addmsg diffusionElement pool2 RXN0MOLES difflux2
+         addmsg diffusionElement pool2 RXN0MOLES difflux1 
+</PRE>
+
+<HR>
+
+<P>
+Object Type:  enzyme
+<PRE>
+datatype      enzyme_type
+function      enzyme()
+class         [ segment ] 
+author        A. Blackwell ERIM Aug 96; revised GMU Dec 99; revised GMU Mar 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>CHECK  SET  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [4] VOLUME            vol SAin SAout              /* volume and SAin input */
+      [3] RHODOPSIN         mrho vol SAin SAout /* effective rhodopsin, volume and SAin input from rhodopsin */ 
+      [2] SUBSTRATE         conc                        /* conc. of substrate */     
+      [1] FEEDBACK          feedback rateconst /* concentration of feedback molecule, which rate const to modify. */
+      [0] ENZ               conc                   /* concentration or quantity of enzyme */  
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             conc            concentration (integrated)         
+             quant           quantity in molecules         
+             complex_conc              
+             complex_quant             
+             previous_state            
+             Cmin            minimum concentration         
+             Cinit           initial concentration        
+             Qinit           initial quantity in molecules        
+             len             length of cylindrical pool        
+             radius          radius of cylindrical or spherical pool         
+             vol             volume of pool       
+             SAside          side surface area of cylinder       
+             SAout           outer surface area of spherical shell        
+             SAin            inner surface area of spherical shell        
+             units           1 for moles, 1e-3 for mmoles, 1e-6 for umoles      
+             type             whether pool integrates concentration (0) or quantity (1)      
+             kf               forward rate  constant.  Kf units must be consistent with substrate units.       
+             kb               backward rate constant. units are per time.      
+             kcat              catalytic rate constant. units are per time.      
+             deltacat          change in product of whole reaction  = kcat*EScomplex
+             deltaenz          change in free enzyme conc = (kb+kcat)*EScomplex
+             kbprod            change in substrate conc = kb * EScomplex conc
+             kfsubs             kf * Enz * Subs     
+             feedback          computed feedback value      
+             rateconst         which rate const is modified by feedback      
+             fbconc            concentration of feedback substance     
+             thresh            above or below this no feedback computed.      
+             pow               raise fb to this power      
+             form              0 for hyperbolic, 1 for sigmoid increase, 2 for sigmoid decrease
+             sign              -1 for feedback below threshold, +1 for fb above thresh
+             halfmax           parameter for sigmoid form of feedback      
+             Dunits            1 for meters, 1e-4 for cm, etc      
+             VolUnitConv       Dunits^3, converts volume to SI units   
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+enzyme implements a reaction pool (thus has many of the same fields as rxnpool),
+and the two reactions of an enzyme reaction.  In the first reaction, enzyme
+binds to substrate.  In the second reaction, product is formed and the enzyme is
+regenerated.  Thus, this object tracks the enzyme concentration, but two
+additional rxnpools are needed - one for substrate and one for product.
+
+<P>
+Eqn:     Michaelis-Menton enzyme kinetics. Vmax = kcat; Km = (Kcat+kb)/kf
+
+<PRE>
+                                kf      kcat
+        [Enzyme] + [Substrate] &lt;-&gt; [E-S] -&gt; [Enzyme] + [Product]
+                                kb
+
+        Computes dprod/dt =  kcat*E-Scomplex
+        Solves for E-Scomplex concentration from: dES/dt = -(kcat+kb)*ES + kf*E*S
+
+        dProduct/dt units are quantity (not concentration)
+        addmsg from enz object to rxnpool RXN0MOLES product.
+</PRE>
+
+<P>
+It also has fields to allow modulation (change in rate constants) of the enzyme
+activity by any molecule. Feedback message requires feedback concentration and
+rate const: 0 for kf, 1 for kb, 2 for kcat.  
+
+<P>
+using hyperbolic form: feedback is proportional to: 1 / conc(feedback substance)
+for negative feedback
+
+<P>
+feedback is proportional to: conc (feeback substance) for positive feedback.  
+
+<P>
+Sigmoid form: feedback is proportional to: conc/conc + halfmax 
+(for inc feedback)
+
+<P>
+feedback is proportional to: halfmax / conc + halfmax (for dec feedback) 
+
+<HR>
+
+<PRE>
+Object Type:      feedback
+datatype          feedback_type
+function          feedback()
+class             [ segment ] 
+size              184 bytes
+author            A. Blackwell GMU feb 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>SET  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<P>
+      [0] CONC              conc         // concentration of feedback substance
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             thresh           above or below this no feedback computed      
+             pow              raise fb to this power       
+             form             0 for hyperbolic, 1 for sigmoid increase, 2 for sigmoid decrease
+             sign             -1 for feedback below threshold, +1 for fb above thresh        
+             halfmax          parameter for sigmoid form of feedback         
+             feedback         output value of feedback        
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+An object for computing modification of rate constants
+caused by feedback of some substance, e.g. calcium, sent as message.
+
+<P>
+hyperbolic form: feedback is proportional to: 1 / conc(feedback substance) for
+negative feedback
+
+<P>
+feedback is proportional to: conc (feeback substance) for positive feedback.  
+
+<P>
+Sigmoid form: feedback is proportional to: conc/conc + halfmax (for inc feedback)
+feedback is proportional to: halfmax / conc + halfmax (for dec feedback) 
+
+<HR>
+
+<PRE>
+Object Type:      mmenz
+datatype          mmenz_type
+function          mmenz()
+class             [ segment ] 
+size              208 bytes
+author            A. Blackwell ERIM Aug 96; revised GMU Dec 99
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>SET  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [2] SUBSTRATE         conc /* conc. of substrate */
+      [1] FEEDBACK          conc /* conc. of feedback substance */
+      [0] ENZ               conc /* amount of enzyme */
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             activation                
+             Vmax           maximal rate of reaction, units of per time        
+             Km             combination rate constant: (kf2+kb1)/kf1        
+             product        quantity of product produced.  Units will the the same enzyme units       
+             thresh         below this conc, positive feedback, above the concentration implement negative feedback        
+             pos_pow        raise positive feedback to this power         
+             pos_form       0 for hyperbolic, 1 for sigmoid         
+             pos_halfmax    param for sigmoid feedback         
+             neg_pow        raise negative feedback to this power        
+             neg_form       0 for hyperbolic, 1 for sigmoid          
+             neg_halfmax    parameter for sigmoid feedback         
+             feedback       computed value of feedback          
+             subs_rate
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+Simplified Michaelis-Menton enzyme kinetics.  Can assume constant
+substrate, or can compute effect of substrate on reaction rate.
+Vmax = kf2; Km = (Kf2+kb1)/kf1
+
+<PRE>
+                       kf1     kf2
+[Enzyme] + [Substrate] &lt;-&gt; [E-S] -&gt; [Enzyme] + [Product]
+                       kb1
+</PRE>
+
+<P>
+Under assumptions of M-M dynamics, Solves 
+dprod/dt = kf1*Enzyme*Subs/(Subs + Km)
+
+<P>
+Vmax units are quantity per time, where quantity units are the same as the
+enzyme units (input from enzyme rxnpool).  Substrate and Km must have units of
+Conc.  Product (quantity units, same as enzyme) = Vmax * E * S/ (S+Km).
+
+<P>
+Use addmsg from enz object to rxnpool RXN0MOLES product.  For more accurate MM
+kinetics, enzyme OR enz object in kinetikit.  Feedback allows decrease in enzyme
+activity as function of concentration of feedback substance.
+
+<P>
+hyperbolic form: feedback is proportional to: 1 / conc(feedback substance) for
+negative feedback
+
+<P>
+feedback is proportional to: conc (feeback substance) for positive feedback.  
+
+<P>
+Sigmoid form: feedback is proportional to: conc/conc + halfmax (for inc
+feedback) feedback is proportional to: halfmax / conc + halfmax (for dec
+feedback)
+
+<HR>
+
+<PRE>
+Object Type:      mmpump2
+datatype          pump_type
+function          mmpump2()
+class             [ channel ] [ segment ] 
+size              200 bytes
+author            A. Blackwell ERIM Aug 96; revised GMU Dec 99; GMU Mar 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>SET  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<P>
+      [0] CONC              conc 
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             activation      
+             max_rate  Maximum Pump Rate   
+             half_conc concentration at which pump rate is half maximal   
+             half_conc_pow   
+             moles_in  State variable for return message to pools   
+             moles_out State variable for return message to pools   
+             power     exponent applied to Concentration   
+             units     1 for moles, 1e-3 for mmoles, 1e-6 for umoles   
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+ A Michaelis-Menton type of formulation of pump.  Either SERCA ATPase
+ pump or Na-Ca ATPase cytosolic pump. Requires input message in
+ concentration units.  Computes right hand side of dC/dt =
+ (+/-)max_rate * Ca^n / (Ca^n + half_conc^n).
+ Output Messages  
+<PRE>
+        addmsg from mmpump2 to cytosol-rxnpool  RXN0MOLES moles_out.  
+        addmsg from mmpump2 to ER or extracellular rxnpool RXN0MOLES moles_in. 
+</PRE>
+<P>
+ Note that mmpump is another implementation of a Michaelis-Menton pump.
+
+<HR>
+
+<PRE>
+Object Type:      ncx
+datatype          exchange_type
+function          ncx()
+class             [ channel ] [ segment ] 
+author            A. Blackwell GMU Sept 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>CHECK  SET  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [4] VM                Vm   /* membrane potential*/
+      [3] NAEXT             conc /* Na external Concentration */
+      [2] NAINT             conc /* Na internal Concentration */
+      [1] CAEXT             conc /* Ca external Concentration */
+      [0] CAINT             conc /* Ca internal concentration */
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             activation                
+             Ca_int         internal calcium concentration         
+             Ca_ext         external calcium concentration         
+             Na_int         internal calcium concentration         
+             Na_ext          external calcium concentration       
+             Vm             membrane potential        
+             Vnaca          reveral potential of ncx        
+             naterm         Na_ext^stoic, used for Jafri formula        
+             caterm         Ca_ext ^hill, used for Gall formula         
+             chi            F/RT        
+             Kmca           affinity for calcium        
+             Kmna           affinity for sodium        
+             kmhill         km^hill        
+             naicao         nai^hill*cao        
+             gamma          partition coefficient        
+             T              temperature in Kelvin         
+             I              current        
+             Gbar           maximal conductance        
+             Gcurrent       conductance for compartment       
+             ksat           another constant used by jafri        
+             Vunits         units of membrane potential        
+             valence        calcium charge        
+             hill           hill coefficient        
+             stoich         stoichiometry of pump (how many sodium for calcium)
+             Na_msg            whether sodium conc messages are being passed
+             ncxtype           whether using Gall (0) or Jafri (1) formula
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+ Sodium calcium exchanger equations.  
+
+<P>
+ if ncxtype = 0 uses Gall formula:<BR>
+ I = K * Cai^Hill/(Cai^Hill + Kmca^H) * (Vm - Vnaca) where
+ Vnaca = RT/F(stoic*ln(Nao/Nai) - ln(Cao/Cai))
+
+<P>
+ if ncxtype = 1 uses jafri formula:
+ 
+<P>
+ I = K* (Cao*Nai^stoich*exp(gamma*FV/RT) - Cai*Nao^stoich*exp((1-gamma*FV/RT))
+ divided by<BR>
+ (Kmna^stoich+nao^stoich)*(Kmca+cao)*(1+ksat*exp(1-gamma)FV/RT))
+
+<P>
+ if Na_msg = 0 then Na concentrations are initialized, no Na messages
+ required.  if Na_msg = 1, then Na messages are required.
+ In all cases input messages of calcium are required.
+ The calcium and sodium input message in concentration units.
+
+<P>
+ Requires Vm message, units indicated with Vunit field addmsg from ncx
+ to rxnpool CURRENT valence current.
+
+<HR>
+
+<PRE>
+Object Type:      reaction
+datatype          react_type
+function          reaction()
+class             [ segment ] 
+author            A. Blackwell ERIM Aug 96 ; revised GMU Dec 99
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>SET  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [1] PRODUCT           conc  /* concentration or quantity of products */
+      [0] SUBSTRATE         conc  /* concentration or quantity of substrates */
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             kb               backward rate constant      
+             kf               forward rate constant      
+             kbprod           kb * products       
+             kfsubs           kf * substrates      
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+An element to compute kf*substrates and kb*products for nth order reactions.
+dC/dt = kf * substrate * substrate * ... - kb*product* ...
+
+<P>
+For each substrate and product in reaction, a message must be received
+(n times, if n moles required). Input and rate constants both must be
+in units of concentration, (use RXN2 to send message to rxnpool) or
+both must be in units of moles (use RXN2MOLE).
+
+<P>
+addmsg from reaction to substrate rxnpool RXN2 (or RXN2MOLES) kbprod kfsubs
+addmsg from reaction to product rxnpool RXN2 (or RXN2MOLES) kfsubs kbprod       
+
+
+<HR>
+
+<PRE>
+Object Type:      rhodopsin
+datatype          rhodopsin_type
+function          rhodopsin()
+class             [ segment ] 
+size              7128 bytes
+author            A. Blackwell GMU March 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>CHECK  SET  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [1] INACT             inactivation 
+      [0] ISOM              isomerization 
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             input_slice               
+             slice                     
+             isom                      
+             last_isom                 
+             villus                    
+             total_villi               
+             slice_villi               
+             villi_isom                
+             isom_time                 
+             total_time                
+             active_villi    
+             villus_vol      
+             villus_xarea    
+             villus_sa       
+             slice_vol       
+             slice_xarea     
+             slice_sa        
+             factor          
+             total_isom      
+             depletion       
+             effective       
+             villi_list      
+             inact_const     
+             inact_rate      
+             inact           
+             last_inact      
+             total_inact     
+             units           
+             conc            
+             quantity        
+             len             
+             radius          
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+Quite a complicated object for calculating stochastic activation of rhodopsin
+molecules and includes stochastic inactivation by Rhodopsin Kinase or Arrestin.
+It keeps track of: 
+<P>
+    Number of rhodopsin molecules per villi, which allows decrease effectiveness
+    with additional villi
+
+<P>
+    time of rhodopsin activation, which allows decrease effectiveness over time
+    due to depletion
+
+<HR>
+
+<PRE>
+Object Type:      rxnpool
+datatype          rxnpool_type
+function          rxnpool()
+class             [ concentration ] [ segment ] 
+size              280 bytes
+author            A. Blackwell ERIM Aug 96; revised GMU Dec 99; GMU Mar 02
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>RESTORE2  SAVE2  CHECK  RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<PRE>
+      [6] VOLUME            vol SAin SAout //This input will change the volume and surface area of the compartment      
+      [5] RXN0MOLES         A             //The input value causes quantity independent increase in molecules
+      [4] CURRENT           charge current  //Two input values - the current, and the valence of the ion flowing
+      [3] RXN2MOLES         A B         //Two input values provided from reactions between elements that track quantity
+      [2] RXN2              A B //The input value is a rate constant, multiplied by the existing molecule conc or quantity
+      [1] RXN1              B           //The input value is a rate constant, multiplied by the existing molecule conc or quantity
+      [0] RXN0              A   //The input value causes concentration independent increase in molecules
+</PRE>
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             Conc            concentration         
+             quantity        quantity in molecules       
+             previous_state            
+             Cmin            minimum concentration       
+             Cinit           initial concentration        
+             Qinit           initial quantity in molecules         
+             len             length of cylindrical pool        
+             radius          radius of cylindrical or spherical pool        
+             vol             volume of pool        
+             SAside          side surface area of cylinder       
+             SAout           outer surface area of spherical shell       
+             SAin            inner surface area of spherical shell       
+             type            whether pool integrates concentration (0) or quantity (1)        
+             units           1 for moles, 1e-3 for mmoles, 1e-6 for umoles        
+             Iunits          1e-12 to convert from nA, msec to A,sec       
+             Dunits          1 for meters, 1e-4 for cm, etc       
+             VolUnitConv     Dunits^3, converts volume to SI units     
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG>
+
+<P>
+Rxnpool is an object used to keep track of molecule concentration and quantity;
+thus it interacts with reactions, diffusion, pumps,current, and calcium release
+objects.  Regardless of the source of the molecules, it accumulates fluxes into
+variables A (rate of change independent of concentration) and B (rate of change
+proportional to concentration) and solves d[C]/dt = A - B*[C].
+
+<P>
+Inputs of concentration for 0th, 1st and 2nd order reactions are provided
+through the messages RXN0, RXN1 and RXN2.  Inputs of Moles are provided through
+the messages RXN0MOLES or RXN2MOLES. Inputs of current (uses physiologists
+convention - that means a negative current is inward, e.g. a negative calcium
+current increases calcium concentration.  To provide input from tabchannels
+which use modelers conventation, provide a charge (valence) of -2 for calcium
+(instead of +2). To provide input from either diffusion, CICRflux, an enzyme
+reaction or a pump, use RXN0MOLES, because these calculate flux between
+compartments (rxnpools) with unequal volume.  Thus, the change in concentration
+is different for the two different compartments
+
+<P>
+rxnpool and all other chemesis objects allow for any consistent set of units.
+Iunits is a value that specifies which units are used, thus if currents are in
+units of nanoAmps, then Iunits should be 1e-9.  If current is in nA and the
+clocks units are msec, then Iunits = 1e-12
+
+<P>
+Dunits indicates the units used for length (needed for diffusion).  units is a
+value that specifies which units for quantity (e.g. moles, mmoles, etc) are
+used.  type indicates whether to do the calculations in units of concentation or
+quantity.  If type = 0, converts molecule inputs to concentration and then
+integrates; if type = 1, converts concentration inputs to molecules and then
+integrates.
+
+<HR>
+
+<PRE>
+Object Type:      wgtavg
+datatype          wgtavg_type
+function          wgtavg()
+class             [ segment ] 
+size              168 bytes
+author            A. Blackwell GMU Oct 2011
+</PRE>
+
+<P>
+<STRONG>VALID ACTIONS</STRONG>
+<P>
+<STRONG>RESET  PROCESS  INIT  </STRONG>
+
+<P>
+<STRONG>VALID MESSAGES</STRONG>
+<P>
+      [0] ValueWgt          Value wgt 
+
+<P>
+<STRONG>FIELDS</STRONG>
+<PRE>
+             totValue        total weighted value"      
+             totwgt          total of weights      
+             meanValue       weighted mean      
+</PRE>
+
+<P>
+<STRONG>DESCRIPTION</STRONG><BR>
+An object to calculate a weighted average.  Divides total weighted
+value by total weights.  Can calculate the mean calcium from unequal
+size calcium shells by using volume as weight.
+
+<HR>
+<P>
+<A HREF="Manual-17.html">Previous</A>
+<A HREF="Manual-18.html">Next</A>
+<A HREF="Manual.html#toc17.5">Table of Contents</A>
+<HR>
+
+</BODY>
+</HTML>

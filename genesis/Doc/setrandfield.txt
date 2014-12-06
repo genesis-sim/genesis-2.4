@@ -1,0 +1,33 @@
+Routine Name:   setrandfield
+
+Description:    Sets an element field to a random value
+
+Usage:                                  | [-uniform low high]
+                setrandfield path field | [-gaussian mean sd]
+                                        | [-exponential mid max] 
+
+Example:        setrandfield /pyr/pyramidal[]/HH_Na_channel \
+                    X_alpha_V0 -gaussian -40 3
+
+Notes:          In the example above (from Scripts/piriform/pyramidal.g),
+                setrandfield is being used to give some variation to the
+                voltage dependence of the activation of Na channels used in
+                all of the pyramidal cells used in the model.  In this case,
+                there is a gaussian distribution about the mean of -40 mV,
+                with a standard deviation of 3 mV.  Another use of the
+                setrandfield comamnd would be to use it in script function to
+                be executed as the command of a script_out object, or as the
+                PROCESS action of an extended object, in order to randomly
+                change a field at every time step.  This would be a way to
+                inject a noise current into a compartment, for example.
+
+                The -uniform option gives a a random number taken from a
+                uniform distribution in the range "low" to "high".
+
+                The -exponential option gives a random number taken from an
+                exponential distribution with a minimum value of zero, a 1/e
+                point of "mid" and a maximum value of "max".  Versions of
+                GENESIS prior to 2.2 used a different interpretation of the
+                two arguments.
+
+See also:       setfield

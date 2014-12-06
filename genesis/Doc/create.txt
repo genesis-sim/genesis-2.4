@@ -1,0 +1,57 @@
+Routine Name:	create
+
+Description:	Creates new element of specified element type.
+
+Usage:		create element-type name -autoindex [object-specific-options]
+
+		element-type	type of element; must be one of the valid
+				element types (objects) compiled into the
+				genesis executable, or an extended object
+				created with the GENESIS scripting language.
+
+		name		element or path name where new element is to
+				be attached in the GENESIS element hierarchy;
+				if single name is given (i.e., no path
+				separators "/"), element is created on the
+				current working element [also can be indexed;
+				see below]
+
+		-autoindex	automatically assigns the first free element
+		                index to the newly created element.
+
+		[options]	some elements can be created with additional
+				options which are specific to the object type
+				(see individual object documentation for
+				options)
+
+Example:	create neutral /cell
+		create compartment /cell/soma
+		create xgraph voltage_plot
+
+Notes:		The create routine is used to create new elements in the
+		GENESIS element tree.  It generates an element of type
+		"element-type" and places it in the element tree with the
+		assigned name.
+
+		The additional options which can be specified for the create
+		routine depend on the element-type being created.  For
+		example, elements which represent graphical widgets contain
+		data fields for screen information such as the position and
+		dimensions of the graphical object. This information may
+		also be specified as an option in the creation of an element.
+
+		    create compartment soma[0]
+		    create compartment soma[1]
+		    create compartment soma[10]
+		    create compartment soma -autoindex
+
+		In the example above, he name field of each element will be
+		"soma" but the index fields will have values 0-2 and 10.
+		The "-autoindex" option in the last statement creates the
+		element with index 2.  Note that soma and soma[0] are
+		equivalent i.e. the absence of an index implies an index of
+		0 (the default).  Also note that the index is an arbitrary
+		value and does not need to follow any order.
+
+See also:	listobjects, showobject, le
+

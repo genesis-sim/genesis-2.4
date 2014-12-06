@@ -1,0 +1,29 @@
+Routine Name:	logfile
+
+Description:	Activates/deactivates logging of all commands issued in
+		GENESIS session.
+
+Usage:		logfile file-name
+		logfile -off
+
+		file-name	name for file in which to save record of
+				messages typed to or displayed at the GENESIS
+				shell -- if file already exists, information
+				will be appended; if file does not exist,
+				it will be created and information entered
+
+		-off		flag to deactivate logging
+
+Example:	genesis >  logfile mylog
+		logging to 'mylog' at Sat Jun 24 18:44:59 1995
+		...
+		genesis >  logfile -off
+		logging done at Sat Jun 24 19:08:08 1995
+
+Notes:		The logfile routine is used to activate command line logging.
+		All commands typed from the keyboard as well as various error
+		messages reported by the simulator will be saved in the
+		specified logfile.
+
+See also:	notes
+

@@ -1,0 +1,59 @@
+                               INTRODUCTION
+
+This tutorial gives some experiments to try, using a simulation of a
+passive neuronal cable.  The theory needed to understand this tutorial
+may be found in Chapter 5 of "The Book of GENESIS" by James M. Bower
+and David Beeman, published by TELOS/Springer, and in Chapter 2 of
+"Methods in Neuronal Modeling", by Christof Koch and Idan
+Segev.
+
+-----------------------------------------------------------------------------
+
+  The equivalent circuit for each cable compartment looks like this:
+
+           Ra
+   o___/\/\/\/\/\________________________________o Vm
+                          |        |         |      
+                          |        |         |
+                          \        |         |
+                          /       / \     ___|___
+                     Rm   \      / A \    _______ Cm 
+                          /      \ | /       |
+                          \       \ /        |
+                          /        | Iinject |
+                          |        |         |
+                          |________|_________|
+
+
+  Vm represents the membrane potential, or the potential in the interior of a
+  compartment relative to a point outside the cell.  It appears across the
+  membrane resistance Rm and capacitance Cm, causing a current flow into the
+  next compartment through the axial resistance Ra when there is a
+  difference in potential between the two compartments.  Iinject is the
+  optional injection current provided by an electrode inserted into the
+  compartment.  In this simulation, voltages are meaured in millivolts,
+  resistances in kilohms, capcitances in microfarads, and currents in
+  microamperes.  The values of Rm, Cm, and Ra are calculated from the
+  length and diameter of the cylindrical compartment, using the specific
+  resistances and capacitances.  In our notation, "RM" is the specific
+  membrane resistance (in Kohm-cm^2), "CM" is the specific membrane
+  capacitance (in microfarad/cm^2), and "RA" is the specific axial
+  resistance (in Kohm-cm).
+
+  In our simulation, there is a soma compartment like the one above.  A
+  variable number of cable compartments may be added to the right of the
+  soma.  Thus, the membrane potential of the left hand compartment will
+  cause a current to flow through the axial resistance of its neighbor to
+  the right, charging the membrane capacitance.
+
+  It is also possible to add a synaptically activated channel to any one of
+  the compartments and to trigger the conductance of this channel.  If the
+  synaptic input is applied at time t=0, the current produced will be
+
+            Isyn = gsyn*(t/tsyn)*exp(1-t/tsyn)*(Vm-Vsyn)
+
+  Here, gsyn is the maximum channel conductance, tsyn is the time constant
+  for the exponential decay of the conductance, and Vsyn is the channel
+  reversal potential.
+
+-----------------------------------------------------------------------------

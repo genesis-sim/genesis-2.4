@@ -1,0 +1,108 @@
+//genesis
+//mglu-ip3-kkit.txt
+
+//need to be in kinetikit script directory; Fabulous tutorial accessed by clicking "help"
+cd genesis/Scripts/kinetikit
+genesis Kinetikit
+
+/* Same reactions implemented in Chemesis
+ * Parameters are from param.g
+
+ Glu-mGLuR + G <-> G-Glu-mGluR -> aG + Glu-mGluR (uses Vmax2 Km2)
+ aG + PLC <-> aPLC-aG (uses G2)
+ aPLC + PIP2 <-> aPLC-PIP2 -> aPLC +IP3+ DAG (uses Vmax1 Km1)
+ */
+
+/* Create pools of molecules.  One element is required for each molecule.
+No difference in creating conserve pools or reaction pools */
+
+/*To make kpool creation easier, click on Units, then set default diameter=12.8
+However, if you want to run it faster, set default diameter =1.28, and then you
+can use a dt of 1e-5 */
+
+click and drag kpool
+CoInit=0, color=14, name=Glu_mGluR, Diam=12.8 uM
+
+click and drag kpool
+CoInit=25, color=26, name=Gtot, Diam=12.8 uM
+
+click and drag kpool
+CoInit=5, color=62, name=PLCtot, Diam=12.8 uM
+
+click and drag kpool
+CoInit=160, color=4, name=PIP2tot, Diam=12.8 uM
+
+click and drag kpool
+CoInit=0.0007, color=27, name=aG, Diam=12.8 uM
+
+click and drag kpool
+CoInit=0.0035, color=46, name=aPLC_aG, Diam=12.8 uM
+
+click and drag kpool
+CoInit=0.1, color=3, name=IP3, Diam=12.8 uM
+
+/*To set up the conserve pools as such, place mouse over other pools, and 
+drag to the conserve pools.  But don't do this in this simulation.
+1. Click aG, drag to Gtot
+2. Click aPLC_aG, drag to Gtot
+3. Click aPLC_aG, drag to PLCtot
+4. Click IP3, drag to PIP2tot
+*/
+
+/* Now create the reactions that will increase or decrease various molecules*/
+/*First, enzyme reaction */
+
+Click and drag kenz onto Glu_mGluR
+Vmax=1.8, Km=0.6, name=GGlu_mGLuR
+drag from Gtot to GGlu_mGLuR (substrate)
+drag from GGlu_mGluR to aG (product)
+
+/* Next, create bimolecular reaction */
+click and drag kreac
+kf=100, kb=100, name=PLC_rxn
+
+drag aG to PLC_rxn (substrate)
+drag PLCtot to PLC_rxn (substrate)
+drag PLC_rxn to aPLC_aG (product)
+
+/* Then, create second enzyme reaction */
+Click and drag kenz to aPLC_aG
+k1=0.83, k2=0.1, k3=0.58, name=pip2ip3
+
+drag PIP2tot to pip2ip3 (substrate)
+drag pip2ip3 to IP3 (product)
+
+/* Blue arrows indicate conserved reactions
+ * Red arrows indicate enzyme reactions
+ * green arrows indicate bimolecular reactions
+ * try to move around your pools to minimize arrow crossing */
+
+Now, need to plot some values
+
+drag aG to Concs1 graph
+drag aPLC_aG to Concs1 graph
+drag IP3 to concs2 graph
+drag Gtot to concs2 graph
+drag PLCtot to concs2 graph
+
+Click Options, set clock dt for simultion =1e-8
+set clock dt for plots = 1e-6
+click options again to hide
+
+set runtime=0.1
+reset
+start
+set CoComplex=0 (of GG_mGLuR)
+start
+Runtime = 0.9
+Start
+
+// To verify your reactions
+ce kinetics
+le
+showfield Gtot, Ga
+showmsg PIP2tot, IP3
+
+!!!!!!!!!!!!Warning!!!!!!!!!!!
+The above didn't work for me. I.e., I don't get the same values as XPP and Chemesis
+

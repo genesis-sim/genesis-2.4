@@ -1,0 +1,40 @@
+Routine Name:	rotcoord
+
+Description:	Rotates coordinates of elements in 3-D space.
+
+Usage:		rotcoord path angle [-x | -y | -z | -axis x y z] [-center]
+				    [-translatekids | -fixkids]
+
+		path		path of element to be rotated
+
+		angle		angle (in radians) for rotation
+
+		-x		rotate about the x axis
+		-y		rotate about the y axis
+		-z		rotate about the z axis
+
+		-axis x y z	use vector specified by x, y, z coordinates
+				as the axis of rotation
+
+		-center x y z   offset center of rotation (default: 0,0,0)
+
+		-translatekids  have children of selected element translated
+				parallel to the parent rather than rotated
+				(default is to rotate)
+
+		-fixkids	prevent children of selected elements
+				from being moved
+
+Example:	rotcoord /library/cell {-3.1415927/2} -y
+
+Notes:		Note that the angle of rotation is in radians, clockwise
+                about the specified axis.  By default, all the children of
+                the selected element are rotated as well.  In the example,
+                the original cell had the apical dendrite pointing along the
+                x-axis.  This command will rotate it 90 degrees
+                counterclockwise about the y-axis to point outward along the
+                z-axis.  This is useful when using createmap or cellsheet to
+                make a grid of cells having their dendrites normal to a
+                surface.
+
+See also:       cellsheet

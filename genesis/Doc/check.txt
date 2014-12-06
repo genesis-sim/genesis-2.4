@@ -1,0 +1,28 @@
+Routine Name:	check
+
+Description:	Checks various aspects of simulation to catch specification
+		errors.
+
+Usage:		check
+
+Example:	check
+
+		genesis >  setfield /soma Rm -5000 Cm 0
+		genesis >  check
+		** Error - Compartment : Invalid Rm. '/soma'
+		** Error - Compartment : Invalid Cm. '/soma'
+
+Notes:		The check routine sends the CHECK action to the handlers for
+		all enabled elements.  The CHECK action should verify the
+		consistency and well being of the element and report any
+		problems with it to the user.  (Each element which supports
+		self-checking will be invoked with the CHECK action and report
+		any problems.)
+
+		In the example above, the CHECK action of the compartment
+		checks to be sure that the Rm and Cm fields are set to
+		positive values, and running a check prints an error message.
+
+
+
+See also:	addtask, setclock, enable, reset

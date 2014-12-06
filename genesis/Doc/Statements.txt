@@ -1,0 +1,56 @@
+  3.1.  GENESIS Statements and Commands
+
+  GENESIS routines are called by entering a routine name followed by any
+  necessary arguments and options separated by whitespace.
+
+    routine-name arg1 arg2 ... -option1 option1-arg1 ... -option2 ...
+
+  A valid routine-name is a script identifier consisting of any
+  combination of alphabetic (A-Z or a-z) or numeric (0-9) characters, or
+  underscores (``_'') -- all other symbols are invalid characters in an
+  identifier.
+
+  Routine arguments consist of literal strings of characters, results of
+  other GENESIS routines or expressions, strings of characters including
+  whitespace enclosed in double quotes and the value of parameters
+  passed to a script or function.  Combinations of these which appear
+  together without any intervening whitespace are concatenated and
+  passed as a single argument to the routine.
+
+  Routine options follow command arguments, and are introduced by a dash
+  character.  Option names may be abbreviated to any unambiguous length.
+  Each option may accept additional arguments following the option name.
+
+  A carriage return marks the end of a statement, so you do not need to
+  use semicolons at the end of a line.  However, you can use semicolons
+  to terminate statements as a way to include multiple statements on a
+  single line.  Several examples:
+
+    genesis > reset; step 100
+
+    genesis > int a, b, c ;  a=1 ;  b=2 ;  c=3
+    genesis > if( a < b); echo {a} is less than {b}; end
+    1 is less than 2
+
+  In other cases, the ``command'' returns a value and might more prop-
+  erly be called a function.  In the documentation for GENESIS commands,
+  we will use the term ``routine'' for built-in GENESIS commands, and
+  will reserve the term ``function'' for a script function that is writ-
+  ten in the GENESIS scripting language.  The procedure for creating
+  your own functions is described under ``Functions'' (Functions.txt).
+
+  The following two examples illustrate how a routine call can be
+  supplied as the argument to another routine or as a value in a script
+  language expression:
+
+    genesis > echo { getfield /neutral_test x }
+    genesis > float length = { getfield /cell/soma len }
+
+  Routines used in the context of an argument to another routine or
+  within a script language expression must be enclosed in curly
+  brackets.
+
+  All GENESIS statements are subject to these and other basic
+  syntactical rules.  If a statement you submit violates these rules,
+  the interpreter will respond with an error message (and ignore your
+  instruction).

@@ -1,0 +1,89 @@
+  3.3.  Functions
+
+  As with any programing language, GENESIS lets you define functions in
+  order to make your script programs more modular and easier to modify.
+  You should group function definitions together at the beginning of a
+  script, preceding any statements that will use them.  The listglobals
+  routine will list any user-defined functions.
+
+  The general form of a function definition in GENESIS is:
+
+          function function-name [ (arg1 [, arg ... ] ) ]
+            statement-1
+              .
+              .
+              .
+            statement-n
+          end
+
+  For example:
+
+          function print_area(length, diameter)
+              float length, diameter
+              float area
+              float PI=3.14159
+              area = PI*diameter*length
+              echo The area is {area}
+          end
+
+          function link_compartment(channel,compartment)
+              addmsg {channel} {compartment} RAXIAL Ra previous_state
+              addmsg {compartment} {channel} AXIAL previous_state
+          end
+
+  The SLI also lets you define functions interactively at the GENESIS
+  prompt.  For example:
+
+          genesis > function my_echo(inputval)
+          ? echo { inputval }
+          ? end
+          genesis > listglobals
+          function        my_echo
+          genesis > my_echo 33
+          33
+
+  The ``return'' keyword allows a return from the function before the
+  end statement.  It may optionally be used to return a value.  For
+  example:
+
+          function make_positive(num)  // a silly version of "abs"
+              float num
+              if (num >= 0)
+                  return {num}
+              else
+                  return {abs {num}}
+              end
+          end
+
+  You are not allowed to define a function within another function.
+  Normally, you cannot refer to a function in another function before it
+  is defined.  For example, the following script will produce an error
+  message:
+
+          function func2
+              func1 "This is a test."
+          end
+
+          function func1(string)
+              str string
+              echo "The value of the string is: " {string}
+          end
+
+          func2
+
+  However, adding the line
+
+          extern func1
+
+  at the beginning of the script will give the desired result:
+
+          The value of the string is:  This is a test.
+
+  The keywords ``function'', ``return'', ``end'', and ``extern'' are
+  features of the interpreter, not normal GENESIS commands;
+  consequently, they do not appear in a listing of GENESIS routines
+  (e.g., as given by the listcommands routine).
+
+  The routines ``argc'' (argc.txt) and ``argv'' (argv.txt) are often
+  used inside of function definitions to return the number of arguments
+  and the array of arguments which are passed to the function.

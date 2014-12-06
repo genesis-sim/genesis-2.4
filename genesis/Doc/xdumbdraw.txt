@@ -1,0 +1,107 @@
+Object Type:	xdumbdraw
+
+Description:	Demonstration object class for displaying pixes. Subclassed
+		from coredraw. While this widget is functional, it is not
+		particularly useful for anything other than demo purposes for
+		code developers.
+		The coredraw widget should be used if the projections need
+		to be restricted to the xy plane, and the draw widget in
+		other cases.
+		Like other coredraw subclasses, dumbdraw can be thought of as
+		providing a window into a space where pixes reside, or a
+		screen onto which pixes are projected. One can select the size,
+		orientation and other parameters of this window/screen 
+		according to the set of functions described below.
+		The functions provided by coredraw, which are inherited or
+		overridden by its subclasses, include:
+			Displaying and managing pixes.
+			Handling forward transforms for drawing pixes
+			Handling backward transforms for identifying
+				location of mouse events
+			Keyboard control over transformation parameters
+				such as zoom and pan.
+			Providing a mechanism for deciding which child
+				pix should recieve mouse events
+
+		Dumbdraw does not display anything on its own. The pixes
+		provide the actual images and drawing routines displayed
+		in a dumbdraw widget.
+
+		The dumbdraw widget can only display pixes using planar
+		orthographic projections. One can select between the
+		xy, yz and xz planes using the keyboard commands
+		z,  x, and y  respectively.
+
+		In a future revision the z coordinate will be used to determine
+		the order of redrawing pixes to enable pixes to obscure
+		each other according to depth.
+
+Author:		Upi Bhalla Caltech April 93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xdumbdraw_type [in src/Xodus/draw/xdumbdraw_struct.h
+
+Size:		?
+
+Fields:		fg	Foreground color of dumbdraw (not used)
+		bg	Background color.
+		xgeom	Position of left edge of dumbdraw.
+		ygeom	Position of upper edge of dumbdraw.
+		wgeom	Width of dumbdraw
+		hgeom	Height of dumbdraw
+		xmin	x lower limit for displaying pixes.
+		ymin	y lower limit for displaying pixes.
+		zmin	z lower limit for displaying pixes.
+		xmax	x upper limit for displaying pixes.
+		ymax	y upper limit for displaying pixes.
+		zmax	z upper limit for displaying pixes.
+		script	Script operation(s) to perform on a mouse
+			click. The script calls to the dumbdraw widget
+			are only made if none of the child pixes has
+			expressed an interest in the event.
+		transform	The projection transformation to
+			perform while displaying the pixes.
+			z = xy plane
+			y = xz plane
+			x = yz plane.
+			(think of it as looking down from the selected
+			axis (eg, z) onto a plane (eg, xy).
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XDumDraw [in src/Xodus/widg/xdumbdraw.c]
+
+Classes:	widget output
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		XODROP:	Called when a pix is dropped into a draw widget.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+		The xdumbdraw does not perform any computational operations
+		driven by the simulation clock.
+
+Example:
+		create xform /form [0,0,500,500]
+		create xdumbdraw /form/dumbdraw [0,0,100%,100%] \
+			-bg red -script "echo Hello, I am a dumbdraw widget" 
+		setfield /form/dumbdraw xmin -2 xmax 2 ymin -2 ymax 2
+		// display the pixes here
+		create xsphere /form/dumbdraw/sphere -fg green -r 1 \
+			-script "echo Hello, I am a sphere pix"
+		xshow /form
+
+See also:	XODUS documentation, pix documentation, documentation
+		for coredraw and other subclasses.
+

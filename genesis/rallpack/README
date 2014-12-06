@@ -1,0 +1,289 @@
+			RALLPACKS version 1.1
+
+The Rallpacks are a set of benchmarks for evaluating neuronal simuators.
+The original idea was proposed at the Analysis and Modeling of Neural
+Systems meeting in San Francisco in July 1991.
+
+This is an updated version, incorporating suggestions from many people.
+We would like to express our appreciation to everyone who helped with the
+original ideas and development of the Rallpacks. A partial list includes 
+Frank Eeckman, Erik De Schutter, John Miller, Michael Hines, Mark Nelson,
+Tony Zador, and of course, Wilfrid Rall, who pioneered much of
+the field and kindly consented to have his name associated with these 
+benchmarks.
+
+The models and C programs are identical to the previous version, except for
+slight improvements to comparisons/srms.c to improve its ability to handle
+unexpected spike shapes.
+The definitions of the performance measures have changed substantially, but
+should be easy to derive from older values. An effort has been made to 
+choose performance measures which are independent of model size.
+The specification of the format of the report is hopefully more precise.
+
+The models allow more flexibility in model size and timestep in order to
+accomodate simulators running on less powerful machines, or using different
+kinds of integration methods.
+
+Feedback in terms of suggestions for further improvements, and as results
+for simulators tested using the Rallpacks, would be greatly appreciated.
+
+Upinder S. Bhalla, David H. Bilitch, James M. Bower
+Caltech, July 1992.
+
+=============================================================================
+
+
+This directory contains :
+
+README		: this file
+rallpack1,2,3	: Definitions of the currently implemented benchmarks.
+comparison	: Utilities for evaluating accuracy.
+theor		: Programs for generating the theoretical (reference) curves.
+reports		: Reports available for various simulators. The respective
+		  setup files, when available, are also in this directory.
+
+=============================================================================
+
+The following benchmarks are presently implemented as part of the
+Rallpack set :
+Existing :
+	Rallpack1 : passive uniform sealed-end cable
+	Rallpack2 : passive branching structure obeying Rall's 3/2 power law.
+	Rallpack3 : Active axon with Hodgkin-Huxley (squid) conductances.
+
+Proposed :
+	Rallpack4 : Single neuron with several conductances and simple Ca
+		buffering
+	Rallpack5 : Network with simple neurons
+
+=============================================================================
+
+Each test measures 3 aspects of the simulator :
+Speed
+Accuracy
+Memory use.
+
+Definitions :
+	Simulation run time= Time in seconds to run model.
+	Timestep= simulation output sampling interval.
+		(normally identical to internal simulation clock, unless
+		specifically stated otherwise).
+        Raw Speed=
+		Number of compartments * Number of steps / simulation run time.
+	Peak speed= Best value of raw speed attained for simulator.
+	Simulation speed =
+		Number of compartments * simulated time/simulation run time
+		= raw speed * timestep.
+        Accuracy= The average for the first and last compartments, of normalized
+                rms difference between 'correct' and simulated curves, as
+                measured by the 'rms' program for Rallpacks 1 and 2, and the
+		'srms' program for Rallpack 3
+	Asysmptotic accuracy= Limiting (best) accuracy achieved as timesteps
+		are decreased.
+	Semi-accurate timestep= Timestep at which error is <= twice the
+		asymptotic accuracy.
+	Setup time= time to load the simulator and model into memory.
+        Base memory= Memory used to load the simulator.
+        Model memory= Additional memory used when the model has been loaded
+                and run.
+        Model size= Number of compartments in model.
+        Model memory per compartment = Model memory/Model size
+	Compartment equivalents= Ratio of CPU time spent on specified model
+		component to time spent on single nonbranching compartment.
+
+=============================================================================
+
+The Rallpack report.
+	The Rallpack report is intended to capture the essential performance 
+	features of the simulator and provide a basis for comparison between
+	simulators. It consists of the general report, which condenses all the
+	results into a few numbers, and the detailed reports for each
+	individual Rallpack.
+
+General Report
+        Simulator name and version
+	Peak speed for Rallpack 1
+	Compartment equivalents=  compts : branched compts : hh channels.
+	Asymptotic accuracy (error %) for Rallpack 3 or whichever is worst.
+	Semi-accurate timestep (Timestep for 2x asymptotic error) for 
+		Rallpack 3 or whichever is worst.
+        Hardware information : model, OS, and MIPS/MFLOPS rating.
+        Simulation setup time for 1000 compartment model for worst case.
+	Base memory
+        Integration method
+
+Reports for individual Rallpacks
+	General information
+                Rallpack name, Simulator name and version
+		Peak speed and model size at which the speed is attained
+		Asymptotic accuracy (error %)
+		Semi-accurate timestep (Timestep for 2x asymptotic error)
+                Hardware information : model, OS, and MIPS/MFLOPS rating.
+                Simulation setup time for 1000 compartment model
+                Integration method
+		Compartment equivalents : Description, value
+
+	Detailed report :
+	1 Accuracy vs. Timestep
+	2 Accuracy vs. Simulation speed
+                A set of simulations of the same model size should be run at
+		a range of timesteps, and the accuracy and simulation speed
+		should be calculated for each case.
+                The timesteps should cover the 'useful' range for the model,
+                within which the accuracy goes from close to its asymptotic
+                (best) value to a few % error. Typical timesteps are
+                10,20,50,100,200,500 and 1000 usec. The recommended model size
+		is 1000 compartments (1023 for the branching case). The
+		model size should be quoted.
+		These results can be tabulated and/or graphed.
+                If the raw speed is independent of timestep (i.e. the
+		simulation speed is directly proportional to timestep, which is
+		usually true) the two graphs can be merged, and the respective
+		x axis scales should be displayed.
+                The x axis may be displayed on a log scale.
+
+	3 Raw speed vs. Model size
+	4 Model memory per compartment vs. Model size
+                A set of simulations with a range of model sizes should
+                be carried out, calculating the raw speed and model memory
+		for each case. All simulations should use the same timestep,
+		which should be quoted. The suggested timestep is 50 usec.
+                Recommended model sizes are 1, 10, 100, 1000 and 10000
+                compartments, or nearby values for the branched cable model.
+		These results can be tabulated and/or graphed.
+		If graphed, they may be displayed on the same graph with
+                the two y axis scales displayed.
+                The x axis may be displayed on a log scale.
+
+=============================================================================
+
+Notes on generating the report.
+
+1	The recommended values for model size and timestep should be adopted
+unless simulator or machine constraints prevent it.
+
+1.1	Simulator constraints.
+If a simulator utilizes explicit integration schemes, the timesteps
+necessary for accuracy may be prohibitively small. The cable equations are
+numerically quite stiff, which means that explicit solutions need timesteps
+of the order of the square of the length constants of compartments.
+To get around this, an alternative model size of 50 compartments should be
+used for rallpacks 1 and 3, so each compartment is now 20 microns long.
+These give a length constant of 0.02 per compartment, which is about the upper
+limit for reasonable accuracy for spike propagation for the HH parameters.
+(Cooley and Dodge, Biophys J. 6; pp 583-599; 1966)
+When using compartments of this size, the Exponential Euler method in GENESIS 
+gives an accuracy of around 1.5% for Rallpack 3 at a timestep of 5 usec.
+The branched model in rallpack 2 involves compartments with a length
+constant of 0.008, which should be OK for explicit
+methods with timesteps in the microsecond range.
+
+1.2	Machine memory constraints.
+If the 1000 compartment models occupy too much memory, then the reduction
+to 50 compartments described in the previous section should be carried
+out for rallpacks 1 and 3. Rallpack 2 should be reduced to 64 compartments
+(6 levels of branching), and the reference curves for Rallpack 2 will have to 
+be recalculated to take into account the reduced electrotonic length.
+
+1.3	Machine speed constraints.
+If the total run time of the simulations is unreasonably long,
+it is OK to reduce the simulation time to 0.05 sec. This is long enough
+to generate sufficient data points for a meaningful comparison of error.
+Further reductions are not recommended, as this simulation time only includes
+a portion of the charging curves for rallpacks 1 and 2 and just 4 spikes
+for rallpack 3. The combined reductions of model size by a factor of 20
+(see 1.1,1.2) and simulation time by a factor of 5 should be sufficient for
+most simulators to be tested in a reasonable amount of time.
+				*-----*
+
+2	Simulators employing variable timesteps can use them as long as the
+output is sampled at the specified intervals.
+				*-----*
+
+3	The srms program may have difficulties at large timesteps if the
+simulator is tending to be unstable. If errors are suspected, the -out
+option will show the interpolated curves that the routine is basing its
+calculations on.
+				*-----*
+
+4	The rms and srms programs generate normalized error values. These
+should be scaled by 100 to get % error. The AVERAGE of the values for the 
+two curves is the value being reported.
+				*-----*
+
+5	The compartmental equivalents are calculated by comparing the 
+simulation run times with those for the cable model (Rallpack 1).
+Rallpack 2 has approximately the same number of branching compartments,
+so there the equivalent is simply the ratio of the simulation run times.
+In Rallpack 3 there are 2000 HH channels and 1000 compartments, as compared
+to the 1000 compartments of Rallpack 1. Therefore the compartment equivalent
+for HH channels is : 
+	(runtime3-runtime1)/(runtime1*2)
+	
+=============================================================================
+
+Using the report :
+	The Rallpacks are primarily intended to enable objective evaluation
+of the performance of simulators in terms of speed and accuracy.
+We do not recommend the Rallpacks as the primary factor in selecting
+a simulator since there are many other aspects of simulator use that
+are not addressed here. The Rallpacks also provide a tool
+for making informed trade-offs between speed and accuracy for a particular
+simulation.
+Three parameters are evaluated for the general report which provide a concise
+(and potentially misleading) overall performance measure.
+
+1 Peak speed is the best raw speed value obtained over the range of model sizes.
+	This is a rough measure of the sheer crunching ability of the 
+	simulator. This measure is designed to be independent of model size
+	and timestep. In conjunction with the compartmental equivalents it
+	indicates simulator speed across a wide range of models.
+2 Asymptotic accuracy indicates the best accuracy attainable for the model 
+	using the simulator. It may be unrealistic, such as for simulators
+	using explicit methods where eventually one can get an asymptotically
+	good result but needs an extremely small timestep to do so.
+3 Semi-accurate timestep is the longest timestep for which the error is less
+	than 2x the asymptotic error. This is usually a good, conservative
+	timestep at which to run the simulator.
+
+A careful evaluation of a simulator should involve the complete results
+from the detailed Rallpack report. A complete Rallpack report should facilitate
+the following tasks :
+
+	1. Evaluating a simulator.
+	The Accuracy vs. Simulation Speed curves for the three rallpacks are
+	meant to enable direct comparisons between different simulators and
+	an evaluation of the regions in which each performs best. A low value
+	of error and a high simulation speed is the desired combination.
+
+	2. Evaluating the numerical properties of the simulator algorithm.
+	The Accuracy-timestep curve gives a hardware-independent estimate
+	of the intrinsic numerical properties of the simulator algorithms and
+	implementation. It enables one to determine the timestep required to
+	achieve a given accuracy on the simulator.
+	
+	3. Estimating time and memory requrirements for a particular simulation.
+	The present set of Rallpacks can be used to estimate these values
+	for models consisting only of compartments, branching compartments
+	and channels using the Hodgkin-Huxley formalism. All the components
+	of the model are converted to compartment equivalents and summed to
+	get an estimate of the total computational requirements.
+
+	Runtime =
+		Simulated time *
+		(ncompartments * 1
+		+ nbranches * compartment equivalents for branched compartments
+		+ nchannels * compartment equivalents for HH channels) /
+			Simulation speed for rallpack1
+
+
+	The required memory for the model may in principle be computed
+	in a similar way, but is more prone to scaling errors.
+
+	Required memory =
+		Base memory
+		+ ncompartments * memory per compartment
+		+ nbranches * memory per branching compartment
+		+ nchannels * memory per channel.
+
+=============================================================================

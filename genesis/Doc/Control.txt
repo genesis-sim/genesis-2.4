@@ -1,0 +1,150 @@
+  3.5.  Control Structures
+
+  GENESIS supports four kinds of conditional control structures:
+
+  1. if/elif/else/end
+
+  2. while/end
+
+  3. for/end
+
+  4. foreach/end
+
+     Each of these control structures is briefly described here.
+
+  Note that you can break out of any of these loops before their
+  expected termination by using the ``break'' or ``return'' statements.
+
+  3.5.1.  if/elif/else/end Structure
+
+  The GENESIS ``if ...'' conditional structure takes the following form:
+
+      if (expression)
+        statements
+      elif (expression)
+        statements
+      else
+        statements
+      end
+
+  The elif and else portions of the form are optional and multiple elif
+  portions may appear.
+
+  The ``if''/``elif'' expressions are evaluated in the order of
+  appearance.  When an expression evaluates ``true'', all the statements
+  between the ``true'' expression and the following matching ``elif'',
+  ``else'' or ``end'' will be executed; if all evaluated expressions are
+  ``false'', then the statements between the ``else'' and the ``end''
+  are executed (or no statements are executed if there is no ``else''
+  clause).
+
+  Note that the GENESIS if construct does not recognize the keyword
+  ``then''.
+
+  These are some examples of valid if statements:
+
+    if(1)
+      echo hello
+    end
+
+    if(1); echo hello; end
+
+    if( (GRAPHICS == 1) || (5+3 > 10) )
+      echo hello
+    end
+
+  The following function uses the if/elif/else/end construct and prints
+  ``zero'', ``negative'' or ``positive'' depending on the first argu-
+  ment:
+
+      function iftest(arg)
+          int arg
+          if ( arg  == 0 )
+              echo zero
+          elif ( arg < 0 )
+               echo negative
+          else
+               echo positive
+          end
+      end
+
+  3.5.2.  while/end Structure
+
+  The GENESIS ``while ...'' conditional looping statement has the
+  following syntax:
+
+     while (expression)
+          statements
+     end
+
+  The expression is evaluated.  If it is ``true'' (i.e., not 0), then
+  all the statements will be executed, then the expression will be eval-
+  uated again; if the evaluated expression is ``false'', then all the
+  statements are skipped and control is turned to the first statement
+  after the ``end''.
+
+  An example of a while loop is the following:
+
+      str parent
+      while({getfield {parent} object->name} != "xgraph")
+          parent = {el {parent}/..}
+      end
+
+  Note that the expression can be complicated and can involve some of
+  the actual work of the loop.
+
+  3.5.3.  for/end
+
+  The GENESIS ``for ...'' conditional structure uses an incrementable
+  variable in assessing the condition for continuing through the loop.
+  The syntax of the loop is as follows:
+
+      for (init_assignment; expression; incr_assignment)
+        statements
+      end
+
+  The init_assignment is an assignment statement which is evaluated once
+  prior to entering the loop.  The incr_assignment is an assignment
+  statment which is executed following the statements each time through
+  the loop.  Otherwise, the for/end statement operates in the same
+  manner as while/end.
+
+  To print the numbers one through ten:
+
+      int i
+
+      for (i = 1; i <= 10; i = i + 1)
+          echo {i}
+      end
+
+  3.5.4.  foreach/end
+
+  The GENESIS ``foreach'' statement loops through a set of statements
+  once for each item in a specified argument list, having assigned the
+  value of each item in the list to a looping variable for use by the
+  statements:
+
+    foreach loop-var ( arg1 [ arg ...] )
+      statements
+    end
+
+  For example:
+
+    str s
+    str thingys = "foo bar baz"
+    foreach s ({arglist {thingys}})
+        echo {s}
+    end
+
+  or
+
+    str name
+    foreach name ({el {path}/##[OBJECT=xform]})
+      xshow {name}
+    end
+
+  The use of wildcards in the specification of pathnames is described in
+  the section `` Hierarchical Structure'' (Tree.txt).  Also see the doc-
+  umentation for arglist and el (``element list'').  Note that in each of
+  these examples, you need to have declared the variables used in the
+  loop before their use in the loop.

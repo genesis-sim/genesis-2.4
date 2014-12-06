@@ -1,0 +1,173 @@
+   Numerical Integration Techniques for Solving for the Membrane Potential
+
+References:
+  J. M. Bower and D. Beeman, The Book of GENESIS, Sec. 19.3
+  C. Koch and I. Segev, Methods in Neuronal Modeling, Sec. 9.7, p. 311-316
+
+
+Suppose that we have a cable compartment having membrane potential Vm.  It
+is connected through its axial resistance to another compartment on the left
+which has membrane potential Vm'', and to another compartment on the right
+which has membrane potential Vm' and axial resistance Ra'.  
+
+     .......................................................................
+                :                                         :
+            Vm'':       Ra                             Vm :      Ra'    Vm'
+     ___________o___/\/\/\/\/\____________________________o___/\/\/\/\/\_o
+                :              |        |         |       :
+                :              |        |         |       :
+                :              \        |         |       :
+                :              /       / \     ___|___    :
+                :         Rm   \      / A \    _______ Cm :
+                :              /      \ | /       |       :
+                :              \       \ /        |       :
+                :              /        | Iinject |       :
+                :              |        |         |       :
+                :              |________|_________|       :
+     ...........:.......................|.................:...............
+                                        |
+                                      ______
+                                     ///////
+
+If we apply Kirchoff's current law to a point inside the central compartment,
+we find that the rate of change of the membrane potential is given by
+
+    dVm/dt = { -Vm/Rm + (Vm' - Vm)/Ra' + (Vm'' - Vm)/Ra + Iinject}/Cm
+
+
+Note that this equation may be written in the form
+
+       dVm/dt = A - B*Vm
+
+When choosing a method of integration and an integration step size, you
+should recall that the axial resistance, Ra, is proportional to the length
+of the compartment and inversely proportional to the square of the
+diameter.  The membrane resistance, Rm, is inversely proportional to the
+diameter and the length.
+
+INTEGRATION METHODS
+
+GENESIS provides the following numerical integration methods for the
+solution of equations of this form:
+
+-1 : Forward Euler
+ 0 : Exponential Euler
+ 2 : Adams-Bashforth, 2nd order
+ 3 : Adams-Bashforth, 3rd order
+ 4 : Adams-Bashforth, 4th order
+ 5 : Adams-Bashforth, 5th order
+10 : Backward Euler
+11 : Crank-Nicholson
+
+The Forward Euler Method ( Explicit Euler)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is the simplest of the methods, where we approximate y(t + dt) by
+
+	y(t + dt)  = y(t) + [dy/dt]*dt  =  y(t) + [A - B*y(t)]*dt
+
+This approximation is equivalent to keeping only the first derivative
+in a Taylor's series expansion.  When the "B" term is large, these
+higher derivatives can become large, and the Forward Euler method
+becomes a poor approximation to the solution.  For the case for a
+cable containing many short compartments, this method is subject to
+numerical instabilities, resulting in wild oscillations in the
+computed solution.  For these reasons, the Forward Euler method is
+rarely used in GENESIS simulations.
+
+The Exponential Euler Method
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This method, which is the default integration method for GENESIS simulations,
+is an efficient method for solving differential equations of the form
+
+	dy/dt = A -B*y.
+
+If the time step for the numerical integration is "dt", we can approximate
+the solution at a time "t + dt" by:
+
+	y(t + dt)  =  y(t)*D + [A/B]*[1-D],
+
+where we define
+
+	D = exp[-B*dt].
+
+This result follows from the fact that there is an exact solution for the
+differential equation when A and B are constant.  In this case, it may be
+verified by substitution that we can express the value of y at a time t2
+in terms of its value at an earlier time t1 using the relationship
+
+	y(t2) = y(t1)*exp[-B*(t2-t1)] + (A/B)*(1 - exp[-B*(t2-t1)]).
+
+In fact, A and B are usually not constants.  However, if we assume that they
+change very little between the time t1 =t and t2 = t + dt, we may use this
+result to obtain the approximate solution given above.  When the voltage
+dependence of A and B is small, this approximation approaches the exact
+result, allowing a large integration step, dt.  
+
+The Adams-Bashforth Methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The Adams-Bashforth methods approximate the higher derivatives in the
+Taylors's series by making use of past values of f(t) in the
+approximation for y(t + dt).  GENESIS lets you choose between second
+through fifth order Adams-Bashforth methods.  These methods are
+computationally very efficient, as they achieve higher accuracy by
+making use of ``free'' information which has already been calculated
+at previous time steps.
+
+A higher order Adams-Bashforth method is said to have a small
+truncation error, as it includes many terms in the Taylor's series
+expansion.  This means that the error introduced at each step by the
+use of a finite value of dt will be small.  However, the repeated use
+of these equations may produce a large cumulative error after many
+integration steps.  This is because they depend on extrapolation from
+past values of f(t) which may have little relevance for the future.
+These methods tend to give the best results in cases where f(t) varies
+smoothly, without sharp changes.  If f(t) varies rapidly with time, a
+lower order method may have a lower cumulative error.
+
+The Backward Euler Method
+~~~~~~~~~~~~~~~~~~~~~~~~~
+The Backward Euler method uses the aproximation
+
+	y(t + dt)  =  y(t) + [A - B*y(t + dt)]*dt
+
+This is called an implicit method because the the right hand side of
+the equation involves a function of the new value of y, which has yet
+to be determined.  Thus, it gives an implicit definition of y(t + dt),
+rather than an explicit expression which can be evaluated.  This means
+that we need some additional method to solve the equations which arise
+at each step.  GENESIS uses an algorithm due to Hines to solve
+implicit equations.
+
+It would seem that there would be no point in using such an implicit
+method.  From a Taylor's series expansion, you should be able to
+verify that the truncation error in the equation above is the same as
+that for the explicit Forward Euler method, but is of opposite sign.
+However, it can be shown that implicit methods are much more stable
+than explicit methods, and can lead to a much lower cumulative error
+while using a larger integration step.
+
+The Crank-Nicholson Method
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+This method is based upon the trapezoidal rule of numerical
+integration.  It uses an average of the forward and backward Euler
+methods in order to achieve a partial cancelation of errors.  This
+occurs because the neglected second derivative terms are equal and
+opposite in the two approximations.
+
+The approximation is then
+
+	y(t + dt) = [dy(t)/dt + dy(t + dt)/dt]*dt/2
+
+Although this method is slightly less stable than the Backward Euler method,
+its high accuracy per step makes it a good choice for high precision
+calculations in models which contain many small compartments.  It is
+the default method used for this tutorial.
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,92 @@
+  15.3.  GENESIS Jobs
+
+  Certain compiled C functions available in GENESIS are designed to be
+  run as background jobs (e.g., the function XEventLoop, which oversees
+  XODUS screen events).  You can execute and monitor these background
+  functions using the following job routines:
+
+  ______________________________________________________________________
+  Routine        Description
+  ______________________________________________________________________
+  addjob         Adds a job to the GENESIS background job table.
+  deletejob      Removes a job from the GENESIS job table.
+  setpriority    Changes priority of a GENESIS background simulation job.
+  showjobs       Lists all of the active GENESIS jobs and their priorities.
+  ______________________________________________________________________
+
+  16.  Simulation Schedules
+
+  When a request is made to execute a simulation with the step command,
+  the simulator determines what to do by consulting the simulation
+  ``schedule'' -- a list of operations which are to be performed in the
+  specified order for each simulation step.  For example, the default
+  schedule for GENESIS simulations is given in the script
+  ``startup/schedule.g'', which contains:
+
+       deletetasks
+
+       addtask Simulate /##[CLASS=buffer]      -action INIT
+       addtask Simulate /##[CLASS=segment]     -action INIT
+       addtask Simulate /##[CLASS=device]      -action INIT
+       addtask Simulate /##[CLASS=buffer]      -action PROCESS
+       addtask Simulate /##[CLASS=projection]  -action PROCESS
+       addtask Simulate /##[CLASS=spiking]     -action PROCESS
+       addtask Simulate /##[CLASS=gate] -action PROCESS
+       addtask Simulate /##[CLASS=segment][CLASS!=membrane][CLASS!=gate] \
+          [CLASS!=concentration][CLASS!=concbuffer] -action PROCESS
+       addtask Simulate /##[CLASS=membrane]    -action PROCESS
+       addtask Simulate /##[CLASS=hsolver]     -action PROCESS
+       addtask Simulate /##[CLASS=concentration]       -action PROCESS
+       addtask Simulate /##[CLASS=concbuffer]  -action PROCESS
+       addtask Simulate /##[CLASS=device]      -action PROCESS
+       addtask Simulate /##[CLASS=output]      -action PROCESS
+
+       resched
+
+  Each operation listed in the schedule is simply a compiled C function
+  (listed by its C name) with optional arguments.  The C function used
+  by default is named ``Simulate'', and it is called with two arguments:
+  a wildcard path specification indicating the set of elements affected,
+  and the element-type action to perform for that class of elements
+  during the simulation step.
+
+  Scheduling provides a way to specify the order of events within a
+  given simulation step, in terms of which elements will be computed in
+  what sequence.  For example, you may verify, using the showobject
+  command to determine the class memberships, that using the default
+  schedule listed above, the PROCESS action is carried out on a tabgate
+  element before it is carried out on a vdep_channel to which it might
+  be coupled.  The compartment containing this channel will execute the
+  PROCESS action after the channel.  This insures that all computations
+  are performed in the proper order.
+
+  If you need to have the computations for the elements in your
+  simulation run in a specific order, you could define your own
+  simulation schedule.  Note that the simulation schedule gives no
+  control over the order in which the RESET action is performed,
+  however.  If the initial state of one element depends on the initial
+  state of another element, you may need to call the RESET action for
+  specific elements in the proper order.  Further details are given in
+  the section on ``Actions'' (Actions.txt) and the documentation for
+  reset.
+
+  The following GENESIS routines are used for establishing and working
+  with simulation schedules.  The documentation for addtask gives more
+  information on constructing your own simulation schedules.
+
+  ______________________________________________________________________
+  Routine        Description
+  ______________________________________________________________________
+  addtask        Adds a simulation event to the simulation schedule.
+  deletetasks    Removes all simulation events from the simulation schedule.
+  resched        Assigns elements for simulation according to the
+                 current simulation schedule.
+  showsched      Displays current working simulation schedule.
+  ______________________________________________________________________
+
+  Whether you create a new schedule or not, you should also run the
+  check routine, which analyzes the simulation schedule to check for
+  conflicts or inconsistencies.  For example, you should always run
+  check if you change the schedule or add or remove any simulation
+  elements; you may need to just run resched, or revise the schedule
+  itself.

@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
+<title>README file for VAnet2</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7614 2013-02-21 15:55:51Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="readme-file-for-vanet2">
+<h1 class="title">README file for VAnet2</h1>
+
+<div class="section" id="introduction-and-purpose">
+<h1>Introduction and Purpose</h1>
+<p>This is an improved and much more efficient GENESIS implementation of
+the dual exponential conductance version of the Vogels-Abbott (Vogels
+and Abbott 2005) network model with Hodgkin-Huxley neurons and
+conductance-based synaptic activation (COBA). Details are given in
+Brette et al. (2007). The original scripts for GENESIS and several
+other simulators are available from ModelDB at
+<a class="reference external" href="http://senselab.med.yale.edu/SenseLab/ModelDB/ShowModel.asp?model=83319">http://senselab.med.yale.edu/SenseLab/ModelDB/ShowModel.asp?model=83319</a>.</p>
+<p>However, the original GENESIS 'dualexpVA-HHnet.g' script was designed
+to show off as many GENESIS features as possible, and not for
+computational speed.  In particular, it did not make use of the
+considerable speed and accuracy improvements offered by the use of the
+GENESIS 'hsolve' object.  The files in this package include the
+original files needed to run 'dualexpVA-HHnet.g' with its GUI, and the
+original README documentation files as <a class="reference external" href="README-orig.txt">README-orig.txt</a> and <a class="reference external" href="README-orig.html">README-orig.html</a>.  These
+describe the model, how to run the simulation, suggested experiments
+to try, and suggestions for extending the model.</p>
+<p>The added simulation script 'VAnet2-batch.g' is a stripped down
+version of 'dualexpVA-HHnet.g' with no graphics, but with data output
+to a file instead of to a plot.  It uses hsolve and runs 16 times faster
+than the original.  The GENESIS 3 Python utility script 'gipyplot.py' is
+included for plotting of the simulation output.</p>
+<p>The Vogels-Abbot model has very simple point cells with no location in
+space, but many synaptic connections.  Although I do not consider this
+model to be as scientifically interesting as other more structurally
+realistic models, it is a good benchmark for testing the efficiency
+and time performance of simulations of highly connected networks.</p>
+<p>I offer this GENESIS implementation a beginning step to test tools
+such as NeuroML (neuroml.org) and neuroConstruct (neuroConstruct.org)
+for representing and building cortical network models.  The simple
+four-way synaptic interactions between two populations of excitatory
+and inhibitory cells have made the Vogels-Abbott model a popular test
+for implementations of synaptic plasticity.  The 'VAnet2-batch.g'
+script is intended to be extended for testing GENESIS spike timing
+dependent plasticity (STDP) implementations with hsolve.</p>
+<p>I encourage you to extend and share this tutorial/documentation and
+simulation script package with others. The files here may be freely
+distributed under the terms of the <a class="reference external" href="copying.txt">GNU Lesser General Public License
+version 2.1</a>.</p>
+<p>David Beeman
+University of Colorado, Boulder
+<a class="reference external" href="mailto:dbeeman&#64;colorado.edu">dbeeman&#64;colorado.edu</a>
+Mon Jul  7 15:35:23 MDT 2014</p>
+</div>
+<div class="section" id="running-the-simulation">
+<h1>Running the simulation</h1>
+<p>Of course, the first step in running the simulation is to have GENESIS
+installed.  If you have not used GENESIS before, it is simplest to download
+the entire 'Ultimate GENESIS Tutorial Distribution' package with all source
+code, installation instructions, and the complete set of tutorials
+(about 50 MB) from <a class="reference external" href="http://genesis-sim.org/GENESIS/UGTD.html">http://genesis-sim.org/GENESIS/UGTD.html</a>.  GENESIS usually installs without
+problems under modern versions of Linux.  Most questions related to
+installation have been answered in the archives of the 'genesis-sim-users'
+mailing list, which are available from the GENESIS 2 Sourceforge page at
+<a class="reference external" href="http://sourceforge.net/projects/genesis-sim/">http://sourceforge.net/projects/genesis-sim/</a>.</p>
+<p>Once GENESIS 2.3 has been installed, the command:</p>
+<pre class="literal-block">
+genesis VAnet2-batch.g
+</pre>
+<p>runs the simulation with the default parameters used to generate the
+data similar to that plotted by dualexpVA-HHnet.g, and shown in
+<a class="reference external" href="FigG1-dualexpVA-HH.gif">FigG1-dualexpVA-HH.gif</a>.  It prints some
+informative information about the simulation, including the START and
+END times of runs, then ends with the prompt:</p>
+<pre class="literal-block">
+genesis #0 &gt;
+</pre>
+<p>At this point, you can type 'quit' to the prompt, or explore the
+model with interactive GENESIS commands.</p>
+<p>The three excitatory cells for which the soma membrane potential
+is plotted in FigG1-dualexpVA-HH.gif are cells 0, 1536, and 1567.
+Although spatial location plays no role in the default model, these
+correspond respectively to the lower left corner, middle right edge,
+and center cells.  This data will be written to a file 'Vm_out_1000.txt',
+which may be plotted with the included G-3 Pyhthon utility 'gipyplot.py'.</p>
+<p>'gipyplot' is a general plotting program, developed for use with GENESIS
+that can overplot multi-column data from single or multiple files.  It
+also has command line options, including '-h' for help.
+In order to run gipyplot you will need python version 2.5 or later,
+and the Matplotlib library for python, which can be downloaded from
+<a class="reference external" href="http://sourceforge.net/projects/matplotlib">http://sourceforge.net/projects/matplotlib</a>.  The installation instructions
+explain other requirememts, such as NumPy (numerical libraries for python)
+that are usually installed along with python on most Linux systems.</p>
+<p>For this data, you can type:</p>
+<pre class="literal-block">
+gipyplot.py -t &quot;VAnet2 RUN 1000&quot; Vm_out_1000.txt
+</pre>
+<p>to plot this data with cell 0 in blue, cell 1536 in green, and cell
+1567 in red.</p>
+<p>The GUI for the original 'dualexpVA-HHnet.g' script showed a
+visualization of the membrane potential for each cell, using the
+GENESIS/XODUS 'xview' object.  If you would like to add output of the
+soma Vm or Ex_channel Ik, for all cells at specified time intervals,
+you can use the functions defined and Python tools that are provided
+in the 'ACnet2' model of primary auditory cortex layer IV (Beeman
+2013), which is based on the original dualexpVA-HHnet.g script.  The
+scripts and tutorial for the 'ACnet2' model may be viewed or
+downloaded at <a class="reference external" href="http://genesis-sim.org/GENESIS/ACnet2-GENESIS">http://genesis-sim.org/GENESIS/ACnet2-GENESIS</a> or from
+ModelDB at <a class="reference external" href="http://senselab.med.yale.edu/ModelDB/ShowModel.asp?model=150678">http://senselab.med.yale.edu/ModelDB/ShowModel.asp?model=150678</a>.</p>
+<p>The Open Source Brain project repository is at
+<a class="reference external" href="https://github.com/OpenSourceBrain/ACnet2">https://github.com/OpenSourceBrain/ACnet2</a>.</p>
+</div>
+<div class="section" id="settable-options-and-parameters">
+<h1>Settable options and parameters</h1>
+<p>Nearly everything about the model or its parameters can be modified by
+following the suggestions in <a class="reference external" href="README-orig.html">README-orig.html</a> or
+the comments in 'VAnet2-batch.g'.  For performing benchmarks to test
+speed and accuracy, these option strings are of particular interest:</p>
+<pre class="literal-block">
+int connect_network = 1  // Set to 0 for testing with unconnected cells
+int hflag = 1    // use hsolve if hflag = 1
+int hsolve_chanmode = 4  // chanmode to use if hflag != 0
+</pre>
+<p>For debugging modifications to the script, or determining how much
+time is spent performing operations other than processing spike events
+(e.g. solving multicompartmental cell equations and processing I/O),
+connect_network can be set to 0. This skips the step of connecting
+up the cells.</p>
+<p>To see how much slower the simulation runs without hsolve, or to
+test to see if script changes work the same with hsolve as without,
+hflag can be set to 0, to disable the setup of hsolve.  hsolve_chanmode
+is used only if hflag &gt; 0, and sets the chanmode (described in the
+hsolve documentation) to the fastest most efficient mode.</p>
+<p>Strings can be set to specify other cells to be used in the model.
+The default time step used for solving the cell and network equations
+is set with:</p>
+<pre class="literal-block">
+float dt = 50e-6        // default simulation time step
+</pre>
+<p>This is the time step used in the original script, which is rather large.
+A more appropriate value for most cortical network simulations would
+be <tt class="docutils literal">dt = <span class="pre">20e-6</span></tt> seconds.  The time step for input to the model and
+output of results is set with:</p>
+<pre class="literal-block">
+float out_dt = 0.0001   // output every 0.1 msec (also used to clock input)
+</pre>
+<p>Using a separate slower clock for I/O not only saves time, but it insures
+that when input spike events are generated with a random number generator,
+their distribution will be independent of the simulation time step.</p>
+<p>The random number seed has been set to a particular value with:</p>
+<pre class="literal-block">
+// Set random number seed. If seed is 0, set randseed from clock,
+// else from given seed
+// int seed = 0  // Simulation will give different random numbers each time
+int seed = 1404706052  // This is to insure that it will reproduce the results
+</pre>
+<p>This seed produced a particular set of randomly generated connections
+(with 0.02 probability, and distribution of spike events that are
+generated from an array of randomspike elements.  Other seeds will
+produce more or less activation of the network.</p>
+</div>
+<div class="section" id="using-hsolve-with-genesis-network-simulations">
+<h1>Using hsolve with GENESIS network simulations</h1>
+<p>The object-oriented paradigm for scripting simulations in GENESIS 2 is
+one of its most attractive features.  By isolating cell variables
+and parameters into separate objects that communicate with 'messages'
+it is easy to modify, share, and reuse pieces of simulation scripts
+without needing to understand most details of the simulation from
+which they were taken.  However, this message-based approach produces
+inefficiency at the implementation level, and makes it difficult to
+implement matrix-based numerical solutions, such as the Hines (1984)
+algorithm for solving branched cable equations.</p>
+<p>The GENESIS 2 'hsolve' object was developed to bypass the object-oriented
+implementation and allow fast cable model solutions, as well as more
+efficient delivery of spike events to synaptically activated channels.
+It does this by taking over the entire element hierarchy of a cell
+model and treating it as a single 'hsolve' solver element, rather
+than a set of elements liked by messages.</p>
+<p>The speed improvements when this simulation is run with hsolve are
+truly impressive.  With the rather large default time step of 50
+microsec (used in the original dualexpVA-HHnet.g script), the
+simulation runs 16 times faster than without hsolve.  When the time
+step is lowered to 20 microsec, the simulation runs 23 times faster.</p>
+<p>However, the price for this efficiency is that not all fields of
+the original elements are accessible once they are taken over
+by hsolve, and not all messages will work as before.  The GENESIS
+documentation for hsolve and the example code in 'ACnet2-batch.g'
+describe how to overcome these limitations.</p>
+<p>Setting up hsolve for a network requires setting up a solver for one
+cell of each type in the network and then duplicating the solvers for
+the remaining cells.  The procedure is described in the advanced
+tutorial 'Simulations with GENESIS using hsolve by Hugo Cornelis' at
+<a class="reference external" href="http://genesis-sim.org/GENESIS/UGTD/Tutorials/advanced-tutorials">http://genesis-sim.org/GENESIS/UGTD/Tutorials/advanced-tutorials</a> and in the
+documentation and scripts for ACnet2.</p>
+</div>
+<div class="section" id="reproduceability-random-numbers-and-hsolve">
+<h1>Reproduceability, random numbers, and hsolve</h1>
+<p>The figure from Brett el al. (2007) that is included here
+(<a class="reference external" href="FigG1-dualexpVA-HH.gif">FigG1-dualexpVA-HH.gif</a>) shows the results
+of the original run of dualexpVA-HHnet.g.  It used the default seed,
+which is not known.  Depending on your computer CPU's numerical
+processor, and the random number generator, you may or may not get the
+same plot of Vm for the three excitatory cells.</p>
+<p>The plots that you generate from VA-HHnet2-batch.g with other seeds
+than the default value of 1404706052 will be different for the three
+cells, and there will be more or less activation of the network. The
+figure <a class="reference external" href="VAnet2-RUNID-31xx.png">VAnet2-RUNID-31xx.png</a> shows the
+result of four runs with different seeds.  RUN 3115 corresponds to the
+result with the default seed.</p>
+<p>If you compare results using the same seed with and without hsolve,
+and for different time steps, you will find that the plots will be the
+same for a few action potentials, and will then diverge.  Over the
+five second run, there will only be qualitative similarities in the
+firing patterns.  Why is this so?  When comparing results from
+different simulators, numerical algorithms, or time steps, how can one
+determine if simulation results are &quot;correct&quot; even if they are
+&quot;different&quot;?</p>
+<p>The dualexpVA-HHnet.g script produces different results for different
+simulation time step size, because the initial 0.05 sec random stimulus
+is applied by setting the synchan 'frequency' field of the cells.
+This causes a new set of random numbers to be generated at each
+time step, and the sequence will be longer or shorter for
+different step sizes.  But, VAnet2-batch.g uses a separate clock
+for the array of randomspike elements in order to avoid this problem.
+Nevertheless, a time step of only 20 microsec produces results that
+initially differ slighly (and thus differ significantly at later times)
+from those with a step of 19 microsec.</p>
+<p>A cortical network is a strongly coupled non-linear dynamical
+system.  The pyramidal cells have calcium and calcium concentration
+dependent potassium channels with slow dynamics that prolong the
+hyperpolarized period following an AP. This contributes to spike
+frequency adaptation and causes a greater sensitivity to inputs that
+occur when the cell is near threshold for firing, enabling information
+to be encoded in spike timing. This also means that small deviations
+in Vm caused by variation in the biological system, or by very small
+numerical inaccuracies in a simulation, will produce different final
+outcomes in this chaotic system. The comparison and validation of
+network models becomes very difficult.</p>
+<p>One approach is to devise statistical tests based on the overal behavior
+of the network.  Correlations in the firing of different cells, or
+the power spectra of summed excitatory postsynaptic currents (EPSCs)
+can a more meaningful basis of comparison than the individual patterns
+of APs.  Functions taken from the ACnet2 simulation could be added
+to these scripts to provide this output.</p>
+</div>
+<div class="section" id="appendix-network-simulation-workflow-and-hsolve">
+<h1>Appendix - Network simulation workflow and hsolve</h1>
+<p>Because using hsolve restricts the ability to access the fields of
+GENESIS elements that have been taken over by hsolve, it is useful to
+see how it affects the steps that are performed in a typical GENESIS
+network simulation.The main simulation section of both
+'VAnet2-batch.g' and the ACnet2 model simulation scripts follows this
+workflow:</p>
+<ol class="arabic simple">
+<li>create prototype elements for the cells</li>
+<li>create prototype cells for each cell population in the network</li>
+<li>create network cell populations be assigning positions in
+space to copies of the cell prototype.  This is typically done on a
+2-D grid with createmap, but could be created with &quot;copy&quot; using a
+list of cell coordinates, as in the Nenadic et al. (2003) Turtle Visual
+Cortex simulation.</li>
+<li>If using hsolve, set up a solver for one cell of each type in the
+network and then duplicate the solvers for the others. The
+procedure is described in the advanced tutorial Simulations with
+GENESIS using hsolve by Hugo Cornelis', referenced above.</li>
+<li>Create connections between and within the populations of cells.
+This is done with either planarconnect, volumeconnnect, or
+with a loop establishing SPIKE messages according to a particular
+algorithm.</li>
+<li>Set up weights and delays for the connections</li>
+<li>Set up inputs to the network.  This is done either by setting
+fields (e.g. 'soma inject', or 'dend/Ex_channel frequency'), or by
+establishing messages.  For example, the message could be an INJECT
+message to a compartment from a pulsgen or a SPIKE message to a
+synchan from a spikegen.  Sometimes a 'script_out' object with its
+own simulation clock and time step may be used to call a script
+function that sets fields that control the input.</li>
+<li>Set up outputs.  These may be to files, graphical displays,
+or to analysis functions or objects.</li>
+<li>Modify any desired settable parameters.</li>
+<li>Run the simulation for a specified amount of time with the 'step'
+command, either directly, or indirectly with a function such as
+'step_tmax' that could output additional information or perform
+analyses.</li>
+</ol>
+<p><strong>Notes regarding the use of hsolve chanmode 4 with these steps</strong></p>
+<p>Steps 5 and 6 present no problems with networks of hsolved cells.</p>
+<p>Step 7 presents some problems with hsolve.</p>
+<p>Most, but not all fields of hsolved elements can be set using
+findsolvefield.  In particular, the synchan frequency field cannot
+accessed with findsolvefield.</p>
+<p>The hsolve documentation sas &quot;Incoming and outgoing messages to and
+from the disabled elements will work properly, provided that they were
+added prior to setting up the hsolve element.&quot; for chanmodes &gt;= 2.
+But, this doesn't seem to be true for all messages. Some are not
+supported by hsolve. For example, the synchan RAND_ACTIVATION message
+does not seem to be supported by hsolve, even if the input is added
+out of the normal order, before the setup of hsolve and the
+connections.  In this case it gives the warning:</p>
+<p>** Warning - during SETUP of /Ex_layer/Ex_cell/solver: message type 2
+to /Ex_layer/Ex_cell/soma/Ex_channel not supported by hsolver.</p>
+<p>This is also the case with ACTIVATION messages, although no errors
+messages were produced.  There does not seem to be documentation for
+which messages are supported by hsolve, and which fields are accessible
+with findsolvefield.</p>
+<p>The synchan SPIKE message and the resulting synapse weights and delays
+are a special case.  They can be established after the hsolve setup,
+and it is possible to change weights during a simulation without
+needing to perform a reset.  In fact, it is possible to modify the
+'synapse' substructure of the synchan in order to add new synapse
+fields, as was done in GENESIS 2.4. This makes it possible to
+implement global synaptic plasticity mechanisms that exist outide of
+the hsolved cells. This was done with the new 'stdp_rules' object.</p>
+<p>Step 8 typically involves setting up messages to send values of
+fields that are accessible with findsolvefield such as compartment Vm
+or synchan Ik, so it is unlikely to be a problem.</p>
+<p>Step 9 Is applicable when a simulation has been set up and one wants
+to run it with different parameters.  This is typically the case when
+using a GUI when &quot;tuning&quot; parameters interactively or with tutorial
+simulations.  The simulation is loaded and set up with default
+parameters, parameters are changed, and the simulation is stepped
+(Step 10).  Often a <em>reset</em> command is issued between parameter
+changes, so the simulation can be re-run with the new parameters
+without exiting the simulation and performing a new set up of cells
+and connections.  In principle, this should be possible with hsolve,
+as long as a <em>reset</em> command is issued after fields in the original
+disabled non-solved elements are changed.  The reset should then
+tranfer these to the solvers (equivalent to a call to HRESTORE). Step
+7 presents a greater problem, because it may be necessary to change
+hsolved parameters related to the input while the simulation runs,
+without performing a reset between changes.</p>
+<p>This is true of most parameters, such as the synchan gmax value.
+However, there appears to be a bug when they synchan dual exponential
+conductance tau1 and tau2 parameters are changed under hsolve.  This
+results in an incorrect scaling of gmax.</p>
+<p>Implementation of synaptic plasticity is something of a special case.
+The GENESIS 'hebbsynchan' and 'facsynchan' objects implement Hebbian
+or facilitating/depressing synapses with modified synchan objects.
+This would be done in Step 1.  However, these objects are not
+hsolvable.  Most synaptic plasticity mechanisms, and especially STDP,
+require a knowledge of the spiking time of other connected cells, in
+order to modify their connection weights.  This can be efficiently achieved
+by performing the weight changes with a clocked object or function
+that is external to the hsolved network. This done with the
+stdp_rules object.  For details of the implementation, see the GENESIS
+2.4 documentation 'Doc/NewPlasticityObjects.txt'. The use of
+stdp_rules is documented in 'Doc/stdp_rules.txt' and the example
+scripts and documentation in 'Scripts/stdp_rules'.</p>
+</div>
+<div class="section" id="references">
+<h1>References</h1>
+<p>Beeman D (2013) A modeling study of cortical waves in primary auditory
+cortex. BMC Neuroscience, 14(Suppl 1):P23 doi:10.1186/1471-2202-14-S1-P23
+(http://www.biomedcentral.com/1471-2202/14/S1/P23)</p>
+<p>Brette R, Rudolph M, Carnevale T, Hines M, Beeman D, Bower JM, Diesmann M,
+Morrison A, Goodman PH, Harris Jr FC, Zirpe M, Natschlager T, Pecevski D,
+Ermentrout B, Djurfeldt M, Lansner A, Rochel O, Vieville T, Muller E,
+Davison AP, El Boustani S, and Destexhe A (2007).
+Simulation of networks of spiking neurons: A review of tools and
+strategies.  J. Comput. Neurosci. 23: 349-398.
+<a class="reference external" href="http://senselab.med.yale.edu/SenseLab/ModelDB/ShowModel.asp?model=83319">http://senselab.med.yale.edu/SenseLab/ModelDB/ShowModel.asp?model=83319</a></p>
+<p>Hines M (1984) Efficient computation of branched nerve equations.
+Int. J. Bio-Med. Comput. 15: 69-79.</p>
+<p>Nenadic Z, Ghosh BK and Ulinski P. (2003) Propagating Waves in Visual
+Cortex: A Large Scale Model of Turtle Visual Cortex.
+J. Computat. Neurosci. 14:161-184.</p>
+<p>Vogels TP, Abbott LF. (2005) Signal propagation and logic gating in
+networks of integrate-and-fire neurons. J. Neurosci. 25: 10786-10795.</p>
+</div>
+</div>
+</body>
+</html>

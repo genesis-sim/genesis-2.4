@@ -1,0 +1,19 @@
+Routine Name:	cd
+
+Description:	Changes current working operating system directory.
+
+Usage:		cd directory
+
+Example:	genesis >  cd /usr/genesis/Scripts/neuron
+
+Notes:		This is a GENESIS implementation of the operating system
+		command cd, to assure that any change you make in the working
+		directory is known to GENESIS.  (If you just issued a normal
+		cd command directly, via "sh cd" for instance, the
+		change in the current working directory would last only as
+		long as the subshell created to enact the command, and future
+		actions in GENESIS would not recognize a change.  The GENESIS
+		implementation of cd fixes this.)
+
+See also:	sh
+

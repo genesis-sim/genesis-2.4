@@ -1,0 +1,21 @@
+Routine Name:	deleteforwmsg
+
+Description:	Deletes a forwarded message previously forwarded using
+		addforwmsg.
+
+Usage:		deleteforwmsg source-element message-number destination-element
+
+		source-element	element from which the message was
+				forwarded
+	
+		msg-number	number (index)  of message in message list
+				(messages are numbered from 0 up)
+
+		destination-element
+				element to which the message was forwarded
+
+Notes:		The destination element must accept messages of the same
+		name and with the same number of data slots as the message
+		being forwarded.
+
+See also:	addforwmsg, showmsg, Extended

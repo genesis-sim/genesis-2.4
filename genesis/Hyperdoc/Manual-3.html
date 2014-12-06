@@ -1,0 +1,602 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: The GENESIS Script Language Interpreter</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-2.html">Previous</A>
+<A HREF="Manual-4.html">Next</A>
+<A HREF="Manual.html#toc3">Table of Contents</A>
+<HR>
+<H2><A NAME="SLI"></A> <A NAME="s3">3. The GENESIS Script Language Interpreter</A></H2>
+
+<P>The GENESIS Script Language Interpreter (SLI) provides a framework in
+which a simulation programmer can define and manipulate GENESIS
+elements.  The SLI interprets statements in the GENESIS simulation
+language, and constitutes the operating system ``shell'' at work when
+you are running GENESIS.</P>
+<P>The simulator shell is an interpretive operating environment which lets you:</P>
+<P>
+<UL>
+<LI> execute GENESIS routines (e.g., help, step, stop, openfile)</LI>
+<LI> execute operating system shell commands (e.g., ls, cat, vi)</LI>
+<LI> define variables (integer, floating point, or string types)</LI>
+<LI> evaluate arithmetic expressions</LI>
+<LI> invoke control structures such as conditionals and loops
+(if...then, while, for, or foreach loops)</LI>
+<LI> define and execute your own functions</LI>
+</UL>
+</P>
+<P>You can perform these operations in either of two ways:
+<UL>
+<LI> enter commands directly at the keyboard (the ``command line'')</LI>
+<LI> read commands from text files (``scripts'')</LI>
+</UL>
+</P>
+<P>User-defined SLI scripts are used to glue the pieces of a simulation together.
+XODUS graphical objects that you use to define the front end of a simulation
+and GENESIS data handlers are all controlled from SLI scripts.</P>
+<P>The shell contains a library of basic commands which you can augment through
+the addition of compiled C commands or interpreted SLI functions.</P>
+
+<H2><A NAME="Statements"></A> <A NAME="ss3.1">3.1 GENESIS Statements and Commands</A></H2>
+
+<P>GENESIS routines are called by entering a routine name followed by
+any necessary arguments and options separated by whitespace.
+<PRE>
+  routine-name arg1 arg2 ... -option1 option1-arg1 ... -option2 ...
+</PRE>
+</P>
+<P>A valid routine-name is a script identifier consisting
+of any combination of alphabetic (A-Z or a-z) or
+numeric (0-9) characters, or underscores (``_'') -- all other symbols are
+invalid characters in an identifier.</P>
+<P>Routine arguments consist of literal strings of characters, results of
+other GENESIS routines or expressions, strings of characters including
+whitespace enclosed in double quotes and the value of parameters passed
+to a script or function.  Combinations of these which appear together
+without any intervening whitespace are concatenated and passed as a single
+argument to the routine.</P>
+<P>Routine options follow command arguments, and are introduced by a dash
+character.  Option names may be abbreviated to any unambiguous length.
+Each option may accept additional arguments following the option name.</P>
+<P>A carriage return marks the end of a statement, so you do not need to use
+semicolons at the end of a line.  However, you can use semicolons to
+terminate statements as a way to include multiple statements on a single line.
+Several examples:
+<PRE>
+  genesis &gt; reset; step 100
+
+  genesis &gt; int a, b, c ;  a=1 ;  b=2 ;  c=3
+  genesis &gt; if( a &lt; b); echo {a} is less than {b}; end
+  1 is less than 2
+</PRE>
+
+In other cases, the ``command'' returns a value and might more properly
+be called a function.  In the documentation for GENESIS commands, we will
+use the term ``routine'' for built-in GENESIS commands, and will reserve the
+term ``function'' for a script function that is written in the GENESIS
+scripting language.  The procedure for creating your own functions is
+described under 
+<A HREF="#Functions">Functions</A>.</P>
+<P>The following two examples illustrate how a routine call can be
+supplied as the argument to another routine or as a value in a script
+language expression:
+<PRE>
+  genesis &gt; echo { getfield /neutral_test x }
+  genesis &gt; float length = { getfield /cell/soma len }
+</PRE>
+</P>
+<P>Routines used in the context of an argument to another routine or
+within a script language expression must be enclosed in curly brackets.</P>
+<P>All GENESIS statements are subject to these and other basic syntactical rules.
+If a statement you submit violates these rules, the interpreter will respond
+with an error message (and ignore your instruction).</P>
+
+
+<H2><A NAME="Variables"></A> <A NAME="ss3.2">3.2 Creating Variables</A></H2>
+
+<P>In GENESIS, you create a variable by entering a variable ``type'' specifier at
+the command line, followed by the variable name
+(a script identifier), optionally followed by a
+value to assign to the variable:
+<PRE>
+    variable-type variable-name [= expression]
+</PRE>
+
+You can create any of three types of variables at the GENESIS shell:
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD><TD> </TD></TR><TR><TD>
+Type </TD><TD> Meaning </TD><TD> Example Value</TD></TR><TR><TD>
+int </TD><TD> integer number </TD><TD> 5, 18, 6000, -34</TD></TR><TR><TD>
+float </TD><TD> double precision floating-point number </TD><TD> 5.0, 3.14, -2001.4</TD></TR><TR><TD>
+str </TD><TD> character string </TD><TD> five, 5.0, hello</TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+Here are some examples of correct variable declarations:
+<PRE>
+  genesis &gt; int a
+  genesis &gt; float PI = 3.141593
+  genesis &gt; float myfloat = 2*PI
+  genesis &gt; float floatstr = &quot;6.3&quot;
+  genesis &gt; str hi = &quot;hello there&quot;
+</PRE>
+
+Note that case is significant for variable names (as in other areas): ``PI'' is
+different from ``Pi'', which is different from ``pi''.  Also note that the
+character sequence ``6.3'' could be the value of either a floating point
+variable or a string variable.</P>
+<P>Once you have defined a variable, you can change its value using an
+assignment statement:
+<PRE>
+  variable-name = expression
+</PRE>
+
+For example:
+<PRE>
+  genesis &gt; a = 40
+  genesis &gt; myfloat = a + 2*PI
+  genesis &gt; hi = &quot;The value of myfloat = &quot; @ myfloat
+</PRE>
+
+Note that GENESIS does not have array variables.  However, it has several
+objects that contain internal data structures that may be used as arrays.
+Further details are given in the documentation for
+<A HREF="Manual-17.html#Tables">Tables and Arrays</A>.</P>
+
+<H3>Local and Global Variables</H3>
+
+<P>Variables declared in a function are local to the function.  Those
+declared outside of a function in a script (or script that is
+included with the ``include'' statement) are global variables.  When a
+value is assigned to a global variable, it will affect any statements
+or functions that follow this assignment.  One often refers to
+``constants'' in a GENESIS script.  These are not true constants, but
+are just variables thatare not expected to take on new values during
+the course of a simulation.</P>
+<P>Good object-oriented programming style discourages the use of global
+variables.  When possible, it is best to localize variables within
+functions, or to use oject fields to store values.  However, it is often
+useful to use global variables in order to make them easily accessible
+throughout the simulation scripts.  Scripts that create prototype channels
+(see <EM>Scripts/neurokit/prototypes</EM>) usually define global variables for
+ionic reversal potentials, and the cell reader (
+<A HREF="Manual-25.html#readcell">readcell </a>) makes
+use of the global variables RM, CM, RA and EREST_ACT.</P>
+<P>GENESIS provides the following routines for accessing global script variables.
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addglobal">addglobal </a></TD><TD>Declares a global variable; variable name may be a variable.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getglobal">getglobal </a></TD><TD>Returns global variable value; variable name may be a variable.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#listglobals">listglobals </a></TD><TD>Lists currently defined global variables and functions.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setglobal">setglobal </a></TD><TD>Sets value of global variable; variable name may be a variable.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H3>Using Variables (The echo Command)</H3>
+
+<P>Script variable values are retrieved by using the variable name in the
+context of an expression.  Expressions are formed using variable names and
+operators in the usual way.  (See 
+<A HREF="#Operators">Operators</A>.)  In some contexts, the value of a variable or an expression
+must be evaluated by by enclosing it in curly brackets in order to
+distinguish between the string of characters and the value represented by
+the character string.  This is particularly true when the expression is to
+be evaluated as an argument of a GENESIS routine or script language
+function.  (See 
+<A HREF="#Functions">Functions</A>.)</P>
+<P>The 
+<A HREF="Manual-25.html#echo">echo </a> routine is useful for seeing how an expression will be
+evaluated:</P>
+<P>
+<PRE>
+  genesis &gt; float pi = 3.14159
+  genesis &gt; float y
+
+  genesis &gt; y = pi/4
+  genesis &gt; echo y
+  y
+  genesis &gt; echo {y}
+  0.7853975
+  genesis &gt; echo pi/4
+  pi/4
+  genesis &gt; echo {pi/4}
+  0.7853975
+  genesis &gt; echo {sin y}    // WRONG!
+  0
+  genesis &gt; echo {sin {y}}  // CORRECT
+  0.7071063519
+</PRE>
+</P>
+<P>As with many languages, GENESIS will cast expressions involving both
+floating point and integer variables to floating point.  It will also
+convert a string to a float if the string is a valid representation of a
+number.  For example,
+<PRE>
+  genesis &gt; int i = 5
+  genesis &gt; int j = 2
+  genesis &gt; float x = 2
+  genesis &gt; str num = &quot;5&quot;
+  genesis &gt; echo {i/j}
+  2
+  genesis &gt; echo {i/x}
+  2.5
+  genesis &gt; echo {num/2}
+  2.5
+  genesis &gt; num = &quot;i/x&quot;
+  genesis &gt; echo {num}
+  i/x
+  genesis &gt; echo {{num}/2}
+  ** Error - CastToFloat: Error casting 'i/x', using 0.0
+  0
+</PRE>
+</P>
+<P>Often it is useful to use a string variable name to hold the name of a
+global variable.  For example, one may want to pass the name of a global
+variable to a function that declares, sets, or retrieves the value of the
+variable.  However, normal GENESIS syntax for declarations and assignments
+does not permit a variable a name to be specified by a string variable.
+The last three of the following GENESIS statements are illegal, and will
+produce error messages:
+<PRE>
+  str name = &quot;foo&quot;
+  float x
+
+  float {name}  // want &quot;float foo&quot;
+  {name} = 5.5  // want &quot;foo = 5.5&quot;
+  x = {{name}}   // want &quot;x = foo&quot;, or equivalently, &quot;x = {foo}&quot;
+</PRE>
+
+The correct way to accomplish these results is to use the routines for
+accessing global script variables with the name of the global variable
+held in a string variable.
+<PRE>
+  addglobal float {name}
+  setglobal {name} 5.5
+  x = {getglobal {name}}
+</PRE>
+</P>
+
+
+<H2><A NAME="Functions"></A> <A NAME="ss3.3">3.3 Functions</A></H2>
+
+<P>As with any programing language, GENESIS lets you define
+functions in order to make your script programs more modular
+and easier to modify.  You should group function definitions
+together at the beginning of a script, preceding any
+statements that will use them.
+The listglobals routine will list any user-defined functions.</P>
+
+<P>The general form of a function definition in GENESIS is:
+<PRE>
+        function function-name [ (arg1 [, arg ... ] ) ]
+          statement-1
+            .
+            .
+            .
+          statement-n
+        end
+</PRE>
+
+For example:
+<PRE>
+        function print_area(length, diameter)
+            float length, diameter
+            float area
+            float PI=3.14159
+            area = PI*diameter*length
+            echo The area is {area}
+        end
+
+        function link_compartment(channel,compartment)
+            addmsg {channel} {compartment} RAXIAL Ra previous_state
+            addmsg {compartment} {channel} AXIAL previous_state
+        end
+</PRE>
+</P>
+<P>The SLI also lets you define functions interactively at the GENESIS prompt.
+For example:
+<PRE>
+        genesis &gt; function my_echo(inputval)
+        ? echo { inputval }
+        ? end
+        genesis &gt; listglobals
+        function        my_echo
+        genesis &gt; my_echo 33
+        33              
+</PRE>
+</P>
+<P>The <EM>return</EM> keyword allows a return from the function before
+the end statement.  It may optionally be used to return a value.  For
+example:
+<PRE>
+        function make_positive(num)  // a silly version of &quot;abs&quot;
+            float num
+            if (num &gt;= 0)
+                return {num}
+            else
+                return {abs {num}}
+            end
+        end
+</PRE>
+</P>
+<P>You are not allowed to define a function within another function.
+Normally, you cannot refer to a function in another function before it is
+defined.  For example, the following script will produce an error message:
+<PRE>
+        function func2
+            func1 &quot;This is a test.&quot;
+        end
+
+        function func1(string)
+            str string
+            echo &quot;The value of the string is: &quot; {string}
+        end
+
+        func2
+</PRE>
+</P>
+<P>However, adding the line
+<PRE>
+        extern func1
+</PRE>
+</P>
+<P>at the beginning of the script will give the desired result:
+<PRE>
+        The value of the string is:  This is a test.
+</PRE>
+</P>
+<P>The keywords <EM>function</EM>, <EM>return</EM>, <EM>end</EM>, and
+<EM>extern</EM> are features of the interpreter, not normal GENESIS commands;
+consequently, they do not appear in a listing of GENESIS routines (e.g., as
+given by the listcommands routine).</P>
+<P>The routines 
+<A HREF="Manual-25.html#argc">argc</A> and 
+<A HREF="Manual-25.html#argv">argv</A> are often used inside of function definitions to return
+the number of arguments and the array of arguments which are passed to
+the function.</P>
+
+
+
+<H2><A NAME="Operators"></A> <A NAME="ss3.4">3.4 Operators</A></H2>
+
+<P>The table below lists the basic operators available in GENESIS, from highest
+to lowest precedence.  These operators can be applied to variables or
+constants within a GENESIS expression.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Operators </TD><TD> Function</TD></TR><TR><TD>
+- </TD><TD> unary minus</TD></TR><TR><TD>
+<CODE>**</CODE> </TD><TD> power</TD></TR><TR><TD>
+<CODE>*</CODE> / % ~ </TD><TD> multiply, divide, modulo (int only), bitwise complement</TD></TR><TR><TD>
++ - &amp; | ^ @ </TD><TD> add, subtract, bitwise and, bitwise or,</TD></TR><TR><TD>
+</TD><TD> bitwise xor, string concatenation</TD></TR><TR><TD>
+! </TD><TD> logical complement</TD></TR><TR><TD>
+&lt; &lt;= &gt; &gt;= == != </TD><TD> relational operators (perform both numeric</TD></TR><TR><TD>
+</TD><TD> and string comparisons)</TD></TR><TR><TD>
+&amp;&amp; || </TD><TD> logical and, logical or</TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+NOTES:  Unary minus is supported, but unary plus is not (thus -10 is
+valid while +10 is not).</P>
+<P>The following examples illustrate the use of several of the basic operators.</P>
+<P>For string concatenation, the ``@'' operator is used:
+<PRE>
+  genesis &gt; echo {&quot;sub&quot; @ &quot;genius&quot;}
+  subgenius
+</PRE>
+
+The following command shows how precedence is employed:
+<PRE>
+  genesis &gt; echo { 24 / 12 + 7 * 2 }
+  16
+</PRE>
+
+You can also explicitly specify the precedence of operations in an expression
+by using parentheses:
+<PRE>
+  genesis &gt; echo { 3 * 4 + 5 }
+  17
+  genesis &gt; echo { 3 * (4 + 5 ) }
+  27
+</PRE>
+
+The following command does not return 5.4 because each element of the
+expression is an integer:
+<PRE>
+  genesis &gt; echo { 9 * 3 / 5 } 
+  5
+</PRE>
+
+For comparisons in GENESIS, the integer 0 is considered False; all other
+integer values are considered True; GENESIS returns 1 to indicate True.  The
+following command returns 1 because the expression is True (it would have
+returned 0 if the expression had been False):
+<PRE>
+  genesis &gt; echo { 4 &gt; 2 }
+  1
+</PRE>
+
+Here is an example of negation in determining the nonexistence of an element:
+<PRE>
+  if (!{exists {dest}/soma})
+     ...
+</PRE>
+
+The relational operators are
+defined to be non-associative.  This prevents silly expressions like the
+following:
+<PRE>
+  1 &lt; 2 &lt; 4                                     [WRONG]
+</PRE>
+</P>
+
+
+<H2><A NAME="Control"></A> <A NAME="ss3.5">3.5 Control Structures</A></H2>
+
+<P>GENESIS supports four kinds of conditional control structures:
+<OL>
+<LI> if/elif/else/end</LI>
+<LI> while/end</LI>
+<LI> for/end</LI>
+<LI> foreach/end</LI>
+</OL>
+
+Each of these control structures is briefly described here.</P>
+<P>Note that you can break out of any of these loops before their expected
+termination by using the ``break'' or ``return'' statements.</P>
+
+
+<H3>if/elif/else/end Structure</H3>
+
+<P>The GENESIS ``if ...'' conditional structure takes the following form:
+<PRE>
+    if (expression)
+      statements
+    elif (expression)
+      statements
+    else
+      statements
+    end
+</PRE>
+
+The elif and else portions of the form are optional and multiple
+elif portions may appear.</P>
+<P>The ``if''/``elif'' expressions are evaluated in the order of
+appearance.  When an expression evaluates ``true'', all
+the statements between the ``true'' expression and the following
+matching ``elif'', ``else'' or ``end'' will be executed; if all
+evaluated expressions are ``false'', then the
+statements between the ``else'' and the ``end'' are executed (or no
+statements are executed if there is no ``else'' clause).</P>
+<P>Note that the GENESIS if construct does not recognize the keyword ``then''.</P>
+<P>These are some examples of valid if statements:
+<PRE>
+  if(1)
+    echo hello
+  end
+
+  if(1); echo hello; end
+
+  if( (GRAPHICS == 1) || (5+3 &gt; 10) )
+    echo hello
+  end
+</PRE>
+
+The following function uses the if/elif/else/end construct and prints
+``zero'', ``negative'' or ``positive'' depending on the first
+argument:</P>
+<P>
+<PRE>
+    function iftest(arg)
+        int arg
+        if ( arg  == 0 ) 
+            echo zero
+        elif ( arg &lt; 0 )
+             echo negative
+        else
+             echo positive
+        end
+    end
+</PRE>
+</P>
+
+<H3>while/end Structure</H3>
+
+<P>The GENESIS ``while ...'' conditional looping statement has the following
+syntax:
+<PRE>
+   while (expression)
+        statements
+   end
+</PRE>
+
+The expression is evaluated.  If it is ``true'' (i.e., not 0), then all the
+statements will be executed, then the expression will be evaluated again; if
+the evaluated expression is ``false'', then all the
+statements are skipped and control is turned to the first statement after
+the ``end''.</P>
+<P>An example of a while loop is the following:
+<PRE>
+    str parent
+    while({getfield {parent} object-&gt;name} != &quot;xgraph&quot;)
+        parent = {el {parent}/..}
+    end
+</PRE>
+
+Note that the expression can be complicated and can involve some of the actual
+work of the loop.</P>
+
+<H3>for/end</H3>
+
+<P>The GENESIS ``for ...'' conditional structure uses an incrementable variable
+in assessing the condition for continuing through the loop.  The syntax of
+the loop is as follows:
+<PRE>
+    for (init_assignment; expression; incr_assignment)
+      statements
+    end
+</PRE>
+</P>
+<P>The init_assignment is an assignment statement which is evaluated
+once prior to entering the loop.  The incr_assignment is an
+assignment statment which is executed following the statements
+each time through the loop.  Otherwise, the for/end statement
+operates in the same manner as while/end.</P>
+<P>To print the numbers one through ten:
+<PRE>
+    int i
+
+    for (i = 1; i &lt;= 10; i = i + 1)
+        echo {i}
+    end
+</PRE>
+</P>
+
+<H3>foreach/end</H3>
+
+<P>The GENESIS ``foreach'' statement loops through a set of statements
+once for each item in a specified argument list, having assigned the
+value of each item in the list to a looping variable for use by the
+statements:</P>
+<P>
+<PRE>
+  foreach loop-var ( arg1 [ arg ...] )
+    statements
+  end
+</PRE>
+
+For example:
+<PRE>
+  str s
+  str thingys = &quot;foo bar baz&quot;
+  foreach s ({arglist {thingys}})
+      echo {s}
+  end
+</PRE>
+
+or
+<PRE>
+  str name
+  foreach name ({el {path}/##[OBJECT=xform]})
+    xshow {name}
+  end
+</PRE>
+
+The use of wildcards in the specification of pathnames is described in
+the section 
+<A HREF="Manual-9.html#Tree"> Hierarchical Structure</A>.  Also see
+the documentation for 
+<A HREF="Manual-25.html#arglist">arglist </a> and 
+<A HREF="Manual-25.html#el">el </a> (``element list'').
+Note that in each of these examples, you need to have declared the
+variables used in the loop before their use in the loop.</P>
+
+
+<HR>
+<A HREF="Manual-2.html">Previous</A>
+<A HREF="Manual-4.html">Next</A>
+<A HREF="Manual.html#toc3">Table of Contents</A>
+</BODY>
+</HTML>

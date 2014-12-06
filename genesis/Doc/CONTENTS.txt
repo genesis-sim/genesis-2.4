@@ -1,0 +1,82 @@
+Contents of the GENESIS 2.4 Reference Manual
+
+The *.txt files listed here are those used by the on-line help within
+GENESIS.  For example:
+
+	genesis > help Intro | more
+
+The hypertext version of the Reference Manual can be found in the
+genesis/Hyperdoc directory.
+
+Contents - CONTENTS.txt
+
+Introduction - Intro.txt
+    Reporting bugs - Bugs.txt
+
+Changes Introduced in GENESIS 2 - Changes.txt
+
+The Genesis Shell and Script Language Interpreter - Shell.txt
+    GENESIS Statements - Statements.txt
+    Creating Variables - Variables.txt
+    Functions - Functions.txt
+    Operators - Operators.txt
+    Control Structures - Control.txt
+
+Basic Routines - Basic.txt
+
+Math Routines - Math.txt
+
+String Manipulation Routines - String.txt
+
+Input/Output Routines - IO.txt
+
+Elements - Elements.txt
+    Actions - Actions.txt
+
+Hierarchical Structure - Tree.txt
+
+Objects - Objects.txt
+
+Extended Objects - Extended.txt
+
+Neural Simulation Routines - Neural.txt
+
+Messages - Messages.txt
+
+Synaptic Connections - Connections.txt
+
+Simulations - Simulations.txt
+    Simulation Clocks - Clocks.txt
+    GENESIS Jobs - Jobs.txt
+
+Simulation Schedules - Schedules.txt
+
+Tables and Arrays: The interpol_struct - Tables.txt
+
+Parameter Search - Param.txt
+    The paramtable objects - Paramtable.txt
+
+'chemesis' objects for biochemical reactions and calcium dynamics - chemesis.txt
+
+The XODUS Graphical Interface - XODUS.txt
+
+XODUS Mouse Clicks - Clicks.txt
+
+Customizing GENESIS - Customizing.txt
+    Defining New Objects and Commands - NewObjects.txt
+    Creating New Synaptic Objects - NewSynapticObjects.txt
+    Creating New Synaptic Plasticity )bjects - NewPlasticityObjects.txt
+    Compiling a New Version of GENESIS - NewGenesis.txt
+
+Converting GENESIS 1 Scripts to GENESIS 2 - Convert.txt
+
+The Book of GENESIS - BoG.txt
+
+``GENESIS Startup Command Reference''
+(individual *.txt files for commands)
+
+``GENESIS Command Reference'' - Alphabetized Reference of GENESIS Commands
+(individual *.txt files for commands)
+
+``GENESIS Object Reference'' - Alphabetized Reference of GENESIS Objects
+(individual *.txt files for objects)

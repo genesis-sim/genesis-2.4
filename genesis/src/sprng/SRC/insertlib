@@ -1,0 +1,22 @@
+if [ -f $5 ]
+then
+
+if [ -f $2 ]
+then
+  s=`grep -c "$1: $3" $2`
+else
+  cat ../.insertlib > $2
+  s=`grep -c "$1: $3" $2`
+fi
+
+s=`grep -c "$1: $3" $2`
+
+if [ $s = "0" ]
+then
+  echo echo >> $2
+  echo echo $1: $3 >> $2
+  echo ./$4 >> $2
+fi
+
+
+fi

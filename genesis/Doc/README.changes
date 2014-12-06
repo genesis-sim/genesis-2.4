@@ -1,0 +1,130 @@
+The following files have been added or modified since earlier releases:
+
+Changes for the 2.4 distribution
+
+The new 'stdp_rules' object has been added for efficiently implementing spike
+timing dependent plasticity in large networks of hsolved multicompartmental
+cells. There have also been additions to fields of the 'synapse' subelement of
+the synchan to provide time of last spike arrival, and fields to implment
+synaptic plasticity.
+
+Three new network connection commands, 'volumeconnect3', 'volumeweight3', and
+'volumedelay3', have been added and documented. These allow distance-dependent
+connection probabilities and/or weights and the use of periodic boundary
+conditions for network connectivity.
+
+A new version of the chemesis library for modeling second messengers and calcium
+dynamics is now installed by default.
+
+New tutorial Scripts and Doc entries were added for:
+     * chemesis
+     * the gpython-tools Python utility collection
+     * An updated Purkinje tutorial
+     * stdp_rules, including 'NewPlasticityObjects' documentation for
+       implementing similar objects.
+     * An improved hsolved implementation of the dual exponential
+       conductance version of the Vogels-Abbott network model. It serves
+       as a tutorial on how to achieve a speed improvement of 10 to 20
+       times when using hsolve with network models.
+
+The genesis/contrib directory contains utilities, scripts, and other files that
+have been contributed by users. It may also used in a personal GENESIS
+installation for storing downloaded patches, updates, and other material that
+has become available since the last GENESIS release. It currently contains
+emacs macros for editing GENESIS scripts.
+
+Makefile changes and bug fixes were made to ease installation.
+
+Changes for the 2.3 distribution
+
+Several updates have been made to the documentation, including a section
+(Changes.txt) describing changes for GENESIS 2.3 and 2.2.1.  The GENESIS
+email and web addresses have been updated.
+
+The extensions of these help files has been changed to ".txt", from the
+".doc" extension used in previous GENESIS versions.  A postscript version
+of the manual is no longer provided in the GENESIS distribution, but one
+for GENESIS 2.2 is available on the GENESIS web site.
+
+Documentation has been added for three objects, SynE_object, SynG_object,
+and SynS_object, used in leech neuron models, and for the izcell object,
+which implements the Izhikevich simple spiking neuron model.  These are
+documented only in the GENESIS plain text format documentation in the
+genesis/Doc directory.  Documentation for asc_file and tabchannel has been
+updated to describe new capabilities of these objects.
+
+Changes.txt gives documentation for the debugging commands, gctrace and
+gftrace, which are not documented here.
+
+Documentation has been revised for:
+BoG.txt             Changes.txt         asc_file.txt        tabchannel.txt
+
+Changes for the 2.2.1 distribution
+
+This is primarily a bug fix release, and the documentation has not been
+changed since version 2.2.  Any references in the documentation to email or
+web addresses at bbb.caltech.edu should be replaced by genesis-sim.org.
+GENESIS 2.2.1 has two new commands, gctrace and gftrace, that are described
+in src/CHANGES.
+
+Changes for the 2.2 distribution
+
+Far too many to list!  Most previously undocumented commands and objects
+have been documented, and many other documentation files have been edited,
+with changes ranging from the trivial to the profound.
+
+Changes for the 2.1 distribution
+The following files have been added or modified since the 2.0.2 distribution:
+
+BoG.txt             diskio.txt          planarweight2.txt   spikehistory.txt
+Changes.txt         enddump.txt         pool.txt            swapdump.txt
+IO.txt              enz.txt             reac.txt            tab2Dchannel.txt
+Intro.txt           findsolvefield.txt  readcell.txt        tabchannel.txt
+NewGenesis.txt      hsolve.txt          script_out.txt      variable.txt
+Objects.txt         initdump.txt        simdump.txt         xform.txt
+Tables.txt          metadata.txt        simobjdump.txt
+createmap.txt       planardelay2.txt    simundump.txt
+
+Changes for the 2.0.2 distribution
+The following files have been added or modified since the 2.0.1 distribution:
+
+CONTENTS.txt            Intro.txt               README.changes
+Changes.txt             Messages.txt            README.manual
+Connections.txt         Mg_block.txt            Simulations.txt
+Elements.txt            NewSynapticObjects.txt  Tables.txt
+Extended.txt            Operators.txt           Tree.txt
+Functions.txt           README
+
+addclass.txt             nernst.txt               tabchannel.txt
+addforwmsg.txt           newclass.txt             tabgate.txt
+addmsgdef.txt            readcell.txt             table.txt
+addobject.txt            receptor.txt             tweakalpha.txt
+delete.txt               receptor2.txt            tweaktau.txt
+deleteaction.txt         reclaim.txt              vdep_channel.txt
+deleteclass.txt          resetsynchanbuffers.txt  xcell.txt
+deleteforwmsg.txt        save.txt                 xcolorscale.txt
+deletemsgdef.txt         scaletabchan.txt         xdraw.txt
+efield.txt               setfield.txt             xgetstat.txt
+file2tab.txt             setfieldprot.txt         xgif.txt
+getarg.txt               setupalpha.txt           ximage.txt
+getmsg.txt               setupgate.txt            xplot.txt
+hebbsynchan.txt          setuptau.txt             xshape.txt
+help.txt                 symcompartment.txt       xvar.txt
+hh_channel.txt           synchan.txt              xview.txt
+leakage.txt              synchan2.txt
+listglobals.txt          syndelay.txt
+
+These have also been incorporated into the November 1996 printed manual and
+the hypertext documentation in genesis/Hyperdoc.
+
+Changes for the 2.0.1 distribution
+
+The following files have been added or modified since the 2.0 distribution:
+
+Changes.txt             getsynindex.txt         synchan2.txt
+Extended.txt            getsynsrc.txt           syndelay.txt
+README                  planarconnect.txt       volumeconnect.txt
+deleteall.txt           planardelay.txt         volumedelay.txt
+getdate.txt             planarweight.txt        volumeweight.txt
+getsyncount.txt         resetsynchanbuffers.txt
+getsyndest.txt          synchan.txt

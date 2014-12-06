@@ -1,0 +1,74 @@
+Routine Name:	showobject
+
+Description:	Displays description of specified element type.
+
+Usage:		showobject object-type
+
+Example:	genesis > showobject compartment
+
+		object               = compartment
+		datatype             = compartment_type
+		function             = Compartment()
+		class                = [ membrane ] [ segment ] 
+		size                 = 124 bytes
+		author               = M.Wilson Caltech 6/88
+
+		VALID ACTIONS
+			RESTORE2  SAVE2  SET  CHECK  RESET  PROCESS  INIT  
+
+		VALID MESSAGES
+			[6] EREST                : Em 
+			[3] INJECT               : inject 
+			[2] AXIAL                : Vm 
+			[1] RAXIAL               : Ra Vm 
+			[0] CHANNEL              : Gk Ek 
+
+		FIELDS
+		  (ro)       name            compartment 
+		  (ro)       index           0          
+		  (ro)       object          &1688896   
+		  (hidden)   flags                      
+		  (hidden)   nextfields                 
+		  (hidden)   extfields                  
+		             x               0          
+		             y               0          
+		             z               0          
+		  (hidden)   nmsgin                     
+		  (hidden)   msgin                      
+		  (hidden)   nmsgout                    
+		  (hidden)   msgout                     
+		  (hidden)   compositeobject            
+		  (hidden)   componentof                
+		  (hidden)   parent                     
+		  (hidden)   child                      
+		  (hidden)   next                       
+		             activation      0          
+		             Vm              0          
+		             previous_state  0          
+		             Im              0          
+		             Em              0          
+		             Rm              0          
+		             Cm              0          
+		             Ra              0          
+		             inject          0          
+		             dia             0          
+		             len             0          
+		             initVm          0          
+
+		DESCRIPTION
+			Axially asymmetric compartment. Ra is located on
+		one side of the compartment. This is slightly more
+		computationally efficient than the symmetric
+		counterpart.
+		genesis >
+
+Notes:		This routine returns many pieces of information about the
+		object type, including the class, size, author, valid actions
+		and messages, and data fields with the default values which
+		are assigned when the object is instantiated as an element.
+		If the field is not readable and writeable, the field is
+		labeled (ro) if it is protected as read-only, and (hidden) if 
+		it and its contents are hidden to the user.
+
+See also:	showfield, setfieldprot
+

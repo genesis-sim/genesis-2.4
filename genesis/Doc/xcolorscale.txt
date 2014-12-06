@@ -1,0 +1,15 @@
+Routine Name:	xcolorscale
+
+Description:	Sets the color scale for mapping numerical values to
+                color.
+
+Usage:		xcolorscale colorscale
+		colorscale:	hot, rainbow, rainbow2, redhot, or grey
+
+Example:	xcolorscale hot
+
+Notes:		The colorscale (which is a file in genesis/startup) applies
+                to pixes which have a field mapped to color, such as the
+                shapes in an xvar or xview, or the cell display in xcell.  It
+                does not apply to widgets, like buttons, labels, etc.
+

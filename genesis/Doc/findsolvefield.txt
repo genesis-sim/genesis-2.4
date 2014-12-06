@@ -1,0 +1,44 @@
+Routine Name:   findsolvefield
+
+Description:    Returns a string giving the array location of a particular
+                element field value in the hines solver.  Used for
+                input/output of values when the original element has been
+                taken over by the hines solver and its fields may not be
+                updated.
+
+Usage:          findsolvefield hsolve element field
+
+                hsolve      name of the hsolve element
+                element     name of an element which was taken over by hsolve
+                field       the field of the element whiich is to be accessed
+
+Example:	// statements to create the hsolve element "/cell"
+                ...
+                setfield /cell chanmode 4
+                call /cell SETUP
+                ...
+                create disk_out /output
+                addmsg /cell /output OUTPUT \
+                    {findsolvefield /cell /cell/soma/Na Gk}
+                ...
+                reset
+or:
+        genesis > echo {findsolvefield /cell /cell/soma/Na Gk}
+        givals[108]
+        genesis > echo {getfield /cell {findsolvefield /cell /cell/soma/Na Gk}}
+        2.634178326e-10
+
+Notes:          When using chanmodes 2 through 5 with the hines solver
+                (hsolve), you can no longer assume that all the fields of the
+                elements that are taken over by hsolve will be updated.  The
+                findsolvefield function is used to access the hsolve arrays
+                directly to output field values instead of having to use the
+                old disabled elements.  This allows one to establish new
+                messages for the output of field values after setup of the
+                hsolve element.  The example above shows how to output the Gk
+                field of the Na channel from the hsolve element /cell.  Note
+                that the fields Gk, Ik, Ek, and Im are not available for
+                chanmodes 2 and 3, and require the use of findsolvefield
+                in chanmodes 4 and 5.
+
+See also:       hsolve

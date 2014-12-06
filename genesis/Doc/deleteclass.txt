@@ -1,0 +1,15 @@
+Routine Name:	deleteclass
+
+Description:	Delete a class tag from an element which was previously
+		added using addclass.
+
+Usage:		deleteclass element class-name
+
+		element		element from which to delete the class
+
+		class-name	name of the class to delete
+	
+Notes:		Deleteclass will not delete classes defined for the
+		built in objects.
+
+See also:	addclass, listclasses, Extended

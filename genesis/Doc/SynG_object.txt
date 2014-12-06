@@ -1,0 +1,62 @@
+Object Type:    SynG_object
+ 
+Description:    Implements graded synaptic inhibition in the leech
+ 
+Author:         J. Lu and A. Hill, Calabrese Lab, 3/97
+ 
+------------------------------------------------------------------------------
+ 
+ELEMENT PARAMETERS
+ 
+DataStructure:  SynG_type  [in src/newconn/SynGS_struct.h]
+ 
+Size:           196 bytes
+ 
+Fields:         Ik                 channel current
+                Gk                 time varying channel conductance
+                Ek                 reversal potential of channel
+                A                  shunts effective Ca current
+                B                  buffering parameter
+                P                  Ca factor governing transmitter release
+                C                  limit parameter(limits release to Gbar)
+                R                  release = p^3/(p^3+C)
+                Gbar               maximal conductance
+                A1                 A1 in Ainf=A1+A2/(1+exp(A3+(Vm+A4)))
+                A2                 A2
+                A3                 A3
+                A4                 A4
+                A5                 A5 is the time constant
+                POWER              POWER
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+ 
+Function:       SynG  [in src/newconn/SynG.c]
+ 
+Classes:        device synchannel
+ 
+Actions:        RESTORE2  SAVE2  CHECK  RESET  PROCESS  INIT
+ 
+Messages:       VOLTAGE         presynaptic membrane potential
+                CAF             presynaptic fast Ca current, ICaF
+                CAS             presynaptic slow Cacurrent, ICaS
+                POSTVOLTAGE     postsynaptic membrane potential
+ 
+------------------------------------------------------------------------------
+ 
+Notes:          Simulates graded synaptic transmission designed specifically
+                for leech HN cells, based on the synchan object.  Needs
+		presynaptic calcium currents (ICaF and ICaS) and presynaptic
+		membrane potential as input.  The output is the synaptic
+		conductance.  In addition, this object can calculate the
+		synpatic current if it is given the postsynaptic membrane
+		potential.  This is useful only for the purpose of plotting
+		the synaptic current.  The simuation will work without
+		calculating synaptic current because the postsynaptic
+		compartment calculates the current based on the postsynaptic
+		Vm and the synaptic reversal potential.
+
+Example:        See http://calabreselx.biology.emory.edu/software.html.
+
+See also:       synchan, SynE_object, SynS_object

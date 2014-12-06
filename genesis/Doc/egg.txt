@@ -1,0 +1,29 @@
+Routine Name:	egg
+
+Description:	Generates coordinates for points on the surface of an ovoid.
+
+Usage:		egg  filename  x  y  z  d  -normal
+
+                filename        name for file into which to put generated
+                                coordinates
+
+		x, y, z		dimensions of the egg
+
+		d		approximate distance between points
+
+		-normal		"normal"; if selected, generates an
+                                additional set of 3 coordinates per line,
+                                to define the normal to the surface.  This
+                                format is used by the cellsheet routine.
+
+Example:	egg eggpoints 400e-6 400e-6 400e-6 100e-6 -normal
+
+Notes:		Generates coordinates for points on the surface of an ovoid,
+		(an egg) and puts them into a file, with an option for
+                generating the normals at each point.  This is useful for
+                generating layers of cells on an ovoid.  It tries to get
+                fairly even spacing.  The coordinates are dumped into the
+                file specified by filename with one set of coordinates per
+                line.
+
+See also:	plane, cellsheet

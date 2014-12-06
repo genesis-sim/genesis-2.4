@@ -1,0 +1,130 @@
+Specification of Rallpack 2 :
+
+=============================================================================
+
+1. Objective
+Tests the ability of a simulator to handle branching in passive compartmental
+models .
+
+=============================================================================
+
+2. Simulation
+This simulation models a binary branched structure obeying Rall's
+3/2 power law. It consists of 1023 compartments corresponding to 10 levels
+of branching. Each branch has an electrotonic length of 0.008 . At each
+branch away from the root the diameter decreases by a factor of 2^(2/3),
+in accordance with the power law, and the length by a factor of 2^(1/3).
+The detailed geometry of the compartments is
+Depth		Number		Length (microns)	Diameter (microns)
+0		1		32.0			16.0
+1		2		25.4			10.08
+2		4		20.16			6.35
+3		8		16.0			4.0
+4		16		12.7			2.52
+5		32		10.08			1.587
+6		64		8.0			1.0
+7		128		6.35			0.63
+8		256		5.04			0.397
+9		512		4.0			0.25
+The membrane properties are :
+RA = 1.0 ohms meter		= 100 ohms cm
+RM = 4.0 ohms meter^2		= 40000 ohms cm^2
+CM = 0.01 Farads/meter^2	= 1.0 uf/cm^2
+EM = -0.065 Volts		= -65 mV
+
+A current of 0.1 nA is injected into the root compartment. Membrane voltages
+are recorded for the root and a terminal branch compartment.
+This model is run for a simulated time of 0.25 second.
+
+=============================================================================
+
+3. Theoretical solution
+By Rall's power law this branched structure is equivalent to a single
+cylinder of diameter 16 microns and length 320 microns, (ie., 0.08 length
+constants) for stimuli presented at the root. The electrotonic length
+lambda is 0.004 metres. We use the same 'correct' solution as for the simple
+cable test, rallpack1, with the following arguments :
+currinj -l 320e-6 -L 0.004 -d 16e-6 -n 200
+This calculation takes a considerable length of time, and the precomputed
+solution is therefore provided. It is accurate to at least 6 figures.
+When using asymmetric compartments the solution is slightly different
+from the 'correct' solution because of the poor spatial discretization. This
+is an intrinsic property of models based on asymmetric compartments and should
+be borne in mind when building neuronal models.
+
+The correct solution is based on the Laplace-transform solution
+of the finite cable with constant current injection, with a factor of 2.0
+scaling using the method of 'reflections' since our system has current
+injection at one end. See "Electrical current flow in excitable cells",
+OUP, 1983; Jack, Noble and Tsien, pp 79,80, also pp 68. This solution is
+a sum of a series, and therefore its accuracy depends on the number of
+terms used in the sum. The shorter length constant of this cable means that
+we need to use a large number of terms in the series (the given files are
+the results of summing 200 terms), for sufficient accuracy.
+The correct solution is implemented in the directory rallpack/theor. The
+error function it uses is from "Numerical recipes in C", CUP 1988; Press,
+Flannery, Teukolsky and Vetterling.
+The correct waveforms (provided in this directory) are :
+ref_branch.0 Laplace transform solution for current injection site
+ref_branch.x Laplace transform solution for terminal branch
+
+The program rallpack/comparison/rms.c will evaluate rms differences in
+voltage traces.
+
+NOTE : An additional, sometimes useful test for numerical stability is to
+perform the same current injection into a terminal branch and record at the
+root and the terminal branch. The recording at the root should be identical
+to the theoretical curve for the branch (ref_branch.x) as computed for
+the previous case (Rall, Ann NY Acad Sci 96, 1071-1092 (1962)).
+The recording at the terminal branch (which differs from these solutions)
+should reveal if the integration method displays instability due to the
+high voltage change rates at this site. The Crank Nicolson method is prone
+to this problem.
+
+=============================================================================
+
+4. Performance measures. (See ../README for definitions)
+        General information
+                Rallpack name, Simulator name and version
+                Peak speed and model size at which the speed is attained
+                Asymptotic accuracy (error %)
+                Semi-accurate timestep (Timestep for 2x asymptotic error)
+                Hardware information : model and MIPS rating.
+                Simulation setup time for 1000 compartment model
+                Integration method
+                Compartment equivalents : Description, value
+
+        Detailed report :
+        1 Accuracy vs. Timestep
+        2 Accuracy vs. Simulation speed
+                A set of simulations of the same model size should be run at
+                a range of timesteps, and the accuracy and simulation speed
+                should be calculated for each case.
+                The timesteps should cover the 'useful' range for the model,
+                within which the accuracy goes from close to its asymptotic
+                (best) value to a few % error. Typical timesteps are
+                10,20,50,100,200,500 and 1000 usec. The recommended model size
+                1023 compartments (10 levels of branching). The
+                model size should be quoted.
+                These results can be tabulated and/or graphed.
+                If the raw speed is independent of timestep (i.e. the
+                simulation speed is directly proportional to timestep, which is
+                usually true) the two graphs can be merged, and the respective
+                x axis scales should be displayed.
+                The x axis may be displayed on a log scale.
+
+        3 Raw speed vs. Model size
+        4 Model memory per compartment vs. Model size
+                A set of simulations with a range of model sizes should
+                be carried out, calculating the raw speed and model memory
+                for each case. All simulations should use the same timestep,
+                which should be quoted. The suggested timestep is 50 usec.
+                Recommended model sizes are 1, 8, 128, 1023 and 8191
+                compartments, corresponding to 1, 3, 7, 10 and 13 levels
+		of branching.
+                These results can be tabulated and/or graphed.
+                If graphed, they may be displayed on the same graph with
+                the two y axis scales displayed.
+                The x axis may be displayed on a log scale.
+
+=============================================================================

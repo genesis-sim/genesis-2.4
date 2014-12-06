@@ -1,0 +1,17 @@
+Routine Name:	deletefield
+
+Description:	Deletes an extended field which has been added to an element.
+
+Usage:		deletefield [element] field-name
+
+Example:	genesis > addfield /soma area
+		OK
+		genesis > deletefield /soma area
+		OK
+		genesis > deletefield /soma inject
+		deletefield: Cannot delete permanent field 'inject' on element '/soma'
+
+Notes:		Only added extended field may be deleted with deletefield.
+
+See also:	addfield
+

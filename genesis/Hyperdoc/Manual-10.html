@@ -1,0 +1,304 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference Manual: Objects</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-9.html">Previous</A>
+<A HREF="Manual-11.html">Next</A>
+<A HREF="Manual.html#toc10">Table of Contents</A>
+<HR>
+<H2><A NAME="Objects"></A> <A NAME="s10">10. Objects</A></H2>
+
+<P>The GENESIS distribution contains a large number of predefined element
+types, known as ``objects''.  These are the templates from which
+simulation elements may be created.  This terminology can be somewhat
+confusing, because a GENESIS object is similar to what object-oriented
+languages such as Java or C++ call a ``class'', and a GENESIS element
+corresponds to an ``object'' in these languages.
+<A HREF="Manual-8.html#Elements">Elements</A> are created as instantiations
+of a particular object.</P>
+<P>An object contains specification information needed to construct a
+particular type of element.  The information contained in a object are
+the functions needed to create and simulate this type of element, and
+its data structure, as well as the messages that it can receive, and
+the actions that it can perform.  The documentation on 
+<A HREF="Manual-8.html#Actions">Actions</A> gives more information about GENESIS
+actions.  Objects can also contain additional information such as a
+description of the object and its data fields, and the author of the
+object.  Information about a particular object can be displayed using
+the 
+<A HREF="Manual-25.html#showobject">showobject </a> command.</P>
+<P>The following objects are currently available within GENESIS:</P>
+
+<H2><A NAME="ss10.1">10.1 GENESIS Objects by Category</A></H2>
+
+<H3>Basic Objects</H3>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#neutral">neutral </a></TD><TD>Empty object used for grouping, or basis for an extended object</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H3>Neuron Modeling Objects</H3>
+
+<P><B>Membrane Objects:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#compartment">compartment </A> </TD><TD>Axially asymmetric compartment; Ra is located on one side</TD></TR><TR><TD>
+<TR><TD>
+izcell </TD><TD>Izhikevich simple spiking neuron model (see Doc/izcell.txt)</TD></TR>
+<TR><TD>
+<A HREF="Manual-26.html#symcompartment">symcompartment </A></TD><TD>Like compartment, with Ra divided into two equal components</TD></TR>
+<TR><TD>unit </TD><TD>An isolated compartment that receives INJECT messages</TD></TR>
+<TR><TD>
+</TD></TR></TABLE>
+</P>
+<P><B>Channel/Gate Objects:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#Kpores">Kpores </a></TD><TD>K channel with Markovian (stochastic) kinetics</TD></TR><TR><TD>
+<A HREF="Manual-26.html#Mg_block">Mg_block </a></TD><TD>Provides voltage and [Mg]-dependent blocking of a channel</TD></TR><TR><TD>
+<A HREF="Manual-26.html#Napores">Napores </a></TD><TD>Na channel with Markovian (stochastic) kinetics</TD></TR><TR><TD>
+<TR><TD>
+SynE_object </TD><TD>Electrical synaptic transmission (see Doc/SynE_object.txt)</TD></TR>
+<TR><TD>
+SynG_object </TD><TD>Graded synaptic inhibition (see Doc/SynG_object.txt)</TD></TR>
+<TR><TD>
+SynS_object </TD><TD>Provides V-dependent modulation (see Doc/SynG_object.txt)</TD></TR><TR><TD>
+<A HREF="Manual-26.html#ddsyn">ddsyn </a></TD><TD>Modified synchan for dendrodendritic synapses</TD></TR><TR><TD>
+<A HREF="Manual-26.html#facsynchan">facsynchan </a></TD><TD>Like synchan, with synaptic facilitation and/or depression</TD></TR><TR><TD>
+<A HREF="Manual-26.html#hebbsynchan">hebbsynchan </a></TD><TD>Like synchan, with Hebbian modification of weights</TD></TR><TR><TD>
+<A HREF="Manual-26.html#hh_channel">hh_channel </a></TD><TD>Voltage dependent conductance using Hodgkin-Huxley parameters</TD></TR><TR><TD>
+<A HREF="Manual-26.html#leakage">leakage </a></TD><TD>Passive ``leakage'' channel with constant conductance</TD></TR><TR><TD>
+manuelconduct</TD><TD>Implements Perkel's receptor-mediated conductance model</TD></TR><TR><TD>
+<A HREF="Manual-26.html#synchan">synchan </a></TD><TD>Synaptically activated channel with presynaptic weights/delays</TD></TR><TR><TD>
+<A HREF="Manual-26.html#synchan2">synchan2 </a></TD><TD>Same as synchan; for backwards compatibility</TD></TR><TR><TD>
+<A HREF="Manual-26.html#tab2Dchannel">tab2Dchannel </a></TD><TD>Channel with 2-D tables, e.g. for dependence on Vm and [Ca]</TD></TR><TR><TD>
+<A HREF="Manual-26.html#tabchannel">tabchannel </a></TD><TD>Hodgkin-Huxley type channel with tabulated parameters</TD></TR><TR><TD>
+<A HREF="Manual-26.html#tabcurrent">tabcurrent </a></TD><TD>Tabulated non-ohmic ion current; also solves GHK equation</TD></TR><TR><TD>
+<A HREF="Manual-26.html#tabgate">tabgate </a></TD><TD>Gate with tables for alpha/beta rate variables</TD></TR><TR><TD>
+<A HREF="Manual-26.html#vdep_channel">vdep_channel </a></TD><TD>H-H channel; gets activation gate values from other elements</TD></TR><TR><TD>
+vdep_gate </TD><TD>Gate with Hodgkin-Huxley parameters for rate variables</TD></TR><TR><TD>
+</TD></TR></TABLE>
+      </P>
+<P><B>Ion Concentration Objects:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#Ca_concen">Ca_concen </a></TD><TD>Calculates ion concentration from current</TD></TR><TR><TD>
+<A HREF="Manual-26.html#concpool">concpool </a> </TD><TD>Concentration pool without diffusion</TD></TR><TR><TD>
+<A HREF="Manual-26.html#difbuffer">difbuffer </a> </TD><TD>First order diffusible buffer; constant total concentration</TD></TR><TR><TD>
+<A HREF="Manual-26.html#dif2buffer">dif2buffer </a> </TD><TD>First order diffusible buffer; variable total concentration</TD></TR><TR><TD>
+<A HREF="Manual-26.html#difshell">difshell </a> </TD><TD>Concentration shell with one-dimensional diffusion</TD></TR><TR><TD>
+<A HREF="Manual-26.html#fixbuffer">fixbuffer </a> </TD><TD>First order fixed (non-mobile) buffer</TD></TR><TR><TD>
+<A HREF="Manual-26.html#fura2">fura2 </a> </TD><TD>Computes fura2 fluorescence in a single difshell</TD></TR><TR><TD>
+<A HREF="Manual-26.html#ghk">ghk </a> </TD><TD>Calculates the Goldman-Hodgkin-Katz (constant field) equation</TD></TR><TR><TD>
+<A HREF="Manual-26.html#hillpump">hillpump </a> </TD><TD>Variation of Michaelis-Menten store pump</TD></TR><TR><TD>
+<A HREF="Manual-26.html#mmpump">mmpump </a> </TD><TD>Models a Ca-ATPase pump obeying Michaelis-Menten kinetics</TD></TR><TR><TD>
+<A HREF="Manual-26.html#nernst">nernst </a> </TD><TD>Calculates Nernst potential from concentration and temperature</TD></TR><TR><TD>
+<A HREF="Manual-26.html#taupump">taupump </a> </TD><TD>Simple pump with a variable time constant of removal</TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+The Ca_concen implements the simplest model for the change of calcium (or
+other ion) concentration, with a rate of increase of the intracellular ionic
+concentration proportional to the inward current, and a single time constant
+for decay of the concentration.</P>
+<P>When it is necessary to provide a more detailed model of variations of calcium
+concentration within a compartment, the difshell is used to divide the
+compartment into a number of shells and to model diffusion between them.  It
+is typically coupled to buffers and/or pumps.  The concpool provides a single
+shell model of a "well-mixed" concentration pool without diffusion between
+shells.  As it can also couple to buffers and pumps, it provides for multiple
+mechanisms for calcium removal.</P>
+<P>The buffers (e.g., fixbuffer) interact with a difshell or concpool to model the
+binding of calcium to buffer molecules and to calculate the concentrations of
+free and bound buffer molecules, using a kinetic scheme with forward and
+backward rate constants for the binding and release of calcium.  Diffusible
+(mobile) buffers are modeled with the difbuffer and dif2buffer objects, which
+also provide for the diffusion of buffer molecules (carrying bound calcium)
+between buffers.  The ionic pumps provide various mechanisms to remove ions
+from the shell.</P>
+<P><B>Miscellaneous Neural Objects:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#hsolve">hsolve </a> </TD><TD>Implements Hines method for fast implicit solution of DEs</TD></TR><TR><TD>
+<A HREF="Manual-26.html#randomspike">randomspike </a> </TD><TD>Generates random spike events</TD></TR><TR><TD>
+<A HREF="Manual-26.html#receptor">receptor </a> </TD><TD>Olfactory receptor-gives activation from weighted sum of odors</TD></TR><TR><TD>
+<A HREF="Manual-26.html#receptor2">receptor2 </a> </TD><TD>More realistic implementation of receptor</TD></TR><TR><TD>
+site </TD><TD>Simple synaptic transformation that maps input to current</TD></TR><TR><TD>
+<A HREF="Manual-26.html#spikegen">spikegen </a> </TD><TD>Generates a spike when input crosses a threshold</TD></TR><TR><TD>
+</TD></TR></TABLE>
+   </P>
+<P><B>Obsolete objects used with GENESIS 1 axonal connections:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+axon </TD><TD> axonlink </TD><TD> channelA </TD><TD> channelB</TD></TR><TR><TD>
+channelC </TD><TD> channelC2 </TD><TD> channelC3 </TD><TD> defsynapse</TD></TR><TR><TD>
+random </TD><TD> synapse </TD><TD> synapseA </TD><TD> synapseB </TD></TR><TR><TD>
+spike </TD><TD> </TD><TD> </TD><TD> </TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+(These undocumented objects are available only if the Connection Compatibility
+Library has been installed.  They are not recommended for use in new
+simulations, and are provided only for backwards compatibility with
+simulations that were developed under GENESIS 1.)</P>
+
+<H3>Accessory Objects</H3>
+
+<P><B>Miscellaneous Objects:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+graded </TD><TD>undocumented buffer object - obsolete ???</TD></TR><TR><TD>
+linear </TD><TD>undocumented buffer object - obsolete ???</TD></TR><TR><TD>
+passive_buffer </TD><TD>undocumented buffer object - obsolete ???</TD></TR><TR><TD>
+periodic </TD><TD>undocumented buffer object - obsolete ???</TD></TR><TR><TD>
+<A HREF="Manual-26.html#playback">playback </a> </TD><TD>Updates its state from a pre-filled buffer</TD></TR><TR><TD>
+<A HREF="Manual-26.html#script_out">script_out </a> </TD><TD>Executes a script function at each simulation step</TD></TR><TR><TD>
+<A HREF="Manual-26.html#sigmoid">sigmoid </a> </TD><TD>Computes the sigmoidal transformation of the input</TD></TR><TR><TD>
+<A HREF="Manual-26.html#table">table </a> </TD><TD>1-D table with various modes for output of contents</TD></TR><TR><TD>
+<A HREF="Manual-26.html#table2D">table2D </a> </TD><TD>Has an internal 2-D table, with interpolation</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P><B>Device Objects:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#PID">PID </a> </TD><TD>Proportional, Integral, Derivative feedback controller</TD></TR><TR><TD>
+<A HREF="Manual-26.html#RC">RC </a> </TD><TD>A resistance R, shunted by a capacitance C</TD></TR><TR><TD>
+<A HREF="Manual-26.html#autocorr">autocorr </a></TD><TD>Calculates histograms of auto-correlations</TD></TR><TR><TD>
+<A HREF="Manual-26.html#calculator">calculator </a></TD><TD>Adds, subtracts, multiplies, and divides using messages</TD></TR><TR><TD>
+<A HREF="Manual-26.html#crosscorr">crosscorr </a></TD><TD>Calculates histograms of cross-correlations</TD></TR><TR><TD>
+<A HREF="Manual-26.html#diffamp">diffamp </a> </TD><TD>Difference amplifier-output proportional to input difference</TD></TR><TR><TD>
+<A HREF="Manual-26.html#efield">efield </a></TD><TD>Extracellular field potential recording electrode</TD></TR><TR><TD>
+<A HREF="Manual-26.html#event_tofile">event_tofile </a></TD><TD>Records event times; e.g spikes or threshold crossings</TD></TR><TR><TD>
+expthresh </TD><TD>undocumented - obsolete ???</TD></TR><TR><TD>
+<A HREF="Manual-26.html#freq_monitor">freq_monitor </a> </TD><TD>Calculates running event (spike) frequency</TD></TR><TR><TD>
+<A HREF="Manual-26.html#funcgen">funcgen </a> </TD><TD>Function generator (sine, square, triangle, constant)</TD></TR><TR><TD>
+<A HREF="Manual-26.html#interspike">interspike </a> </TD><TD>Generates an interspike interval histogram</TD></TR><TR><TD>
+<A HREF="Manual-26.html#peristim">peristim </a> </TD><TD>Generates a peristimulus spike histogram</TD></TR><TR><TD>
+<A HREF="Manual-26.html#pulsegen">pulsegen </a> </TD><TD>Pulse generator that can generate a variety of patterns</TD></TR><TR><TD>
+<A HREF="Manual-26.html#timetable">timetable </a></TD><TD>A table of time values for change of synaptic activation</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P><B>Input/Output Objects:</B>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#asc_file">asc_file </a> </TD><TD>Clocked write of data to a file in ASCII format</TD></TR><TR><TD>
+<A HREF="Manual-26.html#disk_in">disk_in </a> </TD><TD>Reads in a 2-d array of data from an ascii or binary file</TD></TR><TR><TD>
+<A HREF="Manual-26.html#disk_out">disk_out </a> </TD><TD>Clocked write of data to a file in binary format</TD></TR><TR><TD>
+<A HREF="Manual-26.html#diskio">diskio </a> </TD><TD>Similar to disk_in/disk_out with portable binary NETCDF format</TD></TR><TR><TD>
+<A HREF="Manual-26.html#metadata">metadata </a> </TD><TD>Used with diskio to read/write descriptive content</TD></TR><TR><TD>
+par_asc_file</TD>
+<TD>Variation of asc_file for use with PGENESIS (see <A HREF="Manual-26.html#asc_file">asc_file </A>)</TD></TR><TR><TD>
+par_disk_out</TD><TD>Variation of disk_out for use with PGENESIS</TD></TR><TR><TD>
+print_out </TD><TD>undocumented - obsolete ???</TD></TR><TR><TD>
+res_asc_file</TD><TD>Like asc_file, with min time and value interval (see <A HREF="Manual-26.html#asc_file">asc_file</A>)</TD>
+</TR><TR><TD>
+<A HREF="Manual-26.html#spikehistory">spikehistory </a></TD><TD>Outputs neuron ID and spike times to an ascii file</TD></TR><TR><TD>
+<A HREF="Manual-26.html#variable">variable </a> </TD><TD>Used with diskio to read/write binary data</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H3>Biochemical Kinetics Modeling Objects</H3>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#concchan">concchan </a> </TD><TD>Handles 1-D diffusion of molecules across a membrane</TD></TR><TR><TD>
+<A HREF="Manual-26.html#enz">enz </a> </TD><TD>Handles Michaelis-Menten enzyme kinetics with pool object</TD></TR><TR><TD>
+<A HREF="Manual-26.html#pool">pool </a> </TD><TD>A concentration pool used in kinetic reactions</TD></TR><TR><TD>
+<A HREF="Manual-26.html#reac">reac </a> </TD><TD>Handles standard kinetic reaction schemes with pool object</TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+(These objects are available only if the Kinetics
+Library has been installed.)</P>
+
+<H3>Parameter Search Objects</H3>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableBF">paramtableBF </a></TD><TD>Implements "brute-force" parametersearch</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableCG">paramtableCG </a></TD><TD>Implements conjugate-gradient descent parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableGA">paramtableGA </a></TD><TD>Implements genetic algorithm parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSA">paramtableSA </a></TD><TD>Implements simulated annealing parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSS">paramtableSS </a></TD><TD>Implements stochastic parameter search</TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+For a description of the use of the parammeter search  objects see
+<A HREF="Manual-18.html#Param">The GENESIS Parameter Search Library</A>.</P>
+
+<H3>Graphical (``XODUS Widget'') Objects</H3>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD>Description </TD></TR><TR><TD>
+xaxis</TD><TD>Makes axis for plots -- automatically created by xgraph</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xbutton">xbutton </a> </TD><TD>A button which executes script actions from mouse clicks</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xcell">xcell </a></TD><TD>Similar to xview, but specialized for compartmental cell display</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xcoredraw">xcoredraw </a></TD><TD>The core class from which other draw widgets are subclassed</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xdialog">xdialog </a> </TD><TD>A dialog box containing a text string</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xdraw">xdraw </a></TD><TD>Main object class for the display of pixes, with transforms</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xdumbdraw">xdumbdraw </a></TD><TD>Simple example window for the display of pixes</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xfastplot">xfastplot </a></TD><TD>High-speed graphic display similar to an oscilloscope</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xform">xform </a> </TD><TD>The window containing other graphical elements</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xgif">xgif </a></TD><TD>Draws GIF format images as a pix inside a draw</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xgraph">xgraph </a></TD><TD>Specialized draw widget for the display of plots</TD></TR><TR><TD>
+<A HREF="Manual-26.html#ximage">ximage </a> </TD><TD>Displays a GIF format bitmapped image inside a form</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xlabel">xlabel </a> </TD><TD>Rectangular label containing a text string</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xpix">xpix </a></TD><TD>Basic object for drawing graphical objects (pixes) in 3-D space</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xplot">xplot </a></TD><TD>Displays plots within a graph -- created by messages to xgraph</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xshape">xshape </a></TD><TD>Pix used for drawing shapes -- often used for icons</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xsphere">xsphere </a></TD><TD>Example pix which draws a filled circle</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xtext">xtext </a> </TD><TD>A widget for the display and editing of text</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xtoggle">xtoggle </a> </TD><TD>Maintains toggle state and executes actions from mouse clicks</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xtree">xtree </a></TD><TD>Displays and manipulates elements and their messages</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xvar">xvar </a></TD><TD>Uses shapes to display numerical values with color, size, etc.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xview">xview </a></TD><TD>Like an array of xvars, displaying multiple points in 3-D space</TD></TR><TR><TD>
+</TD></TR></TABLE>
+
+For a description of the use of the XODUS objects see 
+<A HREF="Manual-19.html#XODUS">The XODUS Graphical Interface</A>.</P>
+
+
+<H2><A NAME="ss10.2">10.2 Related Commands</A></H2>
+
+<P>The GENESIS routines used to establish and work with objects
+include the following.  (Remember: the following routines refer to
+these element types in general, not specific instantiations of these objects).</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getdefault">getdefault </a> </TD><TD>Returns the default value of an object field</TD></TR><TR><TD>
+listactions </TD><TD>Lists the actions which are defined for GENESIS objects</TD></TR><TR><TD>
+listclasses </TD><TD>Displays list of currently defined element classes</TD></TR><TR><TD>
+<A HREF="Manual-25.html#listobjects">listobjects </a> </TD><TD>Lists the available objects</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setdefault">setdefault </a> </TD><TD>Sets the default value of an object field</TD></TR><TR><TD>
+<A HREF="Manual-25.html#showobject">showobject </a> </TD><TD>Displays description of a specified object</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>In addition, there are a number of routines that are used in the
+specification and creation of 
+<A HREF="Manual-11.html#Extended">Extended Objects</A>.
+To compile a new object into GENESIS, see
+<A HREF="Manual-21.html#Customizing">Customizing GENESIS</A>.</P>
+
+
+<HR>
+<A HREF="Manual-9.html">Previous</A>
+<A HREF="Manual-11.html">Next</A>
+<A HREF="Manual.html#toc10">Table of Contents</A>
+</BODY>
+</HTML>

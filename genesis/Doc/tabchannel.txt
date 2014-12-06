@@ -1,0 +1,254 @@
+Object Type:	tabchannel
+
+Description:	Hodgkin-Huxley type voltage activated channel with tabulated
+		equations.
+
+Author:		E. De Schutter, Caltech (1/91)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	tab_channel_type  [in src/olf/olf_struct.h]
+
+Size:		168 bytes
+
+Fields:	
+		activation	channel activation
+		Gk		channel conductance
+		Ik		channel current
+		Ek		channel reversal potential
+		Gbar		channel maximum conductance
+		X		value of X gate; optional gate, X=m
+		Y		value of Y gate; optional gate, X=h
+		Z		value of Z gate; optional gate, Z is concentration
+				dependent if Z_conc is set (default), otherwise voltage-
+				dependent
+		Z_conc	indicates Z gate is concentration dependent (default 1), or
+				voltage-dependent (if 0)
+		X_A		table for alpha function for X
+		X_B		table for beta function for X
+		X_alloced	flag for allocation of X_A and X_B
+		Y_A		table for alpha function for Y
+		Y_B		table for beta function for Y
+		Y_alloced	flag for allocation of Y_A and Y_B
+		Z_A		table for alpha function for Z
+		Z_B		table for beta function for Z
+		Z_alloced	flag for allocation of Z_A and Z_B
+		Xpower		power to raise X gate to
+		Ypower		power to raise Y gate to
+		Zpower		power to raise Z gate to
+                instant         {INSTANTX}, {INSTANTY}, or {INSTANTZ} to
+                                determine the gate to instantly set to A/B
+                surface         compartment surface area used with DOMAINCONC
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	TabChannel  [in src/olf/tabchannel.c]
+
+Classes:	segment channel
+
+Actions:	CALC_BETA  CALC_ALPHA  CALC_MINF  DUMP  RESTORE2  SAVE2
+		SHOW  SET  TABDELETE  TABFILL  TABCREATE TABREAD TABSAVE
+                CHECK  PROCESS RESET  INIT
+
+Messages:       VOLTAGE     voltage     [membrane voltage of compartment]
+                EK          Ek          [reversal potential]
+                CONCEN      concen      [ion concentration sent to channel]
+                DOMAINCONC Ik  scale    [ion current from another channel, to
+                                        be multiplied by scale, and divided by
+                                        surface field]
+                ADD_GBAR    offset      [increment to be added to Gbar]
+
+------------------------------------------------------------------------------
+
+Notes:		Tabulated hh-like channel.  The standard voltage dependent
+		activation (X) and inactivation (Y) factors are present. For
+		concentration dependent processes a third factor (Z) has been
+		added.  Z can do a lot of things; the most important is that
+		it can get a different message (CONCEN) than X and Y (VOLTAGE).
+		Standard use for Z is concentration dependent inactivation,
+		using a Zpower > 0.  An alternative is to use it for
+		codependent activation; using Zpower<0, Z will equal concen
+		value times v-dependent table-value.  The Z_conc flag can be
+		unset (set to zero) to allow a voltage-dependent Z gate.
+		The DOMAINCONC message provides a highly simplified model
+		to obtain the ionic concentration directly, using the current
+		sent from another channel, times a scale factor, and dividing
+		by the surface area of the parent compartment.
+
+		The table for the object is created using a call to the
+		TABCREATE action of the object.  For computational efficiency
+		the forward rate factor alpha (A) and 1/tau (B) are tabulated
+		in A-table and B-table.
+
+		The tabchannel element is very similar to the hh_channel
+		element, except that it uses tables for the voltage and other
+		dependencies. It speeds up computation by using table lookups
+		rather than calculations depending on exponentials. It also
+		provides more flexibility, being able to specify voltage
+		dependencies not falling in the traditional Hodgkin-Huxley
+		forms.
+
+		The gate obeys the following equations:
+
+                        dX/dt = A_X - B_X*X
+                        dY/dt = A_Y - B_Y*Y
+                        dZ/dt = A_Z - B_Z*Z
+                        Gk = Gbar X^Xpower} Y^Ypower} Z^Zpower}
+                        Ik = Gk * (Ek - V)
+
+		NOTE: These equations are slightly different from the usual
+		Hodgkin-Huxley equations where:
+
+		  dX/dt = alpha*(1 - X) - beta*X
+
+		The tables in this element are therefore actually A = alpha,
+                and B = 1/tau = alpha + beta.  This change reduces the number
+                of calculations to be made on the table output during the
+                integration.
+
+		The alpha and beta functions of the X, Y and Z gates are
+		implemented as tables and therefore have to be explicitly
+		allocated using the TABCREATE function.  Copies of tabchannel
+		use the original arrays unless new arrays are explicitly
+		allocated.  The X and Y gates use the same VOLTAGE message.
+		The Z gate uses the CONCEN message, which can be any field. It
+		allows for dependencies on other parameters.
+
+                The instant field may be set to {INSTANTX}, {INSTANTY}, or
+                {INSTANTZ} to specify that the X, Y, or Z gate value will
+                be instantly set to A/B, rather than using the A and B
+                table values in the differential equations above.  This
+                allows the channel conductance to have a multiplicative
+                factor of A/B.  This is often used with the Z gate to model
+                a Ca-dependent conductance, or to implement Morris-Lecar
+                models having zero time constant for activation.  For an
+                example, see the implementation of the Ca-dependent K
+                Channel in Scripts/neurokit/prototypes/traub91chan.g.
+
+		The TABCREATE function
+
+		TABCREATE here is different from the table and tabgate
+		elements. We only need to specify which gate to set up, and
+		both tables for the gate will be filled.
+
+		    call <element> TABCREATE <X/Y/Z> <xdivs> <xmin> <xmax>
+
+		This call creates two tables for X, Y, or Z with indices from
+		0 to xdivs, i.e. xdvivs + 1 entries which span the range xmin
+		to xmax.  Values outside this range are linearly extrapolated
+		using the nearest 2 table entries.
+
+		Entries in these tables are made with statements like
+
+			setfield Na_chan X_A->table[0] 0.05
+
+		There are several alternatives to using a long sequence of
+		setfield commands to fill the tables.  The file2tab command
+		can be used to fill the tables from a file of values.  If the
+		rate (alpha and beta) or state (tau and minf) variables can be
+		expressed as a mathematical function, a for loop may be used
+		to fill the tables.  For functions of the form (A + B * x) /
+		(C + exp((x + D) / F)), the setupalpha or setuptau commands
+		may be used.   This is also discussed in Chapter 19 of The
+		Book of GENESIS (2nd ed.)
+
+                The TABDELETE function
+
+                When deleting tabchannels, or the cells or compartments
+                containing them, you must call TABDELETE first, in order to
+                deallocate the memory for the tables.  Finally, you have to
+                give the "reclaim" command for the memory to actually be
+                freed.  Note that the tables are shared among all tabchannels
+                that are created by copy or readcell from a prototype.
+                Therefore, you shouldn't call TABDELETE unless you plan to
+                delete all copies of the tabchannel.
+
+                The TABFILL function
+
+		TABFILL expands the table by using interpolation on the
+		existing table entries.  Again, the syntax is different from
+		that for table and tabgate elements, and one just has to call
+		TABFILL once to fill both the arrays corresponding to that
+		gate:
+
+		    call <element> TABFILL <X/Y/Z> <xdivs> <fill_mode>
+
+                xdivs specifies the number of divisions that the expanded
+		tables should have.
+
+                fill_mode is one of
+                    0 = B-spline fill (default)
+                    1 = cubic spline fill (not yet implemented)
+                    2 = Linear fill
+
+                Tables have a calc_mode field that is by default set to
+                LIN_INTERP (a pre-defined global variable equal to one), so
+                that linear interpolation is performed at run time, allowing
+                the use of a smaller table.  If sufficient memory is
+                available, it will be faster to perform the interpolation when
+                the table is created, by expanding it with TABFILL.  Then, run
+                time interpolation should be disabled by setting the calc_mode
+                of the tables to NO_INTERP (zero).  For example:
+
+                    setfield {chanpath} X_A->calc_mode {NO_INTERP}
+                    setfield {chanpath} X_B->calc_mode {NO_INTERP}
+
+                The TABSAVE and TABREAD functions
+
+                As filling the tables can be time-consuming (particularly if
+                it is done using a for loop in a script), the TABSAVE and
+                TABREAD functions can be useful for saving channel tables and
+                re-loading them when the simulation is run again.
+
+                TABSAVE may be called after the channel has been created and
+                set up, in order wto save the tables to a file.  For example:
+
+                    call Purk_Kdr TABSAVE Purk_Kdr.tab
+
+                TABREAD is called after the channel has been created and the
+                tables have been allocated.  For example:
+
+                if (!{exists Purk_Kdr})
+                    create tabchannel Purk_Kdr
+                    setfield Purk_Kdr Ek {EK} Gbar {GK} Ik 0 Gk 0 \
+                        Xpower 2 Ypower 1 Zpower 0
+                    call Purk_Kdr TABCREATE X {xdivs} {xmin}  {xmax}
+                    call Purk_Kdr TABCREATE Y {xdivs} {xmin}  {xmax}
+                end
+                call Purk_Kdr TABREAD Purk_Kdr.tab
+
+		Scaling tables
+
+		When the fields X_A->sx, X_A->sy, X_A->ox, X_A->oy, and the
+		corresponding fields on X_B, Y_A, Y_B, Z_A, Z_B are set, the
+		tabgate element automatically scales on the entries in the
+		interpol_struct array so as to avoid scaling computations
+		during simulations.  Care must be taken since the B table
+		contains 1/tau rather than the beta values. It is recommended,
+		therefore, that both alpha and beta be adjusted simultaneously
+		and identically.  Alternatively, the scaletabchan function may
+		be used to scale the two tables in such a way as to scale
+		alpha, beta, tau, or the steady state activation (minf).
+
+                The CALC_ALPHA, CALC_BETA, and CALC_MINF functions
+
+                The CALC_ALPHA, CALC_BETA, and CALC_MINF actions are used with
+                calls of the form
+
+                        y = {call <element> CALC_ALPHA <X/Y/Z> <x-value>}
+ 
+                in order to access values of alpha, beta or m_inf (the steady
+		state activation, alpha/(alpha + beta)) for the specified gate
+		(X, Y, or Z) and a particular value of the independent
+		variable.  This feature is most often used for making plots of
+		these quantities.  Note that the activation time constant can
+		be calculated from tau = 1/(alpha + beta).
+
+Example:	see Scripts/neurokit/prototypes/traub91chan.g
+
+See also:	Interpol documentation (Tables), scaletabchan, setupalpha,
+		setuptau, tweakalpha, tweaktau, hh_channel, tab2Dchannel

@@ -1,0 +1,311 @@
+$ProjectVersion: Release2-2.17 $
+
+Purkinje tutorial
+-----------------
+
+1. THE PURKINJE CELL
+The cerebellar Purkinje cell is the only output neuron of the cerebellar
+cortex.  It is also among the largest and most complex neurons in the 
+mammalian brain. The about 200,000 synaptic inputs received by each Purkinje 
+cell constitute the most massive synaptic convergence found on any neuron 
+in the brain. Purkinje cells are also distinguished by high densities of 
+calcium channels on their dendrite which cause them to easily fire
+dendritic calcium spikes. 
+The synaptic input to Purkinje cells comes from multiple sources, four of
+which are explicitly represented in this model:
+ - excitatory input from cerebellar granule cells over their parallel fiber 
+   axon. A Purkinje cell receives more than 150,000 such parallel fiber
+   inputs onto the spiny dendrite (thin dendrites). Both 'background' 
+   (i.e. continuous random) and synchronous parallel fiber inputs can 
+   be given.
+ - excitatory input from the inferior olive by the climbing fiber input.
+   Each Purkinje cell receives only ONE climbing fiber input, which is
+   only rarely activated. The single climbing fiber makes multiple
+   synapses on the smooth dendrite (i.e. the thicker parts of the
+   dendrite). Only synchronous activation is possible.
+ - inhibitory input from the cerebellar stellate cells onto most of the 
+   dendrite. Only 'background' stellate cell inputs can be simulated.
+ - inhibitory input from the cerebellar basket cells onto the proximal smooth
+   dendrite and soma. Only synchronous activation is possible.
+
+   
+
+2. MODELING A PURKINJE CELL
+A good general introduction of the model can be found at
+http://www.tnb.ua.ac.be/publications/pub009/TNB_pub9.shtml, and many other
+of our publications about this model are also available. A general overview
+of the model scripts can be found at http://www.tnb.ua.ac.be/models/PM9.shtml
+
+This is a compartmental model. The detailed dendritic geometry of the cell
+is based on morphological data provided by Rapp, Yarom and Segev which 
+is replicated by 1600 electrically distinct compartments. These are 
+divided in three functional zones: the soma, the main dendrite and the
+rest of the dendrite.
+
+Ten different types of voltage dependent channels are modelled, 8021 
+channels in total, using Hodgkin Huxley-like equations based on
+Purkinje cell specific voltage clamp data or, when necessary, on data from
+other vertebrate neurons. The soma possesses fast (NaF) and persistent (NaP)
+sodium channels, low threshold (CaT) calcium channels, and delayed 
+rectifier (Kdr), A-current (KA) and non-inactivating (KM) potassium 
+channels, and an anomalous rectifier (h1 and h2). The dendritic membrane 
+includes P-type (CaP) and T-type (CaT) calcium channels, two different 
+calcium-activated potassium channels (BK and K2) and a non-inactivating 
+potassium channel. The P-type calcium channel is a high-threshold, very 
+slowly inactivating channel, first described in the Purkinje cell and
+responsible for the dendritic calcium spikes.
+
+The changes in calcium concentration caused by voltage-activated calcium
+influx is computed in a submembrane shell.
+
+3. THE INTERFACE
+
+When the simulation is first run, three windows pop up: the first
+window contains a picture of a typical Purkinje cell with buttons on
+the right for options on the graphical output.  Beneath the window
+with the Purkinje cell is a control panel to do several types of
+experiments.  The Output Menu, to the right of the Simulation control
+panel, allows you to select what graphs will be displayed.
+
+a. Buttons in the control panel
+
+The buttons in the Simulation control panel fall into three categories :
+
+  1. Buttons for Simulation control: standard GENESIS simulation control
+
+    RESET  
+	Resets the simulation and clears the graphical output 
+	(unless in overlay mode, see below).
+
+    RUN  
+	Initiates the simulation and performs a simulation run for the
+        time as given in the time dialog.
+
+    STOP 
+	Stops the current simulation (if any)
+
+    QUIT  
+	Quits the simulation (and GENESIS).
+
+    Time  (default : 500 msec)
+	Sets the total time in milliseconds to be simulated during one
+	run (after clicking the 'RUN' button).
+
+    Output rate  (default : 10)
+	Sets the output rate for the graphical output relative to the
+	simulation time step (which is 0.020 msec).  The default rate
+	of 10 means that only once every 10 steps the Purkinje cell
+	picture is updated.
+
+    Output mode : Normalized / Absolute
+	Toggle between Normalized (default) or Absolute values.  For
+	channel types only.  In the Normalized output mode the
+	conductance or current is normalized relative to the surface
+	area of the compartment, this allows you to compare relative
+	activation levels between different compartments (the units
+	are arbitrary). In the Absolute output mode the real values
+	are shown in Amperes (current) or Siemens (conductance);
+	these are typically much larger for large compartments so
+	that changes in smaller ones might not be discernible.
+
+  2. Buttons for Simulation mode: Purkinje cell simulation experiments
+
+        (Depending on the cell that you are simulating, some of the
+        experiments may not be available.  The following applies if
+        you are simulating the 1994 Purkinje cell model of Erik De
+        Schutter.)
+
+    Toggle In vivo - In vitro  (default : In vitro)
+	This toggle switches between In vitro mode (where there is no 
+	background input from stellate cells or parallel fibers) and
+	In vivo mode. The Settings window let you set the mean firing
+	frequency for stellate (inhibitory) cells and parallel (excitatory)
+	fibers. The Settings are only available for the 'In vivo' mode.
+
+    Current injection  (default : on, constant current of 0.5 nA)
+	This is a toggle which switches between simulated current
+	injection directly into the soma or not. In the Settings
+	window the current level (in nano amperes) can be set and a
+	choice must be made between constant or current pulses.  The
+	current pulses are generated with a pulsegen object.
+
+    Activate parallel fibers
+	Hitting this button activates excitatory synaptic input from a 
+	specified number of parallel fibers. In the Settings window you 
+	can choose the number of parallel fibers that will be activated
+	and the relative synaptic strength of each. You can also toggle 
+	between activating parallel fibers uniformly distributed over the 
+	whole dendritic tree (default) or activating parallel fibers locally 
+	on  one specific branch of the tree. In the latter case the number of 
+	synchronous activated parallel fibers synapses is preset to 20, 
+	for distributed activation the number of activated synapses is cut 
+	to a multiple of 25 with a maximum of 475. You can choose the branch
+	that will receive local activation by clicking the button
+	'Change area from xcell'. Then click anywhere on the spiny dendrite
+	of the Purkinje cell, the name of the selected branch will be updated.
+
+    Activate basket axon
+	Hitting this button activates inhibitory input from the basket 
+	axons that are wrapped around the main dendrite (the thicker 
+	dendrite directly attached to the soma) and the soma. The Settings 
+	window let you set the relative synaptic strength of all contacts.
+
+    Activate climbing fiber
+	Hitting this button activates excitatory synaptic input from the 
+	climbing fiber that makes strong synapses on the main and thick
+	dendrites. The Settings window let you set the relative synaptic 
+	strength and the delay between consequent climbing fiber synapses
+	(so it defines the actual speed of signal transmission within the 
+	climbing fiber axon).
+
+
+  3. Buttons for Simulation information
+
+    HELP
+	Shows you this information
+
+    CREDITS
+	Shows authors and contributors
+
+
+b. Output windows
+
+There are many output windows: the windows with the picture of a
+Purkinje cell (the cell viewer), and multiple graph windows that are
+not visible when the simulation is first started.  The cell and graph
+windows can be displayed or hidden by clicking the appropriate toggle
+buttons in the output menu.  The use of the graph windows is explained
+in further detail below.
+
+  1. The cell output window
+
+        (Depending on the cell that you are simulating, some of the
+        output modes may not be available.  The following applies if
+        you are simulating the 1994 Purkinje cell model of Erik De
+        Schutter.)
+
+	The cell output window displays the value of a calculated variable
+	by changing the (rainbow) color of the compartment the variable
+	belongs to. Red means a high value, blue means a low value. The
+	default is to display the compartmental voltage. It is possible to
+	display the calcium concentration or the conductance or current for
+	all the types of channels implemented in this Purkinje cell model.
+	If a channel or value is not present in a compartment, a default of
+	zero is used.
+
+	You select the output type by clicking one of the buttons to the
+	upper right of the cell output window.  The simulation will stop
+	(simulation time is reset to zero) and GENESIS will take some
+	time to change all the display messages. The name of the selected
+	variable will appear above the cell and the range of values 
+	displayed is shown below the cell (Color maximum or minimum).  The 
+	tutorial automatically selects an appropriate range for each
+	variable, but you can change this if desired.
+	
+	For the channels (the synaptic Exc. chan. or Inh. chan, or the 
+	voltage-gated CaP, CaT, K2 and so on), an additional choice can 
+	be made between channel conductance (Gk button, the default), 
+	channel current (Ik button) and for the CaP or CaT channels the 
+	reversal potential (Ek button; for the other channels this is 
+	constant).  Channel conductance and current can be shown as
+	Normalized values (default) or Absolute values.
+
+	For the other possible outputs (compartmental voltage, concentration)
+	there are no further options.
+
+
+    Buttons :
+
+      Comp. Vm
+	  Output compartmental voltage (in volts).
+
+      Comp. Ca
+	  Output compartmental calcium concentration (in milli molar).
+
+      Exc. chan.
+	  Output excitatory synaptic channels.
+
+      Inh. chan.
+	  Output inhibitory synaptic channels.
+
+      CaP, CaT, ... h1, h2
+	  Output different channel types.  h1 and h2 are two components
+	  of the same anomalous rectifier current.
+
+      Ik, Gk, Ek
+	  Output current (in Amperes or aribitrary units), conductance
+	  (in Siemens or arbitrary units) or reversal potential (in
+	  volts) of a channel. These buttons are only available if the
+	  main output for the cell is a channel type.
+
+      Electrodes / No Electrodes
+	  Toggle between hide (default) / show the recording electrodes 
+	  in the cell window.
+
+      Compartment Namer
+	  The compartment namer allows to figure out the name of compartments
+	  by clicking on the dendritic tree of the cell.
+
+      Color maximum and Color minimum
+	  Set the color scales for the cell display.  Updated
+	  automatically when a different output is selected.
+
+
+  2. The graph output windows
+
+	The graph output windows are used to plot membrane potential
+	(Vm) and Calcium concentration (Ca) of selected compartments,
+	and channel current (Ik), conductance (Gk), or reversal
+	potential (Em) for a specified current in the compartment.
+	The current is selected with the buttons under "Possible
+	outputs" in the cell window, as described above in the section
+	on the cell output window.  After a click on a compartment in
+	the cell view, each graph will do a best effort attempt to add
+	a new plot for the selected compartment.  If the selected
+	current does not exist in the compartment, or none was
+	selected, the graph windows for Ik, Gk, and Em will indicate
+	that this output does not exist.
+
+
+    Buttons :
+
+      Clear graph
+	  Clear the graph and remove all recording sites for this graph.
+	  This should be done after changing to a different output in the
+	  cell window.  Then, it is necessary to re-select the compartments
+	  to be plotted.
+
+      Overlay off / on
+	  When a reset is performed, normally all plots are cleared.
+	  When overlay is on, they are saved so that you can compare plots
+	  from different runs.
+
+      Set scales
+	  Allows to set the range of the axes of the graph.  The graph is
+	  automatically scaled for the type of the first recording site
+	  selected.
+
+      Reset axes
+	  Resets the axes to their default values.  The default values
+	  are taken from the current active variable in the cell view.
+	  If this is not appropriate, push the 'a' key, when the mouse
+	  cursor is over the graph to rescale the graph such that all
+	  plots fit in the graph.  Next rescale the axes of the graph,
+	  using the zoom functions of Xodus : click below the X axis
+	  or next to the Y axis to select the region of interest.
+	  Note that an appropriate scale is needed to show low
+	  amplitude oscillations.
+
+
+  3. Ascii plots
+
+	The output menu allows to save a variable to a file.  First
+	put the cell view in the appropriate mode, next click on the
+	cell's dendrite to save the variable for the clicked
+	compartment to an ascii file.  The directory where the ascii
+	file is saved is 'simulation_sequences/Purkinje/' and the name
+	of the file is chosen to match the variable name and the
+	compartment name (note : this implies that if you choose the
+	same variable twice, the second file will overwrite the first
+	file).
+

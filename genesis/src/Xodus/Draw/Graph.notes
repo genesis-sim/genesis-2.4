@@ -1,0 +1,58 @@
+There are several possible options for plot/axis management
+
+1. Every plot in the graph could have its own 2 axes automatically
+	allocated. This would be clean and flexible but expensive.
+	It would not work for stand-alone graphs
+2. Every plot in the graph would have to use the same 2 axes. This
+	would be clean, cheap but rigid. It would not
+	work for stand-alone graphs.
+3. Every plot in the graph would look for its axes in the next 2
+	positions in the child array. If these positions held plots,
+	then the plot would use the main axes. This would be
+	as cheap as possible, and flexible, but a bit messy. It would not
+	work for stand-alone graphs
+4. Every plot could have axis resource fields. This detracts
+	somewhat from the cleaner concept of having resources only for
+	the scaling of the plot. It would be cheap, flexible but
+	unaesthetic. It would work for stand-alone graphs. The axes
+	would need a callback to update the whole parent widget if
+	changed.
+5. The plots do not need to know anything, but the axes need to
+	be told which plots they are going to control. The control
+	would be exerted by means of callbacks. In the event of an
+	axis being deleted, one would have to redo the callbacks
+	to keep the plots under control. If the plots are deleted
+	could have problems or we could add a callback to the plots
+	as well to be called when they get deleted. The graph widget
+	could handle all the deleting stuff internally, but for
+	generic draws one would have to replace the controls explicitly.
+	Cheap, flexible, very clean as it avoids a complicated management
+	scheme except at setup. Works for standalone for the same reason.
+
+Updating plot scaling following axis changes due to resizing
+	This is no problem, every plot would have to be resized anyway
+	so the whole list would be traversed
+
+Updating plot scaling following axis changes from resource assignments
+	Ideally this would only affect the specific plot. However,
+	all sorts of funny interactions could occur here so it would
+	be best to bruteforce the whole list of plots. So when
+	adding new axes it would be necessary to attach a callback
+	to each to let them notify the parent graph that redrawing
+	is needed
+
+
+Doing all this in a non-graph-widget context.
+	The version where the plots have axis resources is easiest,
+	but even this would require that the plot be created in
+	conjunction with axis specification (either new ones or 
+	pre-existing ones) for the callback and other relationships
+	to be assigned.
+
+	In the case where the plots do not have axis resources this
+	would still work. The axes would still need to have
+	callbacks registered in order to update the appropriate
+	plot fields, but the plots would not know about this.
+
+
+Current plan - use option 5.

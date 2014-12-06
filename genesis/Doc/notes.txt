@@ -1,0 +1,42 @@
+Routine Name:	notes
+
+Description:	Allows user to enter text notes into a file.
+
+Usage:		notes [file]
+
+		file		file into which to put notes (default:
+				most recent notes file used; if first time
+				in this GENESIS session, uses file specified
+				by operating system variable SIMNOTES) -- if
+				file already exists, notes will be appended;
+				if file does not exist, it will be created and
+				notes entered
+
+Example:	genesis >  notes
+		using notes file '/myhomedirectory/.notes'
+		End with '.' alone on the last line
+		->  running the first tutorial script
+		-> .
+		genesis >  notes squid_notes
+		using notes file 'squid_notes'
+		End with '.' alone on the last line
+		-> We may want to look at the tutorial for ideas
+		-> about the implemention of voltage clamp
+		-> circuitry.
+		-> .
+		genesis >  more squid_notes
+		+------------------------------------------------------+
+		Sat Jun 24 19:14:54 1995
+
+		We may want to look at the tutorial for ideas
+		about the implemention of voltage clamp
+		circuitry.
+		genesis >
+
+Notes:		You end the note by including a period (.) on a line by itself.
+
+		The note is entered into the notes file preceded by a dashed
+		line and the date and time the entry was made.
+
+See also:	logfile
+

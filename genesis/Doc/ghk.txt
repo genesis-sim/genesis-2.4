@@ -1,0 +1,110 @@
+Object Type:    ghk
+
+Description:    Calculates the Goldman-Hodgkin-Katz (constant field) equation
+                for a single ionic species.  Provides current as well as
+                reversal potential and slope conductance.
+
+Author:         Subba Shankar 8/25/91, modified by EDS 9/93-10/96
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	ghk_type [in src/segment/seg_struct.h]
+
+Size:           136 bytes
+
+Fields:         Ik              channel current (calculated)
+                Gk              channel conductance (calculated)
+                Ek              channel reversal potential (calculated)
+                T               temperature (degrees Celcius)
+                p               permeability
+                Vm              membrane potential
+                Cin             concentration inside the compartment in mM
+                Cout            concentration outside the cell in mM
+                valency         charge on ion
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Ghk [in src/segment/ghk.c]
+
+Classes:        device channel
+
+Actions:        CHECK  PROCESS  RESET
+
+Messages:       Cin             concentration
+                Cout            concentration
+                VOLTAGE         Vm
+                PERMEABILITY    p
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The general equation used is:
+
+                            Cin * exp(K * Vm) - Cout
+   Ik    =  -p * F * K * Vm  ------------------------
+                               exp(K * Vm) - 1
+
+            valency * F
+  where K = -------------
+            R * (T + 273)
+
+  F = Faraday's constant (9.6487e4 coul/mol)
+
+  R = universal gas constant (8.314 volts*coul/(deg K * mol))
+
+Unlike the tabchannel or tab2Dchannel, it is not assumed that the current
+obeys Ohm's law and is proportional to the membrane potential Vm.  However, a
+compartment (or symcompartment) will expect a channel element to provide Gk
+and the reversal potential Ek in a "CHANNEL Gk Ek" message, and use these to
+calculate the incoming ionic current from Ik = Gk*(Ek - Vm).   In order for
+a ghk element to be used like a channel, suitable values of Gk and Ek must
+be provided.  This may be done by making the assumption that over a single time
+step, Gk and Ek vary slowly compared to Vm.  Then the approximation can be
+made that dIk/dVm = - Gk, and that Ek = (Ik + Gk*Vm)/Gk.  Thus, Ek is
+calculated by the ghk element, rather than being set by the user or by
+an incoming message.  Note that the sign of the current expresses the GENESIS
+convention that current flow into a compartment is positive.
+
+One way to use this object would be to let a voltage or ligand gated channel
+element determine the permeability of the channel as a function of time,
+voltage, concentration of ligand, etc., and then send that permeability to a
+ghk element (as a message) to determine the net current through the channel.
+The resulting Gk and Ek could be sent to the compartment that contains the
+channel.  If you are keeping track of the concentration of your ion with a
+concentration type element, you could send it the Ik field of the ghk element.
+You could then get Cin or Cout messages from the concentration element into
+the ghk element.
+
+In the example below, the conductance Gk is sent to the ghk element in
+a PERMEABILITY message.  Although the permeability p and conductance Gk
+have differnet units, the scaling has been taken into account in the ghk
+object, as long as SI (MKS) units are used.
+
+A full explanation of the constant field equation can be found in:
+
+  1) From Neuron to Brain, Kuffler, et al., Sinauer Assoc.
+       2nd edition, (1984) p. 123, 130.
+  2) Electric Current Flow in Excitable Cells, Jack, et al.,
+       Oxford Press, (1983) p. 237.
+  3) Ionic Channels of Ecitable Membranes, Hille, Sinauer Assoc.
+       2nd edition, (1992) pp 345-347.
+
+Example:    create ghk soma/Ca_ghk
+            setfield soma/Ca_ghk Cin {CCaI} Cout {CCaO} valency 2.0 T {Temp}
+            addmsg soma soma/Ca_ghk VOLTAGE Vm
+            addmsg soma/Ca_ghk soma CHANNEL Gk Ek
+
+            addmsg soma soma/CaT VOLTAGE Vm
+            setfield soma/CaT Gbar {GCaTs*surf}
+            addmsg soma/CaT soma/Ca_ghk PERMEABILITY Gk
+
+            addmsg soma soma/CaP VOLTAGE Vm
+            setfield soma/CaP Gbar {GCaPs*surf}
+            addmsg soma/CaP soma/Ca_ghk PERMEABILITY Gk
+
+See also:	tabcurrent, setupghk, setupNaCa

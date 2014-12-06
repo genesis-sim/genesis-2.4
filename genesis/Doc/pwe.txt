@@ -1,0 +1,18 @@
+Routine Name:	pwe
+
+Description:	Displays full pathname of current working element.
+
+Usage:		pwe
+
+Example:	genesis >  pwe
+		/neuron/test
+		genesis >  ce ..
+		/neuron
+
+Notes:		The pwe routine prints the path of the current working element
+		in the GENESIS element hierarchy.  (This routine is analogous
+		to the operating-system command "pwd", which prints the current
+		working directory.)
+
+See also:	ce
+

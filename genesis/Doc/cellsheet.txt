@@ -1,0 +1,89 @@
+Routine Name:	cellsheet
+
+Description:	Copies prototype cells into a 3-D sheet specified by
+                coordinates in a file.
+
+Usage:		cellsheet prototype dest filename [-orient][-curve]
+			[-randomise x y z] [-twirl theta]
+
+		prototype	existing cell to copy to create cells in the
+                                sheet (prototype is not changed by the
+                                routine; all operations are done on the
+                                copies)
+
+		destination	element to become parent of all cells in sheet
+
+		filename	file defining position and orientation of
+				cells (ascii file with 3 numbers for each
+				coordinate (cartesian only), followed by 3
+				coordinates for the normal vector to the
+				surface of the sheet at that point; this
+				vector does not have to be normalised; each
+				set of 6 numbers should be on different lines)
+
+		-orient         reorients the cell to be normal to the local
+                                region of the sheet
+
+		-curve          distorts copies of prototype cell to follow
+                                curvature of sheet of cells; the lengths (and
+                                electrical properties) of the cell are not
+                                changed (this option assumes that length of
+                                each compartment is less than the radius of
+                                curvature of the surface; also, the sampling
+                                density over the cell sheet should be high
+                                enough that the spacing between the points is
+                                smaller than the length of each compartment;
+                                does not attempt to curve compartments where
+                                the angle of rotation would be less than 10
+                                degrees, or more than 60)
+
+		-randomise x y z
+				randomises the coordinates of copied cells by
+                                the specified factors in x, y and z before the
+                                orienting/positioning/curving steps
+                                (randomisation involves finding length of each
+                                compartment in each direction, scaling it by a
+                                random number within the range of the
+                                specified factor, and adding it to the
+                                original; e.g., a factor of 1 would permit a
+                                change of up to the original length of the
+                                compartment; the electrical properties and
+                                channel conductances in each compartment are
+                                scaled according to the total length change)
+
+		-twirl theta    rotates the finally positioned cell about its
+                                normal by a random angle from 0 to theta
+                                degrees
+
+Example:
+
+include protodefs.g // copied from Scripts/tutorials
+readcell cell.p /library/cell  // use cell.p from Scripts/tutorials
+
+plane planepoints 400e-6 400e-6 100e-6 100e-6 -normal
+egg eggpoints 400e-6 400e-6 400e-6 100e-6 -normal
+
+create neutral /planenet
+create neutral /eggnet
+
+rotcoord /library/cell {-3.1415927/2} -y  // point dendrite up along z-axis
+
+cellsheet  /library/cell /planenet planepoints -orient
+cellsheet  /library/cell /eggnet eggpoints -orient
+
+showfield /planenet/cell[]/dend x y z
+
+Notes:		Creates a sheet of cells by copying from a prototype, and
+		placing them at 3-D positions specified by an ascii file. A
+		number of options permit the cells to be oriented, conformed
+		to the curvature of the surface, randomised, and rotated, in
+		order to make the geometry more natural. 
+
+                In the example above, the prototype cell had the apical
+                dendrite pointing along the x-axis, so rotcoord was used to
+                rotate it 90 degrees about the y-axis to point outward along
+                the z-axis.  Then, cellsheet was used, first on a file
+                containing points in a plane, and then on a file containing
+                points distributed over the surface of an ovoid.  In both
+                cases, the orient option was used to point the dendrite along
+                the outward normal to the surface.

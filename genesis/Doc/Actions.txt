@@ -1,0 +1,74 @@
+  8.2.  Actions
+
+  Each element in a simulation is capable of performing one or more
+  actions.  An action can be described as an operation that an element
+  performs on its data.  The predefined actions of an element are
+  inherited from the object that was used to create the element.
+  Actions are defined within compiled functions that are attached to
+  each object.  Other actions may be added with the addaction command.
+
+  GENESIS calls many actions implicitly as part of the process of
+  running a simulation, or as a side effect of certain commands.  This
+  allows particular object-specific behaviors to executed at particular
+  points in simulation.  For example, the PROCESS action is called at
+  each step of the simulation.  Other actions are not performed
+  regularly in the simulation schedule, but are performed globally on
+  all objects; these include the CHECK action and the RESET action,
+  which are invoked using the check and reset commands, respectively.
+  If a particular action is not defined for an element, a default
+  behavior is performed on the element (SET sets the field, SHOW returns
+  the field, CREATE leaves fields initialized from defaults, etc.).
+
+  The following predefined actions are common to many GENESIS objects.
+
+  PROCESS      Called on each simulation step as described by the simulation
+               schedule to perform the element's update processing.
+  INIT         Called on each simulation step as described by the simulation
+               schedule to initialize the element for this simulation step.
+  RESET        Called when the simulation is reset (reset command) to allow
+               an element to reset itself to its default state.
+  CHECK        Called from the check command to allow an element to verify
+               that it has all the information and the correct information
+               needed to proceed with the simulation.
+  SET          Called when an element field is set (or once for a setfield
+               command if SPECIAL_SET exists as an element field). The SET
+               action must return 1 if it sets the field in question and 0
+               if it doesn't.
+  SHOW         Called in order to perform special formating for field display
+               or retrieval (getfield or showfield commands).
+  CREATE       Called when an element is created to initialize the element.
+               Must return non zero if the initialization is successful.
+  COPY         Called when an element is copied.
+  DELETE       Called when an element is destroyed.
+  SAVE2        Called by save command to save state of the element to a file.
+  RESTORE2     Called by restore to restore previous state from a file.
+  DUMP         Called by the simdump command.
+  UNDUMP       Called by the simundump command.
+
+  There are also a number of actions that have to be explicitly invoked
+  on an element-by-element basis, such as the TABCREATE action.  You
+  invoke these with the call command, e.g.
+
+      call Na_tabchannel TABCREATE X 49 -0.1 0.05
+
+  This use of actions corresponds to the use of ``method calls'' in
+  object-oriented languages such as Java.
+
+  There are also situations where you may want to explictly call an
+  action (like RESET) for a particular element, without performing it on
+  all elements (e.g. by issuing a reset command).  This is because the
+  the reset routine gives no control over the order in which the
+  elements are RESET, and you may need to call the RESET action for
+  specific elements in the proper order if the initial state of one
+  element depends on the initial state of another element.  For example:
+
+      call Ca RESET     // Reset the Ca channel
+      call conc RESET   // Reset the Ca_concen element next
+      reset             // reset everything
+
+  Other predefined actions that are specific to the way the object is
+  used are described in the documentation for the particular object.
+  For a description of actions that are specific to XODUS elements
+  (widgets), see ``XODUS Mouse Clicks'' (Clicks.txt).  A list of actions
+  that an object can perform can also be displayed using the showobject
+  command.

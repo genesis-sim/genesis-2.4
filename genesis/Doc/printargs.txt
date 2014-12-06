@@ -1,0 +1,18 @@
+Routine Name:	printargs
+
+Description:	Displays its arguments with argument numbers.
+
+Usage:		printargs(argument)
+
+Example:	genesis > printargs "a b c d"
+		argc 1 : a,b,c,d
+		genesis > printargs a b c d
+		argc 1 : a
+		argc 2 : b
+		argc 3 : c
+		argc 4 : d
+
+Notes:
+
+See also:	argc, argv, arglist, getarg
+

@@ -1,0 +1,27 @@
+The file pavlov.g is a second demonstration of the hebbsynchan, written by
+Srivatsun Sadagopan (with some additional modifications by Dave Beeman)
+during the Computational Neuroscience course held December 6-18, 1999 at
+the National Centre for Biological Sciences, Bangalore, India.
+
+This greatly oversimplified model of Pavlovian conditioning is based on
+Scripts/tutorials/tutorial5.g, which uses readcell to create a simple cell
+with squid-like Na and K channels in the soma, and an excitatory synchan
+(Ex_channel) in the single dendrite compartment.  It then adds an
+excitatory hebbsynchan (hebb).  The hebbsynchan receives continous input
+from the bell (the conditioned stimulus) in the form of a train of spikes.
+Unlike tutorial5, there is no feedback connection from a spike generator in
+the soma to either the synchan or hebbsynchan.
+
+Initially food (the unconditioned stimulus) is present, represented by a
+train of spikes to the non-Hebbian synchan.  Toggling the "Food!" button to
+"No Food!" will remove this stimulus.  Clicking the Run button steps the
+simulation for 0.1 seconds.  Reset clears the graphs and resets the
+simulation to continue with the current weight.  The Unlearn button resets
+the Hebbian weight to the original value.
+
+Click on "Run" to run it for 0.1 seconds with the food stimulus present.
+Repeat this a few times, toggle the food stimulus off, and then click on
+"Run" again.  If the weight to the hebbian synapse has built up
+sufficiently, the stimulus from the bell will be sufficient to cause the
+cell to continue to fire in the absence of the food stimulus.  If not, give
+it more food, or experiment with the Weight Change Rate dialog.

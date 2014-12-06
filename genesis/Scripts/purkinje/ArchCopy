@@ -1,0 +1,6 @@
+prcs rekey
+rm -fr Purkinje_tutorial
+mkdir Purkinje_tutorial/
+find . -name "*.[cgh]" | etags -
+find . -name "*.[cgh]" | ctags -
+cp --parents `prcs execute` Purkinje_tutorial/

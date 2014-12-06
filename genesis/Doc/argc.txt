@@ -1,0 +1,16 @@
+Routine Name:	argc
+
+Description:	Returns argument count (number of arguments passed to a
+		function).
+
+Usage:		int-value = {argc}
+
+Example:	if ({argc} > 3)
+			echo usage:  foo a b c
+			return
+		end
+
+Notes:		
+
+See also:	argv, arglist, getarg, printargs
+

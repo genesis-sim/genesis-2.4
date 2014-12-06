@@ -1,0 +1,21 @@
+Routine Name:	getfieldnames
+
+Description:	Returns names of all existing fields in specified element.
+
+Usage:		element-fields = {getfieldnames Element}
+
+		element-fields		returned as a single line (i.e., a
+					string without carriage returns)
+					listing fields of specified element
+
+Example:	echo { getfieldnames /output }
+
+		str name
+		foreach name ( {getfieldnames soma })
+		echo {name}
+		end
+
+Notes:		
+
+See also:	getfield, showfield, setfield
+

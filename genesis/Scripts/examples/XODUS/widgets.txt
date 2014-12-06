@@ -1,0 +1,50 @@
+This widget is a text widget. Use the scroll bar to read the
+description of the other widgets in this example.
+
+
+
+	THE WIDGETS EXAMPLE.
+
+This is an example showing the use of the basic widgets. The
+widgets involved are:
+xform
+xlabel
+xbutton
+xtoggle
+xdialog
+ximage
+xtext (this one)
+
+The xform is a widget whose purpose in life is to hold the other
+widgets. All widgets must be children of a form.
+
+The xlabel is just that - a label. You can set its color, text, and
+font, but it doesnt respond to mouse events.
+
+The xbuttons are like labels that do respond to mouse events.
+Buttons have two panels, one of which is visible only when it is
+pressed, and the other which is normally visible. Each panel can have
+its own color, text and font. Every time a button is pressed it can 
+call one or more script commands as specified in the 'script' field.
+
+The xtoggles are buttons with two stable states. One panel is visible
+when the state is 0 (off) and the other when it is 1 (on). Mouse
+clicks make the xtoggle toggle.
+
+The xdialogs are for entering and displaying data, as well as
+issuing script calls. They handle a text string specified in
+the value field. When entering data, the value field is updated
+only when the mouse is clicked in the dialog, or when return is hit.
+These two events are equivalent as far as the script call is concerned.
+xdialogs can also display numerical values specified through messages.
+This is useful for monintoring continually changing values.
+Finally, if the value in a dialog is numerical, the fvalue field of
+the dialog is set which can in turn be used for sending out messages.
+
+The ximage is for displaying gif images. At this stage it is not
+sensitive to mouse events so it cannot issue script calls.
+
+The xtext is for displaying and editing text. One can either display
+a specified string, or a text file. A scroll bar appears in the
+xtext when there is too much text to display in the window.
+

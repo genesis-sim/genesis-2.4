@@ -1,0 +1,574 @@
+Object Type:	hsolve
+
+Description:	An object used for implementing the Hines method for the
+		implicit solution of dendritic trees, as well as a set of
+		routines that maximize speed.  This allows faster, more
+		stable numerical integration methods to be used with GENESIS,
+                particularly when there are many compartments in a cell.
+
+Author:		U. S. Bhalla and E. De Schutter Caltech 91-93,
+                E. De Schutter BBF-UIA 94-99.
+
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	hsolve_type  [in src/hines/hines_struct.h]
+
+Size:   552 bytes
+
+Fields: path		wildcard list of compartments to be
+			integrated; specifies all compartments
+			belonging to cell which hsolve element will
+			deal with.  The default is
+			./##[][TYPE=compartment]
+
+	chanmode	flag that controls channel computations and
+			chip-array use.
+
+			0 = default. It is the most general, uses least memory
+                        and is slowest (no chip-array).  It takes over the
+                        actions of compartments only, computing all other
+                        object types as before.  As a consequence, all
+                        computed fields of the original elements are updated,
+                        and all user-setable fields may be set, just as before
+                        the element was taken over by the hsolve element.
+                        This means that you can add and delete outgoing
+                        messages to compartments or other elements whenever
+                        you like and easily change parameters during the
+                        course of the simulation, making this the easiest mode
+                        to use.  It is also the most compatible mode of
+                        operation, and is guaranteed to work with any future
+                        new object type.  One significant limitation is that
+                        you cannot add or delete AXIAL, RAXIAL or CHANNEL
+                        messages, once the hsolve element has been created.
+                        In order to calculate the compartment Im field,
+                        the compute_Im flag must be set.
+
+			1 = like chanmode 0, but optimizes calculations for
+                        tabchannel equations.  This will be faster than
+                        chanmode 0 for models containing tabchannels and
+                        tab2Dchannels.
+
+			2 = assumes integer exponents (maximum = 6) for
+                        tabchannel and tab2Dchannel gate variables.  Chanmodes
+                        2-5 are the fastest because of the large 'chip-array'.
+                        Under these moses, you can no longer assume that all
+                        the fields of the elements that are taken over by
+                        hsolve will be updated.  Incoming and outgoing
+                        messages to and from the disabled elements will work
+                        properly, provided that they were added prior to
+                        setting up the hsolve element.  However, the Vm fields
+                        of all compartments are automatically updated under
+                        chanmode 2, whether or not there were pre-existing
+                        messages to output Vm.  Note also that several fields
+                        (Gk, Ik, Ek, and Im) are not available for output in
+                        chanmodes 2 and 3, so you have to use chanmode 4 or 5
+                        with findsolvefield if you want to output these fields.
+
+                        3 = as chanmode 2, but Vm fields of compartments are
+                        not automatically updated.  This mode is faster than
+                        chanmode 2, at the expense of somewhat greater memory
+                        usage.  All disabled elements (including compartments)
+                        that had outgoing messages to non-hsolved objects
+                        during the SETUP call are updated at a rate determined
+                        by outclock.  Thus SAVE and PLOT messages will work
+                        properly, except with the fields Gk, Ik, Ek, and Im.
+
+                        4 = as chanmode 3, but more variables (e.g. Gk, Ik,
+                        Ek, Im and leak) are stored by hsolve so that they can
+                        be accessed by SAVE or PLOT messages (see
+                        findsolvefield documentation for more details).  The
+                        added field, leak, is available for each compartment
+                        to give the current flowing through the membrane
+                        resistance Rm.  Im is calculated directly as the sum
+                        of the channel currents and the leakage current.
+
+                        5 = as chanmode 4, but normalizes the currents and
+                        conductances stored in the hsolve givals array (for
+                        display purposes only).
+
+        computeIm       flag to determine whether the compartment Im field
+                        is calculated in chanmodes 0 and 1.  If set, Im is
+                        approximated by the sum of axial currents and injected
+                        current, as done for non-hsolved compartments and
+                        symcompartments.
+
+                        0 = the default, does not calculate Im.
+                        1 = calculates Im, with a decrease in speed.
+                        
+        comptmode	flag that selects option for compartment computations
+
+                        0 = uses least memory, and is slightly slower. However
+                        the amount of time spent in this part is usually less
+                        than 10% of the total, so this should not matter.
+
+			1 = the default, uses a lot of memory and is twice as
+                        fast for the actual Hines matrix calculation.  This
+                        may be only a 5% difference.  comptmode 1 is
+                        required for chanmodes 2-5.
+
+        calcmode        flag affecting operations for chanmodes 2-5.
+
+                        0 = no interpolation will be performed in lookup
+                        tables.  This mode is for backward compatibility with
+                        older versions of hsolve (prior to GENESIS 2.1) which
+                        did not use interpolation.
+
+                        1 = default mode with linear interpolation of values
+                        in lookup tables.
+
+        storemode       flag, only valid for chanmodes 4 and 5,  to allow the
+                        output of total currents and conductances.  For each
+                        type of voltage gated channel in the model, the total
+                        currents or conductances are the sum of the
+                        corresponding Ik or Gk fields for all compartments
+                        where the channel is present.  This assumes that these
+                        channels have the same name in each compartment.
+                        These are stored in an array called itotal.  When the
+                        hsolve element is set up, a message will be output
+                        giving a list of channel names and corresponding
+                        itotal indices, if the 'silent' command has previously
+                        been given with a negative argument. 
+
+                        0 = no sums are stored.
+                        1 = total currents are stored.
+                        2 = total conductances are stored.
+
+	no_elminfo	= 0/1; flag that controls whether the HPUT and HSET
+			actions will work.  Is relevant only for chanmodes
+			2-5.  Default is zero (HPUT and HSET work).
+			Saves memory if non-zero value is used (HPUT, HSET
+			do not work; HRESTORE and HSAVE do).
+
+	outclock	number [0-99] of the clock used for all element
+                        updates if chanmode = 3, 4, or 5, will affect SAVE and
+                        PLOT messages.  The element update routines are not
+                        very efficient, so setting them to a slower clock will
+                        speed up things.  Note however that any object that is
+                        not computed by the hines solver and that depends on a
+                        message from a hsolve-computed object will be affected.
+
+	The other fields displayed with the showobject command are NOT
+        to be set by the user.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	HinesSolver  [in src/hines/hsolve.c]
+
+Classes:	hsolver
+
+Actions:	RESET	does the standard reset functions, but also for
+			chanmodes 2-5, it will update all parameters in
+			the chip-array (equivalent to a HRESTORE call) and
+			recompute rate factor tables if clocks were changed.
+
+		DELETE	standard actions
+		PROCESS	standard actions
+
+		SETUP	setup all internal tables.  Must be called before the
+			hsolve element is used.  User accessible fields
+			(path, chanmode, etc.) should have been set.  Model
+			changes after the SETUP call may have no effect on
+			the computations.
+
+		DUPLICATE  does an efficient duplication of an hsolve element.
+			Use this in a network simulation for identical
+			copies of a neuron. Only the tables containing
+			changing parameters (Vm, etc.) will be duplicated.
+                        Syntax: call hsolve1 DUPLICATE hsolve2 duplic_path
+
+		HPUT	updates chip-array.  Fields from a single element are
+			put into the chip-array (chanmodes 2 or 3).  Do this
+			call after a setfield command on the element.
+			Syntax: call hsolve HPUT element_path
+
+		HGET	updates hsolve-computed element.  Computed values are
+                        put from the chip-array into a single element
+                        (chanmodes 2-5).  Do this call before a getfield on
+                        the element.  Syntax: call hsolve HGET element_path
+
+		HRESTORE the complete chip-array is updated.  Fields from all
+			hsolve-computed elements are put into chip-array
+			(chanmodes 2-5).  Do this call after a restore
+			command or after multiple setfield commands.
+			Syntax: call hsolve HRESTORE
+
+
+		HSAVE	all hsolve-computed elements are updated.  Computed
+			values are put from the chip array into all elements
+			(chanmodes 2-5).  Do this call before a save
+			command or before multiple getfield commands.
+			Syntax: call hsolve HSAVE
+
+Messages:	None.	
+
+Example:
+
+	// Do all the preparatory grunge work
+	.
+	.
+	// create the cell as an hsolve element
+	readcell test.p /test -hsolve
+
+        // set the chanmode, comptmode and calcmode (if other than defaults)
+        setfield /test chanmode 2
+
+	// set up the arrays and tables for the solver
+	call /test/solve SETUP
+	// use the Crank-Nicholson method for the hsolve element
+	setmethod 11
+	// It is essential to call reset (or reschedule) after setting
+	// up an hsolver, so that the process list gets updated.
+	reset
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The hsolve element completely takes over the calculations for compartment and
+symcompartment elements and certain other elements specified as part of the
+cell. Each hsolve element should only solve one cell. The timestep for the
+integration is determined by the clock assigned to the hsolve element, and the
+clocks for these elements which are taken over are ignored.
+
+When using the Hines solver with a neuron, it is best to think of the entire
+neuron as a single object since the individual compartments within the cell
+are no longer responsible for their own computations.  This loss of object
+orientedness is mitigated to some degree by the ability of the solver to
+transparently interact with elements utilizing other integration schemes.
+
+There are 2 basic modes for hsolve operation: without chip-array (chanmode 0
+or 1), or with chip-array (chanmodes 2-5).  Without chip-array is the most
+compatible mode, but is the slowest.  With the chip-array, hsolve is much
+faster because the original elements are no longer used, instead all
+simulation parameters are stored in a huge array (this improves memory access
+times).  Unfortunately you can no longer expect that it will update the fields
+in computed objects (like Vm in a compartment or Ca in Ca_concen) so that
+graphic or file output might not work.  Vice versa, if you change a field
+(like inject in compartment) it might not affect the simulation.  However,
+there are methods available to get values in and out of the chip-array, which
+involve special settings and/or the use of the HPUT, HGET, HSAVE and HRESTORE
+actions listed above.  This is ilustrated in another example below.  The
+documentation for findsolvefield describes another method, introduced in
+GENESIS 2.1, that also allows access to these values.
+
+The example above illustrates the process of setting up the hsolve element.
+First, one should create the cell as an hsolve element at the root of the cell
+element tree.  This may be done in one step by using the "-hsolve" option with
+readcell.  Note that, starting with GENESIS version 2.2, it is necessary to
+provide the full path to the cell when using readcell to directly create an
+hsolve.  (e.g.  you can't use "readcell test.p test -hsolve", even if "/" is
+the current working element.)
+
+If readcell is not used, then the hsolved cell should be created with
+statements like
+
+    create hsolve /test
+    create compartment /test/soma
+    create tabchannel /test/soma/Na_channel
+    ...
+
+It is required that only compartments (or symcompartments) be children of the
+cell, and that channel, concentration, etc. elements should be children or
+grandchildren of the compartment to which they are attached.
+
+Next, set any fields of the hsolve which are needed to specify non-default
+values of chanmode, comptmode, calcmode, storemode, etc.  Then, one needs to
+call the SETUP action in order to tell the hsolve element to create all the
+solution arrays and tables.  Finally, chose either method 10 (backwards Euler)
+or 11 (Crank-Nicholson) as the method to be used.  All elements that lie
+outside this tree will continue to be treated by the previous explicit method
+(typically exponential Euler).  The Scripts/examples/hines directory contains
+an example that which demonstrates both chanmodes 0 and 2.
+
+Although it is not presently necessary to create the hsolve element as the
+root of the element tree, future versions of hsolve may require this.  The
+older method of creating the hsolve is to create the cell as a neutral
+element, create the hsolve element as a child element, and then set the hsolve
+path field to indicate which elements will be taken over.  Typically, a
+wildcard path is used to refer to all compartment elements in the simulation.
+This includes all hsolvable sublelements of these compartments.  For example,
+
+        // readcell will place the compartments below the neutral '/test'
+	readcell test.p /test
+
+	// create the hines solver element below the cell '/test'
+	create hsolve /test/solve
+
+	// Specify the path for the solver
+	setfield /test/solve path /test/##[][TYPE=compartment]
+
+
+RESTRICTIONS
+
+It is important to be aware of some of the restrictions imposed by the use
+of hsolve:
+
+Only the objects compartment, symcompartment, tabchannel, tab2Dchannel,
+tabcurrent, spikegen, Ca_concen, concpool, nernst, Mg_block, ghk, taupump,
+mmpump, hillpump, difshell, fixbuffer, difbuffer, dif2buffer, fura2, synchan,
+and the oldconn library channels channelC2 and channelC3 are handled by
+hsolve.  If your simulation uses these listed objects, the use of hsolve will
+increase speed significantly.  Note that as of GENESIS version 2.2,
+symcompartment objects are handled by hsolve.
+
+An important restriction introduced in GENESIS version 2.1 is that, for
+chanmodes 2-5, the element tree of your cell (or other element tree to be
+taken over by hsolve) must not contain any non-hsolvable elements other than
+neutral elements.  For existing simulations which violate this restriction, it
+will be easiest to switch to chanmode 0 or 1.
+
+It is not guaranteed that messages from unlisted objects to listed objects
+will work, though solve should alert you about any such incompatibilities.
+Most incoming messages will work if you use chanmodes 2-5, however you will
+receive a warning if the source of the message is not hsolved.  This is to let
+you know that the source element is being solved by a less accurate explicit
+method.  Messages from listed to unlisted objects will only work for certain
+chanmode settings.
+
+hsolve does not keep track of changes made to the model after the hsolve SETUP
+command (particularly the following commands: create, copy, delete, addmsg,
+deletemsg).  In chanmode 0 or 1 this only affects the listed objects and
+messages between them; in chanmodes 2-5 this affects the listed objects and
+ALL messages going in or out from them.  The hsolver should be used in these
+modes only for finished models (you can use it for parameter searches); do not
+use it if you are still constructing and testing a model.
+
+hsolve may miscalculate if you change clocks used by tabchannels,
+tab2Dchannels, synchans, or channelC2/C3 objects without doing a reset (only
+in chanmodes 2-5).
+
+The Hines solver utilizes a considerable amount of memory.  Memory use
+increases as the result of comptmode + chanmode - no_elminfo flags.  In
+particular, going from chanmode 0 or 1 to chanmode 2, 3, or 4 causes a big
+jump in memory usage.  Approximately 100 bytes are required per compartment if
+the speed-optimized version of the hsolve element is used. Most of this
+storage is for tables describing the sequence of calculations. These tables
+can, however, be shared between cells which are identical in topology and
+differ only in parameter values.
+
+FURTHER EXAMPLES
+
+* Copying cells with the hsolve element
+
+When a cell using the hsolve element is copied, the pointers in the
+duplicated hsolve element are unchanged. In other words, they refer back to
+the original cell. One could simply change the path to refer to the current
+cell and call SETUP again, but that would unnecessarily duplicate a lot of
+tables.  The efficient option would be to use the original tables where they
+are identical, and construct new ones where they refer to the current cell.
+This is done using the DUPLICATE sction, which takes the name of the new
+hsolve element and a wildcard path duplic_path as arguments.  duplic_path
+points to all compartments that should be taken over by the new solver.
+For example,
+
+	// Copy the original cell to /test2
+	copy /test /test2
+
+        // create the hines solver element below the cell '/test'
+        create hsolve /test/solve
+
+        // Specify the path for the solver and the chanmode
+        setfield /test/solve path /test/##[][TYPE=compartment] chanmode 4
+
+        call /test/solve SETUP
+
+        // Duplicate the hsolver
+        call /test/solve DUPLICATE /test2/solve /test2/##[][TYPE=compartment]
+
+        reset
+
+There are several commands, including createmap and cellsheet, that copy
+cells. The DUPLICATE command should be issued for the hsolvers on each copy.
+When using chanmodes 3 or higher, findsolvefield must be used with messages in
+order to access fields of duplicated hsolves, as shown in the documentation
+for findsolvefield.
+
+* Deleting hsolve elements
+
+When an hsolve element is set up it removes the relevant channels and
+compartments from the list of elements to be processed, by setting a bit
+(0x100) on the flag field of those elements. These elements are re-enabled
+and the bit set back to 0 when the hsolve element is deleted.
+
+WARNING: in the present implementation, the hsolve element does not check
+whether it has had duplicates made using the DUPLICATE command. This makes it
+possible to delete the tables for all of the copies by deleting any one of
+them, resulting in segmentation violations and similar amusements. In other
+words, do not delete hsolves on duplicated cells.
+
+* Accessing data fields in chanmodes 2-5.
+
+A script similar to this example might be used for running a long simulation
+as a background job, using no graphics.  The HPUT and HSAVE actions are used
+in chanmode 2 or 3 to allow the simulation results and the final state of
+the simulation to be saved to disk.  A disk_out element is used to output the
+Vm of a soma compartment in a compressed binary format.  However, it is
+equally possible to output Vm from every compartment, or from an array of
+cells.  Later, a script using a disk_in element can display the results using
+messages from the disk_in to an xgraph or xview.  The save command is used
+here to save field values of all elements except nernst elements and the
+hsolve element.  This will allow the simulation to be resumed from its final
+state by using the restore command.
+
+For more details, see Scripts/examples/XODUS/fileview and the documentation
+for disk_out, disk_in, save, and restore.
+
+	/* load scripts and global variables */
+	include defaults
+	include other_stuff
+
+	pushe /library
+	make_my_stuff
+	pope
+
+	/* make the model */
+	readcell my_cell {my_cellpath} -hsolve
+
+	/* set the clocks */
+	setclock 0 1e-5	  /* integration */
+	setclock 1 1e-4   /* output */
+
+	/* create the output or graphics elements */
+
+	/* note that if you want to output Vm only, but from multiple
+	** compartments, you should use chanmode == 2; if you want to
+	**  output other fields or Vm from only one compartment, 
+	** use chanmode == 3 */
+
+	create disk_out /output/disk
+	useclock /output/disk 1
+	addmsg {my_cellpath}/soma /output/disk Vm
+	addmsg ...
+
+	/* create any other elements */
+	....
+
+	/* setup the hines solver */
+	setfield {my_cellpath} \
+		comptmode   1 \
+		chanmode    3 \
+		outclock    1
+	call {my_cellpath} SETUP
+	setmethod 11		  // Crank-Nicholson integration method
+
+	/* initialize output */
+	setfield /output/plot_out filename {filename} initialize 1
+	setfield /output/plot_out filename {filename} append 1 leave_open 1
+
+	reset
+
+	step 0.10 -t
+	/* do a current injection */
+	setfield {my_cellpath}/soma inject 1.0e-9         /* in Amps */
+	/* update chip array */
+	call {my_cellpath} HPUT {my_cellpath}/soma 
+	step 2.00 -t
+
+	/* save the integration values to disk */
+	call {my_cellpath} HSAVE
+	save {my_cellpath}/##[][TYPE!=nernst][TYPE!=hsolve] {savename} 
+
+	quit
+
+---------------------------------------------------------------------------
+DETAILED DESCRIPTION
+
+The Hines library provides elements and functions for the efficient implicit
+solution of the systems of differential equations arising in single-neuron
+models. The sparse matrix arising from the the branched structure of neurons
+is ordered by the method described by Michael Hines, which permits it to be
+solved in order N operations using Gaussian elimination without pivoting.
+The nonlinear equations resulting from the Hodgkin-Huxley description of ion
+channels are treated as conditionally linear, and also solved in an
+efficient, second-order manner.  Compatibility with other integration
+schemes is maintained so that mixed integration schemes are feasible.
+
+The element sets up a data structure whereby the only change needed for
+other identical cells is to reassign pointers to the compartment and channel
+elements.  This avoids having to reallocate and rederive the solving
+scheme.  Solutions are done using gaussian forward and backward elimination
+without pivoting. The numbering and evaluation sequence ensures that no new
+off-diagonal terms are formed which might mess up the sparse matrix
+representation.  The sparse matrix is represented by a single 'values' array
+indexed using the ri and cip arrays.  The actual solution system is stored
+as a linear sequence of operations on the 'values' array, in an attempt to
+speed things up a bit.
+
+The implicit method leads to numerically stable solutions for all time
+steps.  Numerical accuracy, however, imposes limits on the integration time
+step which must be empirically evaluated for each simulation.  Typical
+values are 100 microsecond time steps for purely passive membranes and 20
+microsecond time steps for membranes with active channels.  This confers a
+considerable speed up in detailed neuronal simulations where the presence of
+electrotonically small compartments (such as dendritic spines) leads to
+systems of equations which are numerically very stiff. In order to obtain
+similar accuracy using explicit integration methods, time steps in the
+nanosecond range may be required.
+
+In addition to the substantial speed advantage gained from the use of an
+implicit solution, the coding of the Hines solver element has been done with
+a view to computational efficiency.  This results in a speed up of around 50%
+compared to the same model with the same time step, using the conventional
+explicit Euler integration scheme.
+
+Code changes needed for the Hines library
+
+This section is probably of interest only to individuals who have developed
+their own code libraries and who are deeply entangled in GENESIS coding
+issues. For most users the changes are transparent, once the .simrc and
+schedule.g file have been updated to reflect the addition of a new library.
+
+The incorporation of a completely new integration scheme to the simulator can
+be expected to have numerous repercussions. Fortunately, the changes needed for
+the Hines library turned out to be relatively painless. No changes were needed
+for the code of any of the existing elements. There is a slight rearrangement
+of the order of fields in the various channel objects, and a new globally
+#define'd type called CHAN_TYPE has been created so that all these channel
+objects have the following common fields at identical memory offsets: Ik, Gk
+and Ek (See src/sim/struct_defs.h). All channels whose structures obey this
+convention can be used in cells utilizing the hsolve element.  A very small
+number of channel objects (such as channelC) do not share these fields and
+therefore cannot be part of cell models which use the hines solver.
+
+A new flag (0x100) has been employed for the Hines solver, which causes the
+removal of compartment and tabchannel elements from the action list (the list
+of elements whose action functions are to be called according to the clocks).
+This flag is similar to the disable option except that it leaves the children
+of these elements intact.
+
+In the interests of speed (which is, after all, what the Hines method is all
+about) I have 'unrolled' the sparse matrix solution into a single giant
+function array. This is done at setup time, so the actual solution does not
+involve any conditionals and minimises array lookups. This is moderately
+expensive in terms of memory. The size of the function array allocated is
+
+     S = FA * sizeof (int) ;  FA = 10 + 1.5 * M^2 / N
+
+where S is the size of the array, FA is the number of functions allocated, M
+is the number of non-zero coefficients in the solution matrix and N is the
+number of compartments. M depends strongly on the branching pattern of the
+cell. FA is an approximation to, and is greater than F, which is the actual
+number of locations needed in the function table.  For example, in a mitral
+cell model, which has limited branching:
+
+     N = 286 ; M = 856 ; FA = 3853 ; S = 15412 ; F = 3710
+
+In a granule cell model with numerous dendritic spines:
+
+     N = 944 ; M = 2830 ; FA = 12736 ; S = 50944 ; F = 12264
+
+A reasonable approximation is that each compartment requires about 54 bytes in
+the function table, which is not too bad.
+
+References:	Hines, M. (1984) Efficient computation of branched nerve
+		equations.  Int. J. Bio-Med. Comp.  15: 69-76
+
+		Mascagni, M.V. (1989) Methods in Neuronal Modeling Ed: Koch
+		and Segev. Chapter 13. 439-484
+
+See also:	setmethod, findsolvefield

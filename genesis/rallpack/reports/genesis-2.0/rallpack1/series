@@ -1,0 +1,27 @@
+#!/bin/csh -f
+
+# rallpack1 timestep and model size series
+
+set genesis = genesis
+set simrc = ~/.simrc
+
+# timestep series includes modelsize 1000
+
+set timesteps = "500 200 100 50 20 10"
+set modelsizes = "1 10 100 10000"
+
+foreach timestep ($timesteps)
+    echo '*************************'
+    echo Timestep: $timestep Modelsize: 1000
+    echo '*************************'
+
+    $genesis -nox -altsimrc $simrc -batch -notty scale_cable $timestep 1000 cable
+end
+
+foreach modelsize ($modelsizes)
+    echo '*************************'
+    echo Timestep: 50 Modelsize: $modelsize
+    echo '*************************'
+
+    $genesis -nox -altsimrc $simrc -batch -notty scale_cable 50 $modelsize cable
+end

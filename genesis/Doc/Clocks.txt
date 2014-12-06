@@ -1,0 +1,85 @@
+  15.2.  Simulation Clocks
+
+  Each element in a simulation is associated with an interval timer or
+  ``clock''.  This clock is used to determine how frequently the action
+  associated with the element (i.e., the INIT or PROCESS listed in the
+  simulation schedule) will be executed during the simulation process.
+  This is particularly useful when you want components of a simulation
+  to run at significantly different time scales.
+
+  By convention, clock number 0 is the global simulation clock or the
+  basic simulation time step.  All elements start out using clock 0 by
+  default.
+
+  The simulator also contains an array of 100 independent clocks (this
+  is the number of available clocks; a typical simulation only uses a
+  few of these clocks).  Each clock is identified by a number from 1 to
+  100 corresponding to its position in the clock array.  Clocks other
+  than clock 0 must have settings larger than that of clock 0; these
+  settings should be integer multiples of the clock 0 setting for
+  maximal timing precision.
+
+  The setting of a specific clock is not some ``current time'', but is
+  the time increment used for stepping its associated elements through
+  the simulation.  The units used for time must be consistent with those
+  used for other related variables and parameters of the simulation.
+  For example, if membrane resistances and capacitances are expressed in
+  kilohms and microfarads, then times should be expressed in
+  milliseconds.  To make it easier to keep track of units, many (but not
+  all) GENESIS simulations use SI (MKS) units, and express time in
+  seconds.
+
+  For example, suppose clock 0 has the setting 1.0 (its default
+  setting), and you assign clock 1 the value 5.  If you then have a
+  graphical element use clock 1 for its simulation time, the graph
+  element would perform its simulation action (e.g., receiving a message
+  and plotting a value) only once every 5 steps taken by  the other
+  elements.  This can greatly speed up a simulation, as the time
+  increment used for the display of information can usually be much
+  larger than that which is small enough for an accurate stepwise
+  numerical solution of the equations governing the model.
+
+  The following GENESIS routines are used for working with simulation
+  clocks:
+
+  ______________________________________________________________________
+  Routine      Description
+  ______________________________________________________________________
+  getclock     Returns value of specified simulation clock.
+  setclock     Sets time interval (step size) associated with specified clock.
+  showclocks   Displays currently defined clocks and their assigned values.
+  useclock     Specifies which clock an element should use during simulation.
+  ______________________________________________________________________
+
+  15.2.1.  Choosing a Simulation Time Step
+
+  At each step of a simulation, each participating element typically
+  performs one or more computations.  Some elements perform a stepwise
+  numerical integration in order to solve the state equations of the
+  element they represent.  When setting up a simulation, you will need
+  to choose a global simulation clock step size which is small enough to
+  give accurate results, yet is large enough to give a reasonable
+  simulation speed.
+
+  You can empirically determine the time step used with an integration
+  method by decreasing the time step until the differences in simulation
+  results are within some criterion.  As a starting point, you should
+  pick a step which would yield a smooth curve if you were to make a
+  ``connect-the-dots'' type of plot of the most rapidly varying
+  variable.  The size of the time step needed also depends on the
+  integration method which is used.  The documentation for ``setmethod''
+  (setmethod.txt) describes the several different ways these integrals
+  can be calculated.
+
+  Typically, you need around 10 microseconds for a neural simulation
+  with explicit methods (like the default Exponential Euler method) and
+  50 to 100 microseconds with the implicit methods (Backward Euler and
+  Crank-Nicholson). (For the implicit methods the limiting factor is
+  often the speed of the channel kinetics.)  Implicit methods are
+  recommended when there are many small compartments in a cell model, as
+  these result in numerically ``stiff'' equations.
+
+  There is a complication when using the implicit methods. These are
+  inherently not object oriented, and involve the construction of an
+  ``hsolve'' element which takes over the computations for a specified
+  cell.  (See the documentation for ``hsolve'' (hsolve.txt).)

@@ -1,0 +1,127 @@
+
+                Testing Parallel Random Number Generators
+                -----------------------------------------
+         http://www.ncsa.uiuc.edu/Apps/SPRNG/www/test-suite.html
+
+This directory contains programs for testing the SPRNG random number
+generators. A user can also modify the code slightly to test his own
+generators, as explained in the file: NEWGEN.text. Most of the tests
+are modifications of the sequential tests from Knuth's book for
+testing multiple streams for parallel random number generators.
+
+
+The tests described below take several command line arguments
+each. The general format is:  
+  test  nstreams ncombine seed param tests_per_stream skip test_arguments 
+
+The test format and the command line arguments are explained below.
+
+We wish to determine if there are correlations between the random
+numbers produced by the different streams. We interleave 'ncombine'
+streams to produce a single sequence. For Example, if 'ncombine' = 3
+and we are combining streams X,Y and Z, then then new sequence formed
+will be: x0, y0, z0, x1, y1, z1 ... . We then subject this new
+sequence to popular tests of randomness. If the individual streams are
+uncorrelated (and if each stream is random) then the interleaved
+streams too will pass tests of randomness. We test 'tests_per_stream'
+blocks of the interleaved sequence. The first random number of each
+subsequence is the one immediately following the last random number of
+the previous subsequence tested, provided the parameter 'skip' = 0. If
+that parameter is not 0, then we skip the next 'skip' random numbers
+in the sequence and then start the test on the next subsequence. The
+parameter 'nstreams' determines the number of interleaved sequences to
+be combined and tested. Each interleaved sequence is formed from a set
+streams that have not been used before. The parameter 'seed' is the
+encoding of the seed that is used in initializing SPRNG. 'param' is
+the parameter to the generator, also used while initializing SPRNG.
+
+We determine the test statistic for each of the 'nstreams*tests_per_stream' 
+blocks tested, and then subject these test statistics to a
+Kolmogorov-Smirnov test from which we can obtain the probability of
+the streams coming from a truly random sample. 
+
+ The same executables can also be used to perform sequential tests on
+individual streams (that is, without interleaving) if we set the
+parameter 'ncombine' to 1.
+
+Typing 'make' in this directory after setting the variables $LIBDIR
+and $SRCDIR to the appropriate directory, as explained in the
+Makefile, will create the executables.
+
+Each test 'xxx' produces executable called 'xxx.rng' for each random
+number generator library 'librng.a' provided in SPRNG.
+
+The next few command line arguments vary from tests to test. We
+describe them below for each test. (Note: Memory requirement assumes
+8-byte doubles and 4-byte integers.)
+
+collisions: n logmd logd
+  The test is performed on 'n' '2^logmd' digit numbers in base '2^logd'.
+  (ie, logmd = dimension, logd = # of bits considered per random number.)
+  # of random numbers per subsequence = n*logmd
+  # Approximate memory used = 8*nstreams*tests_per_stream + 4*n + 2^{logmd*logd}
+
+coupon: n t d 
+  We observe 'n' complete sets of integers in
+  [0,d-1]. Sequences of length > t-1 are lumped together in the category
+  corresponding to length 't'.
+  # of random numbers per subsequence ~ n*d*ln(d)
+  # Approximate memory used = 8*nstreams*tests_per_stream + 4*d + 16*(t-d+1)
+
+equidist: d n 
+  We divide the unit interval into 'd' bins and observe
+  the distribution of 'n' random numbers.
+  # of random numbers per subsequence = n
+  # Approximate memory used = 8*nstreams*tests_per_stream + 16*d
+
+gap: t a b n
+  We note the gap in the sequence between successive numbers that appear
+  in interval [a,b], where 'a' and 'b' are in [0,1). We record 'n'
+  gaps. Gap length greater than 't' are lumped together in a category
+  corresponding to gap length 't+1'.
+  # of random numbers per subsequence ~ n/(b-a)
+  # Approximate memory used = 8*nstreams*tests_per_stream + 16*t
+
+maxt: n m 
+  'n' blocks of length 'm' each are considered, and the largest number
+  in each subsequence is determined.
+  # of random numbers per subsequence = n*m
+  # Approximate memory used = 8*nstreams*tests_per_stream + 16*n
+
+perm: m n
+  'n' blocks of length 'm' each are subjected to the permutations test.
+  # of random numbers per subsequence = n*m
+  # Approximate memory used = 8*nstreams*tests_per_stream + 8*m + 16*(m!)
+
+poker: n k d
+  'n' blocks of length 'k' each are considered, and the number of
+  distinct integers in [0,d-1] are analyzed.
+  # of random numbers per subsequence = n*k
+  # Approximate memory used = 8*nstreams*tests_per_stream + 0.4*min(n,k)
+                                                       + 12*k + 4*d 
+
+runs: t n
+  'n' runs are recorded. Runs of length greater than 't' are lumped together. 
+  # of random numbers per subsequence ~ 1.5*n
+  # Approximate memory used = 8*nstreams*tests_per_stream + 16*t
+
+serial: d n
+  'n' pairs of integers in [0,d-1] are analyzed.
+  # of random numbers per subsequence = 2*n
+  # Approximate memory used = 8*nstreams*tests_per_stream + 16*d*d
+
+fft: (not in regular sprng format) nstreams 1 seed param nruns 0 n
+  'n' numbers from 'nstreams' random streams are used to fill an array. The 
+  FFT of this array is computed, and compared with the expected case.
+  # of random numbers per run = nstreams*n
+  # Approximate memory used = 8*nstreams*n
+
+sum: (not in regular sprng format) nstreams 1 seed param 1 0 n group_size
+  'group_size' numbers from nstream different streams are added to form
+  a sum. 'n' such sums are tested for normality.
+  # of random numbers per run = nstreams*n*group_size
+  # Approximate memory used = 8*n
+
+Besides these statistical tests, certain physical model tests are also
+provided: Wolff and Metropolis algorithms for the 2-D Ising model, and
+a random walk test.

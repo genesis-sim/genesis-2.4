@@ -1,0 +1,174 @@
+Object Type:	tab2Dchannel
+
+Description:	Hodgkin-Huxley type channel with two-dimensional tables
+for alpha (A) and alpha + beta (B), allowing the rate variables to
+have dependencies on two variables, x and y (e.g., membrane voltage
+and an ion concentration).
+
+Author:		E. De Schutter, BBF-UIA Aug 94Caltech (1/91)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	tab2channel_type  [in src/olf/olf_struct.h]
+
+Size:		184 bytes
+
+Fields:		Gk		channel conductance
+		Ik		channel current
+		Ek		channel reversal potential
+		Gbar		channel maximum conductance
+		X		value of X gate; optional gate, X=m
+		Y		value of Y gate; optional gate, X=h
+		Z		value of Z gate; optional gate, 
+		X_A		table for alpha function for X 
+		X_B		table for alpha + beta function for X
+		X_alloced	flag for allocation of X_A and X_B
+		Y_A		table for alpha function for Y
+		Y_B		table for alpha + beta function for Y
+		Y_alloced	flag for allocation of Y_A and Y_B
+		Z_A		table for alpha function for Z
+		Z_B		table for alpha + beta function for Z
+		Z_alloced	flag for allocation of Z_A and Z_B
+		Xpower		power to raise X gate to
+		Ypower		power to raise Y gate to
+		Zpower		power to raise Z gate to
+                instant         {INSTANTX}, {INSTANTY}, or {INSTANTZ} to
+                                determine the gate to instantly set to A/B
+		Xindex          specifies role of x and y for X gate
+		Yindex          specifies role of x and y for Y gate
+ 		Zindex          specifies role of x and y for Z gate
+		surface         compartment surface area used with DOMAINCONC
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Tab2DChannel  [in src/olf/tab2channel.c]
+
+Classes:	segment channel
+
+Actions:        TABREAD TABSAVE RESTORE2 SAVE2 SHOW SET TABCREATE
+                CHECK PROCESS RESET INIT
+
+Messages:	VOLTAGE     voltage	[membrane voltage of compartment]
+                EK          Ek		[reversal potential]
+                CONCEN 	    concen	[ion concentration sent to channel]
+                CONCEN1	    concen	[ion concentration sent to channel]
+                CONCEN2	    concen	[ion concentration sent to channel]
+                DOMAINCONC  Ik scale    [ion current from another channel, to
+                                        be multiplied by scale, and divided by
+                                        the surface field]
+                ADD_GBAR    offset      [increment to be added to Gbar]
+
+------------------------------------------------------------------------------
+
+Notes:          The tab2Dchannel object is very similar to the tabchannel, and
+                calculates the channel conductance and current from the
+                equations
+
+                        Gk = Gbar*X^Xpower * Y^Ypower * Z^Zpower
+                        Ik = Gk * (Ek - V)
+
+                where the gates obey the Hodgkin-Huxley equations
+
+                        dX/dt = A_X - B_X*X
+                        dY/dt = A_Y - B_Y*Y
+                        dZ/dt = A_Z - B_Z*Z
+
+                Note that, as with the tabchannel, A corresponds to the
+                Hodgkin-Huxley alpha rate variable, and that B = alpha + beta
+                = 1/tau.
+
+                However, the TABCREATE action for the tab2Dchannel takes
+                additional arguments ydivs, ymin, and ymax, in in order to
+                allocate the two-dimensional tables for X_A, X_B, Y_A, etc.
+                The tables now have two indices, where the first one runs from
+                0 to xdivs and the second one from 0 to ydivs.  Typical
+                commands for allocating tables and setting values would be
+
+                    call {chanpath} TABCREATE X {xdivs} {xmin} {xmax} \
+                        {ydivs} {ymin} {ymax}
+
+                    setfield {chanpath} X_B->table[{i}][{j}] {alpha + beta}
+
+                As there are currently no utilities like setupalpha or
+                setuptau for filling tab2Dchannel tables, the setfield command
+                above would be used in a doubly-nested for loop that
+                calculates the A and B values for the two indices.
+
+                When using two-dimensional tables, it may be necessary to
+                experiment with the table size in order to obtain the desired
+                accuracy without using large tables, which would result in
+                both excessive memory use and setup time.  When using a
+                one-dimensional table, it is customary to use a large table,
+                either by setting xdivs to a large value, or by using TABFILL
+                to expand the table with interpolated values.  Then the
+                calc_mode field for each table would be set to zero
+                (NO_INTERP), in order to save computation time.  For objects
+                that use 2-D tables, it is best to use a smaller values of
+                xdivs and ydivs and to perform linear interpolation is
+                performed at run time.  This is the default.  In the unlikely
+                event that you want to disable interpolation, set the table
+                calc_mode to NO_INTERP (zero).  For example:
+
+                    setfield {chanpath} X_A->calc_mode {NO_INTERP}
+
+                As with the tabchannel, a message carrying the membrane
+                voltage or a concentration is sent to the channel so that the
+                channel can retrieve the appropriate A and B table values to
+                calculate the gate activations (X, Y and Z) and the resulting
+                channel conductance.  However, the tab2Dchannel can have two
+                messages, in order to specify both the x and y variables.
+                There are two new messages for sending concentrations (or
+                anything else), CONCEN1 (the same as CONCEN) and CONCEN2.
+                Another message DOMAINCONC provides a highly simplified model
+                to obtain the ionic concentration directly, using the current
+                sent from another channel, times a scale factor, and dividing
+                by the surface area of the parent compartment.
+
+                There are also three fields Xindex, Yindex, and Zindex.  These
+                fields are used for each gate to define which message refers
+                to the x variable and which refers to the y variable.  The
+                index fields may each be assigned to one of the pre-defined
+                global variables VOLT_INDEX, C1_INDEX, C2_INDEX, DOMAIN_INDEX,
+                VOLT_C1_INDEX, VOLT_C2_INDEX, VOLT_DOMAIN_INDEX, C1_C2_INDEX,
+                and DOMAIN_C2_INDEX.
+
+                The first four of these are used when a gate depends on only
+                one variable.  In this case, xdivs should be set to zero for
+                that gate, and the y variable (corresponding to the second
+                index) used to fill the A and B tables.  Then, the prefix
+                (VOLT, C1, C2 or DOMAIN) specifies whether the VOLTAGE,
+                CONCEN1, CONCEN2, or DOMAINCONC message is used to provide the
+                y variable.  The remaining five of these index variables are
+                of the form x_y_INDEX, and similarly specify which of two
+                messages are used to specify the x and y variables.  Thus if
+                Xindex is set to VOLT_C1_INDEX, a VOLTAGE message would
+                specify the x variable of the X_A and X_B tables, and a
+                CONCEN1 message would specify the y variable.  If you wanted
+                to have a second gate Y which depended on another ionic
+                concentration, you would also send a CONCEN2 message, and set
+                Yindex to C2_INDEX.
+
+                The instant field may be set to {INSTANTX}, {INSTANTY}, or
+                {INSTANTZ} to specify that the X, Y, or Z gate value will be
+                instantly set to A/B, rather than using the A and B table
+                values in the differential equations above.  This allows the
+                channel conductance to have a multiplicative factor of A/B.
+                This is often used to model a conductance having a
+                multiplicative Ca-dependent factor, or to implement
+                Morris-Lecar models with zero time constant for activation.
+
+                The TABSAVE and TABREAD functions may be called to save the
+                channel tables to a file to be read in when making a
+                subsequent simulation run.  These are described in the
+                documentation for the tabchannel.
+
+                See the documentation for tabchannel for explanations of the
+                other actions that are often called in a simulation script.
+
+Example:	see Scripts/neurokit/prototypes/MoczydKC.g
+
+See also:	Interpol documentation (Tables), tabchannel

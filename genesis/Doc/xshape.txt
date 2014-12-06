@@ -1,0 +1,160 @@
+Object Type:    xshape
+
+Description:    The shape pix draws assorted shapes, and was developed in
+                order to allow users to design their own graphical objects
+                such as clickable labels, arrows, and other icons under the
+                draw widget.  It provides access to the primitive graphical
+                operations of drawing geometrical shapes and text, as well as
+                to the `higher functions' such as icons, mouse clicks and
+                hilighting.  It is also automatically created as a subordinate
+                pix for the xvar, xview, and xtree widgets.  For example, two
+                filled rectangle xshapes, shape[0] and shape[1], are created
+                as child elements of a view widget when the view is created.
+                The shape pix contains fields for the coordinates of the
+                shape, and assorted fields for controlling draw modes using
+                the coordinates, a set of fields related to the text string
+                that the pix can display, and a field for setting a return
+                value when the shape is clicked on.
+
+Author:         Upi Bhalla Caltech Apr/93
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xshape_type [in src/Xodus/draw/xshape_struct.h]
+
+Size:		156 bytes
+
+Fields:         fg      Color of the shape
+
+                script  Script operation(s) to perform on a mouse
+                        click. The script calls of the shape are only made
+                        if the draw determines that the shape is the nearest
+                        to the event and if the event occurred within the
+                        bounding region of the shape.
+
+                value   Set with setfield, or with a PATH message, and
+                        accessible in script functions with the <v> or
+                        <value> argument.
+
+                tx      Transposition distance in the x dimension. The
+                        shape is displaced in the draw by this amount.
+                ty      Transposition in y.
+                tz      Transposition in z.
+
+                pixflags        Set of flags specifying visibility,
+                        refreshes, mouse sensitivity and many other options.
+                        Use the 'pixflags' utility function to find out more.
+
+                xpts    Interpol struct (table) of x coordinates.
+                ypts    Interpol struct (table) of y coordinates.
+                zpts    Interpol struct (table) of z coordinates.
+                npts    Contains the number of points which were set.
+
+                drawmode    One of: DrawLines (default), DrawPoints, DrawSegs
+                            (takes coordinate pairs and draws lines between
+                            them; The last coordinate is ignored if there is
+                            an odd number of coordinates.), DrawArrows (same
+                            as DrawSegs, only arrows are drawn instead of
+                            segments), FillPoly (draws a filled polygon
+                            bounded by the coordinates specified.  It will
+                            close the polygon if the last point is different
+                            from the first.), or FillRects (takes coordinate
+                            pairs and draws filled rectangles from one to the
+                            next.  If there are an odd number of coordinates
+                            specified, then the last coordinate is ignored.).
+
+                linewidth   Line width in pixels.
+
+                linestyle   One of: LineSolid (solid line of fg color, the
+                            default), LineOnOffDash (dashed line of fg color),
+                            or LineDoubleDash (dashed line of fg color, with
+                            white between the dashes).
+
+                capstyle    End of line style; One of: CapButt (rectangular
+                            end, the default), CapRound (round end),
+                            CapProjecting (adds an extra pixel to the end), or
+                            CapNotLast (skips the last pixel of the line).
+
+                joinstyle   Style of line joints; One of: JoinMiter (sharp
+                            corners, the default), JoinRound (rounded
+                            corners), or JoinBevel (beveled corners).
+
+                text        Text string to display (if any).
+                textcolor   Color of the text string.
+
+                textmode    Mode for drawing text; One of: draw (print the
+                            text on the draw background, the default), fill
+                            (add a white background to the text), or nodraw
+                            (do not display the text).
+
+                textfont    Font used for the text string.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XShape [in src/Xodus/draw/xshape.c]
+
+Classes:        output, gadget
+
+Actions:        XUPDATE: update internal fields when
+                        displayed widget is changed.
+                B1DOWN: Invoked when mouse Button 1 is pressed.
+                B2DOWN: Invoked when mouse Button 2 is pressed.
+                B3DOWN: Invoked when mouse Button 3 is pressed.
+                ANYBDOWN:       Invoked when any mouse button is pressed.
+                B1DOUBLE: Invoked on a double click on mouse button 1.
+                B2DOUBLE: Invoked on a double click on mouse button 2.
+                B3DOUBLE: Invoked on a double click on mouse button 3.
+                XOCOMMAND: an action that can invoke the functions
+                        in the 'script' field.
+                XODROP: Called when a another pix is dropped onto this one.
+                XODRAG: Called when the mouse is clicked on this pix, and
+                        the mouse moves while the mouse button is held down.
+                XOWASDROPPED: Called after this pix has been dropped onto
+                        another one.
+
+                XSHAPE_ADDPT x y z:  adds a point to the arrays, and
+                                     increments npts.
+                XSHAPE_MOVEPT x y z: finds the nearest point to [x,y,z] and
+                                     moves it there.
+
+Messages:       PATH    dummy
+                        When a PATH message is present, then the value field
+                        is set to the full path of the source of the message
+                        on PROCESS.
+
+------------------------------------------------------------------------------
+
+Notes:          After changing some of the fields related to the display
+                modes, it will be necessary to perform an xupdate of the
+                parent draw widget for the changes to take effect.
+
+                The coordinates of the shape can be set in the xpts, ypts, and
+                zpts tables, using the usual commands for interpol_structs,
+                e.g. "setfield shape xpts->table[0] 0.5".  However, there is a
+                shorthand notation for setting several coordinate sets at
+                once, for example:
+
+                    setfield shape2 coords [1,0,0][0,1,0][0,0,1]
+
+                The example below shows how this notation may be used at the
+                time the shape is created.  The use of this notation has the
+                additional advantage of automatically setting npts to the
+                number of coordinate sets which were specified.  Otherwise,
+                npts must be explicitly set before the shape will be
+                displayed.
+
+Example:        create xform /form
+                create xdraw /form/draw [0,0,100%,100%] \
+                    -xmin -1 -xmax 2 -ymin -2 -ymax 2
+                create xshape /form/draw/shape -fg green -drawmode FillPoly \
+                    -coords [0,0,0][0.5,1,0][1,0,0][0,0,0] \
+                    -text "I am a green triangle" \
+                    -script "echo You clicked on <w>"
+                xshow form
+
+See also:       xview, xvar, xpix, Clicks, Tables, and the scripts
+                Scripts/examples/XODUS/draws.g, Scripts/CPG/viewform.g

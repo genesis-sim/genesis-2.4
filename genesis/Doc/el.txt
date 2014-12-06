@@ -1,0 +1,35 @@
+Routine Name:	el
+
+Description:	Returns list of elements matching wildcard specification.
+
+Usage:		list-of-elements = el path [-listname listname]
+
+		list-of-elements	returned as a text 
+
+		path			path specification, which may include
+					wildcards such as [] or #  (note,
+					however, that operating-system style
+					use of * is not supported)
+
+Example:	genesis >  echo {el /#}
+		/proto /output 	/net
+
+		genesis >  echo {el /net/neuron[]}
+		/net/neuron /net/neuron[1] /net/neuron[2] /net/neuron[3]
+		
+		genesis >  str name
+		genesis >  foreach name ({el /# })
+		?  echo {name}
+		?  end
+		/proto
+		/output
+		/net
+
+Notes:		In GENESIS 1, this was EL or element_list.  getelementlist
+		is an alias for el in GENESIS 2.
+
+		The listname argument tells it to look for the field
+		<listname> on the element in <path> and treat that
+		as an element list.
+
+See also:       countelementlist, Tree

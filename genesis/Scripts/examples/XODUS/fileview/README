@@ -1,0 +1,35 @@
+Fileview examples
+
+By Upi Bhalla June 1995 Mt. Sinai School of Medicine 
+
+This directory illustrates dumping and restoring simulation data from files,
+using the FMT1 format.  The data is saved using the disk_out object, and is
+read in using the disk_in object.  The xview object is used for the display.
+The documentation for these three objects gives further details of their use.
+
+Files:
+1. generate.g
+	This is derived from one of the xview examples. It generates the data
+	that will be stored in the FMT1 format
+2. testfile
+	This is the data file produced by generate.g. It is NOT portable
+	between different machine architectures. If you cannot read this file,
+	run generate.g on your machine first.
+3. fileview_hack.g
+	This shows a quick and dirty way of reading the testfile. It requires
+	a priori knowledge of the 3-dimensional layout of the stored data,
+	which we have in this unusual case.
+4. fileview_better.g
+	This is a clean way for reading the testfile. It reads in the 
+	3-d coordinate info from the testfile itself. If anything, it is
+	a little more efficient than fileview_hack.g, and it is certainly much
+	more general.
+
+Each of the example files has a run and a quit button, so the use of these
+files should be obvious enough.
+
+Exercise for the reader:
+Why do the displays of the fileviews look a little different from the displays
+in generate.g ? (Hint: the generate.g file displays different fields using
+the color and morph_vals, respectively).
+

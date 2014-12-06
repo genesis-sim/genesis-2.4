@@ -1,0 +1,82 @@
+Routine Name:	genesis
+
+Description:	Starts up the GENESIS program.  (operating system command)
+
+Usage:		genesis [-usage][-nosimrc][-altsimrc filename][-notty][-nosig]
+			[-execdir dirname][-nice nice-level][-nox]
+			[-defaultcolor][-batch][script arg1 ...]
+
+		-usage		print the usage message, listing options.
+		-nosimrc	ignore the .simrc file
+		-altsimrc	use 'filename' instead of the .simrc file
+		-notty		do not accept terminal input
+		-execdir	change to 'dirname' after starting genesis
+		-nice		give genesis 'nice-level' priority
+		-nox		start GENESIS without initializing XODUS
+		-defaultcolor	use the display's default colormap
+		-batch		run genesis in the background
+		script		name of a GENESIS script to run
+
+Example:	%  genesis -altsimrc ~/.backup_simrc
+
+	Starting Genesis
+   ==========================================================================
+                                  G E N E S I S
+        	                      Release Version: 2.0
+
+             Copyright 1988 - 1995, California Institute of Technology
+
+    Some components are copyright by the originating institution and are used
+    with the permission of the authors.
+   ==========================================================================
+
+	Executable:         /usr/genesis/genesis
+
+	----------------------- Starting XODUS 2.0 -----------------------
+
+	Startup script:     ~/.backup_simrc
+	SIMPATH=. /usr/home/jouser/mystartup
+	SIMNOTES=/usr/home/jouser/.notes
+	GENESIS_HELP=/usr/genesis/Doc
+		
+	genesis #0 >
+
+Notes:	When starting, GENESIS looks for an initialization file, .simrc,
+	first in the current working directory, and then in your home
+	directory.  After installing genesis, this file is created in the
+	GENESIS installation directory.  After making any appropriate edits,
+	you should copy it to your home directory and insure that the
+	genesis executable is in your path.
+
+	A new GENESIS command line option -defaultcolor will cause GENESIS
+	to use the display's default colormap, even if the default visual is
+	readonly.  The net result is that colorscale colors will be shared
+	among multiple GENESIS processes, but GENESIS will fail to allocate
+	a colorscale if the default colortable is full.  This option may be
+	used to avoid X protocol errors on some SGI systems where the X11
+	server defaults to a TrueColor (24 bit) visual.
+
+        To perform a GENESIS simulation in the background (for example if you
+        want to login from home over a modem, start a simulation, and logout
+        while the simulation continues to run), your simulation script should
+        use no graphics, and write all output to files.
+
+        Besides specifying the -nox option when starting genesis to avoid
+        starting XODUS, you also need to use the -notty and -batch options.
+        GENESIS will attempt to read from stdin after the .simrc and command
+        line script are completed.  The -batch option causes genesis to exit
+        rather than try to read stdin.  -notty will avoid doing any terminal
+        setup and cleanup procedures which can also cause this type of
+        behaviour.  You must specify both on the command line (i.e. neither
+        option implies the other).  In addition, you need to redirect output
+        (both stdout and stderr) to a file.  For example, to run a script
+        ``batchtest.g'' and direct startup messages and any error messages to
+        a log file (using the C shell) you would use:
+
+            genesis -nox -batch -notty batchtest >& batch.log &
+
+        With the Bourne shell (or bash) it would be:
+
+            genesis -nox -batch -notty batchtest > batch.log 2>&1 &
+
+See also: src/README, Simulations

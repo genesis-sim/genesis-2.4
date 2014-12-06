@@ -1,0 +1,4 @@
+#$Format: "ARCHIVE=$Project$.$ProjectVersion$"$
+ARCHIVE=purkinje.Release2-2.17
+tar cf $ARCHIVE.tar Purkinje_tutorial
+gzip -9 $ARCHIVE.tar

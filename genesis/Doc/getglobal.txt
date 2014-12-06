@@ -1,0 +1,26 @@
+Routine Name:	getglobal
+
+Description:	Returns the value of a global variable, allowing the name of
+		the global variable to be held in a string variable.
+
+Usage:	        getglobal name
+
+Example:
+
+		genesis >  str variable = "EREST"
+		genesis >  addglobal float {variable}
+		genesis >  setglobal {variable} -0.07
+		genesis >  echo {variable} = {getglobal {variable}}
+		EREST = -0.070000
+
+Notes:
+
+Often it is useful to use a string variable name to hold the name of a
+global variable.  For example, one may want to pass the name of a global
+variable to a function that declares a global variable, or that sets or
+returns its value.  However, normal GENESIS syntax for declarations and
+assignments does not permit a variable name to be specified by a string
+variable.   The routines addglobal, getglobal, and setglobal are designed
+to overcome this limitation.
+
+See also:       Variables, addglobal, setglobal, listglobals

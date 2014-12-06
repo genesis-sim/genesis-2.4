@@ -1,0 +1,48 @@
+Routine Name:	help
+
+Description:	Displays help on GENESIS topics.
+
+Usage:		help [ topic [help-directory-list] ]
+
+		topic			string (typically a routine name)
+
+		help-directory		list of directories containing
+					ascii help files
+
+Example:        genesis >  help CONTENTS | more
+                genesis >  help synchan  | more
+		genesis >  help myroutine /myhelpdirectory /basichelp
+
+Notes:		Help searches specified help directories for documentation on
+		the given topic (typically a routine name).  If no directory
+		is specified then the current default help directory (the last
+		help directory referenced) will be used.  If no default help
+		directory exists (e.g., when help is used for the first time),
+		the value of the environment variable GENESIS_HELP is used as
+		the help directory (cf. setenv, getenv); this variable is
+		set to the genesis/Doc directory, using the full path
+                given in the default .simrc file.
+
+                As most of these files are longer than a single screen, it is
+                best to pipe the output into "more".
+
+                If no topic is given, the genesis/Doc/README file is printed
+                to the screen.   This gives further information about the
+                current version of the one-line help, the GENESIS Reference
+                Manual, and the hypertext documentation.
+
+		[for help writers:]
+
+		The Help facility allows text to be included from other files
+		(use ## as first characters on a line, followed by the local
+		file name; you can omit the .txt suffix).  For instance, you
+		might create the following file trig.txt:
+
+			TRIG Routines
+			##cos
+			##sin
+			##tan
+
+		When you type "help trig" to view this file, instead of seeing
+		the text "##cos" etc., the contents of the file cos.txt would
+		be read in and displayed at that point in the file.

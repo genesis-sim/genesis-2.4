@@ -1,0 +1,35 @@
+Routine Name:	call
+
+Description:	Allows an element to execute the function associated with the
+		named action.
+
+Usage:		call path action [args...] -parent -virtual
+
+-parent         call the action on the element using the parent object
+                of the current object context as the new object
+                context
+
+-virtual        call the action on the element using the element's
+                object as the object context during the action.
+
+
+Example:	call /form/graph RESET
+		call /form/graph/plot ADDPTS {x} {y}
+
+Notes:		The call routine allows the user to send an action to an
+		element's handler routine (outside of the simulation cycle).
+
+		An action executes in the context of a specific object which
+		is either the element's object or some base object for the
+		element.  The object context determines what fields,
+		actions, messages and classes are known and accessibility of
+		fields during execution of the action function.  Without any
+		other options to call, the object context during the call is
+		the element's object or the current object context if the
+		element is already executing an action.  The -parent and
+		-virtual options modify this.  These options are to be used
+		when an action is called within the function definition of
+		an action to be added with the addaction command.  They have
+		no affect when used outside an action function.
+
+See also:	addaction, Extended Objects (Extended.txt)

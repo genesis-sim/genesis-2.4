@@ -1,0 +1,13 @@
+Routine Name:	listobjects
+
+Description:	Lists available element types.
+
+Usage:		genesis >  listobjects
+
+Notes:		The listobjects routine displays a list of the element types
+		currently defined within GENESIS.  GENESIS comes with an
+		extensive set of element types already included.
+
+See also:	showobject
+
+

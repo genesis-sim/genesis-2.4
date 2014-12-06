@@ -1,0 +1,52 @@
+                             CELL PARAMETERS
+
+  The equivalent circuit for each cell compartment looks like this:
+
+   Vm                                 
+   o__________________________________________________________
+   |           |              |             |        |        |      
+   |           |              |             |        |        |
+   |           \              \             \        |        |
+   |         --/-->         --/-->          /       / \    ___|___
+   |      Gex  \         Ginh \        Rm   \      / A \   _______ Cm 
+   |           |              |             |      \ | /      |
+   |           |              |             |       \ /       |
+   |      Eex ---      Einh  ---    Eleak  ---       | Iinject|
+   |        -------        -------       -------     |        |
+   /           |              |             |        |        |
+   \           |______________|_____________|________|________|
+   /  Ra                             
+   \                                 
+   |                                 
+   |                                      
+   o
+
+  Vm represents the membrane potential, or the potential in the interior of a
+  compartment relative to a point outside the cell.  It appears across the
+  membrane capacitance Cm, and causes a current flow into the next
+  compartment through the axial resistance Ra when there is a difference in
+  potential between the two compartments.  Iinject is the optional injection
+  current provided by an electrode inserted into the compartment.  Eex and
+  Einh are the equilibrium potentials for the two types of channels which
+  are nominally excitatory and inhibitory.  If no other channels existed,
+  Eleak would simply be the resting potential of the compartment.
+  Conduction through other passive channels causes this parameter to have a
+  value slightly depolarized from the rest potential, however.  All of the
+  above parameters except Iinject may be set through the Cell Parameters
+  menus and channel submenus.
+
+  Gex and Ginh represent the variable conductances of these two channels.
+  The channel submenus allow some of the parameters which affect these
+  conductances to be set.
+
+  For soma channels, Gbar (in milli-Siemens) gives the peak magnitude of the
+  channel conductances.
+
+  For dendrite channels, gmax plays a similar role in setting the magnitude
+  of the conductances.  The time behavior of the conductance is determined by
+  two parameters, tau1 and tau2.  In the limit tau1 = tau2 (which is the
+  default case), a delta-function input to a synapse produces an initial
+  linear increase in conductance and an exponential decay with time constant
+  tau1.  This is often referred to as the "alpha-function" form.  When the
+  two parameters are different, the time behavior is of the
+  "dual-exponential" form.

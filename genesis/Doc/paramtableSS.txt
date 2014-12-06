@@ -1,0 +1,166 @@
+Object Type:    paramtableSS
+
+Description:    This object implements a stochastic-search (SS)
+                algorithm as part of a parameter search process, and also
+                stores the parameter tables and various bookkeeping
+                information relating to the parameter search process.
+
+Author:         Mike Vanier, Caltech
+
+-------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+Data structure: paramtableSS_type  [in src/param/param_struct.h]
+
+Size:       184 bytes (more when tables are loaded)
+
+Fields:     iteration_number        iteration number
+            num_params              total number of parameters
+            search                  array of flags:
+                                    0 = don't search this parameter,
+                                    1 = do search this parameter
+            type                    type of parameter:
+                                    0 = additive,
+                                    1 = multiplicative
+            range                   of parameter values
+            min                     of parameter values
+            max                     of parameter values
+            label                   label of parameter,
+                                    for documentation purposes only
+            current                 array of parameter values
+                                    to be simulated next
+            best                    array of parameter values
+                                    giving best match so far
+            best_match              best match value
+            filename                where parameter information is
+                                    stored/saved as a binary file
+            alloced                 flag: 1 means tables are allocated
+            round_number            number of expansion-contraction cycles
+                                    we have completed
+            variance                current variance of gaussian
+                                    distribution
+            minvariance                minimum variance of algorithm
+            maxvariance                maximum variance of algorithm
+            addvarscale                scaling factor for variances of
+                                    additive parameters
+            multvarscale            scaling factor for variances of
+                                    multiplicative parameters
+            contract                rate of variance contraction
+
+
+-------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:   ParamtableSS  [in src/param/paramtableSS.c]
+
+Classes:    param
+
+Actions:    Note: required arguments to actions are in <angle brackets>;
+                  optional arguments are in [square brackets].
+
+            CREATE      Creates the object (not invoked directly).
+
+            TABCREATE <num_params>
+                        Initializes the object for a given number of
+                        parameters.
+
+            DELETE      Deletes all allocated memory.
+
+            TABDELETE   Same as DELETE.
+
+            INITSEARCH  Initializes the search process.  Note that
+                        TABCREATE must be called before calling this
+                        action.  Also, the maxvariance field must
+                        be set before calling this action.  This action
+                        will start the search off at the parameters set
+                        by the initparamSS function.
+
+            RANDOMIZE   Randomizes parameters in tables; uses a uniform
+                        distribution from (best - range, best + range).
+                        Can be used after INITSEARCH to pick a random
+                        point in the parameter space to start with.
+
+
+            UPDATE_PARAMS
+                        Chooses the next set of parameters to
+                        simulate based on past results.
+
+            ACCEPT <match>
+                        Copies the match value to the best_match field
+                        and the current parameters to the best fields.
+
+            RECENTER    Recalculates the min and max values based on
+                        the best and range values.  You might try doing
+                        this after a best match is found to allow you
+                        to search through a larger search space than
+                        the initial limits would allow.
+
+            SAVE [filename]
+                        Saves the object as a binary file.  If no
+                        argument given, use the "filename" field
+                        of the element.
+
+            SAVEBEST <filename>
+                        Saves the best parameter set to an ascii file.
+
+            RESTORE [filename]
+                        Restores the object from a binary file.  If no
+                        argument given, use the "filename" field of the
+                        element.
+
+            DISPLAY     Displays the best parameter set obtained so
+                        far on stdout.
+
+            CHECK       Runs a series of self-check diagnostics on this
+                        object.
+
+Messages:   none
+
+-------------------------------------------------------------------------
+
+Notes:      This object stores parameter tables and calculates new tables
+            to be simulated in a parameter search process using a
+            stochastic-search algorithm.  Here is a brief description of
+            this algorithm:
+
+            A random starting point in parameter space is chosen.  New
+            points are selected from a multidimensional Gaussian
+            distribution centered on the starting point with a given
+            (initially large) variance.  These new points are evaluated,
+            and if one is found that is a better match than the previous
+            best match, the Gaussian distribution is moved so that it is
+            centered on the new (best) point.  In addition, the variance of
+            the distribution decreases each iteration until it reaches some
+            minimum value, at which time it is increased to the original
+            value.  This constitutes one "round", and successive
+            expansion-contraction rounds are performed for as long as the
+            modeler wants.  In principle, choosing points from a
+            distribution with a large variance will allow the modeler to
+            search over large regions of parameter space, while choosing
+            points from a distribution with a much smaller variance will
+            allow the modeler to find locally optimal points in small
+            regions of parameter space.
+
+            In general, this algorithm performs more poorly than the
+            simulated annealing and the genetic algorithm methods.  It was
+            included mostly for comparison purposes, since some
+            investigators have used this method for parameterizing neural
+            models.  Nevertheless, we recommend that you skip this method
+            entirely and instead use the GA or SA methods.
+
+            You can modify the variance separately for additive and
+            multiplicative parameters using the addvarscale and
+            multvarscale fields.  This can be useful since the scales of
+            additive and multiplicative parameters can be very different
+            (e.g. of order 1.0 for Gbar scaling (multiplicative) and of
+            order 0.001 (1 mV) for minf offsets (additive)).  Ideally you'd
+            like to be able to modify the variance on a per-parameter basis
+            (like the scalemod fields in paramtableSA) but we haven't
+            gotten around to that yet.
+
+Example:    See Scripts/param/SS for demo scripts.
+
+See also:   Parameter Search (Param), Paramtable, setsearch, initparamSS,
+            paramtableBF, paramtableCG, paramtableGA, paramtableSA

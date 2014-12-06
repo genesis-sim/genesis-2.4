@@ -1,0 +1,122 @@
+# $Id: Makefile.gamma,v 1.2 2005/07/29 15:47:11 svitak Exp $
+#
+# GENESIS/XODUS : network simulator
+#
+#	Make tree altered June 1991
+#	Last altered Mon Oct  7 13:09:34 PDT 1991
+#	by David Bilitch
+#
+# $Log: Makefile.gamma,v $
+# Revision 1.2  2005/07/29 15:47:11  svitak
+# Relocated common targets to Makefile.BASE. Some architectures were making
+# in sys and shell, then all the subdirs. If you find this needs to be done
+# for your architecture, please submit a bug report at:
+# http://sourceforge.net/tracker/?func=add&group_id=141069&atid=748364
+#
+# Eliminated use of COPT in favor of CFLAGS_IN.
+#
+# Added architecture-dependent flags for compilation of SPRNG libraries to
+# corresponding Makefiles.
+#
+# Changed INSTALL to INSTALLDIR to avoid confusion with INSTALL executable.
+#
+# Added TEST variable to allow different location of 'test' executable.
+#
+# Made TMPDIR setting more prominent.
+#
+# Updated instructions for making genesis.
+#
+# Revision 1.1.1.1  2005/06/14 04:38:27  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.19  2000/05/29 02:10:39  mhucka
+# Fixed "make install" directive, which was actually screwed up.
+#
+# Revision 1.18  2000/05/26 23:39:29  mhucka
+# Added INSTALLBIN.
+#
+# Revision 1.17  2000/05/26 22:19:48  mhucka
+# Need to copy Doc, src and other dirs during "make install".
+#
+# Revision 1.16  2000/05/19 20:08:48  mhucka
+# Need to pass value of SPRNG_LIB to make clean.
+#
+# Revision 1.15  2000/05/19 18:16:26  mhucka
+# Made it pass value of MACHINE to submakefiles during "make clean".
+#
+# Revision 1.14  2000/04/24 07:10:43  mhucka
+# Added another library parameter to handle things like the SPRNG library.
+#
+# Revision 1.13  1999/10/17 23:58:35  mhucka
+# Removed XVERSION symbol definition.  It turns out it's not used anywhere.
+#
+# Revision 1.12  1998/01/15 03:17:37  venkat
+# Included-the-DISKIOSUBDIR-macro-to-be-passed-down-to-lower-level-subdirectories
+#
+# Revision 1.11  1997/06/13  00:36:54  dhb
+# Added @ to suppress command echoing of echo commands
+#
+# Revision 1.10  1996/06/18 07:07:08  dhb
+# Support for AR macro.
+#
+# Revision 1.9  1995/11/02  00:06:17  dhb
+# Changes to pass down TMPDIR macro to sub makes and the LEXLIB macro
+# to the code_g make.
+#
+# Revision 1.8  1995/04/29  01:11:24  dhb
+# Added handling of YACC, LEX and LEXLIB macros to define the
+# yacc and lex programs and the lex libraries respectively.
+#
+# Revision 1.7  1994/12/06  01:45:40  dhb
+# Added the XINCLUDE macro
+#
+# Revision 1.6  1994/04/14  14:51:50  dhb
+# Now passes RANLIB macro down in install targets
+#
+# Revision 1.5  1994/04/04  21:25:45  dhb
+# Added RANLIB macro to handle systems without ranlib.
+#
+# Moved compiler depended macro settings to src/Makefile.
+#
+# Revision 1.4  1994/03/22  23:56:31  dhb
+# Changed codeg target to code_g (the actual program name).
+#
+# Revision 1.3  1994/03/21  18:25:36  dhb
+# Changes to make code_g program
+#
+# Revision 1.2  1993/10/19  18:53:27  dhb
+# RCS changes and libsh --> ./libsh
+#
+#
+
+
+# The following should be defined if you are compiling for an i860
+CFLAGS		=	$(CFLAGS_IN) -i860 -node
+
+##
+## sprng may need different flags in order to compile.
+## In general, it can be optimized at a higher level than genesis code.
+##
+RNG_CFLAGS = $(CFLAGS_IN)
+
+LLIBS		=	$(LIBS) $(EXTRALIBS)
+
+#
+# That's all folks!  Write the file and type 'make' to build genesis.  Type
+# "make install" to install it.
+#
+#XLIB		=	/usr/lib
+XLIB		=	/home/sampson4/pgi3.3/i860/lib-coff
+INSTALL		=	..
+SIMLIB		=	../lib
+XODUSLIB	= 	xodus
+
+# If you don't have the lex libraries use this
+# and define a function 'yyless' in 'ss/lex.yy.c'
+# as has been done for the i860, and a function
+# 'yywrap' that always returns '1'. Nothing else
+# is used from the lex libraries.
+LIBS 	= 	-lm
+#LIBS 	= 	-ll -lm
+
+include Makefile.BASE

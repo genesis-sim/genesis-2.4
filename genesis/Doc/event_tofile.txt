@@ -1,0 +1,65 @@
+Object Type:	event_tofile
+
+Description:	A gizmo that collects an INPUT message. When value
+		in message exceeds threshold, current simulation
+		time is written to asci file.
+		
+		Designed to allow ascii output from a range of
+		objects, like channelC3, synchan, timetable.
+
+Author:		D. Jaeger, Caltech (3/95)
+
+---------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	event_tofile_type [in genesis/src/device/spike_struct.h]
+
+Size:		64 bytes
+
+Fields:		fname		File name of asci output
+		fp		file pointer
+		open		flag
+		threshold	threshold above which time is written to file
+
+-----------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Event_tofileFunc  [in genesis/src/device/event_tofile.c]
+
+Classes:	device
+
+Actions:	PROCESS
+		SET
+		OPEN
+		CLOSE
+		FLUSH
+
+Messages:	INPUT compared against threshold
+
+-----------------------------------------------------------------------
+
+Notes:	An ascii file containing simulation times at which an event
+	occurred is generated. The event arrives via an INPUT
+	message, and is generated when the input value exceeds
+	threshold. Only positive thresholds are implemented.
+
+	Before activation the file needs to be opened with a reset or call
+        OPEN statement.  The generic openfile, writefile, and closfile
+        commands can NOT be used with the same file.
+
+	
+Example: 
+
+create synchan syn
+create event_tofile etf
+set etf fname test.asc
+sendmsg syn etf INPUT activation
+reset
+... // run simulation
+call etf CLOSE
+
+See also: openfile, writefile, closefile (for general asci file control)
+          timetable, spikegen, randomspike (for good source elements
+          to feed into event_tofile), Scripts/examples/spike/spikes.g.

@@ -1,0 +1,25 @@
+Routine Name:	getsynsrc
+
+Description:	Returns a string which is the path of the presynaptic
+		element sending the SPIKE message to the synapse of the
+		postsynaptic element with the given index.
+
+Usage:		getsynsrc postsynaptic-element index
+
+		postsynaptic-element The synchan or derived element
+		       receiving the SPIKE message from the source element.
+
+		index  The index of the synapse on a synchan or derived element
+		       whose source you want.
+
+Example:	str src = {getsynsrc /cell/soma/Ex_chan 0}
+		if (src == "input[0]/spike")
+		    setfield /cell/soma/Ex_chan synapse[0].weight 10.0
+		else
+		    setfield /cell/soma/Ex_chan synapse[0].weight 0.0
+		end
+
+Notes:		
+
+See also:	getsyncount, getsynindex, getsyndest, BoG chapter 17
+

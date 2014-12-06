@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: GENESIS Startup Command Reference</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-23.html">Previous</A>
+<A HREF="Manual-25.html">Next</A>
+<A HREF="Manual.html#toc24">Table of Contents</A>
+<HR>
+<H2><A NAME="s24">24. GENESIS Startup Command Reference</A> </H2>
+
+<P>The commands described in this section are used during the compilation of
+GENESIS libraries.  They are used within library startup scripts, and are
+not recognized by the SLI at run time.  A description of their use is given
+in 
+<A HREF="Manual-21.html#NewObjects">Defining New Objects and Commands</A>.</P>
+
+<H2><A NAME="addfunc"></A> <A NAME="ss24.1">24.1 addfunc</A></H2>
+
+<P>
+<PRE>
+Command Name:   addfunc
+
+Description:    Binds a compiled C function to a name for reference as a
+                routine in the Genesis shell.
+
+Usage:          addfunc name function [type]
+
+Example:        addfunc do_myfunction myfunction
+                addfunc do_return_index getindex int
+
+Notes:          This library initialization command binds a compiled C
+                function to a name within GENESIS by which the function can
+                be called.  It is used when compiling new GENESIS libraries,
+                and is not recognized by the SLI when GENESIS is running.
+</PRE>
+
+See also:       
+<A HREF="Manual-25.html#listcommands">listcommands </a>, 
+<A HREF="Manual-25.html#showcommand">showcommand </a></P>
+
+
+<H2><A NAME="newclass"></A> <A NAME="ss24.2">24.2 newclass</A></H2>
+
+<P>
+<PRE>
+Command Name:   newclass
+
+Description:    Adds a new class to list of currently recognized GENESIS
+                element classes.
+
+Usage:          newclass class-name
+
+Example:        newclass NEWCLASS
+
+Notes:          The newclass routine is used to add new element classes to
+                the working set of GENESIS objects.  Objects can be grouped
+                into named classes.  This grouping can be used to facilitate
+                the specification of operations to be performed on
+                functionally related elements.  See the documentation on
+                scheduling and the addtask routine for an example of class
+                use.
+
+                This class name can be used in subsequent specification of new
+                objects using the object routine or in the modification of
+                object classes using the class field of the object routine.
+
+                Classes are simply used for grouping of related elements and
+                do not alter the element functionality in any way.  Classes in
+                GENESIS don't carry the full connotations of classes within a
+                true object-oriented programming environment.  They are simply
+                convenient ways of created named groupings to which objects
+                can be assigned.
+
+                This initialization command is used when compiling new
+                GENESIS libraries, and is not recognized by the SLI when
+                GENESIS is running.
+</PRE>
+
+See also: listclasses, 
+<A HREF="#object">object </a>, addtask, 
+<A HREF="Manual-16.html#Schedules">Schedules </a></P>
+
+
+<H2><A NAME="object"></A> <A NAME="ss24.3">24.3 object</A></H2>
+
+<P>
+<PRE>
+Command Name:   object
+
+Description:    Defines the attributes of a GENESIS element type (&quot;object&quot;).
+
+Usage:          object name datatype function class [class] ...
+                        -actions names
+                        -messages name type case-num arg-names
+                        -readwrite field-name field-desc [default-value]
+                        -readonly field-name field-desc [default-value]
+                        -hidden field-name field-desc [default-value]
+                        -fields names
+                        -defaults args
+                        -description text
+                        -author text
+
+                name            object name (must be unique)
+
+                datatype        name of the object data structure defining
+                                object fields (must be the same name as that
+                                used in the structure definition;
+                                see example_struct.h)
+
+                function        default object function (must be the same name
+                                used for the function in the code definition;
+                                see example.c)
+
+                class           class to which this object belongs; can be
+                                one or more of existing classes
+                                (see listclasses)
+
+                -actions        flag indicating that following arguments are
+                                actions that the object can perform; action
+                                names must correspond to predefined or newly
+                                added actions (see addaction); actions listed
+                                must be consistent with actions defined in
+                                code definition (see SELECT_ACTION in
+                                example.c)
+
+                -messages       flag indicating that following arguments are
+                                messages for object, in the following order:
+
+                                1. name of message (any string), as can be 
+                                   used by 'addmsg' routine
+                                2. case number of message type, must
+                                   correspond to value defined in code
+                                   definition (see MSGLOOP of example.c)
+                                   If omitted, one will be automatically
+                                   generated.
+                                3. number of arguments to message
+                                4. names of arguments (arbitrary, used for
+                                   documentation purposes, but there MUST be
+                                   as many names as there are arguments
+                                   defined in 3)
+
+                -readwrite      make field-name both readable and setable
+                -readonly       make field-name readable, but not setable
+                -hidden         hide field-name from view by showfield
+
+                The remaining fields are added for the purpose of documenting
+                the object and are optional.
+
+Example:        object  nernst          nernst_type Nernst  device channel \
+                        -author         &quot;M.Wilson Caltech 3/89&quot; \
+                        -actions        PROCESS RESET CHECK \
+                        -messages       CIN 0           1 Cin \
+                                        COUT 1          1 Cout \
+                                        TEMP 2          1 T \
+                        -fields         &quot;E = equilibrium potential&quot; \
+                                        &quot;T = temperature in degrees celsius&quot; \
+                                        &quot;valency = ionic valency z&quot; \
+                                        &quot;scale = voltage scale factor&quot; \
+                        -description \
+                            &quot;Calculates Nernst potential for the given&quot; \
+                            &quot;ionic concentrations and temperature.&quot; \
+                            &quot;E = scale*(RT/zF)*ln(Cout/Cin)&quot; \
+                            &quot;A scale factor of 1 gives E in volts.&quot; \
+                            &quot;A scale factor of 1e3 gives E in millivolts.&quot;
+
+Notes:          The object command is used to define the attributes of a
+                GENESIS object.  An object command is executed for each type
+                of GENESIS element and defines the function associated with
+                that element, the actions which are valid to perform on the
+                element, any special GENESIS environment variables tagged to
+                the element, any messages which can be passed to or from the
+                element, and a brief description of that element.
+
+                This initialization command is used when compiling new
+                GENESIS libraries, and is not recognized by the SLI when
+                GENESIS is running.
+</PRE>
+
+See also:       
+<A HREF="Manual-25.html#listobjects">listobjects </a>, 
+<A HREF="Manual-25.html#addaction">addaction </a>,
+<A HREF="#newclass">newclass </a>, 
+<A HREF="Manual-25.html#showobject">showobject </a></P>
+
+
+<HR>
+<A HREF="Manual-23.html">Previous</A>
+<A HREF="Manual-25.html">Next</A>
+<A HREF="Manual.html#toc24">Table of Contents</A>
+</BODY>
+</HTML>

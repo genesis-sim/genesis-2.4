@@ -1,0 +1,26 @@
+Routine Name:	addobject
+
+Description:	Adds a new object to GENESIS defined by the fields, message,
+		actions and class tags of the given element.  The element
+		is removed and used as a prototype for initial field values
+		of new elements created from the new object.
+
+Usage:		addobject object-name element -author author-info
+		 -description descriptive-text ...
+
+		object-name	the new name for the object
+
+		element		element from which to create the new object
+	
+		-author		Information about the author of the object
+
+		-description	A description of the object; multiple
+				arguments to -description may be given
+				resulting in multiple lines of descriptive
+				text
+
+Notes:		The object name must not be the same as an existing
+		object.  Currently, there is no corresponding
+		deleteobject command.
+
+See also:	listobjects, showobject, Extended

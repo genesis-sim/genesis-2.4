@@ -1,0 +1,99 @@
+This is a list and description of the voltage activated ionic channels
+available in the GENESIS channel library.  The file "LIST" gives the names
+of the scripts in which these channels are defined.  In addition, various
+simulations have made use of chemically activated channels, NMDA channels and
+dendrodendritic synapses.
+
+
+***********************************************************************
+
+                          K  Channels
+
+***********************************************************************
+
+Channel Name		Description
+
+K_moll_cs        delayed rectifier [Connor and Stevens]
+KA_moll_cs       transient A-current [Connor and Stevens]
+K_squid_hh       delayed rectifier  [Hodgkin and Huxley]
+K_hh_tchan       efficient tabulated version of above
+K_squid_tab      efficient tabulated version of above
+K_lgn_hh	 delayed rectifier [McCormick, Huguenard, Strowbridge; 1991]
+K_lgn_tab	 efficient tabulated version of above
+K0_io_tchan      inferior olive K0 channel [Maurice Lee]
+K1_io_tchan      inferior olive K1 channel [Maurice Lee]
+K_mit_tchan      mitral cell K [Upi Bhalla]
+K_gran_hh        granule cell K [Upi Bhalla]
+Kca_mit_tab      mitral cell Ca dependent K [Upi Bhalla]
+K_mit_tab        mitral cell K [Upi Bhalla]
+K_trit_agt       slowly inactivating  [Aldrich, Getting, Thompson; 1979]
+K_hip_traub	 inactivating CA3 K-current [R.D. Traub; 1982]
+Kca_hip_traub	 Ca-dependent CA3 K-current  [R.D. Traub; 1982]
+K_bsg_yka        bullfrog delayed K-current [Yamada, Koch, Adams; 1989]
+KA_bsg_yka       bullfrog transient A current [Yamada, Koch, Adams; 1989]
+KM_bsg_yka       bullfrog muscarinic current [Yamada, Koch, Adams; 1989]
+K_mit_usb        mitral cell K [Upi Bhalla]
+K_alphamn_bsf    non-inactivating [Bunow, Segev, and Fleshman; 1985]
+K_hip_pyr_tl     hippocampal pyramidal cell [Traub and Llinas; 1979]
+K_mit_usb        mitral cell slowly inactivating K [Upi Bhalla]
+K2_mit_usb       variation of above
+K_slow_usb       variation of above
+Kahp_hip_traub91 CA3 slow AHP current (Ca-dependent) [Traub, et al; 1991]
+Kc_hip_traub91   CA3 fast C-current (Ca-dependent) [Traub, et al; 1991]
+Kdr_hip_traub91  CA3 delayed rectifier  [Traub, et al; 1991]
+Ka_hip_traub91   CA3 transient A-current [Traub, et al; 1991]
+Kc_moll_db       Aplysia R-15 C-current (Ca-dependent) [D. Beeman]
+H_lgn_tab	 Hyperpolarization-activated (H) [McCormick, et al.1991]
+K_leak		 leakage channel [Pratik Mukherjee]
+Moczyd_KC        non-inactivating BK-type Ca-dependent K [Erik De Schutter]
+K_squid_markov   stochastic version of K_squid_hh [D. Beeman]
+
+***********************************************************************
+
+                          Na  Channels
+
+***********************************************************************
+
+Channel Name          	Description
+
+Na_moll_cs	 fast inward current [Connor and Stevens]
+Na_squid_hh      fast Na-channel [Hodgkin and Huxley]
+Na_hh_tchan      efficient tabulated version of above
+Na_squid_tab     efficient tabulated version of above
+Na_io_vdep       inferior olive Na channel [Maurice Lee]
+Na_mit_tchan     mitral cell Na [Upi Bhalla]
+Na_gran_hh       granule cell Na [Upi Bhalla]
+Na_aplysia_ag    Aplysia R-15 fast Na [Adams and Gage; 1979]
+Na_bsg_yka       bullfrog Na current [Yamada, Koch, Adams; 1989]
+Na_rat_yhl       Rat Na channel [Yang, Hsu, and Lester]
+Na_rat_smsnn     Rat Na channel, cloned, [Stuhmer et al; 1987]
+Na2_rat_smsnn    variation of above for mitral cell Upi Bhalla]
+Na_alphamn_bsf   [Bunow, Segev, and Fleshman; 1985]
+Na_hip_pyr_tl    hippocampal pyramidal cell [Traub and Llinas; 1979]
+Na_mit_usb       mitral cell Na [Upi Bhalla]
+Na2_mit_usb      mitral cell Na [Upi Bhalla]
+Na_hip_traub91   CA3 fast Na [Traub, et al; 1991]
+Na_sej_tab	 cortical fast Na current [Lytton and Sejnowski; 1991]
+Na_squid_markov  stochastic version of Na_squid_hh [D. Beeman]
+
+***********************************************************************
+
+                          Ca  Channels
+
+***********************************************************************
+
+Channel Name		Description
+
+NCa_drg_fnt      Ca 'N' channel [Fox, Nowycky and Tsien; 1987]
+Ca_io_vdep       inferior olive Ca channel [Maurice Lee]
+Ca_mit_tab       mitral cell Ca [Upi Bhalla]
+Ca_bsg_yka       bullfrog Ca current [Yamada, Koch, Adams; 1989]
+Ca_aplysia_ag    Aplysia R-15 fast Ca current [Adams and Gage; 1979]
+B_trit_st        Tritonia slow inward B (Ca/Na) [Smith and Thompson; 1987]
+Ca_hip_traub	 Ca-inactivated Ca current [R.D. Traub; 1982]
+LCa_mit_usb  	 purkinje cell L-current [Hirano and Hagiwara; 1989]
+LCa3_mit_usb     variation of above for mitral cell [Upi Bhalla]
+Ca_hip_pyr_tl    hippocampal pyramidal cell [Traub and Llinas; 1979]
+Ca_hip_traub91   CA3 high voltage activated [Traub, et al; 1991]
+Ca_sej_tab       low threshold T-current  [Lytton and Sejnowski; 1991]
+Ca_lgn_hh 	 low threshold T-current  [McCormick, et al; 1991]

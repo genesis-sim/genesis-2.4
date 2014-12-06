@@ -1,0 +1,67 @@
+The izcell.g script is a demonstration of the 'izcell' object, a GENESIS
+implementation of the Izhikevich simple spiking neuron model.  (Izhikevich,
+2003).  The parameters A, B, C, and D are used to produce a wide variety of
+action potential shapes and firing patterns, with greater computational
+speed than the usual compartmental cell models.  (For details, type
+'help izcell' or see Doc/izcell.txt.)  Some typical values are:
+
+Parameters from Izhikevich (2004), Figure 1.
+ A      B       C      D     inject
+ 20    200   -0.065    6       14      (A) tonic spiking
+ 20    250   -0.065    6       0.5     (B) phasic spiking
+ 20    250   -0.050    2       15      (C) tonic bursting
+ 20    250   -0.055    2      0.05     (D) phasic bursting
+ 20    200   -0.055    4       10      (E) mixed mode
+ 10    200   -0.065    8       30      (F) spike frequency adaptation
+ 20   -100   -0.055    6       10      (G) Class 1 excitable *
+200    260   -0.065    0        0      (H) Class 2 excitable **
+ 20    200   -0.065    6        7      (I) spike latency (same as (A)) ***
+
+ * Figure uses 0 to 20 injection ramp; also set coeff1 = 4100, coeff0 = 108
+** Figure uses -0.5 to 3.55 injection ramp
+*** Figure uses 3 msec pulse of inject = 7
+
+Parameters from Izhikevich (2003), Figure 2.
+
+ A      B       C      D     inject
+ 20    200   -0.065    8       10      RS regular spiking rat motor cortex
+100    200   -0.065    2       10      FS fast spiking rat motor cortex
+ 20    200   -0.055    4       10      IB intrinsically bursting motor cortex
+ 20    200   -0.050    2       10      CH chattering (same as Fig. 1C)
+ 20    250   -0.065    0.05    10      TC thalamocortical ****
+100    260   -0.065    2      -1.35    RZ resonator
+ 20    250   -0.065    2       10      LTS low threshold spiking
+
+**** fires a burst for injection step from -10 to 0
+
+These figures (figure1.gif and figure2.gif) may be displayed by clicking on
+the appropriate buttons.  (Electronic versions of the figures and
+reproduction permissions are freely available at www.izhikevich.com.)
+
+The default parameter set in this simulation is for the RS cell, and may be
+modified by entering other values in the dialog boxes under "Spike
+Parameters", or by uncommenting the lines with alternate values in
+izcell.g.  (As usual with GENESIS/XODUS, be sure to hit 'Enter' to have the
+new value take effect.)  The 'Injection Parameters' dialogs allow you to
+change from the default single step current injection after a delay to
+multiple injection pulses.  The default time simulation step dt = 0.0001
+sec is rather conservative, and could be replaced by the larger 0.00025 sec
+step used in the original papers.  However, it is needed for accurate
+results in network simulations.  (See the iznet.g description in README.)
+
+Notes on the izcell.g script:
+
+As with most GENESIS simulations, SI units are used, but the parameter
+'uscale' can be changed in the script to express voltages and time in mV and
+msec, if desired.  The EREST parameter is used by the program as the initial
+value of Vm after resetting the simulation.  It is not a field of the izcell
+object.  In izcell.g, EREST is set to be the same as the C parameter, but
+could be set to other values if desired.
+
+References:
+
+Eugene M. Izhikevich (2003) Simple Model of Spiking Neurons,
+IEEE Transactions on Neural Networks 14:1569-1572
+
+Eugene M. Izhikevich (2004) Which Model to Use for Spiking Cortical Networks?,
+IEEE Transactions on Neural Networks Sept 2004, in press

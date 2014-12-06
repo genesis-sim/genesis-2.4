@@ -1,0 +1,67 @@
+The EMACS editor
+----------------
+
+If you are not familiar with the unix "vi" editor, you may find it easier to
+use EMACS.
+
+To use EMACS, simply type "emacs" followed by the name of the file you wish to
+create or edit.  To allow you to continue using the window from which you
+started emacs, invoke emacs with "emacs &" instead of "emacs".  EMACS has
+fairly good built-in help, which may be accessed by typing Ctrl-H.  After
+typing Ctrl-H, type "?" for a list of options, or "t" to enter the EMACS
+tutorial.
+
+The cursor (arrow) keys and the delete key do the expected things. To exit
+EMACS, type Ctrl-x, followed by Ctrl-c.  If the file has changed, you will
+be prompted to save the file.
+
+Other useful commands are:
+
+	Ctrl-space or Ctrl-@		Sets a mark to mark a block of text
+	Ctrl-w				Kills (cuts) the nextblock of text
+					  between the mark and the current
+					  cursor position
+	Ctrl-k				Kills the text from the cursor to
+					  the end of the line
+	Ctrl-y				Yanks (pastes) the most recently cut
+					  block of text, putting it at the
+					  current cursor position
+	Ctrl-d				Deletes the next character
+	Ctrl-g				Aborts a command in progress
+        Ctrl-x, then Ctrl-f             Switch to another file for editing
+                                        (it prompts for file name)
+        Ctrl-x, then Ctrl-s             Save a file without exiting
+        Ctrl-v                          Page forward
+        Esc v                           Page back
+        Esc q                           Fill (reformat) paragraph
+	ESC x				Allows you to enter a command by
+					  spelling it out (typing a space
+					  will complete a non-ambigous
+					  partial command)
+       Ctrl-x, then 1                   Gets rid of other windows
+
+Useful commands to spell out:
+        auto-fill-mode                  Toggles fill mode (word wrap) on/off
+
+Some EMACS tricks:
+
+You may move the emacs cursor to a given place on the screen by moving the
+mouse cursor to that spot and clicking the left button.
+
+To move a block of text, use Ctrl-space to mark the beginning, move the
+cursor to the end of the block, use Ctrl-w to cut it out, move the cursor to
+the place where it should be inserted, and use Ctrl-y to yank it back at
+that location.  To copy instead of move, perform the same procedure, but
+also use Ctrl-y to yank the text back at the spot from which it was cut.
+
+To cut and paste between different files, cut the text as described above,
+then use the sequence Ctrl-x, Ctrl-f to change to another file and paste the
+text in with Ctrl-y.
+
+Put emacs setup commands in the .emacs file on the main directory.
+For example to set up Ctrl-x Ctrl-l to be goto-line enter
+     (global-set-key "\C-x\C-l" 'goto-line)
+
+It is likely that your account may be set up with a default .emacs file
+that you can customize.  (By editing with emacs, of course!)
+

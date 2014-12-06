@@ -1,0 +1,31 @@
+Routine Name:	setglobal
+
+Description:	Sets the value of a global variable, allowing the name of
+		the global variable to be held in a string variable.
+
+Usage:	        setglobal name value
+
+Example:
+
+float RM, RA, CM
+create xform /control
+create xdialog /control/RM  -value 1.0 -script "setglobal RM <value>"
+create xdialog /control/RA  -value 0.1 -script "setglobal RA <value>"
+create xdialog /control/CM  -value 0.01 -script "setglobal CM <value>"
+xshow /control
+
+Notes:
+
+Often it is useful to use a string variable name to hold the name of a
+global variable.  For example, one may want to pass the name of a global
+variable to a function that declares a global variable, or that sets or
+returns its value.  However, normal GENESIS syntax for declarations and
+assignments does not permit a variable name to be specified by a string
+variable.   The routines addglobal, getglobal, and setglobal are designed
+to overcome this limitation.
+
+The example above shows another use of setglobal to assign the value of
+a global variable with the "script" field of an XODUS widget.  A normal
+assignment statement would not work in this case.
+
+See also:       Variables, addglobal, getglobal, listglobals

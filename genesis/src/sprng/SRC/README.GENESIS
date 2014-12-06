@@ -1,0 +1,14 @@
+2005-06-26 svitak
+make.CHOICES and all the system-dependent makefiles are no longer used.
+All relevant variables are passed from the parent Makefile.
+If you want to much around with MPI, pass the relevant variables from
+the Makefile in this directory.
+
+2000-03-28 <mhucka@bbb.caltech.edu>
+
+In order to provide compatibility with the GENESIS makefiles with a minimum
+of hassles, we renamed some of the SPRNG makefiles to use the platform names
+used by GENESIS.  We also modified the make.CHOICES file correspondingly.
+
+In addition, we also had to modify the main Makefile here from its original
+form in order to be able to compile the package as part of the GENESIS build.

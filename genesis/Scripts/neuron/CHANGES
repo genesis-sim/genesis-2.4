@@ -1,0 +1,59 @@
+March 1993 changes to Neuron tutorial from version distributed with
+GENESIS 1.4
+
+1) spike/axon removed (cell.g) - it isn't used for anything
+
+2) reorganization of control panel buttons; dialog box for "Cable Compts."
+instead of a separate menu (forms.g, make_cable.g)
+
+3) All menus fixed so that changes are applied whenever a dialog box is
+modified.  The "DONE" button merely hides the menu. (forms.g)
+
+4) Cell parameters menus now have dialogs for RM, CM, RA, length and diam.
+Changing these produces changes in the Rmem, Cmem, Raxial dialogs. (forms.g)
+
+5) RM and CM (aka rm and cm) were changed from 10 and 0.05 to 5 and 0.025.
+This preserves the electrotonic length of the dendrite and cable sections
+(0.1), but the smaller membrane resistance makes it possible to have a
+reasonable Eleak with EREST = -70 and values of ENa and EK which allow
+hyperpolarization after a spike.  EK and EInh were changed from -75 to -80.
+The resulting Eleak = 11.7 + EREST_ACT = -58.3. (constants.g)
+
+6) The default values of the synaptic channel gmax was changed to 0.1 nS
+for both channels.  (GEx = Ginh = 100e-9 mS/synapse, instead of 80e-9
+and 40e-9.) (constants.g)
+
+7) Input timing (Delay, Width, Interval) was changed to source A = (10, 50,
+   10) and source B = (20, 50, 10).
+
+8) Changed "Eequil" to "Esyn" for the title of the Ek dialog boxes for
+dendrite sections.   Now use "xshow_on_top" for Inputs and parameter menus
+so that they won't get buried by dend2 graphs.
+
+9) Rewrote the following files to take into account the new changes:
+
+running.hlp, totry.hlp, exercises.txt, solutions.txt
+
+10) For consistency, changed the label of the "Quit Help" button to "DONE".
+(helpforms.g, help.hlp)
+
+==============================================================================
+March 1995 - many changes for GENESIS 2.0 version.
+
+The channelC2's and axons have been replaced by spikegen/synchan combinations.
+
+XODUS 2 widgets are used.
+
+The vdep_channels have been replaced by tabchannels, although the many plots
+(particularly the clock 0 spike plots) are the main bottleneck.
+
+The color cycling of overlayed Vm plots has been removed.  It will have
+to be implemented differently with new graph widgets.
+==============================================================================
+
+Possible future changes:
+
+* Allow one to change the size and other parameters for the cable sections.
+At present they use the default values for dendrite #1 and #2.
+
+* Allow color cycling.

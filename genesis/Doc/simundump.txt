@@ -1,0 +1,71 @@
+Routine name:	simundump
+
+Description:	Creates an element and assigns values to its fields.
+		Simundump is not really a human-use command. It only
+		occurs in dumpfiles, and is always preceeded by initdump
+		and simobjdump, and followed up by enddump at the end of
+		the file.
+
+Usage:		simundump object element ... -tree tree x y z
+
+		object: The object class to be created
+
+		element: The path of the new element
+
+		... : Fields values of the element. The field names are
+		specified earlier in the file by the simobjdump command.
+
+		-tree tree: A currently disabled option for getting the
+			wildcard path from an xtree.
+
+Example:	Here is a little dumpfile using simundump that recreates a
+		simple 2-compartment model.
+
+		============================================================
+		//genesis
+
+		initdump -version 3
+		simobjdump neutral
+		simobjdump compartment activation Vm previous_state \
+			Im Em Rm Cm Ra inject dia len initVm
+		simundump neutral /a 0
+		simundump compartment /a/compt 0 0 0.6632976405 0.6632942696 \
+			-0.3333315551 0 1 1 1 1 0 0 0
+	    	simundump neutral /b 0
+		simundump compartment /b/compt 0 0 0.3299660931 0.3299627243 \
+			0.3333349228 0 1 1 1 0 0 0 0
+	        addmsg /b/compt /a/compt RAXIAL Ra Vm 
+		addmsg /a/compt /b/compt AXIAL Vm 
+		enddump
+		// End of dump
+
+		============================================================
+Notes:		
+		Simundump does quasi-intelligent 'merging' of files with
+		existing simulations. If an element is already there, it
+		will content itself with updating the field values and
+		adding missing messages. It won't try to add messages to
+		missing elements, and won't complain: it assumes that you
+		meant to leave them out. It also has a provision for
+		ignoring orphan elements, whose parents are not defined. These
+		options are activated by the initdump command.
+
+		In current versions of simdump/undump, the first field argument
+		to simundump is always the 'flags' field of the element (even
+		if it not requested). This restores the clocks, and other
+		status attributes of elements.
+	
+		Xodus poses lots of problems for simundump, because Xodus
+		objects do not always behave cleanly. For example,
+		Xodus objects often have default field values like 'nil' 
+		which are not valid when trying to reload the dumpfile. It
+		is necessary to exclude the offending fields by using
+		simobjdump to select well-behaved fields for the dump.
+		Furthermore, there is no 'field' to determine whether an
+		xform is displayed or not, so the forms won't appear until
+		explicity 'shown'. There are various other annoyances, like
+		things not updating when you expect them to. For this reason,
+		simundump will need help if you are trying to reload an
+		interface.
+
+See also:       initdump, simdump, simobjdump

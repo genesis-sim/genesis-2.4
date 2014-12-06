@@ -1,0 +1,216 @@
+Object Type:    synchan
+ 
+Description:    Synaptically activated channel. 
+ 
+Author:         Mike Vanier 11/94
+ 
+------------------------------------------------------------------------------
+ 
+ELEMENT PARAMETERS
+ 
+DataStructure:  Synchan_type  [in src/newconn/newconn_struct.h]
+ 
+Size:           200 bytes
+
+
+Fields:	activation         driving force (transmitter) for channel conductance
+        Ik                 channel current
+        Gk                 time varying channel conductance
+        Ek                 reversal potential of channel
+        tau1               first time constant of channel activation
+        tau2               second time constant of channel activation
+        gmax               peak channel conductance
+        frequency          random activation frequency (default = 0)
+        nsynapses          number of incoming spike messages (readonly)
+	time_last_event    arrival time (including delay) of last spike (readonly)
+	Aplus              unused field available to store positive weight changes
+	Aminus             unused field available to store negative weight changes
+	event_buffer_size  size of event buffer (readonly)
+	pending_events     number of pending spike events in event buffer (readonly)
+	nodes_per_synapse  number of event nodes to allocate per synapse (default 1)
+        synapse            synapse buffer
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+ 
+Function:       Synchan  [in src/newconn/synchan.c]
+ 
+Classes:        segment channel synchannel
+ 
+Actions:        CREATE		set synapse_size hidden field
+		INIT            assign activation = 0
+                PROCESS         update Gk, calculate Ik
+                RESET           assign activation = 0, Gk = 0; calculate
+                                time-step-dependent coefficients
+                RECALC          recalculate time-step-dependent coefficients
+                CHECK           make sure tau1>0, tau2>0; make sure a VOLTAGE
+                                message is present (in order to calculate Ik)
+                SAVE2           called by the save command
+                RESTORE2        called by the restore command
+		EVENT		put a spike event into the event buffer
+		ADDMSGIN
+                DELETEMSGIN
+		MSGINDELETED
+		RESETBUFFER     reset size of event buffer to 
+				(nodes_per_synapse * nsynapses) nodes
+		DELETE		delete the element
+		COPY		copies the element
+ 
+Messages:       VOLTAGE         Vm
+		ACTIVATION      activation
+		RAND_ACTIVATION probability amplitude
+                MOD             modulation
+		SPIKE
+ 
+------------------------------------------------------------------------------
+ 
+Notes:  Simulates a time dependent synaptically activated ionic
+        channel.  A variable channel conductance Gk is activated by
+        the application of transmitter. This conductance then changes
+        with damped second-order characteristics with a time course
+        given by two time constants tau1 and tau2.  This gives rise to
+        an alpha function/dual exponential conductance waveform for an
+        impulse spike input.  The channel also calculates channel
+        current Ik and therefore needs the membrane state (Vm).
+
+        Each SPIKE message to a synchan establishes a synaptic
+        connection and increments nsynapses.  The synapses are
+        numbered starting with 0, and each contains a field for a
+        synaptic weight and a propagation delay.  Thus, a synchan has
+        some of the characteristics of the axons that make synaptic
+        connections to activate the conductance.  For example, the
+        weight of the first synaptic connection is held in the field
+        "synapse[0].weight" while the delay is "synapse[0].delay".  Gk
+        reaches a value gmax*weight for a single event delivered with
+        a SPIKE message.  Note that even though synapses are not
+        elements, they do have fields that can be accessed
+        individually.  They can be thought of as "sub-elements" or
+        substructures of the element.
+
+        Any number of spike events can be pending per synapse.
+	synchan stores all spike events in a buffer until they are
+	scheduled to occur.  If enough events come in to overload the
+	buffer, the buffer will dynamically expand to enable storage
+	of all events.  The size of the buffer in events is stored in
+	the "event_buffer_size" field which is readonly.  The number
+	of actual spikes in the buffer which have not yet hit the
+	channel are stored in the "pending_events" field (also
+	readonly).  The "nodes_per_synapse" field controls how many
+	large the event buffer is initially.  The default is to have
+	one node per synapse, but if you expect a lot of events or
+	very few events you can change this number to be greater or
+	less than the default (1), respectively.  This will speed up
+	the simulation slightly in the first case and save memory in
+	the second.  If you leave this field alone the object will
+	still work fine.  The "resetsynchanbuffers" command will cause
+	all the buffers in all synchan and derived objects to be reset
+	to a size of nodes_per_synapse*nsynapses (which will also
+	cause all pending events to be flushed).
+
+        Unlike most messages, a SPIKE message may only be sent from
+        certain objects, e.g. the spikegen and randomspike objects.
+        The example in Scripts/tutorials/tutorial4.g illustrates the
+        use of synaptic connections with a very simple model of a
+        neuron that translates action potentials generated in the soma
+        into spike events using a spikegen, and then creates a
+        feedback synaptic connection to a synchan in its dendrite.
+        The synchan also receives random background activation with
+        spikes provided by a randomspike element.  Chapters in "The
+        Book of GENESIS" describe this tutorial in detail, the
+        construction of networks with synchans, and the use of GENESIS
+        utility functions to create synaptic connections and provide
+        information about connections in a network.  The documentation
+        for Connections also provides information about ways to make
+        synaptic conections.
+                
+        The ACTIVATION message can be used to directly activate the
+        synchan conductance without creating a synapse.  ACTIVATION
+        messages do not create synapses with weight and delay fields.
+        One use would be to deliver spikes to a synchan from objects
+        that cannot deliver SPIKE messages, without using an
+        intermediate spikegen object to create SPIKE messages.  In
+        this case the activation that is sent with the SPIKE message
+        should last for a single time step dt, and have an amplitude
+        of 1/dt to normalize the activation to a unit area when
+        integrated over this single time step.  Then, it will have the
+        same effect as a SPIKE message, and the result will be
+        independent of dt.  The other case would be one in which an
+        activation is given that persists over multiple time steps, as
+        in an in vitro experiment that provides synaptic activation
+        that does not arise from axonal spikes.  In that case, no
+        normalization by 1/dt is needed.  The activation will be
+        integrated over the duration of the stimulus, and will not
+        depend on dt.
+
+        The MOD message is used to to implement neuromodulation.  The
+        MOD message simply scales the channel activation for that time
+        step by the factor which is sent with the MOD message.  Note
+        that this globally affects all the synapses in the synchan.
+        If you want synchans where some synapses are modifiable but
+        not others, you should divide it into two synchans and only
+        have a MOD message on the modifiable one.  The MOD message
+        could also be used to implement learned time-dependent
+        modification of activation, by using a script_out or extended
+        object to implement an algorithm for synaptic plasticity and
+        to send the MOD message.  The hebbsynchan and facsynchan
+        objects provide other mechanisms for implementing synaptic
+        plasticity.
+
+        The "copy" command will fail for any synchan, facsynchan, or
+        hebbsynchan which is receiving SPIKE messages.  The correct
+        way to set up simulations is to set up prototype cells which
+        do not receive any SPIKE messages on their synchans, copy
+        these cells, and then add the appropriate SPIKE messages (by
+        hand or by using planarconnect or volumeconnect).  We are
+        working on a more "intelligent" copy command which will permit
+        copying of synchans with SPIKE messages, but for now, don't do
+        it.
+
+	This object used to be called synchan2 in genesis 2.0.1.
+	Since it does everything that the old synchan does without the
+	limitations of that object we have retired the old synchan and
+	renamed synchan2 to be synchan.  "synchan2" is now just an
+	alias for synchan -- they are identical.
+
+	Additions for GENESIS 2.4:
+
+	The individual synapse substructures of the synchan now have
+	four additional fields that can be used to implement synaptic
+	plasticity in hsolved synchans.
+
+	'last_spike_time' records the arrival time (including delay) of the
+	last presynaptic spike. It can be used along with the
+	'lastevent' field of the cell spikegen to determine the times
+	of presynaptic and postsynaptic spikes.  It is set to -1 on
+	RESET.
+
+	The settable fields 'Aplus' and 'Aminus' are set to 0.0 on
+	RESET. Otherwise, they are not used by the synchan. They are
+	available to store positive and negative weight when synaptic
+	plasticity rules are applied with an external function or
+	object, such as the stdp_rules object. Likewise, 'lastupdate'
+	is not directly used by the synchan, except to set it to -1 on
+	RESET. It is used by plasticity objects such as stdp_rules to
+	keep track of when the synapse weight, Aplus, and Aminus
+	fields were last updated.
+
+
+Example: (Using Scripts/tutorials/tutorial4.g)
+
+         genesis > showfield /cell/dend/Ex_channel synapse[1].weight
+         [ /cell/dend/Ex_channel ]
+         synapse[1].weight    = 10
+
+        genesis > echo {getfield /cell/dend/Ex_channel synapse[1].delay}
+        0.004999999888
+
+        genesis >  showfield /cell/soma/Ex_channel synapse[0].last_spike_time
+
+	[ /cell/soma/Ex_channel ]
+	synapse[0].last_spike_time = 99.92880249
+
+
+See also:       resetsynchanbuffers, Connections, NewSynapticObjects,
+                hebbsynchan, facsynchan, getsyncount, getsynindex, getsynsrc,
+                getsyndest, stdp_rules

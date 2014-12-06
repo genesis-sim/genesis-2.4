@@ -1,0 +1,430 @@
+# ----------------------------------------------------------------------
+# DEFINITIONS FOR SPECIFIC OPERATING SYSTEM AND COMPILER IN USE
+# ----------------------------------------------------------------------
+MACHINE  ?= $(shell uname)
+ARCH     ?= $(shell uname -p)
+OS=BSD
+# TODO:
+# - detect & set appropriate OS based on build system
+#   (c.f. old GENESIS Makefiles)
+
+CC=@CC@
+CPP=@CPP@ -P
+LD=ld
+
+CFLAGS += -O2 -D__NO_MATH_INLINES
+
+RANLIB=@RANLIB@
+AR=ar
+YACC=@YACC@
+LEX=@LEX@
+
+LEXLIB=@LEXLIB@
+LIBS=$(LEXLIB) -lm
+XINCLUDE=-I@X_INC@
+ifneq (@X_LIB@,)
+	XLINKPATH=-L@X_LIB@
+endif
+
+# X11's ICE, SM libraries break netcdf on OSX
+# (uncomment if needed for backward compatibility)
+XPRELIBS=@X_PRE_LIBS@
+#ifneq ($(MACHINE), Darwin)
+#	LIBS += $(XPRELIBS)
+#endif
+
+
+# TODO:
+# - confirm TERMCAP & TERMOPTS for other platforms
+# - create autoconf rule for that
+TERMCAP=-lncurses
+TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+
+# ----------------------------------------------------------------------
+# B. INSTALLATION AND MISC CONFIGURATION SETTINGS
+# ----------------------------------------------------------------------
+
+# The following variable determines where GENESIS is placed by the
+# "make install" command
+INSTALLDIR ?= @prefix@
+
+# If /tmp is not big enough to contain compile-produced object files,
+# choose a different location here.
+TMPDIR = /tmp
+
+
+# ----------------------------------------------------------------------
+# C. OPTIONAL LIBRARIES
+# ----------------------------------------------------------------------
+#
+# The following libraries are optional.  If you comment the macros for a
+# given library here the library will not be compiled or linked into the
+# executable.
+
+#
+# kinetics --- Kinetic modeling library (necessary for kkit)
+#
+
+KINETICSLIB = kin
+KINETICSDIR = kinetics
+KINETICSOBJ = $(KINETICSDIR)/kinlib.o
+
+#
+# chemesis - chemesis modeling library
+#
+CHEMESISLIB = chem
+CHEMESISDIR = chemesis
+CHEMESISOBJ = $(CHEMESISDIR)/chemlib.o
+
+#
+# diskio --- Binary file format support library
+#
+# The diskio and related objects from this library provide a disk_in
+# disk_out backward compatible interface for netCDF portable binary
+# files.  Comment out the DISKIO and DISKIOLIB macros to exclude the
+# diskio library.  There are currently no kits or tutorials which depend
+# on this library.
+
+# Please note that all the macros here need to be uncommented if diskio
+# support is to be included.  FMT1 support is therefore included by
+# default when the diskio library is linked in.
+
+FMT1SUBDIR   = FMT1
+FMT1OBJ      = $(DISKIODIR)/interface/FMT1/FMT1lib.o
+FMT1FLAGS    = -DFMT1
+
+DISKIOLIB    = diskio
+DISKIODIR    = diskio
+DISKIOSUBDIR = $(NETCDFSUBDIR) \
+               $(FMT1SUBDIR)
+DISKIOOBJ    = $(NETCDFOBJ) \
+	       $(FMT1OBJ) \
+	       $(DISKIODIR)/diskiolib.o
+DISKIOFLAGS  = $(NETCDFFLAGS) \
+	       $(FMT1FLAGS)
+
+# Uncomment the following definitions if the netCDF file format needs to
+# be supported by diskio.  netCDF is a system-independent, portable,
+# binary file format.  See the directory src/diskio/interface/netcdf for
+# more information.  NOTE: *only* uncomment the netCDF definitions below
+# if diskio support is included above.
+
+NETCDFSUBDIR = netcdf
+NETCDFOBJ = \
+	$(DISKIODIR)/interface/$(NETCDFSUBDIR)/netcdflib.o \
+	$(DISKIODIR)/interface/$(NETCDFSUBDIR)/netcdf-3.4/src/libsrc/libnetcdf.a
+NETCDFFLAGS = -Dnetcdf
+
+#
+# oldconn --- GENESIS 1.4 network connection compatibility library
+#
+
+# The following is only necessary for GENESIS 1.4 network models
+# minimally ported to GENESIS 2.x.  NOTE: some of the tutorials/demos
+# utilize this library.
+
+OLDCONNLIB = axon synapse personal toolconn simconn
+OLDCONNDIR = oldconn
+OLDCONNOBJ = $(OLDCONNDIR)/axon/axonlib.o \
+	     $(OLDCONNDIR)/synapse/synlib.o \
+	     $(OLDCONNDIR)/personal/perlib.o \
+	     $(OLDCONNDIR)/sim/simconnlib.o \
+	     $(OLDCONNDIR)/tools/toolconnlib.o
+
+#
+# SPRNG -- Improved random number generation
+#
+
+# The SPRNG library provides five random number generators.  To use
+# SPRNG, you must specify SPRNG as one and only one of lfg, lcg,
+# lcg64, or cmrg here.  Lagged Fibonacci is the default as it is the
+# fastest and has the longest number sequence.
+#
+# Further information about SPRNG can be found at http://sprng.cs.fsu.edu/
+# The link to the users guide to installation on various platforms
+# (http://daniel.scri.fsu.edu/www/version1.0/platforms.html) may be useful
+# to address compilation problems with the SPRNG 1 version used in GENESIS.
+#
+# Note that lfg is the default and is the most tested.
+
+SPRNG_LIB = lfg
+
+# Disable compiling of SPRNG by uncommenting the following line and
+# commenting out all the other SPRNG lines below.  If GENESIS has
+# already been compiled, you'll have to do "make clean" before making
+# GENESIS again.
+#
+# SPRNG_FLAG=
+#
+
+SPRNG_FLAG = -DINCSPRNG
+SPRNGDIR   = sprng
+SPRNGLIB   = $(SPRNGDIR)/lib/lib$(SPRNG_LIB).a
+
+
+
+# F. BEGINNING OF NON-CONFIGURABLE DEFINITIONS
+#
+# This end the user configurable part of the Makefile.  You shouldn't
+# have to change things below this point.
+# ----------------------------------------------------------------------
+
+INSTALLBIN     = $(INSTALLDIR)/bin
+
+#
+# X11 libraries
+#
+
+XLIBS =	$(XLINKPATH) -lXt -lX11
+
+RCSRELEASE =	DR2-2-P1
+MF = 		Makefile.BASE
+SHELL = 	/bin/sh
+
+SIMLIB	=	../lib
+
+XODUSLIB = 	Xodus
+
+INTERP =	ss/ss.o shell/shelllib.o
+
+BASECODE =	sim/simlib.o sys/utillib.o $(INTERP) par/parlib.o
+
+OBJLIBS =	buffer/buflib.o \
+		segment/seglib.o \
+		hh/hhlib.o \
+		device/devlib.o \
+		out/outlib.o \
+		olf/olflib.o \
+		tools/toollib.o \
+		concen/conclib.o \
+		hines/hineslib.o \
+		user/userlib.o \
+		param/paramlib.o \
+		pore/porelib.o \
+		$(OLDCONNOBJ) \
+		$(DISKIOOBJ) \
+		$(KINETICSOBJ) \
+		$(CHEMESISOBJ) \
+		newconn/newconnlib.o
+
+XODUS 	=	$(XODUSLIB)/_xo/xolib.o \
+		$(XODUSLIB)/_widg/widglib.o \
+		$(XODUSLIB)/_draw/drawlib.o \
+		$(XODUSLIB)/Draw/libDraw.a \
+		$(XODUSLIB)/Widg/libWidg.a \
+		$(XODUSLIB)/Xo/libXo.a
+
+EXTRALIBS =  	$(SPRNGLIB) $(TERMCAP)
+
+SUBDIR = sys ss sim $(SPRNGDIR) shell newconn $(OLDCONNDIR) \
+         buffer concen device hh hines olf out segment \
+         tools user param pore convert $(DISKIODIR) \
+         $(KINETICSDIR) $(CHEMESISDIR) Xodus par
+
+NXSUBDIR = sys ss shell sim $(SPRNGDIR) newconn oldconn \
+           buffer concen device hh hines olf out segment \
+           tools user param pore convert $(DISKIODIR) \
+           $(KINETICSDIR) $(CHEMESISDIR) par
+
+MINSUBDIR =	sys ss shell sim $(SPRNGDIR) par
+
+LIBLIST =	output \
+		hh \
+		devices \
+		buffer \
+		segment \
+		user \
+		xo \
+		draw \
+		widg \
+		olf \
+		tools \
+		concen \
+		hines \
+		param \
+		pore \
+		newconn \
+		$(DISKIOLIB) \
+		$(OLDCONNLIB) \
+		$(KINETICSLIB) \
+		$(CHEMESISLIB)
+
+NXLIBLIST = 	output \
+		hh \
+		devices \
+		buffer \
+		segment \
+		user \
+		olf \
+		tools \
+		concen \
+		hines \
+		param \
+		pore \
+		newconn \
+		$(DISKIOLIB) \
+		$(OLDCONNLIB) \
+		$(KINETICSLIB) \
+		$(CHEMESISLIB)
+
+#
+# all is now the default target
+#
+
+all: code_g default
+
+genesis: all
+
+#
+# Remove kinlib.o and text.o in case the last thing made was nxgenesis.
+#
+default: liblist
+	@rm -f kinetics/text.o kinetics/kinlib.o
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" ARCH="$(ARCH)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(DISKIOFLAGS) $(SPRNG_FLAG)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" XLIBS="$(XLIBS)" XINCLUDE="$(XINCLUDE)" LIBS="$(LIBS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" MF="$(MF)" SUBDIR="$(SUBDIR)" DISKIOSUBDIR="$(DISKIOSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" XODUS="$(XODUS)"  libs genesis
+
+#
+# Remove kinlib.o and text.o in case the last thing made had X11 stuff.
+#
+nxdefault: nxliblist
+	@rm -f kinetics/text.o kinetics/kinlib.o
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" ARCH="$(ARCH)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(DISKIOFLAGS) $(SPRNG_FLAG) -DNO_X" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" DISKIOSUBDIR="$(DISKIOSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" nxlibs nxgenesis
+
+mindefault: minliblist
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" ARCH="$(ARCH)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(SPRNG_FLAG)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" minlibs mingenesis
+
+code_g:
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" ARCH="$(ARCH)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" code_g
+
+nxgenesis: code_g nxdefault
+nxall: code_g nxdefault
+
+mingenesis: code_g mindefault
+minall: code_g mindefault
+
+liblist: Makefile
+	@echo "# liblist - This file is generated automatically." > liblist
+	@echo "#           DO NOT EDIT unless you are sure you" >> liblist
+	@echo "#           know what you are doing.  Generally" >> liblist
+	@echo "#           Makefile should be edited instead." >> liblist
+	@echo $(LIBLIST) | tr ' ' '\012' >> liblist
+
+nxliblist: Makefile
+	@echo "# nxliblist - This file is generated automatically." > nxliblist
+	@echo "#             DO NOT EDIT unless you are sure you" >> nxliblist
+	@echo "#             know what you are doing.  Generally" >> nxliblist
+	@echo "#             Makefile should be edited instead." >> nxliblist
+	@echo $(NXLIBLIST) | tr ' ' '\012' >> nxliblist
+
+minliblist: Makefile
+	@echo "# minliblist - This file is generated automatically." > minliblist
+	@echo "#              DO NOT EDIT unless you are sure you" >> minliblist
+	@echo "#              know what you are doing.  Generally" >> minliblist
+	@echo "#              Makefile should be edited instead." >> minliblist
+
+cleandist: clean
+	-(mv Makefile Makefile.bak)
+	-(rm -rf $(INSTALLDIR)/bin)
+	-(rm -f  $(INSTALLDIR)/Libmake)
+	-(rm -f  $(INSTALLDIR)/Usermake)
+	-(rm -rf $(INSTALLDIR)/startup/*)
+	-(rm -rf $(INSTALLDIR)/startup/.*simrc)
+	-(rm -rf $(INSTALLDIR)/startup)
+	-(rm -rf $(INSTALLDIR)/lib/*)
+	-(rm -rf $(INSTALLDIR)/lib)
+	-(rm -rf $(INSTALLDIR)/include/*)
+	-(rm -rf $(INSTALLDIR)/include)
+	-(rm -f  $(INSTALLDIR)/genesis)
+	-(rm -f  $(INSTALLDIR)/nxgenesis)
+	-(rm -f  $(INSTALLDIR)/mingenesis)
+	-(rm -rf $(INSTALLDIR)/.*simrc)
+	-(rm -rf $(INSTALLDIR)/man/man1)
+	-(rm -f  $(INSTALLBIN)/convert)
+	-(rm -f  liblist nxliblist minliblist)
+	-(rm -f  make.out nxmake.out minmake.out)
+	-(rm -f  install.out nxinstall.out mininstall.out)
+	-(rm -rf ../distributions)
+	-(rm -f TAGS)
+	-(find . -name '*~' -exec rm -f {} ';')
+	@echo "Done with full clean"
+
+
+clean:
+	@make -f $(MF) MF="$(MF)" DISKIOSUBDIR="$(DISKIOSUBDIR)" SUBDIR="$(SUBDIR)"  SPRNG_LIB="$(SPRNG_LIB)" clean
+
+rcsclean:
+	@make -f $(MF) MF="$(MF)" SUBDIR="$(SUBDIR)"  rcsclean
+
+makedirs:
+	-@mkdir -p $(INSTALLDIR)
+	-@mkdir -p $(INSTALLBIN)
+	-@mkdir -p $(INSTALLDIR)/Doc
+	-@mkdir -p $(INSTALLDIR)/Hyperdoc
+	-@mkdir -p $(INSTALLDIR)/Scripts
+	-@mkdir -p $(INSTALLDIR)/Tutorials
+	-@mkdir -p $(INSTALLDIR)/lib
+	-@mkdir -p $(INSTALLDIR)/include
+	-@mkdir -p $(INSTALLDIR)/startup
+	-@mkdir -p $(INSTALLDIR)/src
+
+tags:
+	etags `find . /usr/include/X11/ -name '*.[chg]' ! -name '*@*'`
+	etags -a `find /usr/include -name '*.h'`
+
+install: makedirs
+	@make -f $(MF) MF="$(MF)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" DISKIOSUBDIR="$(DISKIOSUBDIR)" SPRNG_LIB="$(SPRNG_LIB)" SUBDIR="$(SUBDIR)" RANLIB="$(RANLIB)" install
+
+nxinstall: makedirs
+	@make -f $(MF) MF="$(MF)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" DISKIOSUBDIR="$(DISKIOSUBDIR)" SPRNG_LIB="$(SPRNG_LIB)" NXSUBDIR="$(NXSUBDIR)" RANLIB="$(RANLIB)" nxinstall
+
+mininstall: makedirs
+	@make -f $(MF) MF="$(MF)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" SPRNG_LIB="$(SPRNG_LIB)" MINSUBDIR="$(MINSUBDIR)" RANLIB="$(RANLIB)" mininstall
+
+VERSNAME="@PACKAGE_NAME@-@PACKAGE_VERSION@"
+bindist: genesis nxgenesis
+	make INSTALLDIR="`pwd`/../distributions/$(VERSNAME)/genesis" install
+	cp nxgenesis "../distributions/$(VERSNAME)/genesis"
+	(cd ..; \
+	cp AUTHORS CONTACTING.GENESIS COPYRIGHT GPLicense LGPLicense \
+		README README.bindist binsetup "distributions/$(VERSNAME)/genesis";)
+	(cd ../distributions; \
+	cp $(VERSNAME)/genesis/src/startup/*simrc $(VERSNAME)/genesis/startup;\
+	rm -f $(VERSNAME)/genesis/startup/\.*simrc;\
+	rm -rf $(VERSNAME)/genesis/src; \
+	tar czf $(VERSNAME)-$(MACHINE)-bin.tar.gz -X ../src/excludeFromBinary $(VERSNAME);\
+	tar cjf $(VERSNAME)-$(MACHINE)-bin.tar.bz2 -X ../src/excludeFromBinary $(VERSNAME);\
+	rm -rf $(VERSNAME))
+
+#
+# make separate source dists for genesis and pgenesis.
+# cvs export must be used so that empty directories are pruned.
+#
+srcdist:
+	-@mkdir -p ../distributions
+	(CVSROOT=$(USER)@cvs.sf.net:/cvsroot/genesis-sim; \
+	CVS_RSH=ssh; \
+	cd ../distributions; \
+	cvs export -D now genesis2 > /dev/null; \
+	mv genesis2 $(VERSNAME); \
+	tar cZf $(VERSNAME)-src.tar.Z -X ../src/excludeFromSrc $(VERSNAME)/genesis; \
+	md5sum $(VERSNAME)-src.tar.Z > $(VERSNAME)-src.tar.Z.md5; \
+	tar czf $(VERSNAME)-src.tar.gz -X ../src/excludeFromSrc $(VERSNAME)/genesis; \
+	md5sum $(VERSNAME)-src.tar.gz > $(VERSNAME)-src.tar.gz.md5; \
+	tar cjf $(VERSNAME)-src.tar.bz2 -X ../src/excludeFromSrc $(VERSNAME)/genesis; \
+	md5sum $(VERSNAME)-src.tar.bz2 > $(VERSNAME)-src.tar.bz2.md5; \
+	tar cZf p$(VERSNAME)-src.tar.Z -X ../src/excludeFromSrc $(VERSNAME)/pgenesis; \
+	md5sum p$(VERSNAME)-src.tar.Z > p$(VERSNAME)-src.tar.Z.md5; \
+	tar czf p$(VERSNAME)-src.tar.gz -X ../src/excludeFromSrc $(VERSNAME)/pgenesis; \
+	md5sum p$(VERSNAME)-src.tar.gz > p$(VERSNAME)-src.tar.gz.md5; \
+	tar cjf p$(VERSNAME)-src.tar.bz2 -X ../src/excludeFromSrc $(VERSNAME)/pgenesis; \
+	md5sum p$(VERSNAME)-src.tar.bz2 > p$(VERSNAME)-src.tar.bz2.md5; \
+	rm -rf $(VERSNAME))
+	-cp README ../distributions/README.$(VERSNAME)
+	-cp ChangeLog ../distributions/ChangeLog.$(VERSNAME)
+
+TestSuite:
+	(cd ..; \
+		tar czf TestSuite.tar.gz --exclude CVS TestSuite; \
+		tar cjf TestSuite.tar.bz2 --exclude CVS TestSuite)
+
+

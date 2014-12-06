@@ -1,0 +1,128 @@
+# Linux/BSD/Darwin defs, extracted from platform specific Makefiles
+# Set only if not defined in parent Makefile
+LLIBS   ?= $(LIBS) $(EXTRALIBS)
+CFLAGS	?= $(CFLAGS_IN)
+RNG_CFLAGS ?= -O3 -D$(MACHINE) # -DLittleEndian has no effect
+
+# PowerPC needs special bigendian treatment in sprng
+# TODO:
+# - autoconf provides WORD_BIGENDIAN via AC_C_BIGENDIAN
+ifeq ($(ARCH), powerpc)
+  RNG_CFLAGS += -DBIGENDIAN
+  CFLAGS += -DBIGENDIAN
+  ifeq ($(MACHINE), Darwin)
+    LIBS += -lSM -lICE    # X11 backwards compatibility on 10.3.9
+  endif
+endif
+ifeq ($(ARCH), ppc64)
+  RNG_CFLAGS += -DBIGENDIAN
+  CFLAGS += -DBIGENDIAN
+endif
+
+#original Makefile.BASE
+
+SIMLIB		=	../lib
+XODUSLIB	= 	xodus
+
+GENESIS = 	$(BASECODE) \
+		$(OBJLIBS) \
+		loadlib.o
+
+NXGENESIS =	$(BASECODE) \
+		$(OBJLIBS) \
+		nxloadlib.o
+
+MINGENESIS =	$(BASECODE) \
+		minloadlib.o
+
+FULLDIR =	startup $(SUBDIR)
+NXDIR =		startup $(NXSUBDIR)
+MINDIR =	startup $(MINSUBDIR)
+
+# =========================================================================
+
+default:
+	@echo "This is not the top level makefile"
+
+nxdefault:
+	@echo "This is not the top level makefile"
+
+mindefault:
+	@echo "This is not the top level makefile"
+
+genesis: libs $(GENESIS) $(XODUS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(GENESIS) $(XODUS) $(XLIBS) $(LLIBS) -o genesis
+	@echo "Full GENESIS Compiled -- All Done"
+
+nxgenesis: nxlibs $(NXGENESIS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(NXGENESIS) $(LLIBS) -o nxgenesis
+	@echo "Non-X GENESIS Compiled -- All Done"
+
+mingenesis: minlibs $(MINGENESIS)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(MINGENESIS) $(LLIBS) -o mingenesis
+	@echo "Minimal GENESIS Compiled -- All Done"
+
+code_g:
+	@(echo cd sys; cd sys; make CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" LDFLAGS="$(LDFLAGS)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" ; cd ..)
+	@(echo cd ss; cd ss; make CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(LDFLAGS)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" ; cd ..)
+	@(echo cd shell; cd shell; make CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" LDFLAGS="$(LDFLAGS)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)"  code_g; cd ..)
+	@(echo cd sys; cd sys; make CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" LEXLIB="$(LEXLIB)" LDFLAGS="$(LDFLAGS)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(CFLAGS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)"  code_g; cd ..)
+	@echo "code_g Compiled"
+
+libs:
+	@(for i in $(SUBDIR); do echo cd $$i; cd $$i; make CC="$(CC)" TMPDIR="$(TMPDIR)" SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(LDFLAGS)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(CFLAGS)" XINCLUDE="$(XINCLUDE)"; cd ..;done)
+	@echo "All Libs Compiled"
+
+nxlibs:
+	@(for i in $(NXSUBDIR); do echo cd $$i; cd $$i; make CC="$(CC)" TMPDIR="$(TMPDIR)" SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(LDFLAGS)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(CFLAGS)"; cd ..;done)
+	@echo "Non-X Libs Compiled"
+
+minlibs:
+	@(for i in $(MINSUBDIR); do echo cd $$i; cd $$i; make CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" LDFLAGS="$(LDFLAGS)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" CFLAGS_IN="$(CFLAGS)"; cd ..;done)
+	@echo "Minimal Libs Compiled"
+
+.c.o:
+	$(CC) $(CFLAGS) -D$(MACHINE) -c $(SIMINCLUDE) $<
+
+loadlib.c: liblist
+	./libsh < liblist > loadlib.c
+
+nxloadlib.c: nxliblist
+	./libsh < nxliblist > nxloadlib.c
+
+minloadlib.c: minliblist
+	./libsh < minliblist > minloadlib.c
+
+cleandist:
+	@echo "You must run cleandist from the toplevel makefile"
+
+clean:
+	@(for i in $(SUBDIR); do echo cd $$i; cd $$i; make SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" MACHINE="$(MACHINE)" clean; cd ..;done)
+	-(rm -rf genesis       loadlib.o    loadlib.c)
+	-(rm -rf nxgenesis   nxloadlib.o  nxloadlib.c)
+	-(rm -rf mingenesis minloadlib.o minloadlib.c)
+	@echo "Done with Cleaning"
+
+copydirs:
+	@for i in Scripts Doc Hyperdoc Tutorials src ; do \
+		(cd ../$$i; a=`pwd`; cd $(INSTALLDIR)/$$i; b=`pwd`; \
+		if test $$a != $$b ; then \
+			echo "Copying $$i directory to $(INSTALLDIR) ..."; \
+			cp -rp $$a "$(INSTALLDIR)"; \
+		fi); \
+	done
+
+install: copydirs
+	@(for i in $(FULLDIR); do echo cd $$i; cd $$i; make MACHINE=$(MACHINE) XINCLUDE="$(XINCLUDE)" SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" RANLIB="$(RANLIB)" install; cd ..;done)
+	@cp genesis$(EXE_EXT) "$(INSTALLDIR)"
+	@echo "Done with full install"
+
+nxinstall: copydirs
+	@(for i in $(NXDIR); do echo cd $$i; cd $$i; make MACHINE=$(MACHINE) SPRNG_LIB=$(SPRNG_LIB) DISKIOSUBDIR="$(DISKIOSUBDIR)" INSTALLDIR=$(INSTALLDIR) INSTALLBIN=$(INSTALLBIN) RANLIB="$(RANLIB)" install; cd ..;done)
+	@cp nxgenesis$(EXE_EXT) "$(INSTALLDIR)"
+	@echo "Done with non-X install"
+
+mininstall: copydirs
+	@(for i in $(MINDIR); do echo cd $$i; cd $$i; make MACHINE=$(MACHINE) SPRNG_LIB=$(SPRNG_LIB) INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" RANLIB="$(RANLIB)" install; cd ..;done)
+	@cp mingenesis$(EXE_EXT) "$(INSTALLDIR)"
+	@echo "Done with minimal install"

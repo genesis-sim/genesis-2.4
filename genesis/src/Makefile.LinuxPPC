@@ -1,0 +1,48 @@
+# $Id: Makefile.LinuxPPC,v 1.2 2005/07/29 15:47:11 svitak Exp $
+#
+# GENESIS/XODUS : network simulator
+#
+#	Make tree altered June 1991
+#	Last altered 2001-05-10 8:59 PDT <mhucka@caltech.edu>
+#
+# YOU MUST NOT EDIT THIS MAKEFILE TO CONFIGURE GENESIS!
+# All configuration is in the file Makefile.
+#
+# $Log: Makefile.LinuxPPC,v $
+# Revision 1.2  2005/07/29 15:47:11  svitak
+# Relocated common targets to Makefile.BASE. Some architectures were making
+# in sys and shell, then all the subdirs. If you find this needs to be done
+# for your architecture, please submit a bug report at:
+# http://sourceforge.net/tracker/?func=add&group_id=141069&atid=748364
+#
+# Eliminated use of COPT in favor of CFLAGS_IN.
+#
+# Added architecture-dependent flags for compilation of SPRNG libraries to
+# corresponding Makefiles.
+#
+# Changed INSTALL to INSTALLDIR to avoid confusion with INSTALL executable.
+#
+# Added TEST variable to allow different location of 'test' executable.
+#
+# Made TMPDIR setting more prominent.
+#
+# Updated instructions for making genesis.
+#
+# Revision 1.1.1.1  2005/06/14 04:38:28  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.1  2001/05/10 16:09:13  mhucka
+# First version of PPC support, based on work by Alfonso Delgado-Reyes.
+#
+#
+
+LLIBS		=	$(LIBS) $(EXTRALIBS)
+CFLAGS		=	$(CFLAGS_IN)
+
+##
+## sprng may need different flags in order to compile.
+## In general, it can be optimized at a higher level than genesis code.
+##
+RNG_CFLAGS = -O3 -DBIGENDIAN -D$(MACHINE)
+
+include Makefile.BASE

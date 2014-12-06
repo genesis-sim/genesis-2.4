@@ -1,0 +1,321 @@
+Object Type:	xplot
+
+Description:	Main object class for displaying graphs. Subclassed
+		from pix. The xplot pix stores and plots sequences of points.
+		Like xpix, xplot can be thought of as being
+		graphical objects in a 3-d space, which can be viewed
+		using the coredraw widget and its subclasses. In the same
+		way that other widgets can only be created in a form,
+		xplots can only be created in a coredraw or a subclass
+		thereof. xplots are usually created in xgraph widgets,
+		which are a subclass of coredraw specialized for plotting
+		graphs.
+		Xplot at this time displays line plots only. There is no
+		facility at present for adding markers or error bars
+		to the points plotted.
+
+	SPECIAL XPLOT CREATION FACILITY
+		For reasons of convenience and backwards compatibility,
+		there is a special facility for the automatic creation of
+		xplots when the appropriate messages are sent to the parent
+		xgraph. In particular, the messages 
+
+		PLOT, PLOTSCALE, and WAVEPLOT
+
+		sent to the parent xgraph, will cause a new xplot to be
+		created if necessary, and then copies of these messages
+		will be sent to the new xplot. This does not affect the
+		normal commands for creation and message-passing to xplots.
+
+		In other words, the commands
+			create xgraph /form/graph
+			addmsg /foo /form/graph PLOT *plot *red
+		will produce the same plot as
+			create xgraph /form/graph
+			create xplot /form/graph/plot
+			addmsg /foo /form/graph/plot PLOT *plot *red
+
+
+	DATA STORAGE IN XPLOT
+		The points displayed by xplots are stored in two
+		interpol_structs called xpts and ypts respectively.
+		As is obvious from their names, point #i displayed in
+		the xplot is stored in location
+			(xpts->table[i],ypts->table[i])
+		There are several options for passing information into 
+		the xpts/ypts arrray.
+		1. The points can be filled in explicitly through the usual
+		script commands for handling tables, e.g.:
+				setfield /form/graph/plot \
+					xpts->table[0] 10
+					ypts->table[0] 20
+			....
+		or 
+				loadtab /form/graph/plot xpts 1 10 0 10 \
+					1 2 3 4 5 6 7 8 9 10
+				loadtab /form/graph/plot ypts 1 10 0 10 \
+					1 2 1 4 1 6 1 8 1 10
+		or 
+				setfield /form/graph/plot ypts /foo/table
+
+		2. The points can be loaded in from a file using the
+		file2tab function, e.g.:
+				file2tab ypointsfile /form/graph/plot \
+					ypts -autofill xpts
+		(see the file2tab documentation for more information and
+		other options.)
+
+		3. The points can be filled in during the course of a
+		simulation using messages, which are described in more
+		detail below. This option is the most commonly used one,
+		for watching the progress of a simulation.
+
+		Note that once the data is in the xpts and ypts tables,
+		it is accessible just like any other data in GENESIS
+		tables.
+
+	MEMORY HANDLING OPTIONS
+			An obvious problem resulting from monitoring a
+		very long simulation is that all those data points will
+		fill up all the available memory. There are a number
+		of ways around this.
+		1. Don't store all the data. One very rarely needs to
+		monitor the output of the simulation at the same fine
+		time-step that the numerical calculations use. Typically
+		the plots can be run at 10 to 100 times longer time-steps.
+		This makes the simulation run faster, too.
+		2. Compress the data. There is an option (on by default)
+		which compresses the incoming data on the fly using a very
+		simplistic, lossy compression scheme. All this does is
+		to discard points which are closer than a defined number
+		in the y-coordinate. The 'ysquish' field stores this
+		number, which is initialized to 1/100 of the range
+		of the y axis of the graph. If it ever looks like the
+		plotted data is seriously distorted, this is a likely
+		culprit and 'ysquish' should be squished. A value of zero
+		will result, obviously, in no compression.
+		3. Set a maximum limit for the number of points allowed
+		(the 'limit' mode). This is unlikely to be useful to anybody.
+		4. Use the 'oscilloscope' mode, where the plot starts
+		over from zero after filling up.
+		5. Use the 'roll' mode to scroll the points like a 
+		stripchart, except that unlike a paper stripchart the
+		scrolled points are lost.
+
+		To recapitulate, the available memory handling modes
+		are :
+			s[quish] : default, attempts lossy compression
+				depending on the ysquish parameter.
+				Expands memory use as required.
+			l[imit] : Prevent plotting points past predefined
+				allocation.
+			r[oll] : Roll the data like a stripchart.
+			o[scilloscope]: Start over at zero once the 
+				allocated memory is used up.
+
+
+	MANIPULATING XPLOTS.
+		Xplots can be created copied, moved and deleted in just the
+		same way as other pixes, which is almost the same as
+		ordinary elements with the following restrictions:
+		1. A an instance of the coredraw subclass must be an ancestor
+		of the xplot. In other words, there must be an element which
+		is a subclass of xcoredraw somewhere in the heirarchy above
+		(closer to the root) the point where the xplot is created.
+		2. An xplot can only be moved within the subtree arising
+		from this ancestral coredraw element.
+
+Author:		Upi Bhalla Mt. Sinai May 93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xplot_type [in src/Xodus/draw/xplot_struct.h]
+
+Size:	Variable depending on number of points stored. Makes
+	extensive use of realloc, so it may fragment memory.
+
+Fields:	fg	Foreground color of plot. 
+        script  Script operation(s) to perform on a mouse
+                click. The script calls of the pix are only made
+                if the draw determines that the pix is the nearest
+                to the event and if the event occurred within the
+                bounding region of the pix. 
+        tx      Transposition distance in the x dimension. The
+                pix is transposed (ie, displaced, offset) by this amount.
+        ty      Transposition in y.
+        tz      Transposition in z.
+        pixflags    Set of flags specifying visibility,
+                refreshes, mouse sensitivity and many other options.
+                Use the 'pixflags' utility function to find out more.
+	        The most commonly used pixflag option with xplot is 'f',
+	        which prevents flushing the entire display every time a point
+                is added. This greatly speeds up the display if there are many
+                xplots or other widgets being updated each timestep.
+	xpts	interpol-struct containing x-coords for plot
+	ypts	interpol-struct containing y-coords for plot
+	npts	Number of points currently being displayed in plot
+	linewidth	Width (in pixels) of plotted line
+	linestyle	One of: LineSolid (default), LineOnOffDash,
+				LineDoubleDash
+	xmin,ymin,xmax,ymax:	Determine range of plotted values.
+			The offsets and scaling factors are handled
+			by adjusting these. Normally managed by the
+			parent xgraph, but must be assigned explicitly
+			when in another coredraw subclass.
+
+	wx, wy:	Window size for plot. Normally both are 1.0.
+	memory_mode:	One of:
+			s[quish]: default. Attempts lossy compression.
+			l[imit]: limit number of plotted points
+			r[oll] : Roll the data like a stripchart.
+			o[scilloscope]: Start over at zero once the 
+				allocated memory is used up.
+	auto_mode:	For future extensions.
+	ysquish:	cutoff for 'squish' mode data compression.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XPlot [in src/Xodus/draw/xplot.c]
+
+Classes:	gadget output
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		XODROP:	Called when a pix is dropped into a draw widget.
+		XODRAG:	Called when a pix is dropped into a draw widget.
+		XOWASDROPPED:	Called when a pix is dropped into a draw widget.
+                B1DOWN: Invoked when mouse Button 1 is pressed.
+                B2DOWN: Invoked when mouse Button 2 is pressed.
+                B3DOWN: Invoked when mouse Button 3 is pressed.
+                ANYBDOWN:       Invoked when any mouse button is pressed.
+                B1DOUBLE: Invoked on a double click on mouse button 1.
+                B2DOUBLE: Invoked on a double click on mouse button 2.
+                B3DOUBLE: Invoked on a double click on mouse button 3.
+		PROCESS: Handle plot input.
+		RESET:	Checks various message options.
+		SET:	Handles special set options including table sets.
+		ADDPTS: Plots (x,y) values as points; equivalent to old
+			xaddpts: call {plot-name} ADDPTS {x} {y}
+
+Messages:	PLOT	data name color
+			In this mode successive data points are added to
+			the end of the plot as the simulation progresses.
+		PLOTSCALE data name color scale yoffset
+			Similar to PLOT, except that the scale and yoffset
+			of this plot are also included in the message.
+		X 	x-coordinate-of-PLOT-msg name-of-corresponding-PLOT-msg
+			This is used for creating xy (phase) plots. To use
+			this, first the PLOT msg must be sent, then the
+			corresponding X msg can be set up. See the
+			example below.
+		WAVEPLOT data name color
+			This is used to create a plot whose y coordinates
+			vary as the simulation progresses. For example,
+			if we have 10 waveplot messages with the same name,
+			they will specify 10 successive y coordinates on
+			a line. With every timestep the y coordinates get
+			updated so the effect is like the profile of a
+			travelling wave.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a xcoredraw widget subclass
+
+Example 1.
+
+================================= cut here =================================
+
+//genesis
+// This example tests the various graph modes. First click 'runit',
+// then click reset and then runit again.
+// Click on any of the plots to toggle their visibility
+
+create xform /form [1,1,500,800] -title "OUTPUT" -fg black
+ce /form
+create xbutton runit 
+setfield runit script \
+   "step 1000; setfield /form/instr1 fg black; setfield /form/instr2 fg blue"
+create xbutton reset -wgeom 50% -script reset
+create xbutton quit -ygeom 0:runit -xgeom 50% -wgeom 50% -script quit
+create xgraph /form/graph -hgeom 30%
+ce /form/graph
+	setfield script "echo in graph" xmin 0 xmax 100 ymin -1 ymax 5
+	setfield yoffset 2
+	setfield xmax 1000 ymax 15
+	setfield overlay 1
+
+create xgraph /form/phasegraph -hgeom 30%
+ce /form/phasegraph 
+	setfield script "echo in graph" xmin 0 xmax 100 ymin -1 ymax 5
+	setfield yoffset 2
+	setfield xmin -1 xmax 1 ymin -1 ymax 3
+	setfield overlay 1
+
+create xgraph /form/wavegraph -hgeom 20%
+ce /form/wavegraph 
+	setfield script "echo in graph" xmin 0 xmax 100 ymin -1 ymax 5
+	setfield xmin -0.5 xmax 1.5 ymin -1 ymax 1
+
+create xlabel /form/instr1 \
+	-label "First click 'runit' to activate the demo." -fg blue
+create xlabel /form/instr2 \
+	-label "After the run ends, click 'reset' and 'runit' again."
+create xlabel /form/instr3 \
+	-label "Click on any of the plot names to toggle their visibility"
+int i
+create xplot /form/graph/foo
+	ce /form/graph/foo
+	for(i = 0; i < 200 ; i = i + 1)
+		setfield xpts->table[{i}] {i}
+		setfield ypts->table[{i}] {sin {i/10.0} }
+	end
+	setfield npts 200 fg blue wx 1 wy 1
+	//set xmin 0 xmax 100 ymin -1 ymax 1 wx 1 wy 1
+	ce ..
+
+create table /tab
+	call /tab TABCREATE 400 0 400
+	setfield /tab step_mode 1 stepsize 1
+	for(i = 0; i < 400 ; i = i + 1)
+		setfield /tab table->table[{i}] {cos {5+ i/30.0} }
+	end
+
+create table /tab2
+	call /tab2 TABCREATE 400 0 400
+	setfield /tab2 step_mode 1 stepsize 1
+	for(i = 0; i < 400 ; i = i + 1)
+		setfield /tab2 table->table[{i}] {sin {4 +i/16.0} }
+	end
+
+addmsg /tab /form/graph PLOT output *output *yellow
+addmsg /tab2 /form/graph PLOT output *output *green
+addmsg /tab2 /form/graph PLOTSCALE output *plotscale *red -0.5 0.5
+
+addmsg /tab /form/phasegraph PLOT output *output *yellow
+addmsg /tab2 /form/phasegraph X output *output
+
+addmsg /tab /form/wavegraph WAVEPLOT output *wave *blue
+addmsg /tab2 /form/wavegraph WAVEPLOT output *wave *blue
+
+setfield /form/#[TYPE=xgraph]/#[TYPE=xplot] script "toggle_visibility <w>"
+
+function toggle_visibility(widget)
+	str widget
+	if ({getfield {widget} pixflags} & 1)
+		setfield {widget} pixflags ~v
+	else
+		setfield {widget} pixflags v
+	end
+end
+
+xshow /form
+================================= cut here =================================
+
+See also:	xgraph, xaxis, XODUS documentation, pix documentation,
+		documentation for coredraw and other subclasses.

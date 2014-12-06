@@ -1,0 +1,10 @@
+This is the "Netkit" example from Chapter 20 of "The Book of GENESIS",
+illustrating how some of the advanced XODUS draw widget objects and commands
+may be used to construct a simple network builder.
+
+Use the mouse to drag prototype cells from the library window into the work
+window below it.  To bring up the parameter edit window in the lower left
+corner, double click on the cell to edit in the work window.  Click and drag
+one cell to another in order to establish a connection, and drag the cell
+into the graph window in order to plot Vm for the cell.
+

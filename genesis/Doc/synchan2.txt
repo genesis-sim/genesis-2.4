@@ -1,0 +1,13 @@
+Object Type:    synchan2
+ 
+Description:    Synaptically activated channel.  
+ 
+Author:         Mike Vanier 11/94
+ 
+Notes:          This object is just an alias for synchan, for
+		backwards-compatibility.  The synchan2 object from genesis
+		2.0.1 has been renamed synchan, since it has all the
+		functionality of the old synchan object without its
+		limitations.  
+ 
+See also:       synchan

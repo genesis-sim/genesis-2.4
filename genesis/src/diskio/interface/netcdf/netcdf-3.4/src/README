@@ -1,0 +1,34 @@
+NetCDF-3 Release
+
+This document describes version 3 of the netCDF package (otherwise known
+as "netCDF-3").  For an overview of netCDF, see the netCDF Web page at
+
+    http://www.unidata.ucar.edu/packages/netcdf/
+
+Legal stuff (copyright, licensing restrictions, etc.) can be found in
+the file COPYRIGHT.
+
+To install this package, please see the file INSTALL.
+
+The netCDF-3 C and FORTRAN interfaces are documented in man(1) pages in
+the distribution in files netcdf.3 and netcdf.3f, respectively.
+
+Two new User's Guides for C and FORTRAN are also available in several
+forms:
+
+    NetCDF User's Guide for C:
+     ftp://ftp.unidata.ucar.edu/pub/netcdf/guidec.ps.Z       (PostScript)
+     ftp://ftp.unidata.ucar.edu/pub/netcdf/guidec.html.tar.Z (HTML)
+     http://www.unidata.ucar.edu/packages/netcdf/guidec/     (online)
+
+    NetCDF User's Guide for FORTRAN:
+     ftp://ftp.unidata.ucar.edu/pub/netcdf/guidef.ps.Z       (PostScript)
+     ftp://ftp.unidata.ucar.edu/pub/netcdf/guidef.html.tar.Z (HTML)
+     http://www.unidata.ucar.edu/packages/netcdf/guidef/     (online)
+
+An overview of the differences between netCDF-2 and netCDF-3 can be
+found in the file COMPATIBILITY.
+
+We appreciate feedback from users of this package.  Please send
+comments, suggestions, and bug reports to <support@unidata.ucar.edu>.
+Please identify the version of the package (file VERSION).

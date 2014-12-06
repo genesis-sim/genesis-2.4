@@ -1,0 +1,31 @@
+Routine Name:   planardelay2
+
+Description:    
+
+Description:    A faster version of planardelay, which sets the delay fields
+                on groups of synapses between specified lists of elements.
+                Most often used to set delays on groups of synapses that have
+                been set up by calling the "planarconnect" command.  This
+                function can assign groups of synapses to a fixed delay, can
+                assign delays in proportion to the distances between pre- and
+                postsynaptic elements, and can add various types of randomness
+                to delay values.
+
+Usage:          planardelay sourcepath destination_path   \
+                -fixed delay                              \
+                -radial conduction_velocity                \
+                -add                                       \
+                -uniform scale                             \
+                -gaussian stdev maxdev                     \
+                -exponential mid max                       \
+                -absoluterandom
+
+Notes:          In contrast to planardelay, which can set the delays of all
+                efferent synapses from the source map when no destination is
+                given, planardelay2 only sets the delays of the synapses
+                from the source map to a particular destination map.  By
+                requiring the destination parameter, planardelay2 achieves
+                faster setup times than planardelay.  For further details of
+                usage and examples, see the documentation for planardelay.
+
+See also:       planardelay, planarconnect, planarweight, planarweight2

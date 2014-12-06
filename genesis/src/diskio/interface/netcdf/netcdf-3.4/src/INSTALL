@@ -1,0 +1,996 @@
+$Id: INSTALL,v 1.1.1.1 2005/06/14 04:38:29 svitak Exp $
+
+This file contains instructions on how to build and install
+netcdf-3.3.1.  If you don't understand them, then PLEASE, PLEASE, PLEASE
+find someone who does. :-)
+
+If you encounter a problem during the installation of this package and
+wish to report it, then see the section "REPORTING PROBLEMS" below.
+
+Read the README file to understand what this release is all about.
+
+You will need about 10 Mbytes of free space to unpack, build, and run the
+tests.
+
+If you wish to build from source on a Win32 platform, there are some
+different instructions. Obtain the following file
+
+    ftp://ftp.unidata.ucar.edu/dist/ftp/pub/netcdf/contrib/win32/maks.zip,
+
+unpack it in the parent directory of this one, and read WIN32_INSTALL.
+
+Select and specify an appropriate build environment.  You will need a
+Standard C compiler (if you don't have one, then you probably won't be
+able to build this package).  Set the environment variables CPPFLAGS,
+CC, CFLAGS, FC, FFLAGS, CXX, and CXXFLAGS (and perhaps LIBS) to
+represent that environment.  The section marked "TESTED SYSTEMS" below
+contains a list of systems on which we have tried to build this package,
+the setting we used, and additional, important commentary (USE IT!).
+Feel free to expand this list.
+
+Go to the top-level source directory (i.e. the directory containing this
+INSTALL file).
+
+Decide on where you want to install this package.  This will be used
+as the --prefix= argument to the configure script below.  The default
+installation prefix is "..", which will install the package's files
+in ../bin, ../lib, ../man, etc. -- relative to the top-level source
+directory.
+
+Execute the configure script:
+
+    ./configure [--prefix=_whatever_you_decided]
+
+The square brackets above merely indicate that the "prefix"
+specification is optional: do not type them.
+
+The configure script will examine your computer system -- checking for
+attributes that are relevant to building the netCDF package.  It will
+print to standard output the checks that it makes and the results that
+it finds.  (It is a good idea to redirect this output and standard
+error to a file -- in case something goes wrong.)
+
+The configure script will also create the file "config.log", which will
+contain error messages from the utilities that the configure script uses
+in examining the attributes of your system.  Because such an examination
+can result in errors, it is *expected* that "config.log" will contain
+error messages.  Therefore, such messages do not necessarily indicate a
+problem (a better indicator would be failure of the subsequent "make").
+One exception, however, is an error message in "config.log" that
+indicates that a compiler could not be executed (not that it failed,
+mind you, but rather that it couldn't be started).  This indicates a
+severe problem in your compilation environment -- one that you must
+fix.  If you don't understand what the problem is, then seek out a local
+expert who might.
+
+Run "make".  This will build one or more netCDF libraries.  It will
+build the basic netCDF library libsrc/libnetcdf.a.  If you have a
+Fortran compiler, then the Fortran interface will be included in this
+library.  If you have a C++ compiler, then the C++ interface will be
+built into the library cxx/libnetcdf_c++.a.  This will also build the
+netCDF utilities ncgen(1) and ncdump(1).
+
+Run "make test" to verify the build.  This will build and run
+"libsrc/t_nc", a simple "blunder test".  It will also build and run the
+programs "nctest" and "nc_test", which test the version 2 and version 3
+C interfaces, respectively.  If you have a Fortran compiler, then this
+will also run the programs "ftest" and "nf_test", which test the version
+2 and version 3 Fortran interfaces, respectively.
+
+Run "make install".  Try linking your applications.  Let us know if
+you have problems (see REPORTING PROBLEMS below).  Let us know how much
+faster it is.  Update your applications to the new interface.  Write
+new applications using the new interface.  Port the library to other
+platforms.  Share data.
+
+***********************************************************************
+PORTING NOTES:
+
+The configure and build system should work on any system which has a
+modern "sh" shell, "make", and so on.  The configure and build system
+is less portable than the "C" code itself, however. You may run into
+problems with the "include" syntax in the Makefiles. You can use GNU
+make to overcome this, or simply manually include the specified files
+after running configure.
+
+If you can't run "configure", you will need to create libsrc/ncconfig.h
+and fortran/nfconfig.inc. Start with libsrc/ncconfig.in and
+fortran/nfconfig.in and set the defines as appropriate for your
+system.
+
+Operating system dependency is isolated in the "ncio" module.  We
+provide two versions. posixio.c uses POSIX system calls like "open()",
+"read()" and "write(). ffio.c uses a special library available on CRAY
+systems. You could create others which used Macintosh or VMS system
+calls. The program "t_ncio.c" can be used as a simple test of this
+layer.
+
+Numerical representation dependency is isolated in the "ncx" module.  As
+supplied, ncx.m4 (ncx.c) supports IEEE floating point representation,
+VAX floating point, and CRAY floating point. BIG_ENDIAN vs LITTLE_ENDIAN
+is handled, as well as various sizes of "int", "short", and "long".  We
+assume, however, that a "char" is eight bits.
+
+There is a separate implementation of the ncx interface available as
+ncx_cray.c which contains optimizations for CRAY vector architectures.
+Move the generic ncx.c out of the way and rename ncx_cray.c to ncx.c
+to use this module. By default, this module does not use the IEG2CRAY
+and CRAY2IEG library calls. When compiled with aggressive inlining and
+optimization, it provides equivalent functionality with comparable
+speed and clearer error semantics. If you wish to use the IEG library
+functions, compile this module with -DUSE_IEG.
+
+***********************************************************************
+TESTED SYSTEMS:
+
+The following are sets of settings that we've used to build netCDF-3 on
+various systems -- plus commentary.  Take your pick if there is more
+than one set of settings for a particular system (for execution speed,
+choose the "-DNDEBUG" and "-O" set; for debugging, choose the "-g" set).
+
+If you don't find your environment listed here, then try URL
+<http://www.unidata.ucar.edu/packages/netcdf/other-builds.html> for 
+reports of successfull builds of this package in environments that we
+did not or could not try.
+
+AIX 4.2 (imogene or gale) 2 4 000109423500
+    CC=xlc
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=xlf
+    FFLAGS=-g
+    CXX=xlC
+
+    --------
+
+    CC=xlc
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=xlf
+    FFLAGS=-O
+    CXX=xlC
+
+BSD/OS emo 2.1 i386     # Note: release 2.1
+
+    (netCDF 3.3 example follows; netCDF 3.4 not tested)
+
+    NOTE: Use the GNU make(1) utility (gmake(1)) rather than
+    /usr/bin/make to build the package.  The latter utility doesn't
+    support the "include" syntax used in the makefiles.
+
+    CC=/usr/bin/cc
+    CPPFLAGS=-Df2cFortran       # "-Df2cFortran" is necessary if fort77(1)
+                                # is used as the Fortran "compiler".
+    CFLAGS=-g
+    FC=/usr/local/bin/fort77    # actually an f2c(1)-using script
+    FFLAGS="-g -w"
+
+BSD/OS emo 3.0 i386     # Note: release 3.0
+
+    (netCDF 3.3 example follows; netCDF 3.4 not tested)
+
+    NOTE: Use the GNU make(1) utility (gmake(1)) rather than
+    /usr/bin/make to build the package.  The latter utility doesn't
+    support the "include" syntax used in the makefiles.
+
+    --------
+
+    CC=/usr/bin/cc
+    CPPFLAGS="-DNDEBUG -Df2cFortran"    # "-Df2cFortran" is necessary if
+                                        # fort77(1) is used as the Fortran 
+                                        # "compiler".
+    CFLAGS=-O
+    FC=fort77                           # actually an f2c(1)-using script
+    FFLAGS="-O -w -Nx400"               # "-Nx400" allows fortran/netcdf.inc 
+                                        # to have many EXTERNAL statements
+    CXX=/usr/bin/g++                    # version 2.7.2.1
+
+    --------
+
+    CC=/usr/bin/cc
+    CPPFLAGS="-DNDEBUG -Df2cFortran"    # "-Df2cFortran" is necessary if the
+                                        # Fortran "compiler" is fort77(1).
+    CFLAGS=-O
+    FC=/usr/local/bin/fort77            # actually an f2c(1)-using script
+    FFLAGS="-O -w -Nx400"               # "-Nx400" allows fortran/netcdf.inc
+                                        # to have many EXTERNAL statements
+    CXX=/usr/bin/g++                    # version 2.7.2.1
+
+HP-UX robin A.09.05 A 9000/715 2010262449 two-user license
+
+    (netCDF 3.3 example follows; netCDF 3.4 not tested)
+
+      Note:  Subtle problems that may be difficult to diagnose
+      reportedly result if a C application compiled without the "+a" C
+      flag is linked against the library compiled with the "+a" C flag.
+
+    --------
+
+    CC=/bin/c89
+    CFLAGS=
+    FC=/usr/bin/fort77
+    FFLAGS=-w
+    CXX=/usr/bin/CC
+
+    --------
+
+    CC=/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/usr/bin/fort77
+    FFLAGS="-O -w"
+    CXX=/usr/bin/CC
+
+HP-UX robin B.10.20 E 9000/715 2010262449 8-user license
+
+      Note:  Subtle problems that may be difficult to diagnose
+      reportedly result if a C application compiled without the "+a" C
+      flag is linked against the library compiled with the "+a" C flag.
+
+    --------
+
+    CC=/bin/c89
+    CPPFLAGS=-D_HPUX_SOURCE
+    CFLAGS=
+    FC=/opt/fortran/bin/fort77          # might be /usr/bin/fort77 instead
+    FFLAGS=-w
+    CXX=/usr/bin/CC
+
+    The above results in harmless warnings like the following:
+
+	CC: "ncvalues.hh", line 40: warning: "signed" not implemented \
+	(ignored) (163)
+	CC: "ncvalues.hh", line 43: warning: int  initialized with long \
+	(103)
+	CC: "ncvalues.hh", line 44: warning: const int  initialized with \
+	long (103)
+
+    --------
+
+    CC=/bin/c89
+    CPPFLAGS="-D_HPUX_SOURCE -DNDEBUG"
+    CFLAGS=-O
+    FC=/opt/fortran/bin/fort77          # might be /usr/bin/fort77 instead
+    FFLAGS="-O3 -w"
+    CXX=/usr/bin/CC
+
+IRIX dana 5.3 11091811 IP20 mips
+
+    CC=/bin/cc
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/bin/f77
+    FFLAGS=-g
+    CXX=/bin/CC
+
+    The above results in harmless warnings like the following:
+
+	"ncvalues.hh", line 40: warning(3161): integer conversion \
+	resulted in a change
+
+    --------
+
+    CC=/bin/cc
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/bin/f77
+    FFLAGS=-O
+    CXX=/bin/CC
+
+    The above results in harmless warnings like the following:
+
+	"ncvalues.hh", line 40: warning(3161): integer conversion \
+	resulted in a change
+
+IRIX chevy 6.2 03131015 IP22
+
+        IRIX f90 Note: On IRIX 6.x platforms with version 7 compilers,
+        the f90 compiler accepts 'integer*1', while f77
+        accepts both 'integer*1' and 'byte'. Using
+        FC=f90 forces the configure script to select 'integer*1'.
+        The resulting *.inc files and test configurations will then
+        work with either compiler.
+
+    --------
+
+    CC=/bin/c89
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/bin/f77
+    FFLAGS=-g
+    CXX=/bin/CC
+
+    The above results in harmless warnings like the following:
+
+	"ncvalues.hh", line 40: warning(3161): integer conversion resulted
+	in a change
+
+    --------
+
+    CC="/bin/cc -n32"
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC="/bin/f77 -n32"
+    FFLAGS=-O
+    CXX="/bin/CC -n32"
+
+    The above results in harmless warnings like the following:
+
+	"ncgen.y", line 1127: warning(1172): subscript out of range
+
+    --------
+
+    CC=/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/bin/f77
+    FFLAGS=-O
+    CXX=/bin/CC
+
+    The above results in harmless warnings like the following:
+
+	"ncvalues.hh", line 40: warning(3161): integer conversion \
+	resulted in a change
+
+IRIX64 flip 6.4 02121744 IP30
+
+        See IRIX f90 Note above.
+
+    --------
+
+    CC=/bin/cc 
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/bin/f77
+    FFLAGS=-g
+    CXX=/bin/CC
+
+    The above results in harmless warnings like the following:
+
+	"ncgen.y", line 1127: warning(1172): subscript out of range
+
+    --------
+
+    CC="/bin/cc -64"
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC="/bin/f77 -64"
+    FFLAGS=-O
+    CXX="/bin/CC -64"
+
+    The above results in harmless warnings like the following:
+
+	"load.c", line 187: warning(1178): argument is incompatible with ...
+	"ncgen.y", line 1127: warning(1172): subscript out of range
+
+    --------
+
+    CC=/bin/cc
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/bin/f77
+    FFLAGS=-O
+    CXX=/bin/CC
+
+    The above results in harmless warnings like the following:
+
+	"ncgen.y", line 1127: warning(1172): subscript out of range
+
+Linux sunshine 2.0.31 #1 Sun Nov 9 21:45:23 EST 1997 i586
+    CC=/usr/bin/cc              # actually gcc version 2.7.2.3
+    CPPFLAGS=-Df2cFortran       # "-Df2cFortran" is necessary if the Fortran
+                                # "compiler" is fort77(1).
+    CFLAGS=-g
+    FC=/usr/bin/fort77          # actually an f2c(1)-using script
+    FFLAGS="-g -Nx400 -w"       # "-Nx400" allows fortran/netcdf.inc to
+                                # have many EXTERNAL statements
+    CXX=/usr/bin/c++            # actually gcc version 2.7.2.3
+
+    --------
+
+    CC=/usr/bin/cc              # actually gcc version 2.7.2.3
+    CPPFLAGS="-DNDEBUG -Df2cFortran"    # "-Df2cFortran" is necessary if
+                                        # the Fortran "compiler" is fort77(1).
+    CFLAGS=-O
+    FC=/usr/bin/fort77          # actually an f2c(1)-using script
+    FFLAGS="-O -Nx400 -w"       # "-Nx400" allows fortran/netcdf.inc to
+                                # have many EXTERNAL statements
+    CXX=/usr/bin/c++            # actually gcc version 2.7.2.3
+
+    If you get errors similar to the following:
+
+        ... undefined reference to `GLOBAL_OFFSET_TABLE_'
+
+    then your gcc(1) compiler probably doesn't support ELF binaries --
+    though your kernel does.  Try gcc(1) version 2.7.2 or later.
+
+OSF1 ernie V4.0B 564 alpha
+    CC=/bin/c89
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/bin/f77
+    FFLAGS=-g
+    CXX=g++
+
+    --------
+
+    CC=/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/bin/f77
+    FFLAGS=-O
+    CXX=g++
+
+    The above results in a harmless warning like the following:
+
+	cc: Warning: ncgen.l, line 26: The redefinition of the macro
+	"YY_BREAK" conflicts with a current definition because the
+	replacement lists differ.  The redefinition is now in effect.
+
+SunOS gummo 4.1.4 11 sun4m
+        # SunOS 4 will complain bitterly due to its hosed (non ANSI) 
+        # <string.h>. This is harmless. May be suppressed by CFLAGS=-w .
+    CC=acc              # SC3.0.1
+    CPPFLAGS=-DNDEBUG   # Because the SunOS 4 assert() macro is non ANSI,
+                        # always compile the library -DNDEBUG on these systems.
+    CFLAGS=-g
+    FC=f77              # SC3.0.1
+    FFLAGS="-g -w"
+    CXX=CC              # SC3.0.1
+
+    --------
+
+    CC=acc              # SC3.0.1
+    CPPFLAGS=-DNDEBUG   # Because the SunOS 4 assert() macro is non ANSI,
+                        # always compile the library -DNDEBUG on these systems.
+    CFLAGS="-O -temp=." # Insufficient room in "/tmp/" for temporary files
+                        # => we use current directory.  You might be OK.
+    FC=f77              # SC3.0.1
+    FFLAGS="-O -w -temp=."
+                        # Insufficient room in "/tmp/" for temporary files
+                        # => we use current directory.  You might be OK.
+    CXX=CC              # SC3.0.1
+    LIBS=-ldl           # For some reason our linker needed to be told
+                        # to use the dynamic-link library.  This shouldn't
+                        # have occurred and might not be necessary outside 
+                        # the Unidata Program Center.
+
+    --------
+
+    CC=gcc              # version 2.7.2.2
+    CPPFLAGS="-DNDEBUG -D__USE_FIXED_PROTOTYPES__"
+			# -D__USE_FIXED_PROTOTYPES__ shouldn't hurt and is
+			# necessary for some gcc(1) installations.
+    CFLAGS=-g
+    FC=f77              # SC3.0.1
+    FFLAGS="-g -w"
+    CXX=g++		# version 2.7.2.2
+    LIBS="-L/usr/lang/SC3.0.1/lib -lansi"       # To obtain memmove().  Given
+                        # this dependency, one might be better off using
+                        # acc(1) instead of gcc(1).
+
+SunOS meeker 4.1.3 3 sun4m
+
+    (netCDF 3.3 example follows; netCDF 3.4 not tested)
+
+        # SunOS 4 will complain bitterly due to its hosed (non ANSI) 
+        # <string.h>. This is harmless. May be suppressed by CFLAGS=-w .
+    CC=acc              # acc: SC3.0.1 7/13/94
+    CPPFLAGS=-DNDEBUG   # Because the SunOS 4 assert() macro is non ANSI,
+                        # always compile the library -DNDEBUG on these systems.
+    CFLAGS=-O
+    FFLAGS="-O -w"
+        796.8u 240.6s 19:45 87% 0+2780k 839+7664io 2445pf+0w
+    CFLAGS=-O4
+    FFLAGS="-O4 -w"
+        1728.8u 290.5s 36:46 91% 0+3896k 988+8896io 5034pf+0w
+
+SunOS laraine 5.5 Generic sun4u sparc SUNW,Ultra-2
+
+    (netCDF 3.3 example follows; netCDF 3.4 not tested)
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/opt/SUNWspro/bin/f77
+    FFLAGS="-g -erroff=WDECL_LOCAL_NOTUSED"     # "-erroff=..." turns
+                                                # off an ignorable warning.
+                                                # Your compiler may differ.
+    CXX=/opt/SUNWspro/bin/CC
+
+    --------
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O                                   # -xO5 works too
+    FC=/opt/SUNWspro/bin/f77
+    FFLAGS="-O -erroff=WDECL_LOCAL_NOTUSED"     # "-erroff=..." turns
+                                                # off an ignorable warning.
+                                                # Your compiler may differ.
+    CXX=/opt/SUNWspro/bin/CC
+
+    --------
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=
+    CFLAGS=-g
+    FPP=fpp                             # necessary for correct preprocessing
+    FPPFLAGS=-D__SUNPRO_F90             # necessary for correct preprocessing
+    COMPILE_F=                          # necessary for correct preprocessing
+    FC=/opt/SUNWspro/bin/f90            # SC4.2 Fortran 90 compiler 1.2
+    FFLAGS="-g -w"                      # "-w" disables an ignorable warning.
+    CXX=/opt/SUNWspro/bin/CC
+
+SunOS wcfields 5.5 Generic_103093-07 sun4m sparc SUNW,SPARCstation-10
+
+    (netCDF 3.3 example follows; netCDF 3.4 not tested)
+
+    CC=cc               # cc: WorkShop Compilers 4.2 15 Oct 1996 C 4.2
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+
+    --------
+
+    CFLAGS=-g
+    CC="cc -v -errtags -xtransition -Xa"
+                        # Passes dbx(1)'s "check -all"
+
+SunOS laraine 5.6 Generic sun4u sparc SUNW,Ultra-2
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/opt/SUNWspro/bin/f77
+    FFLAGS="-g -erroff=WDECL_LOCAL_NOTUSED"     # "-erroff=..." turns
+                                                # off an ignorable warning.
+                                                # Your compiler may differ.
+    CXX=/opt/SUNWspro/bin/CC
+
+    --------
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/opt/SUNWspro/bin/f77
+    FFLAGS="-O -erroff=WDECL_LOCAL_NOTUSED"     # "-erroff=..." turns
+                                                # off an ignorable warning.
+                                                # Your compiler may differ.
+    CXX=/opt/SUNWspro/bin/CC
+
+    --------
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=
+    CFLAGS=-g
+    FPP=fpp                             # necessary for correct preprocessing
+    FPPFLAGS=-D__SUNPRO_F90             # necessary for correct preprocessing
+    COMPILE_F=                          # necessary for correct preprocessing
+    FC=/opt/SUNWspro/bin/f90            # SC4.2 Fortran 90 compiler 1.2
+    FFLAGS="-g -w"                      # "-w" disables an ignorable warning.
+    CXX=/opt/SUNWspro/bin/CC
+
+    --------
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS="-O `getconf LFS_CFLAGS`"	# for large file compilation environment
+    FPP=fpp                             # necessary for correct preprocessing
+    FPPFLAGS=-D__SUNPRO_F90             # necessary for correct preprocessing
+    COMPILE_F=                          # necessary for correct preprocessing
+    FC=/opt/SUNWspro/bin/f90            # SC4.2 Fortran 90 compiler 1.2
+    FFLAGS="-O -w"                      # "-w" disables an ignorable warning.
+    CXX=/opt/SUNWspro/bin/CC
+    LDFLAGS=`getconf LFS_LDFLAGS`	# for large file compilation environment
+    LIBS=`getconf LFS_LIBS`		# for large file compilation environment
+
+SunOS lenny 5.6 Generic_105182-01 i86pc i386 i86pc
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/opt/SUNWspro/bin/f77
+    FFLAGS="-g -erroff=WDECL_LOCAL_NOTUSED"     # "-erroff=..." turns
+                                                # off an ignorable warning.
+                                                # Your compiler may differ.
+    CXX=/opt/SUNWspro/bin/CC
+
+    --------
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/opt/SUNWspro/bin/f77
+    FFLAGS="-O -erroff=WDECL_LOCAL_NOTUSED"     # "-erroff=..." turns
+                                                # off an ignorable warning.
+                                                # Your compiler may differ.
+    CXX=/opt/SUNWspro/bin/CC
+
+    --------
+
+    CC=/opt/SUNWspro/bin/c89
+    CPPFLAGS=-DNDEBUG
+    CFLAGS="-O `getconf LFS_CFLAGS`"	# for large file compilation environment
+    FC=/opt/SUNWspro/bin/f77
+    FFLAGS="-O -erroff=WDECL_LOCAL_NOTUSED"     # "-erroff=..." turns
+                                                # off an ignorable warning.
+                                                # Your compiler may differ.
+    CXX=/opt/SUNWspro/bin/CC
+    LDFLAGS=`getconf LFS_LDFLAGS`	# for large file compilation environment
+    LIBS=`getconf LFS_LIBS`		# for large file compilation environment
+
+
+sn9607 (UNICOS) ouray 10.0.0 and.2 CRAY J90
+	Cray Standard C Version 6.0.1.3 03/04/98 14:55:01
+	Cray CF90 Version 3.0.1.3 03/04/98 14:55:17
+	Cray C++ Version 3.0.1.3 03/04/98 15:13:33
+Fri Mar  6 14:37:42 MST 1998
+
+    The "-F" option in the following causes the Fortran compiler to
+    1) do its own preprocessing of *.F files rather than use a separate
+    utility; and 2) substitute macros in code as well as in conditional
+    compilation directives (which is necessary).
+
+    Before executing make(1), manually copy the file "libsrc/ncx_cray.c"
+    to file "libsrc/ncx.c".  See the commentary at the top of this file
+    for more information.
+
+    --------
+
+    # The following requires about 46.3 MB for the source build-and-test
+    # directory hierarchy, and about 6.8 MB for the installation
+    # directory hierarchy.
+    CC=/opt/ctl/bin/cc
+    CPPFLAGS=
+    CFLAGS= -O3			# -g works as well
+    FC=/opt/ctl/bin/f90
+    FFLAGS="-g -F -dp"     # "-F" enables macro substitution in code.
+                                # "-dp" enables DOUBLEPRECISION/double
+                                #     equivalence.
+    CXX=/opt/ctl/bin/CC
+    CXXFLAGS=                   # "-h char" may be necessary with
+				# older rev C++ compilers
+
+	The 'C' compiler may run out of memory compiling libsrc/putget.c
+        using "-O3" option. 
+	cc-7951 cc: LIMIT File = putget.c, Line = 6617
+		Insufficient memory is available for compiler to continue.
+	(We don't see this problem anymore.) You can work around this
+	by compiling -O2
+		cd libsrc; c89 -c -O2 -I.  -DNDEBUG putget.c
+	and continuing with the build.
+
+        The C compiler issues some warnings:
+                cc-7212 c89: ... Variable "xx" is used before it is defined.
+        We believe these are unfounded. Since the only appear with
+        optimisation, they may be due to the compiler's inlining strategy.
+
+	In nf_test, you can ignore the following warning:
+ ldr-290 f90: CAUTION 
+     Duplicate entry point 'HASH' was encountered.
+     Entry in module 'HASH' from file 'util.o' has been used.
+     Entry in module '$ZZFFLOW' from file '/opt/ctl/mpt/mpt/lib/libc.a' has
+     been ignored.
+
+
+sn4031 antero 9.0.2.5 and.15 CRAY C90
+	Cray Standard C Version 6.0.1.3 03/04/98 15:01:58
+	Cray CF90 Version 3.0.1.3 03/04/98 15:02:10
+	Cray C++ Version 3.0.1.3 03/06/98 15:23:50
+Fri Mar  6 15:43:25 MST 1998
+
+    This example is for a CRAY C90 and *not* for a CRAY T3D that is
+    being front-ended by a C90.
+
+    Before proceeding with make(1), manually copy the file
+    "libsrc/ncx_cray.c" to file "libsrc/ncx.c".  See the commentary at
+    the top of this file for more information.
+
+    CC=cc
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O3
+    FC=f90
+    FFLAGS="-g -F -dp" # -F is equiv to old -Wp-F
+
+	The 'C' compiler may run out of memory compiling libsrc/putget.c
+        using "-O3" option. 
+	cc-7951 cc: LIMIT File = putget.c, Line = 6617
+		Insufficient memory is available for compiler to continue.
+	(We don't see this problem anymore.) You can work around this
+	by compiling -O2
+		cd libsrc; c89 -c -O2 -I.  -DNDEBUG putget.c
+	and continuing with the build.
+
+        The C compiler issues some warnings:
+                cc-7212 c89: ... Variable "xx" is used before it is defined.
+        We believe these are unfounded. Since the only appear with
+        optimisation, they may be due to the compiler's inlining strategy.
+
+
+sn4031 antero 9.0.2.5 and.15 CRAY C90 TARGET cray-t3d
+	Cray Standard C Version 5.0.5.0  (d34p55m295a41) Mar  6 1998  15:51:17
+	Cray CF90 Version 2.0.4.0 03/06/98 15:51:53
+	Cray C++ Version 2.0.4.0 03/06/98 15:52:20
+Fri Mar  6 15:52:34 MST 1998
+
+    This example is for a CRAY T3D that is being front-ended by a CRAY
+    C90 and *not* for the C90 itself.
+
+    Have /mpp/bin at the head of your PATH.
+
+    Set this environment variable so that the configure script
+    (and tests) will be run on the t3d.
+        TARGET=cray-t3d
+
+    Set this environment variable so that the configure script
+    (and tests) will be run on a single processor of the t3d.
+        MPP_NPES=1
+
+    CC=cc
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=f90
+    FFLAGS="-g -F -dp"
+    CXX=""		# problems compiling cplusplus, use CXXFLAGS="-h char"?
+
+
+sn7203 t90 9.1.0.1 gfd.11 CRAY TS
+	Cray Standard C Version 5.0.1.0  (d27p23g111a29) Mar  6 1998  22:56:40
+	Cray CF90 Version 2.0.4.0 03/06/98 22:56:40
+	Cray C++ Version 2.0.1 03/06/98 22:56:41
+Fri Mar  6 22:29:16 MST 1998
+
+    Before proceeding with make(1), manually copy the file
+    "libsrc/ncx_cray.c" to file "libsrc/ncx.c".  See the commentary at
+    the top of this file for more information.
+
+    CC=cc
+    CFLAGS=-O3
+    FC=f90
+    FFLAGS="-g -F -dp" # -O3 works as well as -g
+    CXX=CC
+    CXXFLAGS="-h char"		# needed with this version
+
+	This compiler version (or environment) still chokes on libsrc/putget.c
+	        cc -c -O3 -I.  -DNDEBUG putget.c
+	cc-7951 cc: LIMIT File = putget.c, Line = 6617
+  	Insufficient memory is available for compiler to continue.
+	Recompile manually at lower optimisation level.
+	cd libsrc ; cc -c -O2 -I. -DNDEBUG putget.c
+
+
+
+sn6602 t3e 2.0.2.15 unicosmk CRAY T3E
+	Cray Standard C Version 5.0.3.0  (d29p35m275a35) Mar  7 1998  00:42:04
+	Cray CF90 Version 2.0.3.4 03/07/98 00:42:05
+	Cray C++ Version 2.0.3 03/07/98 00:42:06
+
+	CC=cc
+	CFLAGS=-O3
+	FC=f90
+	FFLAGS='-g -F -M1110'
+	CXX=CC
+	CXXFLAGS="-h char"		# needed with this version
+
+
+	'C' compiler still chokes on libsrc/putget.c
+		c89 -c -O3 -I.  -DNDEBUG putget.c
+		cc-7951 c89: LIMIT File = putget.c, Line = 6617
+  		Insufficient memory is available for compiler to continue.
+	(56% of the way through the file. This is with a pragma to
+	prevent inlining of odo1.)
+
+
+SUPER-UX unix 7.2  SX-4 (sx4.hstc.necsyl.com)
+    Wed Sep 17 13:30:59 MDT 1997
+    /home/cust/ncar1/netcdf-3.3.2b/{lib,lib_float2}
+
+    CC="cc -Xa"
+    CFLAGS=-h2
+    FC=f90
+    FFLAGS=""
+    CXX=""
+
+        Passes libsrc/t_nc.
+        Passes nctest.
+        nc_test:
+                30 failures in nc_test for _long functions.
+                Okay to ignore: cpp problem sets up improper ranges for test.
+                (cpp problem reported to NEC)
+        fortran/ftest works.
+        Compiling nftest: Many (ignoreable) warn(82)
+        nf_test:
+                6435 failures
+                get_int1: Range error: No error
+                get_int2: Range error: No error
+                        Okay to ignore.
+                put_real: Var value read not that expected
+                        ???
+        Passes ncdump test.
+        Minor roundoff errors in test of ncgen.
+        <               i:d = -1.e+308, ...
+        ---
+        >               i:d = -9.99999999999999e+307, ...
+
+        There are SX specific hacks in nc_test and ncx.m4 to deal with
+        the broken C preprocessor.
+
+        
+    Cray compatibility options:
+    CC="cc -Xa -hfloat2 -hint64"
+    CFLAGS=-h2
+    FC="f90 -float2"
+    FFLAGS=""
+    CXX=""
+    FLDFLAGS="-Wl -int64"       # needed for the interlanguage linkage
+    LIBS=-lm                    # needed for ie3_fl2(), fl2_ie3()
+
+        Passes libsrc/t_nc.
+        Passes nctest.
+        Passes nc_test.
+        Passes fortran/ftest.
+        nf_test:
+                get_int1: Range error: No error
+                get_int2: Range error: No error
+                Total number of failures:   6412
+           Okay to ignore - int1 and int2 types are integer
+        Minor roundoff errors in test of ncdump.
+                <   7, 8, 9.99999999999989e+29 ;
+                ---
+                >   7, 8, 9.99999999999977e+29 ;
+        Minor roundoff errors in test of ncgen.
+                < i:d = -9.99999999999881e+307, 0., 9.99999999999881e+307 ;
+                ---
+                > i:d = -9.9999999999975e+307, 0., 9.9999999999975e+307 ;
+                ...
+
+        
+ULTRIX curly 4.5 0 RISC
+
+    (netCDF 3.3 example follows; netCDF 3.4 not tested)
+
+    CC=gcc              # gcc version 2.7.2
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=/usr/bin/f77
+    FFLAGS="-g -fpe1"   # "-fpe1" is necessary to allow the netCDF
+                        # package to return NC_ERANGE rather than generate
+                        # SIGFPE (which would terminate the program)
+    CXX=g++             # version 2.7.2
+    LIBS=/usr/local/gnu/lib/gcc-lib/mips-dec-ultrix4.5/2.7.2/libgcc.a
+                        # LIBS is needed because even Fortran programs
+                        # will references the GNU C library due to CC=gcc
+
+    --------
+
+    CC=gcc              # gcc version 2.7.2
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    FC=/usr/bin/f77
+    FFLAGS="-O -fpe1"   # "-fpe1" is necessary to allow the netCDF
+                        # package to return NC_ERANGE rather than generate
+                        # SIGFPE (which would terminate the program)
+    CXX=g++             # version 2.7.2
+    LIBS=/usr/local/gnu/lib/gcc-lib/mips-dec-ultrix4.5/2.7.2/libgcc.a
+                        # LIBS is needed because even Fortran programs
+                        # will references the GNU C library due to CC=gcc
+
+ULTRIX milton 4.4 0 VAX
+    CC=gcc              # gcc version 2.7.2
+    CPPFLAGS=
+    CFLAGS=-g
+    FC=                 # The Fortran interface can't be built because the
+                        # f77(1) compiler can't handle underscores in names 
+                        # and doesn't support exclamation points as comment
+                        # delimiters.  Try g77(1)?
+    CXX=g++             # g++ version 2.7.2
+
+    --------
+
+    CC=gcc              # gcc version 2.7.2
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O           # If you use this option, then you will have to
+                        # *manually* compile libsrc/ncx.c
+    FC=                 # The Fortran interface can't be built because the
+                        # f77(1) compiler can't handle underscores in names 
+                        # and doesn't support exclamation points as comment
+                        # delimiters.  Try g77(1)?
+    CXX=g++             # g++ version 2.7.2
+
+        NOTE: If you use gcc(1) with the "-O" option in CFLAGS, then
+        gcc(1)'s optimizer will probably corrupt the structure layouts
+        in "libsrc/ncx.c".  The symptom of this is that "libsrc/t_nc"
+        fails during the "make test".  Thus, you will probably have to
+        manually compile the file "libsrc/ncx.c" -- without the "-O"
+        option -- before executing the "make".  For example:
+
+            $ ./configure
+            ...
+            $ cd libsrc
+            $ make ncx.o CFLAGS=
+            ...
+            $ cd ..
+            $ make
+            ...
+
+    It appears that, if you need to build the netCDF-3 Fortran interface
+    on a VAX ULTRIX system, we're afraid you're on your own (we couldn't
+    do it).  You might try using the GNU Fortran compiler g77(1) instead
+    of the native Fortran compiler.  We are happy to advise in this
+    effort but would be unwilling, at this time, to modify the code
+    solely to support this (now ancient) system.
+
+UNIX_SV sx4iox 4.2MP 1.release.1023.06:17 R4000 r4000 (sx4iox.hstc.necsyl.com)
+    /home/d51djp/netcdf-3.3a
+    CPPFLAGS=-DNDEBUG
+    CFLAGS=-O
+    (cd fortran; ln -s irix5.m4 unix_sv.m4)
+            nc_test has 74 failures, problems with extremal values.
+
+***********************************************************************
+Other platforms verified at 3.1a (an earlier version):
+
+NeXT Computer, Inc. version cc-216.obj~13, gcc version 2.2.2
+(M68K, NeXTStep 3.1)
+        CFLAGS = -g
+        CC = cc -Wall -D_POSIX_SOURCE
+   Problems with put,get_uchar in nc_test due to bugs in this
+old version of gcc. Can be safely ignored?
+
+***********************************************************************
+REPORTING PROBLEMS:
+
+If you have a problem with the installation and wish to report it, then
+please do the following:
+
+    1.  Re-read and understand all of this INSTALL document --
+        especially all examples and commentary relevant to your system.
+
+    2.  Go to the top-level source directory (the directory containing 
+        this file).
+
+    3.  Execute the command "make distclean".  Don't worry if it fails.
+
+    4.  Remove the file "config.cache" if it exists.
+
+    5.  Set your environment variables as described above.
+
+    6.  Re-execute the configure script.  Redirect its standard output
+        and standard error to the file "configure.log".  If this step
+        fails -- which is indicated by error messages (not warnings) in
+        "configure.log" -- then stop and send items A through E below to
+        <support@unidata.ucar.edu>.
+
+    7.  Execute the command "make".  Redirect its standard output
+        and standard error to the file "make.log".  If this step
+        fails, then stop and send items A through F below to
+        <support@unidata.ucar.edu>.
+
+    8.  Execute the command "make test".  Redirect its standard
+        output and standard error to the file "test.log".  If this
+        step fails, then stop and send items A through G below to
+        <support@unidata.ucar.edu>.
+
+    9.  Execute the command "make install".  Redirect its standard
+        output and standard error to the file "install.log".  If this
+        step fails, then stop and send items A through H below to
+        <support@unidata.ucar.edu>.
+
+The following items help us diagnose installation problems:
+
+    A.  The standard output of the command "uname -a".
+
+    B.  The contents of the file VERSION, which is in the top-level
+	source directory.
+
+    C.  The absolute pathnames of all compilers (C, Fortran, C++) used
+        in the build process (use the type(1) or which(1) utility to
+        determine this).
+
+    D.  The file "configure.log" from step 6 above.
+
+    E.  The file "config.log", which is created in the top-level source
+	directory by the configure script during step 6 above.
+
+    F.  The file "make.log" from step 7 above.
+
+    G.  The file "test.log" from step 8 above.
+
+    H.  The file "install.log" from step 9 above.

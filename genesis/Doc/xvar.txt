@@ -1,0 +1,189 @@
+Object Type:	xvar
+
+Description:	Object for displaying numerical values graphically. Xvar is
+	subclassed from pix and can only be displayed in coredraw
+	subclasses.
+
+	The following parameters of the graphical display can be
+	used to display values in xvar:
+		1. Color
+		2-4. x,y and z offsets
+		5. Coordinates (morphing)
+		6. Line thickness. *
+		7. Text color *
+		8. Text
+		9. Minigraph. *
+		10. Surface *
+		11. Contour *
+	* Not yet available.
+
+	While these parameters can in principle be used to 
+	simultaneously display 9 independent parameters, in practice
+	it gets rather confusing if more than 2 or 3 are used at a
+	time.
+	Values are specified either through messages or by directly
+	setting the 'values' array in the xvar. At this time 5 such
+	messages are permitted (VAL1, VAL2, VAL3, VAL4, VAL5).
+	The color_val, xoffset_val, morph_val etc.
+	fields are used to bind the message number to the specified
+	display variable. Thus setting color_val to 1 means that
+	message VAL1 will be used to control the color of the xvar pix.
+	By default all _vals are set to 0, which disables them.
+
+	The xvar pix displays values (except text and minigraph) by linear 
+	interpolation. Every xvar has at least two child elements of class
+	xshape, named shape[0], shape[1], etc. These shapes determine the
+	extreme points for the linear interpolation. Therefore if shape[0]
+	has foreground color 0, and shape[1] has color 10, the range of
+	colors displayed would be interpolated between 0 and 10. Likewise,
+	if shape[0] displays a tall thin rectangle, and shape[1] a short
+	wide rectangle, the shapes displayed would be 'morphed' between
+	these two extremes. Of course, to get these effects one would have
+	to set the color_val and morph_val to the appropriate values.
+	In addition to the shapes themselves, three arrays are used to specify
+	how the xvar does interpolation. As already mentioned, the 'values'
+	array specifies the actual values to be displayed. 'value_min'
+	contains the values that correspond to the lower end of the 
+	interpolated range. Thus if value[0] was equal to value_min[0],
+	the parameter displayed would correspond to shape[0]. Likewise,
+	value_max contains the upper end of the interpolated range.
+
+	One can have multiple xshapes. In this case the interpolation
+	first decides which pair of shapes to use. In this version, each pair
+	of shapes handles an equal range between value_min and value_max.
+	Having selected the appropriate pair of shapes,
+	the algorithm then proceeds as outlined above.
+
+	The 'text' option simply prints out the floating point value of the
+	appropriate message. The 'minigraph' option (which will be
+	implemented one of these days) displays a little graph of the 
+	value, without any optional extras like axes.
+
+	By default, the xvar object is created along with two child shapes,
+	shape[0] and shape[1]. The default shapes are squares, shape[0] being
+	a small one with color 0 and shape[1] a big (1x1) square in color 63.
+	The child shapes can have parameters set in the usual ways, but are
+	not displayed independently of the xvar pix. For the technically
+	minded, this is because their pixflags have been set to visible_not.
+
+	Note on 'morphing': Morphing in the xvar pix is simply linear
+	interpolation between corresponding points. When one shape has a 
+	different number of points from the other, then the algorithm
+	assumes that the missing points are [0,0,0] and does interpolation
+	accordingly. This may lead to peculiar effects, so usually one
+	uses the same number of points in all xshapes.
+
+Author:		Upi Bhalla Caltech Dec 93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xvar_type [in src/Xodus/draw/xvar_struct.h
+
+Size:		?	Depends on number of associated shapes.
+
+Fields:	fg	Foreground color of var.
+	script	Script operation(s) to perform on a mouse
+		click. The script calls of the var are only made
+		if the draw determines that the var is the nearest
+		to the event and if the event occurred within the
+		bounding region of the var. 
+	tx	Transposition distance in the x dimension. The
+		var is transposed (ie, displaced, offset) by this
+		amount.
+	ty	Transposition in y.
+	tz	Transposition in z.
+	pixflags	Set of flags specifying visibility,
+		refreshes, mouse sensitivity and many other options.
+		Use the 'pixflags' utility function to find out more.
+
+	varmode	Specifies the mode of operation of the xvar. Can be
+		one of:
+		shape - Does interpolation between shapes
+		graph - draws a minigraph (Not yet implemented)
+		surface - Draws a plane in 3-d, specified by 3
+			points in space (not yet implemented)
+		contour - Draws contour lines for a plane in 3-d. NYI.
+		colorview - Backwards compatibility hack. Uses 'shape'
+			  mode to display boxes of different color. 
+		boxview - Backwards compatibility hack. Uses 'shape'
+			  mode to display boxes of different sizes. 
+		colorboxview - Backwards compatibility hack. Default
+			  varmode. Uses 'shape' mode to display VAL1
+			  using both the morph and color modes for
+			  a box.
+		fillboxview - Backwards compatibility hack. Uses 'shape'
+			mode to display filled boxes of different sizes. 
+	value_min 	1-d array with lower limits for shape parameters.
+	value_max	1-d array with upper limits for shape  parameters.
+	values		1-d array with display values.
+	color_val	Specifies message to use for color
+			  display values. 0=disabled is default.
+			  If you wish to cause var to change colors,
+			  use color_val.
+	morph_val	Specifies message to use for morphing.
+			  If you wish to have the var change
+			  shape, use morph_val.
+	xoffset_val	Specifies message to use for xoffset.
+			  If you wish to cause a var to
+			  bounce around on the screen, 
+			  use the offset_vals.
+	yoffset_val	Specifies message to use for yoffset.
+	zoffset_val	Specifies message to use for zoffset.
+	text_val	Specifies message whose value should
+			  be printed out.
+	textcolor_val	Specifies message which determines
+			  the color of the text.
+	linethickness_val  Specifies message determining the
+			  line thickness used in the var.
+	sizescale	Rescales all the shapes. The default
+			  shapes have a size of 1.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XVar [in src/Xodus/draw/xvar.c]
+
+Classes:	gadget output
+
+Actions:	PROCESS: Redo interpolation and display.
+		RESET:	Required when changing child xshapes.
+		CREATE: Automatically creates 2 child xshapes.
+		XUPDATE: update internal fields when
+			displayed widget is changed.
+		B1DOWN:	Invoked when mouse Button 1 is pressed.
+		B2DOWN:	Invoked when mouse Button 2 is pressed.
+		B3DOWN:	Invoked when mouse Button 3 is pressed.
+		ANYBDOWN:	Invoked when any mouse button is pressed.
+		B1DOUBLE: Invoked on a double click on mouse button 1.
+		B2DOUBLE: Invoked on a double click on mouse button 2.
+		B3DOUBLE: Invoked on a double click on mouse button 3.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		XODROP: Called when a another pix is dropped onto this one.
+		XODRAG: Called when the mouse is clicked on this pix, and
+			the mouse moves while the mouse button is held down.
+		XOWASDROPPED: Called after this pix has been dropped onto
+			another one.
+
+Messages:       COORDS x y z
+                VAL1 data
+		VAL2 data
+		VAL3 data
+		VAL4 data
+		VAL5 data
+
+		All messages can contain values for any display parameter.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a coredraw widget subclass.
+		The xvar performs the interpolation between shapes and
+		redraws them on every clock tick.
+
+Example:	
+
+See also:	xview, xshape
+

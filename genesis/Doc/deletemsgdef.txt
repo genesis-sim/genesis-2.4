@@ -1,0 +1,16 @@
+Routine Name:	deletemsgdef
+
+Description:	Deletes a message definition previously added to an element
+		using addmsgdef.
+
+Usage:		deletemsgdef element msg-name
+
+		element		element from which to remove the message
+				definition
+	
+		msg-name	name of the message type to delete
+
+Notes:		Deletemsgdef will not delete permanent message definitions
+		defined by the built in objects.
+
+See also:	addmsgdef, showobject, Extended

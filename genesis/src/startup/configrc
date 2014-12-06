@@ -1,0 +1,12 @@
+#! /bin/sh -f
+
+rcfile=$1
+inst_dir=$2
+
+# remove any . or .. pathname components
+cwd=`pwd`
+cd $inst_dir
+inst_dir=`pwd`
+cd $cwd
+
+sed s:/usr/genesis:$inst_dir\: < $rcfile

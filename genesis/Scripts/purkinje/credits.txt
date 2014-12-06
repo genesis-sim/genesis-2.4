@@ -1,0 +1,10 @@
+
+Purkinje tutorial : credits
+---------------------------
+
+Purkinje cell model. Erik De Schutter and Jim M. Bower
+functional ideas ... Erik De Schutter and Jim M. Bower
+genesis coding ..... Hugo Cornelis, hugo.cornelis@gmail.com
+documentation ...... Hugo Cornelis, Erik De Schutter, Dave Beeman
+
+general feedback ... Reinoud Maex, Erik De Schutter, Dave Beeman, Volker Steuber, Dieter Jaeger, James Bower

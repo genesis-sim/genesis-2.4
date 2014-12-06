@@ -1,0 +1,318 @@
+Object Type:    paramtableGA
+
+Description:    This object implements a simple genetic algorithm as part
+                of a parameter search process, and also stores the
+                parameter tables and various bookkeeping information
+                relating to the parameter search process.
+
+Author:         Mike Vanier, Caltech
+
+-------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+Data structure: paramtableGA_type  [in src/param/param_struct.h]
+
+Size:       272 bytes (more when tables are loaded)
+
+Fields:     generation              generation number
+            num_tables              number of parameter tables
+            num_params              number of parameters per table
+            num_params_to_search    number of parameters to search over
+            search                  array of flags:
+                                    0 = don't search this parameter,
+                                    1 = do search this parameter
+            type                    type of parameter:
+                                    0 = additive,
+                                    1 = multiplicative
+            center                  of parameter values in range
+            range                   of parameter values
+            label                   label of parameter,
+                                    for documentation purposes only
+            best                    array of parameter values
+                                    giving best match (fitness) so far
+            best_match              best match (fitness) value
+            filename                where parameter information is
+                                    stored/saved as a binary file
+            alloced                 flag: 1 means tables are allocated
+            param_size              size of parameters in bytes:
+                                    1, 2, 4 are the only choices
+            param                   two-dimensional parameter array
+            fitness                 array of fitness values for
+                                    parameter sets
+            min_fitness             minimum fitness value
+            max_fitness             maximum fitness value
+            avg_fitness             average fitness value
+            stdev_fitness           standard deviation of fitness values
+            min_fitness_index       index of minimum fitness in fitness
+                                    array
+            max_fitness_index       index of maximum fitness in fitness
+                                    array
+            normfitness             array of normalized fitness values
+            cumulfitness            array of cumulative normalized
+                                    fitness values
+            preserve                number of best matches to
+                                    retain unchanged
+            crossover_type          type of crossover algorithm:
+                                    0 = choose exactly <crossover_number>
+                                        crossover points for all
+                                        parameter sets that are being
+                                        crossed over
+                                    1 = choose an average of
+                                        <crossover_number> crossover points
+                                        for all parameter sets that are
+                                        being crossed over
+            crossover_probability   probability of crossover
+            crossover_number        number of crossovers per parameter
+                                    string
+            crossover_break_param   flag: if 0, crossovers can't
+                                    occur inside parameter values.
+            mutation_probability    probability of mutation per bit
+            use_gray_code           flag: if nonzero, use Gray code
+                                    for encoding numbers (see below).
+            do_restart              flag for whether to restart ever
+            restart_after           restart after this many
+                                    unproductive generations
+            restart_count           count of unproductive generations
+            old_fitness             old fitness value, that we have
+                                    to do better than
+            restart_thresh          need to get this much above
+                                    old_fitness to not restart
+
+
+
+-------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:   ParamtableGA  [in src/param/paramtableGA.c]
+
+Classes:    param
+
+Actions:    Note: required arguments to actions are in <angle brackets>;
+                  optional arguments are in [square brackets].
+
+            CREATE          Creates the object (not invoked directly).
+
+            TABCREATE <num_tables> <num_params>
+                            Initializes the object for a given number of
+                            parameter tables and a given number of
+                            parameters.
+
+            DELETE          Deletes all allocated memory.
+
+            TABDELETE       Same as DELETE.
+
+            INITSEARCH [random]
+                            Initializes the search process. If "random" is
+                            given as the argument then the first parameter
+                            set is the original parameter set and all other
+                            sets are chosen randomly within the given
+                            ranges; if "random" is not given as the
+                            argument then *all* parameter sets are chosen
+                            randomly.
+
+            RANDOMIZE       Randomizes parameters in tables.  Not
+                            normally called directly.
+
+            UPDATE_PARAMS   Chooses the next set of parameters to
+                            simulate based on past results.
+                            Calls the REPRODUCE, CROSSOVER, and MUTATE
+                            actions.
+
+            REPRODUCE       Performs fitness-proportional reproduction.
+                            Not normally invoked directly.
+
+            CROSSOVER       Performs crossing-over between parameter sets.
+                            Not normally invoked directly.
+
+            MUTATE          Mutates each bit of the parameter sets with
+                            a fixed (low) probability.  Not normally
+                            invoked directly.
+
+            FITSTATS        Calculates statistics on the fitnesses of
+                            the parameter sets currently stored in the
+                            tables.
+
+            RECENTER        Moves the center points of the parameter
+                            ranges to correspond to the best parameter
+                            set obtained so far.
+
+            RESTART         Re-seeds the all the parameter tables with
+                            random values in the allowed range, except
+                            for the protected tables (see below).
+
+            SAVE [filename]
+                            Saves the object as a binary file.  If no
+                            argument given, use the "filename" field
+                            of the element.
+
+            SAVEBEST <filename>
+                            Saves the best parameter set to an ascii file.
+
+            RESTORE [filename]
+                            Restores the object from a binary file.  If no
+                            argument given, use the "filename" field of the
+                            element.
+
+            RESTOREBEST     Restores a parameter set from a text file,
+                            normally the best set so far obtained.  You
+                            can use INITSEARCH without the "random"
+                            option to keep this set and randomize the rest
+                            of the table.
+
+            CHECK           Runs a series of self-check diagnostics on this
+                            object.
+
+Messages:   none
+
+-------------------------------------------------------------------------
+
+Notes:      This object stores parameter tables and calculates new tables
+            to be simulated in a parameter search process using a
+            simple genetic algorithm.  Here is a short description of the
+            algorithm:
+
+            The genetic algorithm (GA) method treats each parameter set as
+            an individual in a large breeding population.  A new generation
+            of the population is derived from the preceding generation by
+            reproduction, crossing-over and mutation.  This is accomplished
+            by discretizing the parameter values into bit strings and
+            crossing-over and mutating the different bit strings.  A
+            population of parameter sets is selected randomly from the
+            parameter space and the fitness of each one is evaluated.
+            Fitness values, unlike the match values calculated by functions
+            like `spkcmp', are increasing for better and better models; a
+            perfect parameter set would have infinite fitness.  Typically,
+            you take the inverse (or some power of the inverse) of the
+            value returned by `spkcmp' or `shape_match' to get the fitness
+            value.
+
+            Once fitnesses are calculated, the next generation is
+            determined by reproducing the current generation, with each
+            parameter set being chosen for reproduction in proportion to
+            its fitness (fitness-proportional reproduction).  Then a fixed
+            percentage of the resulting parameter sets are crossed over by
+            choosing pairs of parameter sets at random, choosing one or
+            more breakpoints within the bit string and exchanging the bit
+            strings above the breakpoint (single-point recombination).
+            Finally, each parameter set is subjected to mutation with a low
+            probability per bit.  In this way, highly fit parameter sets
+            are selected for and less fit sets are eliminated from the
+            population over a series of generations.  Furthermore, the
+            processes of crossing-over and recombination can generate new
+            parameter combinations whose fitness is greater than that of
+            its predecessors.
+
+            Parameters can be stored as bit strings in one of two ways.  In
+            the first way, the parameter range can be divided up into even
+            increments and the position of the parameter within that range
+            can be encoded by converting its relative position from a
+            floating-point number into an integer, where 0 represents one
+            end of the parameter range and the maximum possible integer
+            (which depends on the param_size field) represents the other
+            end.  Successive binary numbers represent successively higher
+            parameter values.  This is specified by setting the
+            "use_gray_code" field to 0.  If "use_gray_code" is 1, then the
+            binary encoding is a Gray code encoding in which successive
+            values are guaranteed to differ by one bit exactly.  This turns
+            out to be mildly advantageous for genetic algorithms, so
+            "use_gray_code" is set to 1 by default.  If you don't
+            understand any of this, don't worry; just use the defaults and
+            you'll be fine.
+
+            By default, a crossover in a bit string can occur anywhere,
+            even inside the bit string that represents a single parameter.
+            Note that a crossover occurring inside a parameter is
+            effectively mutating that parameter too.  If you don't want
+            this, set the field "crossover_break_param" to 0.  This is the
+            default as well.  In practice, this makes very little
+            difference.
+
+            There are two different kinds of crossover algorithms that can
+            be used, which are determined by the field "crossover_type".
+            In one case (crossover_type = 0), the field "crossover_number"
+            represents the exact number of crossovers for each pair of
+            parameter sets that is crossed over.  Thus, if crossover_number
+            is 1, you have single-point crossovers; if crossover_number is
+            2, you have two-point crossovers, etc.  In the other case
+            (crossover_type = 1) the crossover_number field represents the
+            *average* number of crossovers per pair of parameter sets.  In
+            this case, there is a low probability for a crossover for each
+            possible crossover location between a pair of parameter sets.
+            This leads to a roughly Poisson distribution of crossovers for
+            the parameter sets chosen.  The advantage of this is that you
+            can get single, double, triple etc. crossovers within the same
+            population, which can be useful in selecting for highly fit
+            parameter sets.  The disadvantage is that some parameter sets
+            which are meant to be crossed over will not be.  I suspect that
+            having crossover_type set to 1 is advantageous, although I have
+            no hard data to back me up.  It is the default.
+
+            Note that the "mutation_probability" field is calculated per
+            bit, not per parameter.  For each bit of each parameter table,
+            a separate random number is generated to determine whether to
+            mutate that bit.
+
+            A non-standard (but not original) feature of the genetic
+            algorithm implemented here is the ability to preserve the best
+            tables unchanged from generation to generation.  This is very
+            useful (in fact, I consider it essential) because GA parameter
+            searches in genesis often use fairly small populations.  This
+            means that genetic drift can easily cause the best parameter
+            sets to be crossed-over and/or mutated out of existence.  To
+            prevent this, the field "preserve" sets the number of best
+            parameter tables to retain unchanged (unmutated,
+            uncrossed-over) between generations.  For instance, if preserve
+            is 5, the 5 best parameter tables will be copied unchanged from
+            one generation to the next.  These tables can also participate
+            in crossing-over and mutations, but you are guaranteed that one
+            unaltered copy of each of the tables will be present in the
+            next generation.  The default value of preserve is 1 (preserve
+            only the best table); I recommend you leave it at that.
+
+            Another non-standard feature of the genetic algorithm
+            implemented here is that if no real progress has been achieved
+            after a large number of generations, then the parameter tables
+            can be reseeded (i.e. replaced with random values from the
+            allowable parameter ranges for all parameters).  This is called
+            "restarting", which is a bit of a misnomer since the best
+            parameter tables are not altered.  This is controlled by the
+            "do_restart" field, which is 1 if restarts are enabled and 0 if
+            not (1 is the default).  If restarts are enabled, then the
+            object keeps track of the best fitness value and the generation
+            that it was first achieved at.  If, after a certain number of
+            generations (set by the field "restart_after" which defaults to
+            25), the best fitness has not improved substantially (set by
+            the field "restart_thresh" which defaults to 1.0), then all the
+            parameter tables will be replaced by random values except for
+            the best table(s) (set by the preserve field as described
+            above) which are preserved unaltered.  This can be useful if
+            you get into a suboptimal region of parameter space which is
+            difficult to get out of by crossing over and mutating, for
+            whatever reason.
+
+            If you are running genesis on a 64-bit machine (e.g. DEC
+            alpha), then you may have to change the definitions of
+            Param_short, Param_medium, and/or Param_long in
+            src/param/param_struct.h.  All of these should be unsigned
+            integer types.  Param_short should be one byte long,
+            Param_medium should be two bytes long, and Param_long should be
+            four bytes long.
+
+            Note that this object only instantiates one kind of genetic
+            algorithm.  There are as many variations of the genetic
+            algorithm concept as there are people working on them.  Feel
+            free to come up with your own variants and tell us all about
+            them :-)
+
+            Finally, if all the above has left you hopelessly confused,
+            don't worry; just use the default values for all the fields and
+            use the GA demo as a template, and you should do fine.  The
+            options are mainly for experts and/or hackers to play with.
+
+Example:    See Scripts/param/GA for demo scripts.
+
+See also:   Parameter Search (Param), Paramtable, setsearch, initparamGA, getparamGA,
+            setparamGA, paramtableBF, paramtableCG, paramtableSA,
+            paramtableSS

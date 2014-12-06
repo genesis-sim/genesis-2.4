@@ -1,0 +1,122 @@
+
+Things to Try
+-------------
+
+The following simulation architectures and parameters are provided in 
+greater detail in The Book of GENESIS.
+
+
+1. Begin by creating a simulation of two coupled biological oscillators.
+Begin by changing the strengths of all of the connections to zero so that 
+the environment consists of four isolated cells.  We would like the cells 
+labelled ``L1'' and ``R1'' to function as the two biological oscillators.  
+This can be done by supplying a constant current injection to the somas of 
+these two cells.  Bring up the windows which allow the user to interactively 
+change the inputs to these two cells by clicking on the appropriate toggles 
+under the heading ``inputs''.  Set the injection current to the soma of L1 
+to .00025 microamperes with zero delay and a duration which is greater than 
+the number of steps for the simulation such as 200 milliseconds.  The result 
+is a constant current injection throughout the duration of the simulation 
+which causes the continuous firing of the cell.  Likewise, create an injection
+current of .0003 microamperes to the soma of R1 in the same manner.  Make sure
+that all other possible inputs are set to zero current.  Don't forget to hit 
+the ``return'' key after any change is made within a dialog box and to click 
+on the APPLY button after all of the changes have been made for a single 
+desired input current.  After the above changes have been made, click on the 
+STEP button to run the simulation.  It is important to remember that we are 
+assuming that these two cells are intrinsically oscillatory so that they 
+oscillate continuously where R1 has a slightly greater intrinsic frequency 
+due to the larger injection current.  
+
+2.  Now add coupling between the two cells, starting with small mutually 
+excitatory coupling.  This can be done by setting the coupling strength of
+the connection from L1 onto R1 to 5 and making sure that the toggle for that 
+connection is in the excitatory mode.  Set the strength of the connection 
+from R1 onto L1 to 5 in a similar manner.  After running the simulation, the 
+graphs reveal that the two cells (while oscillating) are drifting with respect 
+to one another.  In other words, the coupling is too weak to cause 
+phase-locked behavior.  Now gradually increase the coupling strength between 
+the two cells by increments of 5, clicking on the RESET and STEP buttons after
+each change in order to observe the behavior of the system.  As the coupling 
+strength is increased, eventually the system exhibits behavior which converges
+to phase-locked oscillations where the cell with the greater intrinsic 
+frequency, namely R1, leads.  This causes the frequency of oscillation of 
+the system to be greater than the intrinsic frequency of L1.  
+
+3.  Now repeat the process outlined in number 2 above for inhibitory 
+connections, beginning with weak mutually inhibitory coupling and gradually 
+increasing the coupling strength.  In this case, stronger coupling strengths 
+are required for phase-locked behavior due to the nature of the inhibitory 
+connections in the simulation environment as explained in the text of the 
+HELP file under ``MODEL PARAMETERS''.  During the phase-locked oscillations, 
+the cell with the slower intrinsic oscillation will lead, causing the 
+frequency of the system to be smaller than the intrinsic frequency of R1.
+
+4.  To observe the behavior which is similar in principle to the behavior 
+of a swimming fish (albeit with few segments), create a simulation of a 
+chain of biological oscillators with nearest-neighbor coupling.  First, set 
+all of the connection strengths to zero so that the simulation environment 
+consists of four isolated cells.  To simulate the behavior of oscillatory 
+cells with identical intrinsic frequencies, set the injection current to the
+soma of each cell to .0002 microamperes with zero delay and a duration which  
+is greater than the number of steps for the simulation.  Set all other inputs 
+to zero, and don't forget to hit ``return'' after making changes within any 
+dialog box and to hit APPLY after all of the changes have been made for a 
+desired injection current.  Click on the STEP button to run the simulation, 
+and check to be sure that all four cells are oscillating in an identical 
+manner.  Now build the connections required for a chain of four oscillators 
+with nearest-neighbor coupling.  Make sure that the connections are excitatory
+with identical connection strengths.  The choice of connection strength is 
+not important at this point; a connection strength of around 20 will suffice.
+When you click on STEP to run the simulation, you should discover that the 
+oscillators in the chain oscillate in synchrony with the exception of the 
+oscillators on the end of the chain which behave differently due to the end 
+conditions.  This is the behavior predicted by the model in the case when 
+there is no difference in oscillator frequencies along the chain.
+
+5.  Next change the injection currents to the cells (in the architecture
+described in number 4 above) causing the cells to have varying intrinsic 
+frequencies with a constant difference in frequency along the chain.
+For example, you might use values of .00035, .0003, .00025, and .0002 
+microamperes as the injection inputs along the chain.  In this case, the 
+model predicts a traveling wave of activation as long as the value of the 
+connection strength is large enough.  Begin with very small values for the 
+identical connection strengths and gradually increase the value until you see 
+a wave of activation.  It may be difficult to see the wave since each one 
+begins before the previous wave has reached the end of the chain.  
+
+6.  It is interesting to note that a fish is capable of swimming backwards 
+when placed in a corner.  Consider the architecture and parameters for
+a chain of coupled oscillators described in number 5 above.  Try experimenting
+with the parameters to cause the wave to travel in the opposite direction and 
+consider the implications for possible mechanisms for reversing the direction
+of the wave propagation in a fish.
+
+7.  It is also possible to obtain a wave of activation in a chain of neurons 
+simply by causing the first cell in the chain to fire.  Each cell activates 
+the next so that the activation moves down the length of the chain.  To 
+simulate this type of activity, set the injection input to the soma of
+the first cell in the chain to .0002 microamperes for a duration of several 
+milliseconds, and set all other possible inputs to zero.  This will cause a 
+single wave of activation; however, this model requires outside control for 
+continuous behavior since multiple waves require repeated inputs to the first 
+oscillator at the desired temporal intervals. For this reason, the behavior is
+less robust than that of the model described above which uses intrinsic 
+oscillators to create continuous waves of behavior in the absence of any 
+external influence to the CPG.
+
+8.  In various experiments, picrotoxin, which blocks inhibitory synapses,
+induces changes in the ventilatory motor output pattern of several
+different organisms.  These changes involve a transformation from an
+out-of-phase mode of oscillation to an in-phase mode.  How might the 
+blocking of inhibitory synapses affect the various simulation architectures
+discussed in this chapter?  In each case, do these effects support the choice 
+of archictecture or suggest that an alternate choice might be more biologically
+plausible? 
+
+
+
+
+
+
+

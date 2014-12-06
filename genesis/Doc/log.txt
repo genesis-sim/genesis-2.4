@@ -1,0 +1,17 @@
+Routine Name:	log
+
+Description:	Returns logarithm (base "e") of number.
+
+Usage:		log-value = {log number}
+
+Example:	genesis >  echo { log 1 }
+		0
+		genesis > echo {log {exp 1}}
+		0.9999999404
+		genesis > echo {log 0}
+		-Infinity
+
+Notes:		To get the base 10 log of x, use {log {x}}/{log 10}.
+
+See also:	exp
+

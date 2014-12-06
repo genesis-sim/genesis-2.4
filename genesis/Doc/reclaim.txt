@@ -1,0 +1,37 @@
+Routine Name:	reclaim
+
+Description:	Reclaims memory from deleted elements
+
+Usage:		reclaim
+
+Example:        call Na_hh_tchan TABDELETE
+                delete Na_hh_tchan
+                reclaim
+
+Notes:		Memory from deleted elements is usually freed when the
+		simulator returns to the command prompt.  When running
+		in batch mode in situations where many elements are being
+		created and deleted, it may be necessary to use reclaim
+		to free the memory from deleted elements.
+
+                At present, elements containing interpol_structs (tables) do
+                not free up the memory allocated to the tables, when they are
+                deleted.  Objects that have a TABDELETE action (e.g.
+                tabchannels) will deallocate this memory, if TABDELETE is
+                called before the element is deleted.  Finally, you have to
+                give the reclaim command for the memory to actually be freed.
+
+                Note that the tables are shared among all tabchannels that are
+                created by copy or readcell from a prototype.  Therefore, you
+                shouldn't call TABDELETE unless you plan to delete all copies
+                of the channel.
+
+		Care should be taken to ensure that deleted elements
+		will not be actively executing after reclaim is
+		called.  This should only be a potential problem within
+		an extended object action function or a widget callback
+		script.  Also, it should be noted that reclaim will
+		recompute the simulation schedule which could be time
+		consuming.
+
+See also:	delete, Tables

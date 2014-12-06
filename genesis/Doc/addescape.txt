@@ -1,0 +1,74 @@
+Routine Name:	addescape
+
+Description:	Adds an escape-key macro binding.
+
+Usage:		addescape esc_sequence command-string [-execute] [-id string]
+
+		esc_sequence		actual keystrokes (or representation)
+					to associate with escape action
+
+		command-string		string to insert in place when escape
+					sequence is issued (should be in
+					quotation marks if it contains blank
+					spaces)
+
+		-execute		flag to have command-string executed
+					when escape sequence is called
+					(this puts the field EXEC in the
+					listescape table; if -exec is left
+					out, default is REPLACE, i.e., insert
+					command-string, unexecuted, in command
+					line at point escape sequence is
+					issued)
+
+		-id string		label for this escape sequence, used
+					typically to identify the escape
+					sequence in user-understandable
+					language
+
+Example:	genesis >  addescape [15~ "/xproto" -id "F5"
+		genesis >  le <F5>
+
+		[line changes to:]
+
+		genesis >  le /xproto
+		/draw
+
+
+		[associate command string 'echo "I am not a duck"' with key
+		stroke sequence escape-a:]
+
+		genesis >  addescape a "echo I am not a duck" -execute
+		genesis >  <escape-a>
+		I am not a duck
+
+		[from escapelist.g file, included in startup:]
+
+		addescape [A     <^P>                        -id "up arrow"
+		addescape [B     <^N>                        -id "down arrow"
+		addescape [C     <^F>                        -id "right arrow"
+		addescape [D     <^H>                        -id "left arrow"
+		addescape [1~    "execute movebol"   -exec   -id Find
+		addescape [2~    <^I>                        -id "Insert Here"
+		addescape [3~    <^D>                        -id Remove
+		addescape [11~   stop                -exec   -id F1
+		addescape [17~   "status -process"   -exec   -id F6
+		addescape [18~   status              -exec   -id F7
+		addescape [28~   "commands | more"   -exec   -id Help
+		addescape [29~   step<CR>                    -id Do
+
+
+Notes:		You use the addescape routine to create escape-key macros for
+		commonly used command lines.  Here, the key is the key you
+		will depress after the escape key, and command-string is the
+		string which will be substituted into the SLI interpreter when
+		the the escape sequence occurs.  (When the key is preceded by
+		escape -- ctrl [ -- during keyboard input, the command-string
+		is substituted.)
+
+		A standard set of escape-key macros is specified during
+		startup through the file escapelist.g.
+
+See also:	listescape
+
+

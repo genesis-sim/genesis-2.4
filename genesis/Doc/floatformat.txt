@@ -1,0 +1,53 @@
+Routine Name:	floatformat
+
+Description:    Sets format for display of variables of type float.
+
+Usage:          floatformat format-string
+
+                format-string	"%[flag][width].[precision][type]",
+				indicating format to use in displaying
+				float-type variables. (default: "%0.10g")
+				The flag, width, precsion and type are
+				defined as in C, but only f and g type
+				formats are allowed.
+
+Example:
+		genesis >  float x = 3.12345678
+		genesis >  echo { x }
+		3.12345678
+		genesis >  floatformat %0.5g
+		genesis >  echo { x }
+		3.1235
+		genesis >  floatformat %10.5g
+		genesis >  echo { x }
+		    3.1235
+		genesis > floatformat %10.5f
+		genesis > echo { x }
+		   3.12346
+
+		genesis > float y = 1e-5
+		genesis > floatformat %0.10g
+		genesis > echo {y}
+		1e-05
+		genesis > floatformat %0.10f
+		genesis > echo {y}
+		0.0000100000
+
+		genesis > floatformat %+10.2f  // show sign
+		genesis > echo {x}
+		     +3.12
+
+		genesis > float pi = 3.14159265
+		genesis > floatformat %-10.2f //left justify with width 10
+		genesis > echo {x} {pi}
+		3.12       3.14
+
+		genesis > floatformat %010.2f  // "0" flag pads with zeroes
+		genesis > echo {x} {pi}
+		0000003.12 0000003.14
+
+Notes:		As in C, the width is the minimum number of characters to be
+		output.  If the output width is less than this, it is padded
+		with blanks, unless the "0" flag is used.  For type f, the
+		precision is the number of digits after the decimal point;
+		for type g, it is the maximum number of significant digits.

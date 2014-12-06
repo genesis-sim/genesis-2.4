@@ -1,0 +1,459 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference Manual: The GENESIS Parameter Search Library</TITLE>
+</HEAD>
+<BODY>
+<A HREF="chemesis.html">Previous</A>
+<A HREF="Manual-19.html">Next</A>
+<A HREF="Manual.html#toc18">Table of Contents</A>
+<HR>
+<H2><A NAME="Param"></A> <A NAME="s18">18. The GENESIS Parameter Search Library</A></H2>
+
+<H2><A NAME="ss18.1">18.1 What is automated parameter searching?</A></H2>
+
+<P>Most GENESIS simulations, especially highly realistic simulations of single
+neurons, have large numbers of parameters which are not strongly
+constrained by existing experimental data.  In such cases, the modeler has
+to choose the parameters that cause the model to produce outputs which are
+as close as possible to the outputs of the real system.  Doing this
+manually is a very tedious process: typically one parameter at a time is
+adjusted and the modeler sees if the simulation outputs are any closer to
+the desired behavior than before.  Although a lot of insight can be
+obtained this way, the nonlinear behavior of neurons and the strong
+interactions between many parameters in creating neural behaviors make this
+unnecessarily difficult.  In order to make parameter searching easier, we
+have developed a library of parameter search objects and functions which
+automate the search process.  Manual parameter searches that might take
+months of boring work can often be done in a few days of automated searches
+with no user intervention whatsoever, and the results will typically be
+better as well.</P>
+
+
+
+<H2><A NAME="ss18.2">18.2 The parameter searching process</A></H2>
+
+<P>First, the simulation whose parameters will be varied must be created and
+debugged.  The modeler must then determine a way to compare the output of
+the simulation with a desired output so that a numerical match value is
+computed after each simulation.  Typically, the smaller the match value the
+closer the simulation matches the data, with zero representing a perfect
+match.  The modeler can create his or her own match function (in GENESIS
+script language or in C code) or use one of the predefined match
+functions.  Typical match functions for neuron outputs compare the times of
+spikes, the shape of interspike interval waveforms, or both.</P>
+<P>Then the modeler must create and initialize a ``paramtableXX'' object (see
+below for what XX means).  This object contains tables of parameters and
+can update these to give the next parameter set to try.  The initial
+parameter values are set using the ``initparamXX'' functions.  Then the
+modeler writes a function in the GENESIS script language to run the search.
+This process is as follows:</P>
+<P>
+<OL>
+<LI> Run a new simulation.</LI>
+<LI> Calculate a match value.</LI>
+<LI> Notify the paramtableXX object of the match value.</LI>
+<LI>Tell the paramtableXX object to calculate the next set of
+parameters.</LI>
+<LI> Adjust the parameters of your model based on the new set of
+parameters.</LI>
+</OL>
+</P>
+<P>Once this is done, the function is called and the search begins.  Full
+examples of this process for all the parameter search objects are included
+in the parameter search demos in the Scripts/param directory.  We
+<EM>strongly</EM> advise you to use these scripts as prototypes for your own
+parameter searches, as this will make the process much simpler.</P>
+
+
+
+<H2><A NAME="ss18.3">18.3 The GENESIS parameter search library</A></H2>
+
+<P>All of the GENESIS functions and objects pertaining to parameter searching
+are in the ``param'' library.  There are two broad classes of entities in
+this library:</P>
+<P>
+<OL>
+<LI> Objects that hold information about parameter searches and select
+new parameter sets based on the results of previous simulations.
+These objects are all called ``paramtableXX'' where XX is an
+abbreviation for the parameter search method.
+</LI>
+<LI> Functions that are used to calculate how close a
+simulation is to some desired behavior.
+</LI>
+<LI> Various helper functions.</LI>
+</OL>
+</P>
+<P>The paramtable objects currently include:
+<TABLE BORDER><TR><TD>
+<A HREF="Manual-26.html#paramtableBF">paramtableBF </a></TD><TD>Implements brute-force parametersearch</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableCG">paramtableCG </a></TD><TD>Implements conjugate-gradient descent parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableGA">paramtableGA </a></TD><TD>Implements genetic algorithm parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSA">paramtableSA </a></TD><TD>Implements simulated annealing parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSS">paramtableSS </a></TD><TD>Implements stochastic parameter search</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>The matching functions include:
+<TABLE BORDER><TR><TD>
+<A HREF="Manual-25.html#shapematch">shapematch </a></TD><TD>Returns goodness of match between two waveform files</TD></TR><TR><TD>
+<A HREF="Manual-25.html#spkcmp">spkcmp </a></TD><TD>Returns goodness of match between two spike time files</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>The helper functions include:
+<TABLE BORDER><TR><TD>
+<A HREF="Manual-25.html#gen2spk">gen2spk </a></TD><TD>Creates file with spike times from file of Vm vs. time</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getparamGA">getparamGA </a></TD><TD>Gets parameters from the paramtableGA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamBF">initparamBF </a></TD><TD>Initializes parameters for the paramtableBF object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamCG">initparamCG </a></TD><TD>Initializes parameters for the paramtableCG object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamGA">initparamGA </a></TD><TD>Initializes parameters for the paramtableGA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamSA">initparamSA </a></TD><TD>Initializes parameters for the paramtableSA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#initparamSS">initparamSS </a></TD><TD>Initializes parameters for the paramtableSS object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setparamGA">setparamGA </a></TD><TD>Sets parameters for the paramtableGA object</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setsearch">setsearch </a></TD><TD>Specifies which parameters will be varied in a search</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss18.4">18.4 Recommendations</A></H2>
+
+<P>We recommend the SA method for simulations with small numbers of
+parameters (less than 10), and either the SA or the GA method for
+larger numbers of parameters.  The CG method can be used for very
+simple or highly linear models, but experience shows that the SA
+method can be as good or better than the CG method even in these
+cases.  The SS method is mostly a historical artifact and is usually
+not the best method to use.  The BF method is useful for an initial
+mapping of parameter space, but not for the searching process per se.
+See the documentation for the individual paramtable objects for more
+detailed recommendations.</P>
+<P>Your searches will be much more likely to succeed if the starting model at
+least qualitatively matches the main features of the real system's
+behavior.  To give an extreme example, you wouldn't use a one-compartment
+model with simple Na and K Hodgkin-Huxley channels and try to match the
+outputs of a Purkinje cell in a bursting mode.  The model should at least
+be able to show some kind of bursting behavior in this case before you
+began the search.  Similarly, if the cell shows strong spike frequency
+adaptation the model must have channels that can do this too
+(e.g. M-current or AHP potassium channels).  Automated searching can't make
+a bad model good.</P>
+<P>If possible, the matching function should be tailored to the data to be
+matched.  For instance, in a rapidly adapting cell, matching the first few
+spikes may be more critical than matching the last spike, which may have a
+wide variation in timings in the real system.  Ideally a new matching
+function should be written in C for each cell type, although this is not
+always practical.  This can reduce the length of the search by heavily
+penalizing models which are obviously incorrect and thus removing them from
+consideration.</P>
+<P>Note that the paramtable objects have many parameters of their own that can
+affect the success or failure of a search.  Advice on these can be found in
+the documentation for the individual objects.</P>
+<P>It is very important to save the state of the search regularly, in case of
+a computer crash.  All the routines have SAVE actions that should be
+invoked regularly.</P>
+<P>Searches that involve a lot of deleting of old elements will usually
+cause some memory leaks, since GENESIS is not completely free of such leaks
+yet.  It is vital to call ``reclaim'' after deleting a lot of elements or the
+memory allocated to such elements will not be freed.  If this happens you
+may run out of memory on your computer very fast!  Even with this
+precaution, long searches can cause appreciable memory leaks, so that a
+simulation which starts off at (say) five megabytes may grow to 10 or 15
+megabytes or more.  This is especially true for large searches which take
+days to run.  The best solution is to periodically save the state of the
+paramtable object to disk, get out of GENESIS, and restore the state of the
+object.  This can all be done from a shell script; examples are shown in
+the demo directories.</P>
+<P>Parallel GENESIS (PGENESIS) is very useful for parameter searching if you
+have access to a parallel supercomputer (don't we all?  I have three in my
+bedroom right now...).</P>
+
+
+
+<H2><A NAME="ss18.5">18.5 Bug reports.</A></H2>
+
+<P>Send all bug reports to Mike Vanier at mvanier@cs.caltech.edu.
+
+Before you report a bug, read the bug reporting procedure, 
+<A HREF="Manual-1.html#Bugs">Reporting Bugs</A>.</P>
+
+
+<H2><A NAME="ss18.6">18.6 Caveats</A></H2>
+
+<P>Wonderful though parameter searching is, modelers must always remember that
+a parameter search can't find a good model if none exists in the parameter
+space.  However, the failure of a parameter search to find a good match
+often can be a clue that some important component is missing from the
+model, which can be very useful information.</P>
+<P>Becoming adept at parameter searching takes intelligence, practice
+and experience.  In particular, understanding the different options in the
+parameter search objects and knowing which methods work best under which
+circumstance is non-trivial.  This is an ongoing area of research, and no
+doubt more and spiffier methods will be developed in the future (maybe even
+by you, the disgruntled GENESIS programmer!).</P>
+
+
+
+<H2><A NAME="Paramtable"></A> <A NAME="ss18.7">18.7 Information about the Parameter-search (paramtable) Objects</A></H2>
+
+<P>Parameter searching in the GENESIS `param' library is controlled by one of
+the `paramtable' objects.  Each object implements a different search
+algorithm.  The list of paramtable objects currently includes:
+<TABLE BORDER><TR><TD>
+<A HREF="Manual-26.html#paramtableBF">paramtableBF </a></TD><TD>Implements brute-force parametersearch</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableCG">paramtableCG </a></TD><TD>Implements conjugate-gradient descent parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableGA">paramtableGA </a></TD><TD>Implements genetic algorithm parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSA">paramtableSA </a></TD><TD>Implements simulated annealing parameter search</TD></TR><TR><TD>
+<A HREF="Manual-26.html#paramtableSS">paramtableSS </a></TD><TD>Implements stochastic parameter search</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>We cannot describe each of these methods in detail here; for more general
+information about the methods (and comparisons between them) using a
+variety of single neuron models, see the paper:</P>
+<P>``A comparative survey of automated parameter-search methods for
+compartmental neural models'' by Michael C. Vanier and James M. Bower,
+Journal of Computational Neuroscience 7: 149-171 (1999).</P>
+<P>The paramtable objects have two functions:</P>
+<P>
+<OL>
+<LI>To store parameter tables.</LI>
+<LI>To calculate the next parameter set to simulate, given the results of
+previous simulations.</LI>
+</OL>
+</P>
+<P>The first function is quite similar for most of the methods, while the
+second is completely different.  Here we will give general information
+about the paramtable objects and briefly describe some of the common fields
+and actions for these objects; for a full description of the individual
+paramtable objects see the documentation for those objects.</P>
+
+<H3>Actions</H3>
+
+<P>Actions in paramtable objects are somewhat different from actions
+elsewhere in GENESIS.  (See the documentation on 
+<A HREF="Manual-8.html#Actions">Actions</A> for more information about GENESIS actions.}
+Typically, GENESIS actions are called every time step under control of
+the schedule (e.g. INIT and PROCESS actions), or are called by special
+functions (e.g. the RESET and CHECK actions, called for all elements
+by the "reset" and "check" functions, respectively). In contrast, many
+of the actions in paramtable objects are meant to be called explicitly
+e.g.</P>
+<P>
+<PRE>
+    call my_paramtable_object INITSEARCH
+</PRE>
+</P>
+<P>Thus, they are more like member functions in C++ i.e. functions that
+``belong'' to a particular object.  These actions are often very different
+from object to object, and most paramtable objects also have several
+actions that are specific to that object.  Using actions in this way is
+arguably an abuse of the GENESIS action mechanism, but since it works well
+and there is currently no decent alternative, that's what was done.</P>
+<P>Here are some actions that you should know about, which are in many of
+the paramtable objects:</P>
+<P>
+<TABLE BORDER><TR><TD>
+TABCREATE</TD><TD>Allocates memory for the paramtable object.</TD></TR><TR><TD>
+TABDELETE</TD><TD>Frees previously-allocated memory.</TD></TR><TR><TD>
+INITSEARCH</TD><TD>Initializes the parameter search process.</TD></TR><TR><TD>
+RANDOMIZE</TD><TD>Performs some object-specific randomization process.</TD></TR><TR><TD>
+EVALUATE</TD><TD>Evaluates a previously-simulated parameter set</TD></TR><TR><TD>
+</TD><TD> given a numeric match value.</TD></TR><TR><TD>
+UPDATE_PARAMS</TD><TD>Calculates the next parameter set to simulate.</TD></TR><TR><TD>
+SAVE</TD><TD>Saves a binary image of the paramtable object.</TD></TR><TR><TD>
+SAVEBEST</TD><TD>Saves a text file containing the best parameter set</TD></TR><TR><TD>
+</TD><TD> obtained so far.</TD></TR><TR><TD>
+RESTORE</TD><TD>Restores a binary image of the paramtable object.</TD></TR><TR><TD>
+RESTOREBEST</TD><TD>Restores a text file containing the best parameter set</TD></TR><TR><TD>
+</TD><TD>obtained so far (not functional for all objects).</TD></TR><TR><TD>
+DISPLAY</TD><TD>Prints a representation of a parameter set to stdout.</TD></TR><TR><TD>
+RESTART</TD><TD>Restarts the parameter search process, preserving the</TD></TR><TR><TD>
+</TD><TD> best parameter set obtained so far.</TD></TR><TR><TD>
+ACCEPT</TD><TD>Copies the current parameter set to the locations for</TD></TR><TR><TD>
+</TD><TD> the best parameter set.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>Some of these actions (e.g. TABCREATE) are used in other parts of GENESIS
+for different purposes, and some (e.g. EVALUATE, RESTOREBEST) are not
+currently used in all paramtable objects.  Most of these actions also
+require arguments; for the specific syntax of the argument lists for each
+action see the documentation for the individual objects.  Note that the same
+action may require different arguments in two different objects, or may
+have different optional arguments.</P>
+
+<H3>Fields</H3>
+
+<P>Here we briefly describe several fields that are present in most or
+all of the paramtable objects, and that are involved in the actual storage
+of parameter data.  Fields that are specific to particular methods will not
+be mentioned; for them please see the documentation for the specific
+paramtable objects.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Field </TD><TD> Description</TD></TR><TR><TD>
+iteration_number</TD><TD>Number of simulation iterations so far</TD></TR><TR><TD>
+num_params</TD><TD>Total number of parameters in each parameter set</TD></TR><TR><TD>
+num_params_to_search</TD><TD>Number of parameters that are actually being</TD></TR><TR><TD>
+</TD><TD> searched over</TD></TR><TR><TD>
+search</TD><TD>1-D array of binary flags representing which</TD></TR><TR><TD>
+</TD><TD> parameters are to be searched over</TD></TR><TR><TD>
+type</TD><TD>1-D array of parameter types (see below)</TD></TR><TR><TD>
+center</TD><TD>1-D array of centers of parameter ranges</TD></TR><TR><TD>
+range</TD><TD>1-DD array of range values of parameter table</TD></TR><TR><TD>
+min</TD><TD>1-D array of minimum values of parameter table</TD></TR><TR><TD>
+max</TD><TD>1-D array of maximum values of parameter table</TD></TR><TR><TD>
+label</TD><TD>1-D array of parameter labels</TD></TR><TR><TD>
+current</TD><TD>1-D array of parameter values to be simulated next</TD></TR><TR><TD>
+current_match</TD><TD>Match value of last parameter set simulated</TD></TR><TR><TD>
+best</TD><TD>1-D array of the best parameter values obtained so</TD></TR><TR><TD>
+</TD><TD> far in the search</TD></TR><TR><TD>
+best_match</TD><TD>Best match value obtained so far</TD></TR><TR><TD>
+done</TD><TD>Flag: if 1, the search is finished</TD></TR><TR><TD>
+filename </TD><TD>Name of the binary file to store paramtable state</TD></TR><TR><TD>
+alloced</TD><TD>Flag: 0 if the parameter tables have not been</TD></TR><TR><TD>
+</TD><TD> allocated; 1 if they have</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>Many of the above fields are for bookkeeping only (e.g. the label field),
+and some are set by the method and are readonly (e.g. the iteration_number
+field).  The `search' flags are usually set by the `setsearch' function
+(see 
+<A HREF="Manual-25.html#setsearch">setsearch</A>).  
+The type, center, range, min, max, and label
+fields are normally set by the `initparamXX' functions, where XX = {BF,
+CG, GA, SA, SS}.  See the documentation for those functions for more details.</P>
+
+<H3>Parameter types and parameter ranges</H3>
+
+<P>Parameters come in two basic types: additive and multiplicative.  An
+additive parameter is one whose value will be added to a starting value as
+an offset.  An example of this might be an offset of the steady-state
+activation curve
+of an ionic channel (m_inf(V)), or a membrane potential offset.  For
+instance, an additive parameter value of 0.002 volts might be added to the
+midpoint of the activation curve of a sodium channel (which might be, say,
+-55 mV to start with) to get a new midpoint of -53 mV.  This would make the
+cell somewhat less excitable, since at a particular membrane potential
+fewer Na channels would be open (ignoring inactivation).</P>
+<P>A multiplicative parameter (the more common type) is a scaling value that
+is multiplied by a starting value of a parameter to get the actual value.
+An example of this would be the maximal conductance of an ionic channel
+type in a particular compartment.  In this case, a multiplicative parameter
+value of 2.0 might mean to multiply the starting value of a given ionic
+channel by 2 to get the new value.</P>
+<P>The reason for distinguishing between the two types of parameters is that
+ranges are set differently for the two types.  A range of, say, 10.0 for a
+multiplicative parameter with a center point of 1.0 means that the
+parameter can vary from between 0.1 and 10.0.  Furthermore, a random value
+in this parameter range is as likely to be below 1.0 as it is to be above
+1.0.  This is accomplished by internally storing the parameter values as
+the log of the true value.  Thus, a random value in this range is
+calculated by choosing a value from the uniform distribution in (-log(10),
+log(10)), and then taking the antilog of the resulting value.
+Multiplicative parameters are natural for scaling factors from a starting
+point, such as scaling factors for ionic conductances.  Additive parameters
+are simpler: a center point of 0.0 and a range of 1.0 for an additive
+parameter means the parameter is located in the range (-1.0, 1.0), as you
+would expect.  Furthermore, a random value in this range is calculated by
+choosing a value from the uniform distribution in (-1.0, 1.0), also as
+expected.  Additive parameters are often used for offsets that can be
+either positive or negative from a starting value, such as offsets in
+activation curves or membrane potential offsets to compensate for an
+unknown electrode junction potential.</P>
+<P>At this point, you might be wondering what the big deal is.  If you want to
+have a parameter representing a maximal conductance which is some value
+between 100 and 200 Siemens per square meter, why not just set the
+minimum value to 100 and the maximum value to 200 and be done with it?  In
+fact, although it's not obvious, this is equivalent to defining an additive
+parameter with a starting value of 150 and a range of 50.  If this is what
+you want, fine.  However, sometimes you might want to start at 100 and be
+able to select values from one-half to twice that value; that's a
+multiplicative parameter.  Sometimes it doesn't even matter which type of
+parameter you use.</P>
+
+<H3>Writing parameter search scripts</H3>
+
+<P>At the risk of sounding redundant, we <EM>strongly</EM> advise that you use the
+sample scripts in the Scripts/param directory as prototypes for your
+parameter searching scripts.  This is by far the easiest way to learn how
+to use the parameter search objects, and can save you an enormous amount of
+frustration.  It is also recommended that serious students read the source
+code in the param subdirectory of genesis; the code is heavily commented
+and reading it will clarify a lot of obscure issues.  If you're not used to
+reading C code, this would be a good place to start :-)</P>
+
+
+<H3>Modifying channel kinetics</H3>
+
+<P>One common application of parameter searching is to modify the kinetics of
+voltage- or calcium-dependent ionic channels.  This is especially important
+when you use channels taken from one brain region for a cell in another
+brain region for which the kinetic data for the channel in question has not
+been established.  It is also useful when the kinetic data used to build
+the channel is of questionable quality.  There are a number of ways you can
+modify channel kinetics in a parameter search:</P>
+<P>
+<OL>
+<LI>   You can scale the time constants of the activation/inactivation curves
+uniformly, making the channel faster or slower.  This can be used to
+compensate for unknown temperature corrections among other things.  In
+this case, one usually uses a multiplicative parameter centered on 1.0
+as a scaling factor for the channel time constants.  The
+``scaletabchan'' function in GENESIS is then used to actually modify the
+kinetics of the channel (see the demos for examples).
+</LI>
+<LI>  You can shift an activation curve to the left or right with respect to
+the X axis (usually voltage or calcium concentration).  Here one
+usually uses an additive parameter centered on 0.0 as an offset factor
+for the activation curve.  Again, the "scaletabchan" function can be
+used to modify the kinetics.
+</LI>
+<LI> You can change the shape of the activation curve.  This is more
+complicated, since in principle an arbitrary curve may need a large
+number of parameters to describe it, but if the curve has some
+standard shape (e.g. a sigmoid or a sum of sigmoids), the parameters
+describing the curve can be used in a parameter search.</LI>
+</OL>
+</P>
+<P>Note that if you use ``scaletabchan'' to shift an activation curve to
+the left or right ((2) above), you must realize that GENESIS will get
+rid of all values that are shifted beyond the range of the x-axis.
+Thus, if you shift to the left and then later shift to the right you
+will not necessarily end up with the same activation curve you started
+with.  For this reason, we recommend recreating channels from scratch
+for each iteration of a parameter search, and using parameters which
+represent offsets from the starting activation curve in this case.
+See the demonstration scripts in <EM>Scripts/param</EM> for examples
+of this.  This does not usually cause a serious slowdown.  However, it
+does lead us nicely into our final topic.</P>
+
+
+<H3>Memory leaks</H3>
+
+<P>When running a parameter search that creates and deletes channels (or an
+entire cell) at each iteration of a parameter search, care must be taken to
+avoid memory leaks, which can accumulate and eventually cause your computer
+to run out of memory.  If this happens, your search will terminate
+abnormally.  The most important things to remember are as follows.  If you
+re-create a cell for each iteration of a search (which is often the best
+way to go), you MUST delete the previously-created cell before creating a
+new one.  You must also call TABDELETE on all tabchannels that were part of
+the cell BEFORE you delete the channels themselves; it is NOT done
+automatically for you.  Finally, you have to call ``reclaim'' for the memory
+to actually be freed.  This is very lame, and we intend to do a much better
+job in future versions of GENESIS, but for now, you have to live with it.</P>
+<P>Even despite these precautions, there are some memory leaks which will
+inevitably accumulate in parameter searches when you delete/restore cells
+on each iteration.  Many of these have to do with string handling and there
+is currently no way to avoid them.  We recommend that you run a parameter
+search for a fixed number of iterations (say 1000), save the parameter
+table, exit GENESIS, restart GENESIS and restore the parameter table and
+keep going.  This can all be done from within a shell script; again, see
+the demos for examples.</P>
+
+
+<HR>
+<A HREF="chemesis.html">Previous</A>
+<A HREF="Manual-19.html">Next</A>
+<A HREF="Manual.html#toc18">Table of Contents</A>
+</BODY>
+</HTML>

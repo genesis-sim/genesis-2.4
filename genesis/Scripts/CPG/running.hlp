@@ -1,0 +1,175 @@
+                 RUNNING THE CPG TUTORIAL SIMULATION
+
+  
+  DESCRIPTION OF THE MODEL
+  ________________________
+
+  This simulation is designed to allow the user to study the activation
+  patterns and emergent behavior of a simple neuronal network of four
+  cells.  Each model cell consists of two compartments: a soma compartment 
+  which corresponds to the axon hillock of the soma where action potentials 
+  are generated, and a dendrite compartment.  The soma compartment contains
+  ionic channels for sodium (Na) and potassium (K) with voltage dependent 
+  conductances obeying Hodgkin-Huxley kinetics.  The dendritic compartment 
+  has chemically activated excitatory and inhibitory channels.  The param-
+  eters which determine the equilibrium potentials of the channels and the 
+  time dependence of the channel conductances in the dendrite may be 
+  modified during the simulation.  A more detailed description of the model 
+  is given under the model parameter help menu selection.  The theoretical
+  background underlying this simulation is given in Chapter 8 (by Sharon
+  Crook and Avis Cohen) of "The Book of GENESIS".
+
+  THE CONTROL BUTTONS
+  ___________________
+
+  The control panel at the top center of the screen contains buttons which
+  control the starting and stopping of the simulation.  If you are eager to
+  get going, click the left mouse button on the box labeled STEP to start
+  the simulation while you are reading the help messages.
+
+  The various buttons are:
+
+  HELP-----brings up the help menu.
+
+  RESET----resets the simulation to time step 0 and clears the graphs unless
+           the simulation is set for OVERLAY mode.
+
+  STOP-----temporarily stops the simulation.  You may then change the parame-
+           ters and click on STEP to continue, or RESET and STEP to start
+           over.
+
+  QUIT-----exposes a confirmation box which asks if the user would like to
+           exit the simulation.
+
+  OVERLAY--toggles the overlay mode.  When in overlay mode, RESET followed by
+           STEP causes the next plot to be plotted over the previous plot.
+  
+  DEFAULTS-restarts the simulation with the default values of the various 
+           parameters.  Use this if you have changed a lot of things and 
+           don't remember what the initial values were.
+
+  STEP-----in addition to initiating the simulation, this also functions as a
+           dialog box for setting the number of simulation steps which are
+           performed each time.  To change the numeric field of a dialog box,
+           use the mouse to move the cursor into the dialog box.  Then, use
+           the keyboard right and left arrow keys to move the "^" symbol to
+           the right of the place where you wish to make the changes.  Then
+           use the "Delete" key to back up over anything you wish to change,
+           and type in the changes.  To cause the changes to be entered, you
+           must then hit "Return" while the cursor is in the numeric field.
+
+  dt-------is a dialog box used for setting the simulation time step.  The
+           default value of 0.01 milliseconds was chosen for accuracy in
+           reproducing the action potentials.  You can speed up the operation
+           of the simulation by chosing a larger value if you just want to
+           get an estimate of the effects of various parameter changes.  For
+           more accurate results, change the time step back to the original
+           value.
+
+
+  CELL PARAMETER SETTINGS
+  _______________________
+
+  The settings toggles, which appear at the upper left-hand corner of the
+  screen under the label "settings", let the user view a window containing
+  the parameters for an individual cell.  When you click on the toggle for a
+  particular cell, the corresponding window of cell settings will appear at
+  the top right corner of the screen.  The dialog boxes in this window allow
+  a user to vary the cell parameters.  As described above, move the cursor
+  into the dialog box, use the "Delete" key to remove the current value,
+  type in the desired value, and hit "Return".
+
+  In addition, you may set equilibrium potentials and other channel 
+  parameters for the two types of channels.  For example, you may wish 
+  to change the inhibitory channel from a potassium channel (the
+  default) to a chloride channel.  These parameters are described in 
+  more detail under the model parameters menu selection.
+
+
+
+  GRAPHS
+  ______
+
+  The graph which appears at the center of the screen shows the intra-
+  cellular potentials of the somas of the four cells in millivolts.  This
+  graph, which shows the plots for all of the cells, is visible to the user
+  at all times.  The plot values are scaled so that the potentials for all
+  four cells may be viewed at once.  To view an accurate graph for an
+  individual cell, the user may click on the toggle bar for that cell which
+  appears in the graphics box in the upper left-hand corner of the screen.
+  These graphs will all appear in the same location at the center of the
+  screen above the multi-cell graph.  If you wish to hide the graphics
+  window when you have finished examining the results, you can click on the
+  bar labelled VISIBLE which appears in the graph window.  Alternatively,
+  you may click again on the graph toggle bar in the upper left-hand corner
+  of the screen. 
+
+  To change the scale for a simulation graph, click on the SCALE button
+  associated with the graph, change the values in the appropriate dialog
+  boxes and press the DONE button.  For example, you may wish to increase the
+  time scale (xmax) if you click on STEP more than once without resetting,
+  or you may wish to view a more limited range of data in order to increase
+  the resolution.  Note that the existing data will be replotted whenever the
+  scale is changed.
+
+
+
+  CONNECTIONS
+  ___________
+
+  As with the cell parameter setting windows and cell graph windows 
+  described above,  the toggles in the upper left-hand corner which
+  appear under the connections label correspond to windows for each
+  individual cell.  To view a window containing the connection 
+  parameters for a cell, click on the corresponding toggle.  The
+  window which appears allows the user to change the weights of all
+  connections originating from that cell.  The type of connection 
+  can also be changed from excitatory to inhibitory by clicking on
+  the toggle for that connection.  If a connection from one cell to
+  another is assigned a zero weight, then the connection does not
+  appear in the viewform window on the left of the screen.  If the
+  connection is via an excitatory synapse, then a green connection
+  icon appears.  If the connection is via an inhibitory synapse, the
+  icon is orange.  Whenever a parameter or synapse type is changed,
+  the viewform is updated so that the architecture of the CPG can
+  always be quickly reviewed by studying the viewform window.
+
+
+  INPUTS
+  ______
+
+  Similar to the settings, graphics, and connections windows described above,
+  the inputs windows allow the user to interactively alter the current
+  injected to the soma and dendrite of a cell.  The toggles under the inputs
+  label allow the user to show and hide the inputs windows in the manner
+  described in the sections above.  There are two groups of dialog boxes in
+  the window for each cell.  One group controls the current injection to the
+  soma, and one controls the current injection to the dendrite.  The dialog
+  boxes for the current injection allow the user to change the amplitude of
+  the current.  A current injection of 0.0002 microamperes is sufficient to
+  trigger action potentials in the soma.  The dialog boxes for duration
+  control the duration of the injection, and the dialog boxes for delay
+  control the delay before the onset of the injection.  Don't forget to hit
+  the "return" key after modifying the contents of a dialog box.  In
+  addition, the user must hit the APPLY button after changing any of the
+  parameters for a current injection before the changes will be implemented.
+
+
+  VIEWFORM
+  ________
+
+  As described above in the section on connections, the viewform window
+  allows the user to quickly review the CPG architecture.  The connection
+  icons show whether existing connections are excitatory or inhibitory
+  depending on the color--green for excitatory and orange for inhibitory.
+  In addition, during the running of the simulation, the viewform allows the
+  user to watch the activation changes in order to study the pattern of
+  firing.  An additional function of the viewform allows the user to click
+  in the viewform window in order to bring up the windows which list the
+  parameters for the structure which the user clicks on.  For example,
+  clicking on a particular soma icon reveals the graph, inputs, and settings
+  window for that cell.  In order to view the window which shows the
+  parameters for a particular connection, click on the crossbar at the end
+  of the connection which indicates the synapse. 
+____________________________________________________________________________
+

@@ -1,0 +1,78 @@
+Object Type:	xgif
+
+Description:	Displays gif images as a pix within a draw.
+
+Author:		Upi Bhalla / Jason Leigh Aug/93
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xgif_type  [in  src/Xodus/draw/xgif_struct.h]
+
+Size:		124 bytes
+
+Fields:
+                fg      Foreground color (not currently used).
+                script  Script operation(s) to perform on a mouse
+                        click. The script calls of the pix are only made
+                        if the draw determines that the pix is the nearest
+                        to the event and if the event occurred within the
+                        bounding region of the pix.
+
+                value   Set with setfield, and accessible in script functions
+                        with the <v> or <value> argument.
+
+                tx      Transposition distance in the x dimension. The
+                        pix is transposed (ie, displaced, offset) by this
+                        amount.
+                ty      Transposition in y.
+                tz      Transposition in z.
+                pixflags        Set of flags specifying visibility,
+                        refreshes, mouse sensitivity and many other options.
+                        Use the 'pixflags' utility function to find out more.
+
+                filename   Name of the file containing the image.
+                format  Image format.  The default, gif, is the only format
+                        currently supported.
+                srcx    left margin of image in gif file (not currently used).
+                srcy    top margin of image in gif file (not currently used).
+                dstx    left margin of image in draw (not currently used).
+                dsty    top margin of image in draw (not currently used).
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XGif  [in src/Xodus/draw/xgif.c]
+
+Classes:	output, gadget
+
+Actions:        DELETE COPY SET CREATE RESET PROCESS
+                XUPDATE: update internal fields when
+                        displayed widget is changed.
+                B1DOWN: Invoked when mouse Button 1 is pressed.
+                B2DOWN: Invoked when mouse Button 2 is pressed.
+                B3DOWN: Invoked when mouse Button 3 is pressed.
+                ANYBDOWN:       Invoked when any mouse button is pressed.
+                B1DOUBLE: Invoked on a double click on mouse button 1.
+                B2DOUBLE: Invoked on a double click on mouse button 2.
+                B3DOUBLE: Invoked on a double click on mouse button 3.
+                XOCOMMAND: an action that can invoke the functions
+                        in the 'script' field
+                XODROP: Called when a another pix is dropped onto this one.
+                XODRAG: Called when the mouse is clicked on this pix, and
+                        the mouse moves while the mouse button is held down.
+                XOWASDROPPED: Called after this pix has been dropped onto
+                        another one.
+
+Messages:	none
+
+------------------------------------------------------------------------------
+
+Notes:          Unlike ximage, which displays a gif image in a form, xgif
+                displays the image as a pix inside a draw widget.
+
+Example:	Scripts/examples/XODUS/draws.g
+
+See also:	ximage, xpix

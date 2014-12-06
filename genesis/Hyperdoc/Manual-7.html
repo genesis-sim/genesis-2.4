@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Input/Output (I/O) Routines</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-6.html">Previous</A>
+<A HREF="Manual-8.html">Next</A>
+<A HREF="Manual.html#toc7">Table of Contents</A>
+<HR>
+<H2><A NAME="IO"></A> <A NAME="s7">7. Input/Output (I/O) Routines</A></H2>
+
+<P>GENESIS offers several routines to read or write data from within the GENESIS
+environment to an operating system file, or to prompt the user for information.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#asciidata">asciidata </a></TD><TD>Converts a FMT1 formatted binary file to ASCII.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#closefile">closefile </a></TD><TD>Closes an ASCII file opened with the openfile command. </TD></TR><TR><TD>
+<A HREF="Manual-25.html#eof">eof </a> </TD><TD>Tests whether at end of currently opened file.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#flushfile">flushfile </a></TD><TD>Flushes buffered data to disk to insure that it gets written.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#input">input </a> </TD><TD>Obtains input from the user at the GENESIS prompt. </TD></TR><TR><TD>
+<A HREF="Manual-25.html#listfiles">listfiles </a></TD><TD>Lists ASCII files currently opened by openfiles command.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#logfile">logfile </a> </TD><TD>Activates and deactivates logging of all commands issued in</TD></TR><TR><TD>
+</TD><TD>a GENESIS session.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#notes">notes </a> </TD><TD>Allows user to enter text notes into a file.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#openfile">openfile </a></TD><TD>Opens ASCII file for reading or writing.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#readfile">readfile </a> </TD><TD>Reads a line of data from an opened ASCII file.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#where">where </a> </TD><TD>Returns name of operating-system directory in which specified</TD></TR><TR><TD>
+</TD><TD>file is located.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#writefile">writefile </a></TD><TD>Writes out ASCII data to currently opened file. </TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss7.1">7.1 Saving Simulations to a File</A></H2>
+
+<P>The simdump command and its auxillary commands are used to dump an
+entire simulation to a GENESIS script file, complete with the current values
+of specified element fields.  This file may then be loaded into GENESIS to
+recreate the simulation.  This is in contrast to the save and restore commands,
+which are used for specified (or wildcarded) elements in a simulation.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#enddump">enddump </a> </TD><TD>Cleans up at the end of a dumpfile </TD></TR><TR><TD>
+<A HREF="Manual-25.html#initdump">initdump </a> </TD><TD>Initializes the simulation dumping/undumping system </TD></TR><TR><TD>
+<A HREF="Manual-25.html#msgsubstitute">msgsubstitute </a></TD><TD>Allows undump of saved simulation with new message names</TD></TR><TR><TD>
+<A HREF="Manual-25.html#objsubstitute">objsubstitute </a></TD><TD>Allows undump of saved simulation with new object names</TD></TR><TR><TD>
+<A HREF="Manual-25.html#restore">restore </a> </TD><TD>Restores element state stored in file with save routine</TD></TR><TR><TD>
+<A HREF="Manual-25.html#save">save </a> </TD><TD>Saves current field values for specified element in a file</TD></TR><TR><TD>
+<A HREF="Manual-25.html#simdump">simdump </a> </TD><TD>Dumps an entire simulation to a GENESIS script file </TD></TR><TR><TD>
+<A HREF="Manual-25.html#simobjdump">simobjdump </a> </TD><TD>Sets up format for dumping/reading objects to a file </TD></TR><TR><TD>
+<A HREF="Manual-25.html#simundump">simundump </a> </TD><TD>Creates an element and assigns values to its fields</TD></TR><TR><TD>
+<A HREF="Manual-25.html#substituteinfo">substituteinfo </a></TD><TD>Lists substitutions from msgsubstitute/objsubstitute</TD></TR><TR><TD>
+<A HREF="Manual-25.html#swapdump">swapdump </a> </TD><TD>Mirrors initialization data when doing simulation dumps </TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<H2><A NAME="ss7.2">7.2 Related GENESIS Objects</A></H2>
+
+<P>Often, one would like to write or read data at regular intervals,
+using one of the available simulation clocks.  The GENESIS objects
+<A HREF="Manual-26.html#asc_file">asc_file </a>, 
+<A HREF="Manual-26.html#disk_out">disk_out </a>, and 
+<A HREF="Manual-26.html#disk_in">disk_in </a> may be used for this purpose.
+The 
+<A HREF="Manual-26.html#diskio">diskio </a>, 
+<A HREF="Manual-26.html#variable">variable </a>, and 
+<A HREF="Manual-26.html#metadata">metadata </a> objects
+provide the features
+of the existing disk_in and disk_out objects to read and write data in
+the portable binary NETCDF format.  This eases the interfacing of GENESIS
+simulations with popular analysis and signal-processing tools such as MATLAB,
+and makes it possible to use binary files produced by GENESIS on multiple
+platforms.  For examples of
+``clocked file I/O'', see the documentation for these objects in
+the 
+<A HREF="Manual-26.html#Objectref">GENESIS Object Reference</A>.</P>
+<P>The 
+<A HREF="Manual-26.html#event_tofile">event_tofile </a> and 
+<A HREF="Manual-26.html#spikehistory">spikehistory </a> objects
+are useful for recording spike event times to a file.</P>
+
+
+<HR>
+<A HREF="Manual-6.html">Previous</A>
+<A HREF="Manual-8.html">Next</A>
+<A HREF="Manual.html#toc7">Table of Contents</A>
+</BODY>
+</HTML>

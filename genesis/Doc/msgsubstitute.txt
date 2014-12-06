@@ -1,0 +1,24 @@
+Routine Name:       msgsubstitute
+
+Description:        Allows undump of saved simulation with new message names
+
+Usage:              msgsubstitute destobj orig_msg_type new_msg_type field1 ...
+
+Example:            objsubstitute xplot fakeplot
+                    msgsubstitute fakeplot PLOT INPUT .
+
+                    also see Scripts/kinetikit/batch_interface.g
+
+Notes:              msgsubstitute is used along with objsubstitute  to allow
+                    you to save an object of one type using simobjdump and
+                    simdump, and then use simundump to reload it as a
+                    different type.  It allows for example, xgraph and xplot
+                    elements to be saved as neutral and table elements, so
+                    that the simulation can run in batch mode.  In the example
+                    above, a real xplot object takes a PLOT message, but we
+                    are using a table as fakeplot, which takes an INPUT
+                    message.  Here, the "." represets the same field (the
+                    data to be plotted) originally sent with the PLOT message.
+
+See also:           objsubstitute, substituteinfo, simobjdump, simdump,
+                    swapdump, simundump

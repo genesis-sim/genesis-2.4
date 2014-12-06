@@ -1,0 +1,8 @@
+Routine Name:	quit
+
+Description:	Exits from GENESIS, terminating any simulation in progress.
+
+Usage:		quit
+
+Notes:		Alias for exit routine.
+

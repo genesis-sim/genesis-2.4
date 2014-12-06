@@ -1,0 +1,119 @@
+Object Type:	ddsyn
+
+Description:	modified synchan with table front end to transform voltage
+		to activation, for dendro-dendritic synapses.  Calculates
+		channel current therefore needs membrane state.
+
+Author:		U. S. Bhalla, Caltech (5/91)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	dd_syn_type  [in src/olf/olf_struct.h]
+
+Size:		164 bytes
+
+Fields:		Gk		channel conductance
+		Ik		channel current
+		Ek		channel reversal potential
+		gmax		maximum conductance
+                tau1		open time constant of channel activation
+		tau2		close time constant of channel activation
+                transf		table for transform from Vm to activation;
+				usual interpolation element with the normal
+				set of fields; set up using TABCREATE, filled
+				by indexing as usual, and interpolated using
+				TABFILL
+		activation	channel activation; set either by a table
+				lookup of the transform of the incoming
+				VOLTAGE message or by synaptic input
+		transf_alloced	flag for allocation of transform
+		X		state variable for time response
+		Y		state variable for time response
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	DDSyn  [in src/olf/dd_syn.c]
+
+Classes:	segment, channel
+
+Actions:	INIT
+		PROCESS
+		RESET
+		CHECK
+		SET
+		DUMP
+		SAVE2
+		RESTORE2
+		TABCREATE
+		TABFILL
+
+Messages:	VOLTAGE voltage			[tells channel what membrane
+						potential is]
+
+                ACTIVATION activation		[sends activation directly to
+						channel; sums linearly with
+						other ACTIVATION input and
+						transformed V_PRESYN input]
+
+                V_PRESYN presynaptic-voltage	[sends presynaptic voltage to
+						transform table; sums linearly
+						at output of table, so
+						multiple V_PRESYN inputs are
+						first transformed, then their
+						activations are summed]
+
+                RAND_ACTIVATION			[rather than sending direct
+		  probability  amplitude	activation signal, specifies
+						probability (from 0 to 1) that
+						activation of size amplitude
+						will occur at synapse (useful
+						for sending random synaptic
+						input to synapse)]
+
+------------------------------------------------------------------------------
+
+Notes:		Dendrodendritic synapse with tabulated transform
+		from presyn potential to postsyn activation.
+		The table for the transform is created using tabcreate
+		and is shared with all copies of the element
+
+		The ddsyn element is the equivalent of a synchan element
+		with a tabulated transform from input voltage to channel
+		activation. This serves as a way of representing
+		dendro-dendritic synapses.  The usual fields and messages for
+		the synchan element remain available. The table entries are
+		filled in the usual ways from the script interface, and can be
+		shared between ddsyn elements.
+
+Example:	Here we create a ddsyn channel to act as the synaptic input
+		for granule cells in an olfactory bulb model.
+
+		    // for dd, ax, and centrif inputs
+		    create      ddsyn   glu_gran_usb
+		    call glu_gran_usb TABCREATE 10 -0.070   0.05
+		    setfield  glu_gran_usb \
+			Ek          {EGlu} \
+			tau1        4.0e-3 \   // sec
+			tau2        6.0e-3 \   // sec
+			gmax        {GGlu} \   // Siemens
+		    // Setting up the table for transforming
+		    // from presyn Vm to activation
+			transf->table[0] 0 \
+			transf->table[1] 0.05 \
+			transf->table[2] 0.1 \
+			transf->table[3] 0.2 \
+			transf->table[4] 0.5 \
+			transf->table[5] 0.7 \
+			transf->table[6] 0.8 \
+			transf->table[7] 0.9 \
+			transf->table[8] 0.95 \
+			transf->table[9] 0.98 \
+			transf->table[10] 1
+		    call glu_gran_usb TABFILL 1000 0
+				
+See also:  Scripts/examples/ddsyn
+

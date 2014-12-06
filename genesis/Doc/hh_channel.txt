@@ -1,0 +1,116 @@
+Object Type:	hh_channel
+
+Description:	Implements the channel model described in A.L.Hodgkin and
+		A.F.Huxley, J.Physiol(Lond) 117, pp 500-544 (1952)
+
+		In the Hodgkin-Huxley model, the general form for the
+		channel conductance is represented as being proportional to
+		an activation state variable raised to an integer power
+		times an inactivation state variable raised to another
+		integer power.  The hh_channel object calculates the channel
+		conductance from the equation
+
+	                Gk = Gbar*X^Xpower * Y^Ypower
+
+		In the usual Hodgkin-Huxley notation for the Na channel, X
+		corresponds to the activation variable, m, with Xpower = 3,
+		and Y corresponds to the inactivation variable, h, with
+		Ypower = 1.
+
+		Channel elements which are created from the hh_channel
+		object calculate both X and Y by solving differential
+		equations of the form
+
+			dX/dt = alpha*(1-X) - beta*X
+
+		The voltage-dependent rate variables, alpha and beta, can
+		each assume one of the three functional forms:
+
+		1 (EXPONENTIAL): alpha(v) = A exp((v-V0)/B)
+		2 (SIGMOID):     alpha(v) = A / (exp((v-V0)/B) + 1)
+		3 (LINOID):      alpha(v) = A (v-V0) / (exp((v-V0)/B) - 1)
+
+		The form to be used and the constants A, B and V0 are
+		specified for each rate variable by setting fields in the
+		hh_channel element.
+
+Author:		M. Nelson, Caltech (8/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	hh_channel_type  [in src/hh/hh_struct.h]
+
+Size:		184 bytes
+
+Fields:		activation      channel activation
+                Gk              channel conductance
+                Ik              channel current
+                Ek              channel reversal potential
+                Gbar            channel maximum conductance
+                X               value of X gate (m)
+                Y               value of Y gate (h)
+                Xpower          power to raise X gate to
+                Ypower          power to raise Y gate to
+                X_alpha_FORM    Equation form for X gate alpha rate constant
+				1 = EXPONENTIAL, 2 = SIGMOID, 3 = LINOID
+                X_alpha_A       A constant for X gate alpha rate constant
+                X_alpha_B       B constant for X gate alpha rate constant
+                X_alpha_V0      V0 constant for X gate alpha rate constant
+                X_beta_FORM     Equation form for X gate beta rate constant
+				1 = EXPONENTIAL, 2 = SIGMOID, 3 = LINOID
+                X_beta_A        A constant for X gate beta rate constant
+                X_beta_B        B constant for X gate beta rate constant
+                X_beta_V0       V0 constant for X gate beta rate constant
+                Y_alpha_FORM    Equation form for Y gate alpha rate constant
+				1 = EXPONENTIAL, 2 = SIGMOID, 3 = LINOID
+                Y_alpha_A       A constant for Y gate alpha rate constant
+                Y_alpha_B       B constant for Y gate alpha rate constant
+                Y_alpha_V0      V0 constant for Y gate alpha rate constant
+                Y_beta_FORM     Equation form for Y gate beta rate constant
+				1 = EXPONENTIAL, 2 = SIGMOID, 3 = LINOID
+                Y_beta_A        A constant for Y gate beta rate constant
+                Y_beta_B        B constant for Y gate beta rate constant
+                Y_beta_V0       V0 constant for Y gate beta rate constant
+
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	hh_channel  [in src/hh/channel.c]
+
+Classes:	segment channel
+
+Actions:	INIT
+		PROCESS
+		RESET
+		CHECK
+                CALC_ALPHA
+                CALC_BETA
+		CALC_MINF
+
+Messages:	VOLTAGE Vm
+
+------------------------------------------------------------------------------
+
+Notes:		The tabchannel object provides a faster and more general way
+		to implement this type of channel.
+
+                The CALC_ALPHA, CALC_BETA, and CALC_MINF actions are used with
+                calls of the form
+
+                        y = {call <element> CALC_ALPHA <gate> <x-value>}
+ 
+                in order to access values of alpha, beta or m_inf (the steady
+		state activation, alpha/(alpha + beta)) for the specified gate
+		(X or Y) and a particular value of the independent variable.
+		This feature is most often used for making plots of these
+		quantities.  Note that the activation time constant can be
+		calculated from tau = 1/(alpha + beta).
+
+Example:	Scripts/neurokit/prototypes/hhchan.g
+
+See also:	tabchannel, vdep_channel
+

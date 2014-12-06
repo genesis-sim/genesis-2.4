@@ -1,0 +1,77 @@
+Routine Name:	getmsg
+
+Description:	Returns information about a message into or out of element.
+
+Usage:		getmsg element -incoming -outgoing -slot msg-number slot-number
+		 -count -type msg-number -destination msg-number
+		 -source msg-number -find srcelem type
+
+		[One of -slot, -count, -type, -destination, -source or -find
+		must be given]
+
+		element		element for which to determine information
+	
+		msg-number	number (index)  of message in message list
+				(messages are numbered from 0 up)
+
+		srcelem		element sending the message
+
+		type		message type (PLOT, AXIAL, VOLTAGE, etc.)
+
+		-incoming	look for an incoming message
+
+		-outgoing	look for an outgoing message
+
+		-slot		return the slot value for the given message
+				and slot numbers
+
+		-count		return the number of messages in or out
+				of this element
+
+		-type		return the message type for the message
+				having the index msg-number
+
+		-destination	return the destination element for the
+				message having the index msg-number
+				
+
+		-source		return the source element for the
+				message having the index msg-number
+
+
+		-find		return the index (msg-number) of the first
+				message matching the srcelem and type
+
+Example:	
+
+	genesis > echo { getmsg /cell/dend1 -out -destination 0}
+	/cell/soma
+	
+	genesis > echo { getmsg /cell/dend1 -out -source 0}
+	/cell/dend1
+
+	genesis > echo { getmsg /cell/dend1 -out -count }
+	5
+
+	genesis > echo { getmsg /cell/dend1  -in -destination 1 }
+	/cell/dend1
+
+	genesis > echo {getmsg /cell/soma -in -find /cell/dend1 RAXIAL}
+	2
+
+	genesis >  echo {getmsg /cell/soma  -in -type 2}
+	RAXIAL
+
+	genesis >  echo {getmsg /cell/soma  -in -slot 2 0}
+	-0.07
+
+
+Notes:		The -find option may only be used to find the index of
+		an incoming message.  It returns -1 if there is no message
+		from the specified source element and message type.
+
+		The -count option may be useful if you want to loop over the
+		index in order to find multiple messages which meet some
+		specification.
+
+See also:	addmsg, deletemsg, showmsg

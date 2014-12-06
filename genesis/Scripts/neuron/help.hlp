@@ -1,0 +1,35 @@
+                            USING HELP
+
+Many of the topics on the help menu use text windows like this one.  If
+there is more than one screen full of text, move the cursor into the scroll
+bar at the left edge of the window, hold the left mouse button down, and
+drag the mouse downwards to scroll through the text.  When you have
+finished, click the left button on the "DONE" box.
+
+Other topics, such as "Neuron Inputs" display a graphical image.  Clicking
+the left mouse button on the "DONE" box at the top of the image will make
+it disappear.
+
+The Help Menu selections are:
+
+Using Help - gives this message.
+
+Running the Simulation - tells how to use the various "buttons" and
+     "dialog boxes" at the bottom of the screen and describes the plots
+     which are produced. It also tells how to set the injection currents to
+     the cell compartments, how to connect sources of spike trains to the
+     excitatory and inhibitory inputs of the two dendrite compartments and
+     how to vary the timing of the spike trains.
+
+Neuron Inputs - shows a diagram of the model neuron, indicating the connections
+     which are available for injection current pulses and the two sources of
+     spike trains.
+
+Cell Parameters - tells something about the physical and mathematical model
+     used for the neuron and describes the various parameters which may be
+     set from the "Cell Parameters" menu.
+
+Things to Try - suggests some combinations of neuron inputs to try.
+
+
+DONE - makes the Help Menu disappear.

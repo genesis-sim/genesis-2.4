@@ -1,0 +1,29 @@
+Routine Name:	delete
+
+Description:	Deletes an element and all of its children.
+
+Usage:		delete  element
+
+Example:	delete /neuron
+
+Notes:		The delete routine is used to delete elements from the GENESIS
+		element hierarchy.  Deleting an element which has children
+		attached to it will also delete all of the child elements.
+
+		In the course of deleting the object, the delete routine also
+		issues the DELETE action for the object before it is
+		eliminated.
+
+                When deleting interpol_structs that share tables between them
+                (e.g. tabchannel, tab2Dchannel, or tabcurrent), or the cells
+                or compartments containing them, you must call TABDELETE
+                first, in order to deallocate the memory for the tables.
+                Finally, you have to give the "reclaim" command for the memory
+                to actually be freed.  Note that the tables are shared among
+                all copies of the interpol_struct that are created by copy or
+                readcell from a prototype.  Therefore, you shouldn't call
+                TABDELETE unless you plan to delete all copies of the
+                interpol_struct.
+
+See also:	create, reclaim
+

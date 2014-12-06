@@ -1,0 +1,155 @@
+Object Type:    paramtableBF
+
+Description:    This object implements a brute-force search as part of a
+                parameter search process, and also stores the parameter
+                tables and various bookkeeping information relating to the
+                parameter search process.  It is mainly for use in
+                systematically mapping out the parameter space of a model.
+
+Author:         Mike Vanier, Caltech
+
+-------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+Data structure: paramtableBF_type  [in src/param/param_struct.h]
+
+Size:       168 bytes (more when tables are loaded)
+
+Fields:
+            iteration_number        iteration number
+            num_params              total number of parameters
+            num_params_to_search    number of parameters to search over
+            search                  array of flags:
+                                    0 = don't search this parameter,
+                                    1 = do search this parameter
+            type                    type of parameter:
+                                    0 = additive,
+                                    1 = multiplicative
+            range                   of parameter values
+            min                     of parameter values
+            max                     of parameter values
+            label                   label of parameter,
+                                    for documentation purposes only
+            current                 array of parameter values
+                                    to be simulated next
+            current_match           match value of current parameter set
+                                    being simulated
+            best                    array of parameter values
+                                    giving best match so far
+            best_match              best match value
+            new_best_match          flag: 1 if last match was the best so far
+            done                    flag: 1 when the simulation is finished
+            filename                where parameter information is
+                                    stored/saved as a binary file
+            alloced                 flag: 1 means tables are allocated
+            orig                    array of original parameter values
+            search_divisions        number of points on the range
+                                      to test
+            search_rangemod         fraction of the full range to
+                                      search over
+            search_count            where we are in the search for
+                                      each param
+
+
+-------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:   ParamtableBF  [in src/param/paramtableBF.c]
+
+Classes:    param
+
+Actions:    Note: required arguments to actions are in <angle brackets>;
+                  optional arguments are in [square brackets].
+
+            CREATE      Creates the object (not invoked directly).
+
+            TABCREATE <num_params>
+                        Initializes the object for a given number of
+                        parameters.
+
+            DELETE      Deletes all allocated memory.
+
+            TABDELETE   Same as DELETE.
+
+            INITSEARCH  Initializes the search process.
+                        Usage: ParamtableBF_INITSEARCH \
+                               <param-number1> <npts1> <scale1> ... \
+                               <param-numbern> <nptsn> <scalen>
+
+                        This function expects its arguments to be in the
+                        form of (<param_number> <npts> <scale>) triplets,
+                        where <param_number> is the index of the parameter
+                        to be varied, <npts> is the number of
+                        equally-spaced points along the parameter axis to
+                        test, and <scale> is the proportion of the total
+                        range to use; 1.0 means use the entire range.  Note
+                        that the range is relative to a center point which
+                        is where the parameter search starts from.
+
+            EVALUATE <match>
+                        Copies the match value into the current_match field.
+                        If this match is the best match so far, this action
+                        copies the current parameter set into the best
+                        parameter set and the current_match field into the
+                        best_match field.
+
+            UPDATE_PARAMS
+                        Chooses the next set of parameters to simulate.
+                        This object systematically works its way through
+                        parameter space, simulating all points on a
+                        multidimensional grid whose features are specified
+                        in the INITSEARCH action.
+
+            SAVE [filename]
+                        Saves the object as a binary file.  If no
+                        argument given, use the "filename" field
+                        of the element.
+
+            SAVEBEST <filename>
+                        Saves the best parameter set to an ascii file.
+
+            RESTORE [filename]
+                        Restores the object from a binary file.  If no
+                        argument given, use the "filename" field of the
+                        element.
+
+            RESTOREBEST Restores the best parameter table from a text file.
+
+            DISPLAY     Displays the best parameter set obtained so
+                        far on stdout.
+
+            CHECK       Runs a series of self-check diagnostics on this
+                        object.
+
+Messages:   none
+
+-------------------------------------------------------------------------
+
+Notes:      This object stores parameter tables and calculates new tables
+            to be simulated in a parameter search process using a
+            brute-force algorithm.  The algorithm divides the parameter
+            space into a multidimensional grid where all points are
+            equidistant to their neighbors in each dimension.  Then it
+            systematically walks through the space, calculating and
+            outputting a match value for each point.
+
+            This algorithm is effectively useless for searching parameter
+            space per se because of the combinatorial explosion that occurs
+            when you have more than a few parameters (e.g. 3 or 4).
+            However, it can be used effectively to map out parameter space
+            very coarsely for a small number of parameters.  For instance,
+            you could keep all but two parameters fixed and map out the
+            two-dimensional parameter space that consists of varying values
+            for each of the two parameters.  This may give some insight
+            into various aspects of a model.  Alternatively, you could map
+            out all the parameters at a very coarse scale, which can be
+            used (for instance) to give a reasonable starting point for
+            other algorithms.  In practice, this is still not feasible for
+            more than 5 or 6 parameters.
+
+Example:    See Scripts/param/BF for demo scripts.
+
+See also:   Parameter Search (Param), Paramtable, setsearch, initparamBF,
+            paramtableCG, paramtableGA, paramtableSA, paramtableSS

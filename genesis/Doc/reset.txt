@@ -1,0 +1,37 @@
+Routine Name:	reset
+
+Description:	Resets simulation to initial conditions.
+
+Usage:		reset
+
+Example:	genesis > reset
+		time = 0.000000 ; step = 0
+
+Notes:		The reset routine returns the simulation state to its initial
+		conditions (e.g., the simulation time is set back to 0) and
+		invokes each enabled element with the RESET action in order
+		for them to place themselves back in the initial condition
+		state.  You should reset the simulation whenever you are
+		getting ready to start a new simulation run, or after you
+		adding new elements to the simulation.
+
+		If the initial state of one element depends on the initial
+                state of another element, you may need to call the RESET
+                action for specific elements in the proper order -- the reset
+                routine gives no control over the order in which the elements
+                are RESET, and the simulator does not check for such
+                dependencies.  (In most cases, you can issue two reset
+                commands, instead.)
+
+		For instance, the object which computes the Nernst equilibrium
+		potential requires ionic concentrations. The initial potential
+		therefore relies on the initial ionic concentrations. Thus the
+		elements which compute the ionic concentrations must be reset
+		before the elements which compute the concentration-dependent
+		equilibrium potentials.  An example is given in nernst.txt.
+
+		It is up to you to determine whether reset order is
+		important.  Also, you should make sure that any objects you
+		create document the conditions under which these
+		dependencies arise.
+

@@ -1,0 +1,70 @@
+Object Type:	script_out
+
+Description:	executes a script command at each step of a simulation
+
+Author:		M. Wilson, Caltech (2/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	script_output_type  [in src/out/out_struct.h]
+
+Size:		80 bytes
+
+Fields:		command     Command string (function name + optional args)
+		argc        Number of arguments, including function name
+		argv        array of arguments (argv[0] = function name)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	ScriptOutput  [in src/out/out_script.c]
+
+Classes:	output
+
+Actions:	PROCESS
+		SET
+		RESET
+		RECALC
+
+Messages:	none
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The command field of a script_out element is used to hold the name of a script
+language function which will be executed at every step of the clock used by
+the script_out.  This will normally by clock 0, the default simulation clock.
+As the definition of this script function will be interpreted by the SLI,
+execution will be much slower than with the compiled PROCESS action of other
+predefined GENESIS objects.  For that reason it is best to assign a slower
+clock to the script_out element.
+
+If the command field is set to a string consisting of the function name
+plus one or more optional arguments, then argv[{n}] will contain the
+nth argument.  Extended objects provide a much more flexible alternative
+to the script_out object.
+
+Example:
+
+// spikebeep.g - illustrate the use of the script_out element to beep
+// whenever a spike is produced  (assuming your terminal window
+// beeps when a ctrl-G is echoed).
+// Include this file at the end of Scripts/tutorials/tutorial4.g
+
+// The script_out element checks for a spike at every simulation step
+create script_out /catchspike
+setfield /catchspike command "checkspike"
+useclock /catchspike 0
+
+function checkspike
+        if ({getfield /cell/soma/spike state} != 0)
+               echo {chr 7} -nonewline
+        end
+end
+reset
+
+See also:	Extended, Scripts/orient_tut/ret_input.g

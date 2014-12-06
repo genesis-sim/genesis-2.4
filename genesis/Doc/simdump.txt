@@ -1,0 +1,193 @@
+Routine name:	simdump
+
+Description:	Dumps an entire simulation to a GENESIS script file.
+		Should generally be invoked after calling the 
+		'simobjdump' function to specify object fields.
+
+		One of a family of functions for dumping and restoring
+                simulations in their entirety, and merging overlapping
+                simulations. The output of these functions is an ascii file
+                readable by the GENESIS script interpreter.  However, this
+                ascii file uses 'simundump' to restore field values, which is
+                efficient but not very human-friendly.
+
+		Since the output of simdump is GENESIS script file, one
+		can dump various parts of a simulation into different files,
+		and read them back in separately, or read them into a different
+		simulation, and so on.
+
+		Simdump files do quasi-intelligent 'merging' of files with
+                existing simulations. If an element is already there, it
+                will content itself with updating the field values and
+                adding missing messages. By default it will avoid duplicating
+		existing messages. It also has a provision for
+                ignoring orphan elements, whose parents are not defined. These
+                options are activated by the initdump command.
+
+
+Usage:		simdump filename -path path -tree tree -messages -all
+			
+		filename: The name of the output dump file.
+
+		-path path: specifies a wildcard path of elements to
+			be dumped. This option can be used repeatedly to put
+			several different bits of the simulation into the
+			file. The same effect could be achieved by using
+			the extended wildcard specification.
+
+		-tree tree: A currently disabled option for getting the
+			wildcard path from an xtree.
+
+		-messages: A currently disabled option.
+
+		-all : Tells simdump to dump the entire simulation.
+
+
+Example:	See below for an example of a simple and a complex dump of
+		a simulation plus interface.
+		
+
+Notes:		In theory it should be possible to use simdump on its own,
+		without invoking simobjdump or initdump. In this situation, 
+		the command assumes that all fields of the objects are to
+		be dumped. This is inefficient. Worse, it causes problems
+		because fields can take values that should not be reloaded
+		into them. Pointers are a good example. Also see below about
+		what happens with Xodus.
+
+		Simdump always saves files in 'append' mode. This means that
+		if you accidently use the same filename as an existing .g file,
+		the original won't be destroyed, and you can edit the file
+		to extract the dumped part and the original.
+		
+		Xodus poses lots of problems for simdump, because Xodus
+		objects do not always behave cleanly. For example,
+		Xodus objects often have default field values like 'nil' 
+		which are not valid when trying to reload the dumpfile. It
+		is necessary to exclude the offending fields by using
+		simobjdump to select well-behaved fields for the dump.
+		Furthermore, there is no 'field' to determine whether an
+		xform is displayed or not, so the forms won't appear until
+		explicity 'shown'. There are various other annoyances, like
+		things not updating when you expect them to. For this reason,
+		simdump will need help if you are trying to dump an interface.
+
+		Simdump will happily dump the entire contents of a 1-Megabyte
+		xplot or table. This gives a valid, but enormous dumpfile.
+		If this is not desirable, simobjdump allows one to specify
+		the -noDUMP option. See simobjdump documentation.
+
+		A few objects will dump too much information for the
+		parser to handle as part of a single command. This is only
+		likely to occur in very rare situations.
+
+		The hsolver can be dumped, but its fields must be restricted
+		to the path. The solver will need to be re-initialized
+		when trying to restore the simulation. It is better to
+		just rebuild the whole hsolver from scratch.
+
+		In general, cell models are much more compactly specified
+		by the .p files than by the simdump files. It is also much
+		more user-friendly that way.
+
+		The long-bewailed problem with re-entrant parsers means that
+		the generated script file cannot be read in on a mouse-click.
+		You will have to type in a command to load the script file.
+
+Example:
+
+This example consists of two files: a demo simulation file called "dumpdemo.g",
+and a file "savefunc.g" with two versions of simulation dumping functions.
+Cut out the scripts to the appropriate files. Run dumpdemo, which is a 
+little compartmental model with interface. Save using the simple and complex
+versions of the dumping interface. Examine the resulting dumpfiles using
+your favourite editor, and then reload them to see what happens.
+
+================ Cut here for file "dumpdemo.g" =============================
+
+//genesis
+
+setclock 0 0.001
+
+include savefunc.g
+
+create neutral /a
+create compartment /a/compt
+setfield ^ Ra 1 Cm 1 Rm 1
+
+copy /a /b
+
+addmsg /a/compt /b/compt AXIAL Vm
+addmsg /b/compt /a/compt RAXIAL Ra Vm
+
+create xform /form
+create xgraph /form/graph -ymax 0.5 -xmax 5
+create xplot /form/graph/plot -fg red
+create xbutton /form/simple_save -script "do_simple_save"
+create xbutton /form/complex_save -script "do_complex_save"
+create xbutton /form/quit -script quit
+xshow /form
+
+addmsg /b/compt /form/graph/plot PLOT Vm *Vm *red
+
+setfield /a/compt inject 1
+
+reset
+
+step 5 -t
+
+============== Cut here for file savefunc.g ================================
+
+
+//genesis
+
+// This function saves only the structure of the simulation. None
+// of the interface objects will be saved.
+function do_simple_save
+	// compartments are well-behaved, so we can get away with
+	// dumping all compartment fields by default
+	// Here we illustrate two ways of dumping multiple paths
+	simdump simple_dump.g -path /a -path /a/## -path "/b,/b/##"
+	echo "Simple dump done to file: simple_dump.g"
+end
+
+// This function saves everything about the simulation. It has
+// to jump through many hoops to deal with Xodus oddness.
+function do_complex_save
+	str filename = "complex_dump.g"
+
+	// Write out some general info for the dumpfile
+    openfile {filename} "w"
+    writefile {filename} "//genesis"
+    writefile {filename} {"// Saved on " @ {getdate}}
+    writefile {filename} "setclock 0 0.001"
+    writefile {filename} "include savefunc.g"
+	closefile {filename}
+
+	// Specify which fields of the Xodus objects we want to save
+	simobjdump xform xgeom ygeom wgeom hgeom
+	simobjdump xaxis script
+	simobjdump xshape script
+	simobjdump xgraph xmin ymin xmax ymax xgeom ygeom wgeom hgeom
+	simobjdump xplot npts
+	simobjdump xbutton script
+	simobjdump xdialog script value
+	
+	// Dump the entire simulation
+	simdump {filename} -all
+
+	// We're not done yet: we need to help the interface get back
+	// to its original state.
+    openfile {filename} "a"
+    writefile {filename} "xshow /form"
+    writefile {filename} \
+        "setfield /form/graph/plot npts "{getfield /form/graph/plot npts}
+    writefile {filename} "xupdate /form/graph"
+	closefile {filename}
+
+	echo "Complete dump done to file: "{filename}
+end
+
+=============================================================================
+
+See also:       initdump, simobjdump, simundump.

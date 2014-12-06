@@ -1,0 +1,54 @@
+Object Type:	stdp_rules
+
+Description:	Performs a weight modification of synchan connections,
+                according to spike timing dependent (STDP) rules and
+		settable parameters.  Works with hsolved cells.
+
+Author:		Dave Beeman, University of Colorado, June 2014
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	stdp_rules_type [in src/newconn/stdp_rules_struct.h]
+
+Size:		208 bytes
+
+Fields:
+             synpath         relative path to synchan to be modified
+             spikepath       relative path to the cell spikegen
+             tau_pre         decay constant for pre before post spike
+             tau_post        decay constant for post before pre spike
+             min_dt          minimum time diff to account for latency
+             max_weight      maximum synaptic weight allowed
+             min_weight      minimum synaptic weight allowed
+             dAplus          increment for postive weight changes
+             dAminus         increment for negative weight changes
+             change_weights  flag: 0 = plasticity off, otherwise on
+             debug_level     flag: 0 = no messages, 1 = some messages, 2 = more
+             synlist         GENESIS ElementList of cells to modify
+
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:   StdpRules [in src/newconn/stdp_rules.c]
+
+Class:		output
+
+Actions:	CHECK  RESET  PROCESS  INIT  CREATE
+
+Messages:	None
+
+------------------------------------------------------------------------------
+
+Notes: A clocked object to modify synaptic weights for all synapses of
+       a specified (wildcarded) cell and synchan, e.g. '/layer4/pyr[]'
+       and 'apical3/AMPA'.  The spike timing dependent plasticity
+       (STDP) rules algorithm is from Song, Miller, and Abbott (2000).
+
+Example:  Scripts/stdp_rules/README.txt
+
+See also: synchan, spikegen
+

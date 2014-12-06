@@ -1,0 +1,64 @@
+Object Type:	leakage
+
+Description:	Provides a constant conductance in series with a battery.
+		This is often used to implement a passive "leakage" channel
+		having a fixed conductance.
+
+Author:		M. Wilson, Caltech (6/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	leakage_type  [in src/segment/seg_struct.h]
+
+Size:		96 bytes
+
+Fields:		Gk		the Gk to be sent in a CHANNEL message
+		Ek		the leakage battery
+		activation	the leakage conductance used to calculate Ik
+		Ik		channel current
+		inject		not used
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Leakage  [in src/segment/leakage.c]
+
+Classes:	segment
+		channel
+
+Actions:	PROCESS		Calculates Ik
+		RESET		Sets Ik = 0
+		CHECK 		Checks to see if an incoming VOLTAGE
+				message has been established.
+
+Messages:	VOLTAGE Vm
+
+------------------------------------------------------------------------------
+
+Notes:		This object is intended to be used as a flexible leakage
+		term in conjunction with the membrane model.  As with any
+		other type of channel, it normally is used to send its
+		conductance (Gk) and reversal potential (the battery in series
+		with Gk) to the parent compartment using a CHANNEL message.
+		In this case, Gk has a constant value, to be set by the user.
+		
+		Although this feature is not often used, a leakage element
+		also calculates the current, Ik = (Ek - Vm)*activation.  Here,
+		Vm is the compartment membrane potential received with a
+		VOLTAGE message, and "activation" is a conductance.  This
+		would normally be set by the user to the same value as Gk, but
+		this is not done automatically.  As Gk does not depend on Vm,
+		a VOLTAGE message is not strictly required if Ik not is
+		needed.  However, the check command will issue a warning if
+		one has not been established.
+Example:	
+        	create leakage K_leak
+	        setfield K_leak Ek {EK} Gk {Gleak}
+		addmsg K_leak   ..     CHANNEL Gk Ek
+		addmsg ..       K_leak VOLTAGE Vm
+
+
+See also:	

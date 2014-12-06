@@ -1,0 +1,75 @@
+Routine Name:   setupghk
+
+Description:    Allocates and fills tabcurrent tables with the values needed
+                to implement the Goldman-Hodgkin-Katz equation.
+
+Usage:          setupghk tabcurrent-element charge Celcius Cain Caout \
+                     -xsize n -xrange min max -ysize n -yrange min max
+
+                tabcurrent-element  This must have been created from a
+                                    tabcurrent object.
+
+                charge              The ionic valence, z.
+
+                Celsius             Temperature in degrees Celsius.
+
+                Cain                Ca concentration inside the compartment.
+
+                Caout               Ca concentration outside the cell.
+
+                -xsize xdivs        Number of divisions for the x variable
+                                    of the tabcurrent I_tab and G_tab tables.
+
+                -xrange min max     Minimum and maximum values of the x
+                                    variable for the I_tab and G_tab tables.
+
+                -ysize ydivs        Number of divisions for the y variable
+                                    of the tabcurrent I_tab and G_tab tables.
+
+                -yrange min max     Minimum and maximum values of the y
+                                    variable for the I_tab and G_tab tables.
+                
+Example:        create tabcurrent ghk_tab
+                setfield ghk_tab Gindex {VOLT_C1_INDEX} Gbar 0.0
+                setupghk ghk_tab 2 {Temp} 0 {CCaO} \
+                    -xsize {tab_xfills} -xrange {tab_xmin} {tab_xmax} \
+                    -ysize {tab_xfills} -yrange {tab_ymin} {tab_ymax}
+                setfield ghk_tab G_tab->calc_mode {LIN_INTERP}
+                setfield ghk_tab I_tab->calc_mode {LIN_INTERP}
+
+Notes:
+
+The setupghk routine fills the I_tab table of a tabcurrent element with
+values of
+
+ -V/(R*T)*(zF)^2(Cain - Caout*exp(-z*F*V/(R*T)))/(1 - exp(-z*F*V/(R*T)))
+
+where z is the charge (ionic valence = 2 for calcium), F is the Faraday
+constant (9.6487e4 coul/mol), R is the gas constant (8.314 volts*coul/(deg K *
+mol)), and T = Celsius + 273.15.  The G_tab table is filled with values of
+-dI_tab/dV, to give the slope conductance Gk when it is scaled by Gbar.  The
+concentrations should be given in mM (millimoles per liter = moles/m^3).
+
+When the tabcurrent Gbar is set to the permeability constant PCa, this results
+in the expression for the non-ohmic GHK current given by Equation (6.6) in De
+Schutter E., and Smolen P., "Calcium dynamics in large neuronal models", in
+Methods in neuronal modeling: From ions to networks (2nd edition), C. Koch and
+I. Segev editors, pp. 211-250 (1998).   The negative sign here expresses
+the GENESIS convention of treating inward currents as positive.
+
+When setting the concentration parameters, either Cain or Caout (but not both)
+should be set to zero.  The one that is set to zero is expected to be
+delivered to the tabcurrent element with a CONCEN1 or CONCEN2 message.  In
+almost every case, this will be Cain, as it will vary much more than the Ca
+concentration outside the cell.  The tabcurrent Gindex field should be set to
+VOLT_C1_INDEX if the Ca concentration is delivered with a CONCEN1 message, and
+VOLT_C2_INDEX if it is delivered with a CONCEN2 message.  The voltage V should
+be provided by a VOLTAGE message from the compartment that contains the
+tabcurrent element.  An "ADD_GBAR Gk" message may be sent to the tabcurrent
+element from a calcium channel to change the calcium permeability.
+
+The -xsize and -ysize parameters give the number of divisions in the tables,
+with the first index (corresponding to voltage) running from 0 to xdivs and
+the second one (corresponding to Ca concentration) from 0 to ydivs.
+
+See also:       tabcurrent, setupNaCa

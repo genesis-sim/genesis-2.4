@@ -1,0 +1,56 @@
+Routine Name:   setsearch
+
+Description:    This function allows the user to change which parameters
+                will be varied in a parameter search and which will stay
+                constant.  It allows users to perform restricted parameter
+                searches, keeping certain parameters constant while others
+                are searched over.
+
+Usage:          setsearch path [param1] [param2] ... -all -not -add
+
+                path:   The location of the parameter search object in
+                        the element hierarchy.
+
+                param1 etc.: The numerical indices of the parameters to be
+                        varied.  All other parameters will be fixed by
+                        default (but see below). There can be any number of
+                        these arguments up to the total number of parameters.
+
+                -all:   Causes all parameters to be searched over.  All
+                        other options or parameter numbers are ignored.
+
+                -not:   Changes the meaning of the paramX arguments; now
+                        they are parameters NOT to be searched over.  All
+                        other parameters are searched over.
+
+                -add:   Searches over the listed parameters.  Also searches
+                        over whatever other parameters whose search flags
+                        were previously on (i.e. equal to 1).
+
+Return value:   int; 0 for failure and 1 for success.
+
+Examples:       // Search over parameters 0, 4, 8 only.
+                setsearch /param_object 0 4 8
+
+                // Search over all parameters except for 0, 4, and 8.
+                setsearch /param_object 0 4 8 -not
+
+                // Search over all parameters.
+                setsearch /param_object -all
+
+                // Search over parameters 0, 4, and 8 in addition to
+                // whatever parameters were previously being searched over.
+                setsearch /param_object 0 4 8 -add
+
+Notes:          This routine is just a shortcut way to set the search[]
+                fields of paramtable objects.  Anything this routine can do
+                can also be done by manually setting these flags.  These
+                flags have the following values: 0 means "don't search this
+                parameter" while 1 means "do search this parameter".
+
+Limitations:    This routine only works for the paramtable objects included
+                in this library.  It will not automatically work for new
+                objects written by the user without hacking
+                src/param/param_utils.c
+
+See also:       Parameter Search (Param), Paramtable

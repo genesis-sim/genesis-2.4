@@ -1,0 +1,30 @@
+Routine Name:   planarweight2
+
+Description:    
+
+Description:    A faster version of planarweight, which sets the weight fields
+                on groups of synapses between specified lists of elements.
+                Most often used to set weights on groups of synapses that have
+                been set up by calling the "planarconnect" command.  This
+                function can assign groups of synapses to a fixed weight, can
+                assign weights in proportion to the distances between pre- and
+                postsynaptic elements, and can add various types of randomness
+                to weight values.
+
+Usage:          planarweight sourcepath destination_path   \
+                -fixed weight                              \
+                -decay decay_rate max_weight min_weight    \
+                -uniform scale                             \
+                -gaussian stdev maxdev                     \
+                -exponential mid max                       \
+                -absoluterandom
+
+Notes:          In contrast to planarweight, which can set the weights of all
+                efferent synapses from the source map when no destination is
+                given, planarweight2 only sets the weights of the synapses
+                from the source map to a particular destination map.  By
+                requiring the destination parameter, planarweight2 achieves
+                faster setup times than planarweight.  For further details of
+                usage and examples, see the documentation for planarweight.
+
+See also:       planarweight, planarconnect, planardelay, planardelay2

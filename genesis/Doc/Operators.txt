@@ -1,0 +1,69 @@
+  3.4.  Operators
+
+  The table below lists the basic operators available in GENESIS, from
+  highest to lowest precedence.  These operators can be applied to
+  variables or constants within a GENESIS expression.
+
+  ----------------------------------------------------------------------------
+  Operators           Function
+  ----------------------------------------------------------------------------
+  -                   unary minus
+  **                  power
+  * / % ~             multiply, divide, modulo (int only), bitwise complement
+  + - & | ^ @         add, subtract, bitwise and, bitwise or,
+                      bitwise xor, string concatenation
+  !                   logical complement
+  < <= > >= == !=     relational operators (perform both numeric
+                      and string comparisons)
+  &&  ||              logical and, logical or
+  ----------------------------------------------------------------------------
+
+  NOTES:  Unary minus is supported, but unary plus is not (thus -10 is
+  valid while +10 is not).
+
+  The following examples illustrate the use of several of the basic
+  operators.
+
+  For string concatenation, the ``@'' operator is used:
+
+    genesis > echo {"sub" @ "genius"}
+    subgenius
+
+  The following command shows how precedence is employed:
+
+    genesis > echo { 24 / 12 + 7 * 2 }
+    16
+
+  You can also explicitly specify the precedence of operations in an
+  expression by using parentheses:
+
+    genesis > echo { 3 * 4 + 5 }
+    17
+    genesis > echo { 3 * (4 + 5 ) }
+    27
+
+  The following command does not return 5.4 because each element of the
+  expression is an integer:
+
+    genesis > echo { 9 * 3 / 5 }
+    5
+
+  For comparisons in GENESIS, the integer 0 is considered False; all
+  other integer values are considered True; GENESIS returns 1 to indi-
+  cate True.  The following command returns 1 because the expression is
+  True (it would have returned 0 if the expression had been False):
+
+    genesis > echo { 4 > 2 }
+    1
+
+  Here is an example of negation in determining the nonexistence of an
+  element:
+
+    if (!{exists {dest}/soma})
+       ...
+
+  The relational operators are defined to be non-associative.  This pre-
+  vents silly expressions like the following:
+
+    1 < 2 < 4                                     [WRONG]
+

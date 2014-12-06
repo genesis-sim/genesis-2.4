@@ -1,0 +1,187 @@
+              RUNNING THE NEURON TUTORIAL SIMULATION
+
+  (Don't forget to move the cursor into this window and use the mouse
+   buttons to scroll through this text.)
+
+  DESCRIPTION OF THE MODEL
+  ------------------------
+
+  The help menu selection "Neuron Inputs" shows the configuration of the model
+  neuron, which consists of three compartments.  The "Soma" represents the
+  axon hillock of the soma where action potentials are generated.  This
+  compartment contains two ionic channels for sodium (Na) and potassium (K)
+  with voltage dependent conductances obeying Hodgkin-Huxley kinetics.  The
+  two dendritic compartments, "Dendrite #1" (closest to the soma), and
+  "Dendrite #2" each have a chemically activated excitatory channel and
+  inhibitory channel. The parameters which determine the equilibrium
+  potentials of the channels and the time dependence of the channel
+  conductances may be modified by a sub-menu of the Cell Parameters menu,
+  which is described in the "Cell Parameters" selection of the help menu.
+
+  The dendrite channel parameters are currently set so that the excitatory
+  channel is a non-selective sodium/potassium channel and the inhibitory
+  channel is a potassium channel.
+
+  In addition, it is possible to add any number of passive "cable"
+  compartments between the two dendrite sections in order to explore the
+  effects of stimulating the neuron at spatially separated locations.
+
+  The "Neuron Inputs" diagram indicates that a step pulse of current may
+  be injected to the soma and/or the two dendrite compartments.  It also shows
+  the two different sources of spike trains which may be applied to the
+  synaptic inputs of the dendrite compartments. (It may be helpful to call up
+  this diagram from the help menu now.  You can make it disappear by clicking
+  on the "DONE" box at the top of the diagram.)
+
+  THE CONTROL BUTTONS
+  -------------------
+  The control panel at the lower left of the screen contains buttons which
+  control the starting and stopping of the simulation.  If you are eager to
+  get going, click the left mouse button on the box labeled "STEP" to start
+  the simulation while you are reading the help messages.
+
+  The various buttons are:
+
+  HELP - brings up the help menu.
+
+  RESET - resets the simulation to time step 0 and clears the graphs (unless
+          in overlay mode).
+
+  STOP - temporarily stops the simulation.  You may then change parameters
+         and click on "STEP" to continue, or "RESET" and "STEP" to start
+         over.
+
+  QUIT - exits the simulation.
+
+  Inputs - calls up a menu which allows you to inspect or change the initial
+           delay, duration (width) and spike interval for the two sources of
+           spike trains which are applied to the dendrite inputs.  It also
+           governs the delay and width of the injection current pulse.
+
+  Defaults - This restarts the simulation with the default values of the
+           various parameters.  Use this if you have changed a lot of things
+           and don't remember what the initial values were.
+
+  Overlay OFF/ON - toggles overlay mode between "OFF" and "ON".  When overlay
+           is ON, RESET followed by STEP causes the next plot to be plotted
+           over the previous plot.
+
+  Plot Soma/Plot Dend2 - acts as a toggle to determine whether the set of
+           graphs on the right will be for the soma or for dendrite
+           compartment #2.
+
+  STEP - in addition to initiating the simulation, this also functions as a
+         "dialog box" for setting the number of simulation steps which are
+         performed each time.  To change the numeric field of a dialog box,
+         use the mouse to move the cursor into the dialog box.  Then, use
+         the keyboard right and left arrow keys to move the "^" symbol to
+         the right of the place where you wish to make the changes.  Then
+         use the "Delete" key to back up over anything you wish to change,
+         and type in the changes.  To cause the changes to be entered, you
+         must then hit "Return" while the cursor is in the numeric field.
+
+
+  Cable Compts. - This is a dialog box which allows you to specify the
+        number of passive cable compartments between the two dendrite
+        sections.  The cable sections have the same size, resistances
+        and capacitance as the default values for the dendrites.
+
+  dt - is a dialog box used for setting the simulation time step.  The default
+       value of 0.01 milliseconds was chosen for accuracy in reproducing
+       the action potentials.  You can speed up the operation of the simulation
+       by chosing a larger value if you just want to get a rough idea of the
+       effect of changing various neuron parameters.  When you are ready for
+       serious work, change it back to the original value.
+
+  INJECTION CURRENT
+  -----------------
+
+  This set of three dialog boxes may be used to set the magnitude of the
+  injection current pulses.  The default value of the soma injection current
+  (0.0002 microamperes, or 0.2 nA) is a good starting point to trigger action
+  potentials in the soma.  You may wish to experiment in order to find which
+  value produces just enough depolarization to cause firing.  The "INPUTS"
+  control button may be used to bring up the menu which sets the duration and
+  delay of the current pulse.  Don't forget to hit "Return" after modifying
+  the contents of a dialog box.
+
+  DENDRITE INPUTS
+  ---------------
+
+  These four lines allow you to set the source and the synaptic weights of the
+  spikes applied to the excitatory and inhibitory inputs of each of the two
+  dendrite compartments.  The boxes at the right are toggles which switch the
+  inputs between spike train sources A and B.  (The "INPUTS" control button
+  may be used to change the timing parameters for the two sources.)  The
+  dialog box fields toward the center are used to set the weights of the
+  connections.  The default values of zero indicate that the inputs are
+  initially disconnected.  The parameters which govern the channel conductances
+  were chosen to model the behavior for a single synaptic input.  To produce a
+  post-synaptic potential which is sufficiently depolarizing to produce action
+  potentials in the soma, a patch of dendrite may require on the order of one
+  hundred or more excitatory synaptic inputs.  This may be approximated by
+  setting the connection weight to a number on the order of 100.
+
+  CELL PARAMETERS
+  ---------------
+
+  This group of boxes at the right calls up menus which allow you to vary
+  compartment parameters such as length, diameter, membrane capacitance,
+  membrane resistance and axial resistance.  The resistances and
+  capacitances may be specified either in absolute terms (Kohms and
+  microfarads) or in terms of the specific resistances and capacitances.
+  Setting the axial resistance of a dendrite compartment to a very large
+  value allows it to be effectively decoupled from the soma, allowing PSPs
+  to be examined without interence from action potentials generated in the
+  soma.  Submenus for the two types of channels allow you to set equilibrium
+  potentials and other channel parameters.  For example, you may wish to
+  change the inhibitory channel from a potassium channel (the default) to a
+  chloride channel.  These parameters are described in more detail under the
+  "Cell Parameters" help menu selection.
+
+  GRAPHS
+  ------
+
+  The graph at the upper left shows the time course of the injection current
+  pulse and the two spike trains from sources A and B.  Each plot is shown
+  with unit amplitude and is offset vertically from the previous one by 2.0.
+  If you have a color display, you can tell one plot from the other by
+  relating its color to the color of the label at the right.  Otherwise, be
+  sure to note that the first label (0 Inject) is for the lowest plot, and
+  that the next plot (1 SourceA) is plotted ABOVE the previous one.  Another
+  thing to note is that, as these input plots are scaled to unit amplitude, a
+  negative (hyperpolarizing) injection current will still be plotted as a
+  positive pulse.  These inputs are plotted whether or not they are actually
+  connected to the cell.
+
+  The graph at the middle left plots the conductances for the excitatory and
+  inhibitory channels of dendrite section #1.  The units are in milli-Siemens,
+  where a Siemen is an inverse Ohm.  All time scales are in milliseconds.
+
+  The bottom left graph plots the membrane potential in millivolts for
+  dendrite section #1.
+
+  The corresponding quantities are plotted at the right for either dendrite
+  section #2 or the soma, depending on the state of the Plot Dend2/Plot Soma
+  toggle button.
+
+  In addition, the Hodgkin-Huxley activation parameters m, h and n are
+  plotted for the soma in the upper right graph.  As with the graph for the
+  cell inputs, each successive plot is offset upwards by 2.0.  To interpret
+  the activation parameter plots, you should recall that the Hodgkin-Huxley
+  model for the voltage activated Na channel gives a conductance which is
+  proportional to m cubed and to h to the first power.  Also note that the
+  "inactivation parameter", h, is the probability that the channel is NOT
+  closed.  Thus the channel has maximum conductance when both m and h are
+  near unity.  The K channel has no inactivation parameter, and its
+  conductance is proportional to n to the fourth power.
+
+  The scales of the graphs can be changed by clicking on the 'scale' button
+  associated with the graph, changing the values in the appropriate dialogs
+  and pressing the 'DONE' button.  For example, you may wish to increase the
+  time scale (xmax) if you click on "STEP" more than once without resetting,
+  or you may wish to view a more limited range of data in order to increase
+  the resolution.  Note that the existing data will be replotted whenever the
+  scale is changed.
+
+----------------------------------------------------------------------------

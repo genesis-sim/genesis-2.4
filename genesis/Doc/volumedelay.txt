@@ -1,0 +1,143 @@
+Routine Name:	volumedelay
+
+Description:	Sets the delay fields on groups of synapses between
+		specified lists of elements.  Most often used to set
+		delays on groups of synapses that have been set up
+		by calling the "volumeconnect" command.  This function
+		can assign groups of synapses to a fixed delay, can
+		assign delays in proportion to the distances between
+		pre- and postsynaptic elements, and can add various
+		types of randomness to delay values.
+
+Usage:		volumedelay sourcepath [destination_path]  \
+		-fixed delay                               \
+		-radial conduction_velocity		   \
+		-add					   \
+		-uniform scale                             \
+		-gaussian stdev maxdev                     \
+		-exponential mid max                       \
+		-absoluterandom
+
+		sourcepath  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages connecting the
+			pre- and postsynaptic elements (i.e. the presynaptic
+			elements).  These must be of class "spiking" and are 
+			usually spikegen or randomspike objects.
+
+		destination_path  A wildcarded list of elements which must be
+			synchans or objects derived from synchan.  If this
+			(optional) argument is given, only the delays between 
+			the given set of pre- and postsynaptic elements will
+			be set by this command.  If this argument is not
+			given, then all the synapses receiving SPIKE messages
+			from the presynaptic elements will have their delays
+			set by this command.  NOTE: this optional argument is 
+			new and is not documented in the Book of Genesis.
+
+		-fixed delay  -- This option sets all the synaptic delays in
+		        question to be equal to "delay".
+
+		-radial conduction_velocity  -- This option sets the synaptic 
+			delays in question to be proportional to
+			the distance between the source and destination 
+			elements according to the equation:
+
+			delay = radial_distance / conduction_velocity
+
+			Where conduction_velocity is usually measured in
+			meters/sec (SI units).	"conduction_velocity"
+			represents the conduction velocity of the 
+			(hypothetical) axon that the spikes travel down.
+			For volumedelay, the distance is measured as:
+ 
+                        distance = 
+                          sqrt((x_src - x_dest)^2 + 
+                               (y_src - y_dest)^2 + 
+                               (z_src - z_dest)^2)
+ 
+                        where x_src is the x component of the source element,
+                        x_dest is the x component of the destination element,
+                        and so on. 
+
+		-add  This option causes the computed delays to be added to 
+		        the preexisting delays in the synapses instead of
+			overwriting them.  This is useful when adding small 
+			synaptic delays, among other uses.  
+
+		The next four options are used to add random components to the
+		delays established using the -fixed or -decay options.  How
+		these random components are added to the delays is explained
+		below.
+
+		-uniform scale  -- This option gives a random number taken 
+			from a uniform distribution in the range 
+			{-scale, scale}.
+
+		-gaussian stdev maxdev  -- This option gives a random number
+			taken from a gaussian distribution centered on zero,
+			with a standard deviation equal to "stdev" and with
+			a maximum value of "maxdev".  The maximum value is
+			used to limit the random component to a given range.
+
+		-exponential mid max  -- This option gives a random number
+			taken from an exponential distribution with a 
+			minimum value of zero, a 1/e point of "mid" and a 
+			maximum value of "max".  This is mainly for backwards
+			compatibility with genesis 1.4.
+
+		-absoluterandom  This option alters the way the random number
+			is combined with the nominal delay to give the actual
+			delay, as described below.
+
+		Once a random component has been created for a given delay, 
+		it is used to set the delay as follows.  If the 
+		-absoluterandom option has not been selected the delay is set 
+		to be:
+
+		final_delay = delay + (delay * random_number)
+
+		Whereas if the -absoluterandom option has been selected then
+		we have
+
+		final_delay = delay + random_number
+
+		Thus the default is to have the amount of randomness as a 
+		constant proportion of the delay value.
+
+Example:	[modified from the Orient_tut simulation:]
+
+		volumedelay /retina/recplane/rec[]/input \
+			    -radial {CABLE_VEL}          \
+			    -gaussian 0.1 0.3
+
+		This command will set the size of the delays of synapses 
+		that are receiving their inputs from 
+		/retina/recplane/rec[]/input.  It gives delays equal to the
+		radial distance between elements divided by the conduction
+		velocity (CABLE_VEL).  It also specifies that gaussian noise 
+		be added to the delays with a mean value of 0.1 (which 
+		represents 10% of the original delay, since -absoluterandom 
+		has not been selected) and a maximum value of 0.3 (which is 
+		30% of the original delay value).
+
+Notes:		The "destination_path" optional argument is new and is not
+		documented in the Book of GENESIS.
+
+                This routine calculates distance using the x, y, and z
+                coordinates of the element positions and is thus more 
+                realistic than planardelay, which only uses the x and y
+                directions.  In general, we encourage users to use this
+                function instead of planardelay, which is mainly provided
+                for backwards compatibility with genesis 1.4.
+
+		The delays are never allowed to go negative even if a large
+		negative random component is added.  Negative delays are set
+		to zero.
+
+		If the -add option is chosen, the random component modifies 
+		only the delay added and not the total delay.
+
+See also:	planardelay, volumeconnect, volumeweight, syndelay; Chapter 18
+                of the Book of GENESIS (2nd ed.) has a lengthy discussion on
+                this and related commands.
+

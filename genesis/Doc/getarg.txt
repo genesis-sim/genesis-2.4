@@ -1,0 +1,15 @@
+Routine Name:	getarg
+
+Description:	Returns specified item from an argument list.
+
+Usage:		getarg [arguments] -count -arg #
+		One of -count or -arg must be given
+
+Example:	genesis >  echo {getarg 11 22 33 44 55 -arg 3}
+		33
+		genesis >  echo {getarg 11 22 33 44 55 -count}
+		5
+Notes:
+
+See also:	argc, argv, arglist, printargs
+

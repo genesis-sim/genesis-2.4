@@ -1,0 +1,15 @@
+#! /bin/sh
+
+if [ -f dir_exist ]
+then
+    rm dir_exist
+fi
+
+touch dir_exist
+
+if [ -d $1 ]
+then
+    echo 1.0 > dir_exist
+else
+    echo 0.0 > dir_exist
+fi

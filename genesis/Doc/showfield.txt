@@ -1,0 +1,46 @@
+Routine Name:	showfield
+
+Description:	Displays value of field in data structure of specified element.
+
+Usage:		showfield [pathname] [field] ... -all -basic -describe
+
+		pathname	name of existing element; if wildcard path
+				specification, all elements referred to will
+				have their specified fields displayed
+				(default: current working element)
+
+		field		field in element data structure for which to
+				display value; some special options for field:
+				 -basic displays basic information;
+				 -all displays basic info and all fields;
+				 -describe displays a description of the
+				    object from which the element was created;
+				 *  displays all fields;
+				 ** displays an extended listing of the element
+ 				    contents, including a description of the
+				    object from which the element was created
+
+Example:	//showfield membrane potential, axial resistance
+		showfield /cell/soma Vm Ra
+
+		// show values of all soma fields
+		showfield /cell/soma -a
+
+		genesis >  showfield /neutral_test basic
+		[ /neutral_test ]
+		flags      = 0
+		NOT FUNCTIONAL
+		Clock [ 0 ] = 1.000000e+00
+		0 incoming messages
+		0 outgoing messages
+		-----------------------------------------------------
+
+Notes:		When a field is specified, the showfield routine is similar
+		to getfield, but it displays its values rather than returning
+		them.
+
+		When the -describe option is given instead of a field name,
+		the showfield routine is similar to the showobject routine.
+
+See also:	setfield, getfield, getfieldnames, showobject
+

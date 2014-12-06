@@ -1,0 +1,187 @@
+  1.  Introduction
+
+  This is the reference manual for GENESIS version 2.4.  As there will
+  be continuing updates and additions to the manual, please be sure that
+  you have the most recent version.  Information about the latest
+  version of GENESIS and its documentation may be found on the GENESIS
+  WWW site <http://www.genesis-sim.org/GENESIS/>.
+
+  The help files in the on-line version (in the "genesis/Docs"
+  directory) may be viewed with the GENESIS command "help topic |
+  more", where "topic" is the name of a file with the extension
+  ".txt".  As they are ASCII files, they may also be printed.  In
+  order to view the documentation in these help files in the
+  recommended order, type ``help CONTENTS |   more'', or print out the
+  file ``CONTENTS.txt''.
+
+  Beginning with GENESIS 2.0.2, we have also incorporated these files
+  into a hypertext documentation system, which may be viewed with a web
+  browser.  The HTML hypertext documentation for
+  GENESIS is in a separate directory, ``genesis/Hyperdoc''.  The main
+  file is ``Manual.html'', and there is a README file giving further
+  information.
+
+  Some of the new features in GENESIS are not yet documented here.
+  You may find a brief summary of these and the significant differences
+  from previous versions of GENESIS under ``Changes'' (Changes.txt).  If
+  there is no documentation for a particular GENESIS command, give the
+  name of the command followed by ``-usage'' from within GENESIS.
+  Likewise, you may obtain a brief description of a GENESIS object by
+  typing ``showobject'' followed by the name of the object.
+
+  The GENESIS Reference Manual is primarily a summary of the syntax used by
+  the GENESIS Script Language Interpreter, the commands which it recognizes,
+  and of the main GENESIS ``objects'' which are available for constructing
+  simulations.  However, it will not tell you very much about the use of
+  GENESIS for the construction of neural simulations.  For a ``Users guide''
+  to GENESIS, we recommend "The Book of GENESIS", by James M. Bower and David
+  Beeman, Springer-Verlag (1998).  The free Internet Edition is available at
+  http://www.genesis-sim.org/GENESIS/bog/bog.html.
+
+  Part II of this book provides a detailed tutorial guide to the process
+  of constructing neural simulations with GENESIS.  These tutorials
+  progress from the construction of simple cell models to detailed cell
+  and network models with a sophisticated XODUS interface.  For further
+  information, see ``The Book of GENESIS'' (BoG.txt).
+
+  1.1.  Getting Started with GENESIS
+
+  The GENESIS/XODUS documentation (Revelations) is contained within the
+  ``genesis/Doc'' and ``genesis/man'' directories.  The former contains
+  the main GENESIS documentation, and the latter contains UNIX man pages
+  for external utilities (such as convert), which are used with GENESIS.
+  The README file in the ``Doc'' directory explains the use of the on-
+  line help facility.
+
+  The ``genesis/Scripts'' directory has a README file which describes
+  the the database of simulations and its library of channels and other
+  simulation components (Numbers).
+
+  In addition to containing the C source code for GENESIS, the
+  ``genesis/src'' directory contains a README file and a commented
+  Makefile.  These files (Leviticus) give detailed instructions for the
+  compilation and installation of GENESIS.  They also suggest ways to
+  avoid common mistakes when installing GENESIS.  (For example, an
+  incorrect pathname to a system library is an abomination to the
+  compiler.)  We still haven't thought of a good excuse to call
+  something Deuteronomy, but are working on it.
+
+  After installing GENESIS, start the simulator with the command
+  ``genesis''.  (In some cases, you may wish to use one of the command
+  options described in the documentation for ``genesis'' (genesis.txt).)
+  After experimenting with the on-line help, your first step should be
+  to try out one of the demonstrations or tutorials in the ``Scripts''
+  directory, following the directions in its README file.  You may
+  create your own simulations by modifying these simulation scripts.
+
+  1.2.  Credits and Copyright Notice
+
+  The GENESIS Reference Manual and other documentation were written by
+  Dave Beeman, Upi Bhalla, Dave Bilitch, Jim Bower, Kevin Cunningham,
+  Erik De Schutter, John Uhley, and Matt Wilson, with contributions from
+  Dieter Jaeger, Venkat Jagadish, Maurice Lee, Reinoud Maex, Mark
+  Nelson, Alex Protopapas, Mike Vanier, and many others.
+
+  GENESIS and XODUS are the result of the work of many users and
+  developers.  The principal contributors are:
+
+  GENESIS development:
+            Upinder S. Bhalla
+            David H. Bilitch
+            Erik De Schutter
+            Michael Hucka
+            Venkat Jagadish
+            Mark E. Nelson
+            John D. Uhley
+            Michael Vanier
+            Matthew A. Wilson
+
+  under the direction of:
+            James M. Bower
+
+  XODUS graphical interface:
+              Upinder S. Bhalla
+              Venkat Jagadish
+              Jason Leigh
+              Maneesh Sahani
+
+  Parallel library development:
+              Upinder S. Bhalla
+              Erik De Schutter
+              Nigel Goddard
+              Greg Hood
+
+  Development work for Intel i860-based Parallel Machines:
+              Michael D. Speight
+
+  X11R4 upgrade modifications:
+              Randall D. Smith
+
+  X11R5 and X11R6 upgrade modifications:
+              Rich Murphey
+              Diana K. Smetters
+
+  Libraries:
+            Upinder S. Bhalla
+            Erik De Schutter
+            Dieter Jaeger
+            Venkat Jagadish
+            Mark E. Nelson
+            Adam Strassberg
+            Matt Wilson
+
+  Numerical methods enhancements:
+            Upinder S. Bhalla
+	    Hugo Cornelis
+            Erik De Schutter
+            Bruce P. Graham
+
+  Synapse and Parameter Search Library development:
+            Michael Vanier
+  Modifications to run under Microsoft Windows with Cygwin by:
+            Sergio Daicz
+
+  Modifications to run on the Apple under Mac OS X
+            Alfonso Delgado-Reyes
+            Josef Svitak
+
+  Script Demos and Tutorials:
+            Dave Beeman
+            Upinder S. Bhalla
+            Sharon Crook
+            Erik De Schutter
+            Mark E. Nelson
+            Alex Protopapas
+            Michael Vanier
+            Matt Wilson
+
+  1.2.1.  Copyright Notice
+
+  Copyright 1988 - 2001 by the California Institute of Technology
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by the Free
+  Software Foundation.  Portions of this program are in library form.  The
+  libraries are also free software; you can redistribute them and/or modify
+  them under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or (at
+  your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License and the
+  GNU Lesser General Public License along with this program; if not, write to
+  the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+  Boston, MA 02110-1301  USA.
+
+  Recent additions to the GENESIS libraries are copyrighted by other
+  institutions or authors, and are covered by the GNU General Public
+  License (GPL), GNU Lesser General Public License (LGPL), or by other
+  licenses that are compatible with the GPL and that do not restrict the
+  free distribution of GENESIS.  These licenses appear with these modules.
+
+  For a statement of the GPL, see the file "GPLicense".
+  For a statement of the LGPL, see the file "LGPLicense".

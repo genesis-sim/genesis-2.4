@@ -1,0 +1,173 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Messages</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-12.html">Previous</A>
+<A HREF="Manual-14.html">Next</A>
+<A HREF="Manual.html#toc13">Table of Contents</A>
+<HR>
+<H2><A NAME="Messages"></A> <A NAME="s13">13. Messages</A></H2>
+
+<P>Elements within a GENESIS simulation communicate by a system of links called
+``messages'', which allow one element to access the data fields of another
+element.  Once the message link to or from an element have been established,
+the element is able to receive or send information each time its state is
+updated during the simulation.</P>
+<P>Messages have no time delay and serve to unify a large number of
+elements into a single computational unit.
+They are used, for example, in detailed compartmental models of cells
+to link together membrane compartments and channels into a single
+electrical entity.  The section on 
+<A HREF="Manual-14.html#Connections">Synaptic Connections</A> describes how messages are used for communication
+between neurons.</P>
+<P>It is not feasible to summarize all of the GENESIS messages here, because the
+message name and parameters are specific to the object that receives the
+message.  An element can send any message, and will not complain even if the
+message is not a valid GENESIS message.  However, the destination element will
+check to see that it is a valid message name for that object and that it has
+the correct number of parameters.
+If the showobject command, or the documentation for an object is inadequate to
+explain what a given message really does, look at the MSGLOOP section of the
+source code for that object.</P>
+<P>The GENESIS routines used for establishing and working with messages include
+the following:</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addmsg">addmsg </a> </TD><TD>Establishes message links between two elements.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deletemsg">deletemsg </a> </TD><TD>Deletes a message link between two elements.</TD></TR><TR><TD>
+dd3dmsg </TD><TD>Establishes message links between dendrodendritic synapses.</TD></TR><TR><TD>
+gen3dmsg </TD><TD>Establishes message links between elements (identified in two</TD></TR><TR><TD>
+</TD><TD>lists) that are within a certain range of each other.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#getmsg">getmsg </a> </TD><TD>Returns information about a message into or out of element.</TD></TR><TR><TD>
+resetfastmsg</TD><TD>Variation of reset command for use with kinetics library.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#showmsg">showmsg </a> </TD><TD>Displays list of incoming and outgoing messages of an element.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>For example, at each step of a simulation, one asymmetric compartment
+connected to another asymmetric compartment needs to send both its
+axial resistance <EM>Ra</EM> and its membrane potential as of the
+previous simulation step (<EM>previous_state</EM>) to the second compartment.
+This allows the second compartment to calculate the current entering
+from the first.</P>
+<P>You establish such a message link using the addmsg command.  In the
+following command the dendrite compartment is linked to the soma with
+a message of the type RAXIAL, and a message link is established
+whereby two value fields, <EM>Ra</EM> and <EM>previous_state</EM>,
+will be sent from the dendrite to the soma at each simulation step:
+<PRE>
+  addmsg /cell/dend /cell/soma RAXIAL Ra previous_state
+</PRE>
+
+This establishes the information flow from the dendrite to the soma.  In the
+reverse direction, the dendrite needs to receive the value of the soma's
+previous membrane potential in order to update its own state (the dendrite
+already knows its own axial resistance to the soma, and so the message need
+not include information regarding axial resistance).  This link can be set up
+as follows:
+<PRE>
+  addmsg /cell/soma /cell/dend AXIAL  previous_state
+</PRE>
+
+Messages do not have to be between computational elements only.  The
+following example shows how the soma would plot the value of its
+<EM>Vm</EM> field (the membrane potential) by sending a PLOT message
+to the xgraph element /graphs/Vmgraph (the last two arguments give the
+label and color to be used in plotting this field):
+<PRE>
+  addmsg /cell/soma /graphs/Vmgraph PLOT Vm *voltage *red
+</PRE>
+
+To find out the allowed message types and and associated fields for an element
+type, you use the showobject routine.  For example:
+<PRE>
+  showobject compartment
+</PRE>
+
+This routine produces, along with other information, the following list of
+valid messages for objects of the type compartment:
+<PRE>
+  VALID MESSAGES
+        [6] EREST                : Em
+        [3] INJECT               : inject
+        [2] AXIAL                : Vm
+        [1] RAXIAL               : Ra Vm
+        [0] CHANNEL              : Gk Ek
+</PRE>
+
+In order to determine which messages have been established for a
+specific element, you can use the 
+<A HREF="Manual-25.html#showmsg">showmsg </a> routine, which
+lists the incoming and outgoing messages for an element.  For example,
+showmsg produces the following results when you run the Neuron
+tutorial in <EM>Scripts/neuron</EM>:
+<PRE>
+  genesis &gt; showmsg /cell/dend1
+  INCOMING MESSAGES
+  MSG 0 from '/cell/soma'  type [2] 'AXIAL' &lt; Vm = 0 &gt;
+  MSG 1 from '/cell/dend2'  type [1] 'RAXIAL' &lt; Ra = 7960 &gt; &lt; Vm = 0 &gt;
+  MSG 2 from '/cell/dend1/Ex_channel'  type [0] 'CHANNEL' &lt; Gk = 0 &gt;
+        &lt; Ek = -10 &gt;
+  MSG 3 from '/cell/dend1/Inh_channel'  type [0] 'CHANNEL' &lt; Gk = 0 &gt;
+        &lt; Ek = -80 &gt;
+  MSG 4 from '/input/injectpulse/dend1curr'  type [3] 'INJECT' &lt; inject = 0 &gt;
+
+  OUTGOING MESSAGES
+  MSG 0 to '/cell/soma' type [1] 'RAXIAL' &lt; Ra = 7960 &gt; &lt; Vm = 0 &gt;
+  MSG 1 to '/cell/dend2' type [2] 'AXIAL' &lt; Vm = 0 &gt;
+  MSG 2 to '/cell/dend1/Ex_channel' type [0] 'VOLTAGE' &lt; Vm = -70 &gt;
+  MSG 3 to '/cell/dend1/Inh_channel' type [0] 'VOLTAGE' &lt; Vm = -70 &gt;
+  MSG 4 to '/output/dend1graphs/dend1Vm_grf' type [0] 'PLOT' &lt; data = -70 &gt;
+        &lt; name = dend1 &gt; &lt; color = black &gt;
+</PRE>
+
+Although showmsg is useful for providing debugging information when
+used interactively at the GENESIS prompt, its output is not in a
+convenient form for use within a script.  In this case, you would use
+the 
+<A HREF="Manual-25.html#getmsg">getmsg </a> routine.  Here are some examples using getmsg:
+<PRE>
+  genesis &gt; echo { getmsg /cell/dend1 -outgoing -type 1 }
+  AXIAL
+
+  genesis &gt; echo { getmsg /cell/dend1 -outgoing -source 1}
+  /cell/dend1
+
+  genesis &gt; echo { getmsg /cell/dend1 -out -destination 1 }
+  /cell/dend2
+
+  genesis &gt; echo { getmsg /cell/dend1 -out -count }
+  5
+</PRE>
+</P>
+<P>The 
+<A HREF="Manual-25.html#deletemsg">deletemsg </a> command removes message links.  For example,
+to remove the input to the to the dend1 compartment from the channel
+Inh_channel, you would remove incoming message 3 and outgoing message
+3, of the messages listed above.  This would be done with the statements:
+<PRE>
+  deletemsg /cell/dend1 3 -incoming
+  deletemsg /cell/dend1 3 -outgoing
+</PRE>
+
+The PLOT message from a compartment /cell/soma to a graph
+/data/voltage could be located and deleted with:
+<PRE>
+  deletemsg /data/voltage -in 0 -find /cell/soma PLOT
+</PRE>
+</P>
+<P>The various options for 
+<A HREF="Manual-25.html#addmsg">addmsg </a>, 
+<A HREF="Manual-25.html#showmsg">showmsg </a>, 
+<A HREF="Manual-25.html#getmsg">getmsg </a>, and 
+<A HREF="Manual-25.html#deletemsg">deletemsg </a> are described in the Command
+Reference section.</P>
+
+<HR>
+<A HREF="Manual-12.html">Previous</A>
+<A HREF="Manual-14.html">Next</A>
+<A HREF="Manual.html#toc13">Table of Contents</A>
+</BODY>
+</HTML>

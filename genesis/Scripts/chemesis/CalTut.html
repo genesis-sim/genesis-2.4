@@ -1,0 +1,716 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
+<title>Modeling Calcium Reactions and Diffusion</title>
+<style type="text/css">
+
+/*
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 7614 2013-02-21 15:55:51Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em }
+
+object[type="image/svg+xml"], object[type="application/x-shockwave-flash"] {
+  overflow: hidden;
+}
+
+/* Uncomment (and remove this text!) to get bold-faced definition list terms
+dl.docutils dt {
+  font-weight: bold }
+*/
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title, .code .error {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left, object.align-left {
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right, object.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center, object.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: inherit }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block, pre.math, pre.code {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+pre.code .ln { color: grey; } /* line numbers */
+pre.code, code { background-color: #eeeeee }
+pre.code .comment, code .comment { color: #5C6576 }
+pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
+pre.code .literal.string, code .literal.string { color: #0C5404 }
+pre.code .name.builtin, code .name.builtin { color: #352B84 }
+pre.code .deleted, code .deleted { background-color: #DEB0A1}
+pre.code .inserted, code .inserted { background-color: #A3D289}
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+/* "booktabs" style (no vertical lines) */
+table.docutils.booktabs {
+  border: 0px;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-collapse: collapse;
+}
+table.docutils.booktabs * {
+  border: 0px;
+}
+table.docutils.booktabs th {
+  border-bottom: thin solid;
+  text-align: left;
+}
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+</style>
+</head>
+<body>
+<div class="document" id="modeling-calcium-reactions-and-diffusion">
+<h1 class="title">Modeling Calcium Reactions and Diffusion</h1>
+
+<div class="section" id="a-tutorial-by-avrama-blackell">
+<h1>A Tutorial by Avrama Blackell</h1>
+<p>This directory contains tutorial scripts to teach how to develop models of
+second messengers and calcium dynamics.</p>
+<p>To model calcium we need to implement each of the mechanisms
+controlling calcium dynamics (as explained in my lecture on calcium,
+or in text books). Links to these are given in README.txt and README.html.</p>
+<p>These mechanisms include:</p>
+<ol class="loweralpha simple">
+<li>buffering - binding of calcium ions to various buffer molecules</li>
+<li>diffusion</li>
+</ol>
+<p>c. various types of pumps which extrude calcium, the most prominent
+being PMCA - and sodium-calcium exchanger.</p>
+<ol class="loweralpha simple" start="4">
+<li>influx through voltage dependent channels.</li>
+<li>release from the ER through IP3R and RyR receptor channels.</li>
+</ol>
+<p>We will build up these various mechanisms in a step by step using a
+series of tutorials using example scripts.
+A summary describing these scripts can be found in the README.txt file.</p>
+</div>
+<div class="section" id="the-genesis-2-chemesis-tutorials">
+<h1>The GENESIS 2 chemesis tutorials</h1>
+<p>The first tutorial, illustrated with the script <tt class="docutils literal"><span class="pre">Cal1-SI.g</span></tt>, guides you
+through the creation of a single calcium - buffer reaction in the
+soma.</p>
+<p>We will be creating rxnpool objects which accumulate the fluxes of
+molecules.  This is analogous to compartment objects that accumulate
+the various ion fluxes tand then calculate voltage.t Also we will be
+creating reaction objects. This calculates the change in molecule
+quantities according to the kinetic rate laws.</p>
+<p><em>Step 1:</em> Define the morphology of the soma, which is assumed to be
+cylindrical (though this is not required).  First specify radius and
+length.  Then calculate the volume and also the surface area.  This
+latter would be required for membrane resistance and capacitance for a
+compartment, but rxnpools are true 3D objects, thus concentration
+depends on volume.</p>
+<p><em>Step 2:</em> Create the rxnpool objects, one for each molecule.
+somaCa will calculate calcium concentration from the fluxes
+somaCaBuf will calculate the  concentration of the calcium-bound buffer.</p>
+<p>We also need a pool for the free buffer.  We could either create a
+rxnpool object, or, since we know that the free buffer = total
+buffer - bound, we can createa conservepool object which implements
+that simple equation.</p>
+<p>In addition, to specify the morphology of these rxnpools, we must also
+specify an initial concentration, and the units that we are working
+in.  1e-3 is a factor times the SI unit, which paradoxically is mM for
+concentration.  So, 1e-3 indicates we are working in micromole.</p>
+<p><em>Step 3:</em> Create the reaction: Ca + Buf &lt;-&gt; CaBuf.  The forward
+reaction has rate Kf, the backward reaction has rate Kb.  The reaction
+object, called somacabufrxn, calculates Kf*Ca*buf, which is the
+increase in CaBuf, and also kb*CaBuf, which is the decrease in CaBuf
+(fluxes).</p>
+<p><em>Step 4:</em> Set up the messages, because the reaction can't calculate
+its thing without knowing the somaCa, somaBuf, and SomaCaBuf
+concentration (stored in the field Conc).  The first two are
+substrates (on the LHS of the reaction), but SomaCaBuf is a product.
+We also need to send messages from the reaction back to the rxnpool
+objects.  So, the somaCa needs to know the values calculated by the
+reaction object.  Note that Kf*substrates (field kfsubs) will increase
+CaBuf and decrease Ca, and vice versa for Kf*products (field
+kbprods). Therefore, both fields get sent to both rxnpools, but in a
+different order.  kfsubs is first when the message is being sent to a
+product (LHS) and kbprods is first when the message is being sent to a
+substrate (RHS).  The type of reaction is second order, indicated by
+RXN2.  A first order reaction (decay proportional to concentration)
+would be indicated as RXN1.</p>
+<p><em>Lastly:</em> We set up the messages to the conservepool.  This object needs
+to know the concentration of all other forms of the molecule, in this
+case there are only two forms of the molecule, so the conservepool
+just needs to know the CaBuf concentration.</p>
+<p>This simulation initializes the somaCa at 1 uM, which is out of
+equilibrium, and you can observe the decrease in concentration over
+time.  Calcium (top graph) reaches its new equilibrium value with 0.5
+msec.  The bottom graph shows the free buffer (red) and bound buffer
+(blue).  Notice a tiny decrease in the free buffer, and on this scale
+the increase in bound buffer looks small.</p>
+<hr class="docutils" />
+<p>The second tutorial demonstrates how to implement calcium diffusion,
+which occurs when a gradient exists between two compartments or more
+compartments.  Thus, Cal2-SI.g guides you through the creation of two
+calcium compartments connected by diffusion.  We actually will create
+both calcium and buffer in both compartments. Cal2-SI.g extends Cal1-SI.g by
+implementing the calcium-buffer reactions in two compartments - a
+dendrite and soma.  NOTE: The script Cal2difshell.g implements the exact same
+model using objects found in the src/concen directory.</p>
+<p><em>Step 1:</em> The creation of calcium and buffer, and connecting them with a
+reaction is so common, that it has been placed in a function (cabufSI.g)
+which does all this for you when you provide the name and dimensions
+of the compartment, as well as initial values for calcium, Ca bound
+buffer, and total buffer.</p>
+<p>[<strong>Note:</strong> calbufdifshell.g implements the same thing in genesis using
+difshell and difbuffer objects.  The reaction is included in the
+object, so there is no need to create a separate reaction object. ]</p>
+<p><em>Step 2:</em> Again, specify the dimensions of the compartments.  This time
+we have both a soma and a dendrite.  We do not calculate the volume
+or surface area here, because that is done in the function.</p>
+<p><em>Step 3:</em> Call the cabuf function which will create the calcium, Cabuf,
+and free buffer objects, and set up the reaction between calcium and
+buffer. We invoke this function once per compartment.  Notice that
+this function is also calculating the surface area of the sides of the
+cylinder.  This will be needed for the diffusion.</p>
+<p>[<strong>Note:</strong> in Cal2difshell.g, we call the cabufdifshell function,
+which is similar, but we also provide the diffusion constant]</p>
+<p><em>Step 4:</em> Create the diffusion.  The diffusion equation is similar to
+the cable equation, and is solved numerically in a similar way.
+I.e. assume that each compartment is iso-concentration.  Just like
+current flow depends on axial resistance, cross section, and the
+voltage difference between compartments, so does diffusion.  In
+particular, diffusional flux depends on the concentration difference
+between compartments, decreases with the distance between the
+compartment centers, and increases with the cross sectional area that
+they share.  The proportionality constant is the diffusion constant.</p>
+<p>First, create the diffusion object, call it somadend to indicate this
+will calculate diffusion between the soma and the dendrite. This
+object has a field for the diffusion constant, and another field for
+units.  The diffusion object needs information (messages) from each of
+two POOLs: both the soma and the dendrite in our case.  It is going to
+calculate the concentration gradient between these two objects, hence
+it needs the concentration of both.  In addition, the diffusion is
+proportional to the surface area connecting the two compartments -
+which is the surface area of the sides of the cylinder, which is why
+this was calculated in the cabuf function.  Diffusion is inversely
+proportional to the distance between compartments or length, so each
+pool has to send this field to the diffusion object.</p>
+<p>The diffusion object calculates the flux between the two compartments,
+this has units of Moles (or micromoles), not concentration, because
+the compartments might have two different sizes.  Also, it is a 0th
+order reaction, i.e., the flux being sent into the rxnpool is not
+proportional to the concentration in the rxnpool (that has already
+been factored into the diffusion calculation), so the reaction order
+and units are indicated by RXN0MOLES message type to the
+rxnpool. Then, the rxnpool knows to divide the incoming flux by its
+own volume to determine the change in concentration. Any increment to
+one compartment implies an equal decrement to the other compartment,
+so difflux1 = - difflux2, but difflux1 must go to POOL1 and difflux2
+to POOL2.</p>
+<p>[<strong>NOTE:</strong> If using Cal2difshell.g, setting up the diffusion is quite simple: just send messages between the two calcium pools.]</p>
+<p>For this simulation, we are setting initial concentration of the
+somaCa out of equilbrium at 4 uM.  There is a very fast decrease to
+0.00025 uM calcium (which you can see if you set xmax on /graph1/ca to
+10).  After a long time, very little diffusion has occurred, so we
+repeat this with diffusion of the  calcium buffers.  Then, you can see
+a rapid increase in the dendrite calcium (black trace) and a slow
+decrease in soma calcium (blue trace). The calcium approaches an
+equilibrium value closer to the soma calcium value because its volume
+is so much bigger.  The bottom graph shows the calcium bound buffer
+for these same two cases, and its changes are qualitatively similar to
+the calcium changes.  Diffusion of buffers is critical because most of
+the calcium is bound to the buffers.</p>
+<p>Just as multi-compartmental models don't work very well if you make
+the compartments too big, diffusion is artifactually slow if the
+compartments are too big. Typically, the compartments for diffusion
+needs to be much smaller than those for electrical connections.  The
+diffusion will better if you repeat these simulations with the smaller
+dimensions that are commented out.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="cal7-g">
+<h1>Cal7.g</h1>
+<p>The next tutorial (we're postponing the tutorials on calcium release)
+shows you how to connect a calcium permeable channel, e.g. a voltage
+dependent calcium channel, to our calcium compartments.  In other
+words, we are beginning to interface the electrical aspects of the
+cell with the chemical.</p>
+<p>[<strong>Note:</strong> Cal7difshell.g contains the code for implementing this
+using genesis difshell objects.  It uses the cabufdifshell function,
+and thus the diffusion is simpler.  Also, the name of the field
+storing calcium concentration is different, so there are a few if
+statements in icaTab.g so that the addmsg commands are correct.]</p>
+<p><em>Step 1:</em> define both the dimensions of the morphology, and also the
+electrical properties such as RA, RM and CM.</p>
+<p><em>Step 2:</em> read in the function that createes pools of calcium and buffer,
+either cabufSI.g (chemesis) or cabufdifshell.g (genesis)</p>
+<p><em>Step 3:</em> compSI.g is a simple function to take the dimensions and
+electrical parameters and make an electrical compartment object.  Note
+that the units aren't quite SI because we're specifying morphology in
+centimeters.</p>
+<p><em>Step 4:</em> icaTab.g is the function to create the voltage dependent
+calcium channel.  This function first defines the three most common
+equations used for rate constants - exponential, sigmoid and linoid.
+Then make_CaChan creates a tabchannel, and fills the tables with
+voltage dependent rate constants given the half activation and
+inactivation values.  make_CaChan can easily be replaced with any
+function for creating a VDCC.</p>
+<p>If this were a sodium or potassium channel, we'd be done now, but for
+calcium channels it's better to calculate the driving potential using
+a ghk object, which needs the calcium concentration.  The make ghk
+function only creates the object, and messages, including calcium, are
+setup in the next function: make_ica_ghk.</p>
+<p>This function makes the tabchannel by calling the function
+make_CaChan, then it makes the ghk object by calling the function
+make_ghk.  Then assigns the Gbar from the specified gmax and surface
+area. Note that GHK requires permeabilities, which are conceptually
+the same as max conductances, but functionally and numerically
+different.  The most important difference is that if you have a
+working channel with a conductance tuned for you model, but want to
+add a GHK object to the calcium channel, you need to make the gmax
+about a million times smaller. The rest of this function sets up all
+the messages.  Both the GHK and tabchannel need to know the
+compartment voltage.  The GHK also needs to know external and internal
+calcium concentration.  External calcium is typically a constant, but
+internal comes from the calcium rxnpool object we will create.  The
+GHK will need the Gk from the tabhannel - this represents the open
+fraction, and then will calculate the current (and a psuedo Gk and Ek)
+from the GHK equation.  These values get sent to the compartment
+object for it to update its membrane potential.  Lastly, the current
+and charge/valence need to be sent to the rxnpool so it can increase
+its concentration based on the ion flux.</p>
+<p>[<strong>Note:</strong> the messages are slightly different in Cal7difshell.g]</p>
+<p><em>Step 5:</em> Now we will use these functions to create our model.  Just as
+in Cal2.g, we invoke cabuf for the soma and the dendrite.</p>
+<dl class="docutils">
+<dt><em>Step 6:</em> setup diffusion between the soma and dendrite, just as we</dt>
+<dd>did in Cal2.g</dd>
+</dl>
+<p><em>Step 7:</em> create a conservepool for the external calcium concentration.
+This will just function as a constant for the GHK object.
+[<strong>Note:</strong> for Cal7difshell.g, we use a neutral object to provide a constant
+external calcium concentration]</p>
+<p><em>Step 8:</em> create the electrical compartments - one for soma and one for
+dendrite, and connect them with messages.  This could have been done
+with the cell reader.</p>
+<p><em>Step 9:</em> define the voltage dependent parameters for the calcium
+channel, and call the make_ica_ghk function.  The part of this
+function which makes the tabchannel can use any voltage dependent
+calcium channel.</p>
+<p><em>Step 10:</em> When I was writing chemesis, I created some ion channels
+which employed physiologists convention, so my rxnpools expect that
+inward currents are negatve.  But, tabchannels use modelers
+convention - inward currents are positive.  To fix this discrepancy,
+if you set Iunits to -1, (current units are negative amps) the
+positive valued inward currents will be treated correctly.</p>
+<p>[<strong>Note:</strong> These lines, setting Iunits to -1, are not needed using
+the difshell, because it expects modelers convention]</p>
+<p>Now, when you run the simulation, current injection of 10 pA will
+activate the ion channel, causing calcium influx into the soma, which
+will bind to the buffer, and more slowly diffuse into the dendrite.</p>
+<p>First, look at the current graph.  CaT (blue) is the current out of
+the tab channel object.  Notice that it reverses (becomes negative),
+because the reversal potential was set to 60 mV in icaTab.  The
+current out of the GHK object (red trace) doesn't reverse - this is a
+characteristic of the GHK object and why it should be used (calcium
+channels are not observed to reverse experimentall).  A reversed
+calcium current could decrease the calcium concentration, but this
+shouldn't happen.  Also, note that the CaT is scaled by a factor 1e6
+greater than the CaT_ghk object.</p>
+<p>The membrane potential looks funny because we don't have any other
+channels in this neuron.  So, the calcium current causes a transient
+increase to 100 mV, and then the potential decreases to a potential
+still depolarized enough to allow re-activation of the current.  This
+is probably caused by the calcium current no completely inactivating.</p>
+<p>With each calcium &quot;spike&quot;, the calcium in the soma increases, though
+by a very small amount.</p>
+<hr class="docutils" />
+<p><strong>Cal8.g</strong> is an example of how to extend this model to two dimensional
+diffusion, and also allows you to explore how diffusion is affected by
+how you subdivide electrical compartments into multiple calcium
+compartments.  This cannot be implemented using difshells in genesis, because
+difshell allows only 1-dimensional diffusion.</p>
+<p><em>Step 1:</em> again define the dimensions of your compartment.  Note that if
+you use the cell reader to create your electrical compartments, you'll
+need to use getfield commands to get the radius and length to assign
+your calcium compartments.</p>
+<p><em>Step 2:</em> define the diffusion constant, initial calcium, buffer
+concentration explicitly at the top of the file.  Placing these values
+in a separate global parameter file would make it easier to change the
+values to do simulation experiments.</p>
+<p>Step 3: Define how many slices you want to place in your dendritic
+compartment, and how many shells for subdividing your soma.  You'll
+see how they are used below.  Note that calcium and buffer compartments
+need to be much smaller than electrical compartments for diffusion to work.</p>
+<p><em>Step 4:</em> just as in Cal7.g, define electrical parameters and read in
+these functions.  Note that we're using cabufdiff.g.  This includes
+both the cabuf function to create the reaction, and a diffusion
+function - to create a diffusion object and set-up message between any
+two compartments.</p>
+<p><em>Step 5:</em> For the soma, we are going to create a series of shells, one
+inside another.  So, we set up a loop.  With each pass through the
+loop, we set up a calcium rxnpool, buffer rxnpool, and reaction
+between them. Initially the outer radius of the shell is just the size
+of the soma, but we decrement the outer radius by the height of our
+shell with each pass through the loop.  The height is calculated from
+the soma radius and the number of shells.  The second loop creates a
+calcium compartment in each of the dendritic slices.</p>
+<p>Step 6: set up the diffusion between all these shells and cylinders.
+The first loop sets up diffusion between soma shells - note that the
+number of diffusion objects is one less than the number of shells.
+Then we create diffusion between the inner soma shell and the first
+dendrite cylinder. The second loop sets up diffusion between each pair
+of dendrite cylinders.</p>
+<p>If we're creating a multi-compartment electrical model, we probably
+want to put these loops into their own functions.  Then, set up a loop
+through all electrical compartments, and invoke our functions to
+create calcium cylinders or shells for each electrical compartment.</p>
+<p><em>Step 7:</em> last, we're just creating our electrical compartments and VDCC
+as we did in Cal7.g.</p>
+<p>It would be much more interesting to implement these calcium cylinders
+and shells within an electrical model that exhibited normal spiking
+behavior.  You could even add a calcium dependent potassium channel,
+to complete the feedback loop - from electrical to calcium channel to
+calcium concentration to potassium channel to electrical activity.</p>
+<p>Other extensions: neurons have multiple buffers.  How would you modify
+cabuf.g to create two buffers, e.g. calmodulin and calbindin?</p>
+<hr class="docutils" />
+<p><strong>Cal3-SI.g</strong> and Cal4-SI.g explain and demonstrate how to implement calcium release from intracellular stores.</p>
+<p>Cal3-SI.g extends Cal2-SI.g, so only the differences will be noted here.</p>
+<p><em>Step 1:</em>
+In the list of parameters, included are calcium and buffer in the ER,
+as well as the maximal flux through the iicr channels.</p>
+<p><em>Step 2:</em>
+After creating rxnpools and reactions in soma and dendrite, we also
+create them in the soma ER.  Optionally, you could add another line
+creating an ER in the dendrite.</p>
+<p><em>Step 3:</em>
+After setting up diffusion between soma and dendrite, we now setup the
+ip3 induced calcium release according to the DeYoung and Keizer
+model. It will be easier to understand this if you review the DeYoung
+Keizer model, as presented in the Li &amp; Rinzel 1994 paper. This is an 8
+state channel.  In an ideal world, there would be a single markov
+kinetic channel object representing all 8 states.  But since there
+isn't, we use the cicr object, and create 8 of them, each one
+representing a single state.  A single channel can be in one of 8
+states, of which only one is open and conducting.  Transitions between
+the states depend on the calcium (changing beta or gamma state) or ip3
+(changing alpha state) concentration.  Thus, each of these objects
+needs a message from either ip3 concentration or calcium
+concentration, and the forward rate (alpha, beta or gamma) multiplies
+the concentration.  xinit is the initial value, xmin and xmax should
+be 0 and 1 since x represents the fraction of channels in that
+state. Cal3-SI.g shows you how to setup two of the states, and add
+messages between those two states.  The function iicrfunc.g contains
+the code to setup all 8 states.  Note that this object can be used to
+create a 4 state ryanodine receptor channel.  After setting up all 8
+channel states, one more object/element is needed to calculate the
+flux through the channel.  This is created in the makeiicrflux
+function, which creates a cicrflux element that calculates calcium
+flux through the channel as a function of the calcium gradient
+(between ER and cytosol) and the fraction of open channels.  It also
+adds all the calcium and ip3 messages.</p>
+<p>When you run this simulation, calcium and calcium bound buffer will
+increase due to release from stores.  The fraction of iicr channels in
+the open state (x110) will increase and then decrease, and the
+fraction of iicr channels in the closed and calcium bound states will
+increase.  You will not see them decrease again because there are no
+calcium extrusion mechanisms.</p>
+<p>Cal4-SI.g extends Cal3-SI.g by adding the submembrane pumps, which
+extrude calcium.  Binding to buffer doesn't eliminate the calcium, it
+just temporarily inactivates a large fraction of it.  The plasma
+membrane pump ultimately must eliminate the calcium from the
+cell. calpumpSI.g contains functions for creating a Michaelis-Menton
+style pump (MMpump), used to model the plasma membrane and smooth
+endoplasmic reticulum ATPase pumps (SERCA and PMCA).</p>
+<p>Note that the parameters are no longer in this file, they have been
+moved to const.g Similarly, creation of calcium release objects are no
+longer in this file, they are created by calling the makeiicr
+function, and then the makeiicrflux function.</p>
+<p>The pump on the ER membrane is called the smooth endoplasmic reticulum
+calcium ATPase (SERCA) The formulation of Michaelis-Menton style pumps
+results in an equilibrium calcium concentration of zero.  To have a
+non-zero calcium, we need a compensatory leak back into the cytosol.
+The leak is a constant flux of calcium depending on the calcium
+concentration.  It is possible to calculate the proper leak from the
+equilibrium calcium, external calcium, and release flux.  Then, the
+leak is created using a cicrflux object (in calpumpSI.g, but with an
+IP3R message of 1.0 (constant).</p>
+<p>When you run these simulations, calcium will increase, and then begin
+to decrease because of the pump.</p>
+</div>
+</div>
+</body>
+</html>

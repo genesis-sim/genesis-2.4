@@ -1,0 +1,212 @@
+This is version 11 of kkit, begun Feb 2005
+
+This is a transition version, beginning to take advantage of MOOSE/GENESIS3
+features while running within the GENESIS 2 GUI.
+New features
+- DOQCS dumping object and additional fields for DOQCS data.
+- Compartment/geometry object (in preliminary form)
+- Cleanup of several of the edit windows
+Several further features and objects will be included as this version 
+evolves, with the goal of feeding into MOOSE models.
+
+---------------------------------------------------------------------------
+This is version 10 of kkit.
+
+This is a minor and probably final upgrade before converting to a
+MOOSE/GENESIS3 based version. It includes provision for diffusive interactions
+in 1 dimension, and will shortly also include a fast deterministic solver.
+It has provisions for loading multiple models for the purpose of running demos.
+
+---------------------------------------------------------------------------
+This is version 9 of kkit.
+It is a major upgrade since version 8, involving a few new features, but also
+including the stochastic solver.
+
+MAJOR CHANGES
+1. Stochastic solver included, with 3 new integration methods. The options
+	dialog controls this.
+2. Automatic dose-response calculation implemented.
+3. Timestep calculation included. This is particularly useful for the mixed
+	stochastic method. It is too conservative for the Exp Euler method.
+4. Fixes made to database dumping.
+5. Tool for setting all initial concentrations to current concentration
+6. Tool for scaling all rates.
+
+
+CLEANUPS.
+1. Minor cleanups of the main menu controls.
+2. Batch-interface fixed so it now loads batch jobs without error 
+	messages about /file/module
+3. Batch-interface now handles creation of the dummies for volume scaling
+	functions.
+
+
+---------------------------------------------------------------------------
+
+This is version 8 of kkit.
+It is a major upgrade since version 7, involving large changes to the interface,
+greatly expanded functionality, changes to file format,
+and requirements for new binaries.
+
+It requires GENESIS 2.2 or later, including the kinetics library.
+
+Major changes since version 7:
+1. Modularization. Organizational structure for very complex models.
+
+2. Stochastic models (through a very inefficient algorithm)
+
+3. Unlimited size for notes.
+
+4. New file format, which is incompatible. A conversion utility is provided.
+
+5. Major interface changes, geared towards modularization.
+
+6. Snap-to-grid display option
+
+7. Improvements to postscript dump, especially in b/w mode
+
+8. Database dump feature for connecting to the DOQCS database.
+
+Under the hood, the following changes have ocurred
+- Display coordinates are now simply the x y z coordinates of the respective
+	pools, etc.
+- 'Mirrors' are now used extensively. This is a change to the pool code which
+	effectively allows a pool to be in many places at once. Mirrors can
+	participate in reactions etc, but it is as if the same master pool is
+	represented in each place.
+
+
+The change involved in modularization is based on a conceptual development
+which is being prepared for publication. The key idea is that nearly all
+signaling interactions can be represented by a single motif, that of 
+duplication of structurally identical reactions involved in interactions.
+The parameters of these interactions vary in individual cases, but the 
+reaction structure is preserved. This generalization makes it possible to
+make a library of modules and their interactions (links). Because links
+can be represented in a stereotyped way, they can be set up at the
+block-diagram level rather than through the detailed hooking up of individual
+reactions. The modularization changes in kinetikit build on this to allow
+setup of modules and links, and a still evolving system for managing them.
+Access to the gory details of reactions and mechanisms is retained, but the
+fully defined model can be set up at a higher block-diagram level.
+
+Minor changes:
+	There is a persistent 'feature' which happens when a user
+	accidentally drags an enzyme onto its own parent, or vice-versa.
+	The natural response is that the user now corrects the mistake
+	by repeating the drag to delete the offending message.
+	This sequence of actions causes a 
+	subtle but disastrous change in the messaging such that the
+	REAC eA B message becomes a REAC sA B message. This does horrible
+	things like eat up all the enzyme. I have implemented two things
+	to fix this. First, the action itself no longer is permitted. There
+	is an error message that pops up when the user tries to make
+	an enzyme act on itself. Second, the system automatically scans
+	loaded files for such messages and warns the user so they can take
+	corrective measures.
+
+
+===========================================================================
+This is version 7 of kkit. 
+It requires Genesis version 2.1 or later, plus the kinetics library.
+The new transporter object requires GENESIS 2.2 for proper operation.
+Installation instructions are in the README of the parent
+directory for kinetikit.
+
+Major changes since version 6:
+
+1 Addition of units
+2 Addition of default volume settings
+3 Addition of experimental parameters
+4 Addition of transporter module
+5 Fixes to the xtab object.
+6 Pseudo-Variable timestep for integration.
+7 Major update of help section. Please use it!
+
+Minor changes:
+8 Easier assignment of colors to objects
+9 Automatic updating of pool concentrations
+10 Plots delete correctly and prevent overwriting
+11 Minor updates to copyright information
+
+These changes are all backward compatible, so existing files will
+load correctly. There may be some surprises in the volumes and concentrations,
+as explained below.
+
+1. Rates and concentrations now have a variety of time and concentration units
+you can use in addition to the somewhat cumbersone #/cell default that
+kinetikit originally used. The 'units' menu item allows you to select between
+these. When units are changed the actual concentration does not change but the
+display scales appropriately.
+
+2. The default volume settings are in the 'units' menu item. They start
+out at a volume of 1e-15 m^3 which is a 10 micron cube. THIS IS DIFFERENT
+FROM THE PREVIOUS VERSION. The old 'volume' term in the pools and enzymes
+was actually a conversion factor from #/cell into concentration units. 
+For example, for a 10 micron cube the previous 'volume' term was 6e5 to
+convert this into micromolar. Now the conversion is still done but it is
+internal and the user is presented with familiar volume and concentration
+terms. For reference, some simulations (such as the feedback.g example)
+used a 'volume' scale factor of 1 in earlier versions. This converts
+to an actual volume of 1.667e-21 m^3, which the reader can verify is the
+volume for which 1 molecule gives a concentration of 1 micromolar. So the
+example will still work, but the volumes look a bit odd at first sight.
+
+3. Enzymes and reactions now have several additional dialog boxes for entering
+and/or viewing conventional experimental parameters for reactions. The
+reaction dialog incorporates a Kd and a tau which are read-only, since the
+tau term is not simply defined for higher-order reactions. The enzyme dialog
+has the Michaelis-Menten parameters Km and Vmax in conventional units, as
+well as a ratio term to explicitly set the ratio between k1 and k2. These
+values are read-write and convert immediately between the k1/k2/k3 terms.
+
+4. There is a new module on the menu bar for doing transport. Its icon
+is a molecule on a filament, with an arrow indicating movement. This
+functions like a unidirectional reaction with a delay. The usual sort
+of interaction arrows and click-and-drag apply to this. the transporter
+is useful to model nuclear or axonal transport in which there is a
+significant time-delay in the arrival of the molecule. Note that the
+transporter itself accumulates molecules in transit, so the amount
+available to reactions appears to decraese. 
+The use of this module is shown in the example model
+	transport.g
+
+5. Fixes to xtab object.
+xtab was seriously broken in version 6. It is now more functional. The 
+file read/write now handles xy as well as y-only type ascii data files.
+The selection of table options is hopefully a bit cleaner. It is now again
+possible to create a table graphically, with many nifty options.
+
+6. Pseudo-variable timestep.
+The timestep at the start of a simulation can be set to a different value
+than for the rest of the run. This is selected in the 'options' menu. This
+can greatly speed up simulations while preserving numerical accuracy.
+Transients at the start of simulations and at the time of addition of reactants
+can lead to numerical errors. These are usually fixed by reducing the timestep,
+but for most of the reaction a longer timestep usually suffices. So the
+'variable timestep' allows the user to set a very tiny timestep (typically 10
+times shorter than the regular dt) for the start of a simulation (usually a
+couple of seconds). Once selected in the 'options' menu, the shorter timestep
+comes into play whenever one presses the 'start' button. So user inputs to
+the simulation which result in transients can also be accomodated by this
+mechanism.
+
+7. Help section.
+Lots of new material added to reflect changes. 
+
+8. Assignment of colors. A little rainbow-colored scale replaces the text
+entry for color names.
+
+9. Pool concentration updating. The Co and n dialogs in the pool parameter
+window now update during the course of the simulation.
+
+10. When objects with an attached plot are deleted, the plots are now also
+deleted. There is also a warning issued when the user attempts to create
+duplicate plots in the same graph. These fixes avoid a possible segmentation
+violation, in addition to making things a bit smoother to work with.
+
+11. I have made minor changes in the wording of the copyright notice, mainly
+in the section about Models and Experiments. The message is the same, that
+you cannot do biology without biological experiments. I hope it is a bit
+more clearly stated.
+

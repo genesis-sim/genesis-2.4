@@ -1,0 +1,16 @@
+The examples in this directory illustrate the use of the basic
+widgets and the draw and some of the pixes. To run them type
+
+genesis <filename>
+
+More detailed examples are given in the subdirectories:
+
+fileview - illustrates dumping and restoring simulation data from files,
+    using the disk_out, disk_in,and xview objects.  This is equivalent to
+    (but more flexible than) using the obsolete GENESIS 1 xfileview object.
+
+netkit - the "Netkit" network builder example from Chapter 20 of "The Book
+    of GENESIS".
+
+xtree_example - an example of using the xtree object for displaying and
+    manipulating the hierarchy of GENESIS elements.

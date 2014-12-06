@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+cat << EOF
+LOAD_LIBRARIES(){
+EOF
+
+sed '/^#/d' | awk '{ printf "\tLIBRARY_%s();\n",$1 }'
+
+cat << EOF
+}
+EOF

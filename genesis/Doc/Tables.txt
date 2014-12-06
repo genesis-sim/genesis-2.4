@@ -1,0 +1,275 @@
+  17.  Tables and Arrays: The interpol_struct
+
+  Although GENESIS does not have array variables, it has several objects
+  that contain one or more data structures called the
+  ``interpol_struct'', or ``interpol.'' This data type is used as a
+  field for handling arrays of doubles.
+
+  Objects that use interpol_structs:
+
+                ___________________________________________
+                Object           Names of interpol_structs
+                ___________________________________________
+                ddsyn            transf
+                table            table
+                table2D          table
+                tab2Dchannel     X_A X_B Y_A Y_B Z_A Z_B
+                tabchannel       X_A X_B Y_A Y_B Z_A Z_B
+                tabcurrent       G_tab I_tab
+                tabgate          alpha beta
+                xcell            xpts ypts zpts dia color
+                xplot            xpts ypts
+                xshape           xpts ypts zpts
+                ___________________________________________
+
+  Utility functions that operate on interpol_structs:
+
+  ______________________________________________________________________
+  Function           Applicable objects     Operation
+  ______________________________________________________________________
+  duplicatetable     All                    Reallocates interpol
+  file2tab           All                    Loads interpol from file
+  loadtab            All                    Loads interpol from command line
+  scaletabchan       tabchannel tabgate     Setup HH rate consts
+  setupNaCa          tabcurrent             Model Na-Ca exchanger current
+  setupalpha         tabchannel tabgate     Setup HH rate consts
+  setupgate          tabgate table          Setup HH rate consts
+  setupghk           tabcurrent             Solve the GHK equation
+  setuptau           tabchannel tabgate     Setup HH rate consts
+  tab2file           All                    Dumps interpol to file
+  tweakalpha         tabchannel             Setup HH rate consts
+  tweaktau           tabchannel             Setup HH rate consts
+  ______________________________________________________________________
+
+  17.1.  Using interpol_structs
+
+  An interpol_struct can be accessed by the usual GENESIS setfield and
+  getfield commands:
+
+           create table /foo
+           call /foo TABCREATE 100 0 100
+           setfield /foo table->table[10] 1234
+           echo {getfield /foo table->table[10]}
+
+           create table2D /bar
+           call /bar TABCREATE 5 0 1 5 0 1
+           setfield /bar table->table[0][0] 5.55
+
+  The TABCREATE action is called in order to allocate the table.  This
+  action, and others that are used for manipulating tables, e.g.
+  TABFILL, are described in the documentation for the particular objects
+  that use interpol_structs.
+
+  The tabchannel (and in the future, other objects that use
+  interpol_structs) supports the TABDELETE action.  When deleting
+  tabchannels, or the cells or compartments containing them, you must
+  call TABDELETE first, in order to deallocate the memory for the
+  tables.  Finally, you have to give the ``reclaim'' command for the
+  memory to actually be freed.  Note that the tables are shared among
+  all tabchannels that are created by copy or readcell from a prototype.
+  Therefore, you shouldn't call TABDELETE unless you plan to delete all
+  copies of the tabchannel.
+
+  These objects also have special enhancements to the SET action for
+  operations on the interpol_struct. There are also many utility
+  functions, listed above, that make manipulation of interpol_structs
+  easier.
+
+  17.1.1.  SET Action Enhancements
+
+  The SET action is invoked whenever the script command ``setfield'' is
+  used. It is often used when a field needs to receive special
+  treatment. If the field being set is an interpol_struct, then the SET
+  action invokes a function called SetTable. This provides uniform
+  behavior across all classes that use interpol_structs.  The SET action
+  in this situation interprets the last argument in a special way. For
+  example, you could say
+
+                   setfield /foo table /bar/table
+
+  where /foo and /bar are instances of table objects. In this case
+  /bar/table refers to the ``table'' field of /bar, not to an element
+  named /bar/table.
+
+  There are three ways in which the destination table (belonging to /foo
+  in the example above) can be manipulated:
+
+  1. The existing entries can have their values changed, without
+     affecting allocation in any way. For example,
+
+             setfield foo table bar/table
+
+  2. The table array of the destination interpol is replaced, and the
+     old one lost. In the current implementation, the old one is NOT
+     freed. If necessary the ``xdivs'' field is changed to reflect a
+     change in the size of the array.
+
+             setfield foo &table bar/table
+
+  3. The entire destination interpol_struct is replaced, and the old one
+     (if any) is lost (NOT freed). In later upgrades, the old interpol
+     will be freed conditionally on whether there are other elements
+     still using the interpol. For now, there is no mechanism for
+     freeing old interpols.
+
+             setfield foo &&table bar/table
+
+  The default is 1. To specify 2, prefix the name of the destination
+  table with an &. To specify 3, prefix the name of the destination
+  table with &&.
+
+  The last argument can be either another table, or a constant.  If it
+  is a constant, then cases 2 and 3 above are errors. The assignment in
+  (a) and arithmetical operators in (c) below are legal for constants,
+  but obviously, the pointer operators in (b) are not.  If the second
+  argument is a table, there are several possible options:
+
+     a. There can be a direct value assignment. This is the default.  In
+        the case of 1 above, this is trivial. In the case of 2 and 3,
+        new tables/interpols are allocated and the values copied over.
+                setfield foo table bar/table
+
+     b. There can be a pointer assignment. This is indicated by an &
+        prefix on the second argument. The case 1 above is illogical for
+        this option, and produces an error message.  For 2, the pointer
+        to the array in the interpol struct is copied over to the
+        destination. This option is very dangerous since there is no way
+        to manage allocations. It is provided only for special cases and
+        is NOT meant for general use.
+
+                setfield foo &table &bar/table
+
+     For 3, the pointer to the interpol_struct itself is copied over.
+     This is the recommended way of providing access to shared arrays
+     since future extensions will enable the interpol_struct to keep
+     track of the number of elements which are using it.
+
+             setfield foo &&table &bar/table
+
+     c. There can be arithmetical operations. Due to parser problems,
+        all these must be placed between ``='' signs, e.g.
+
+                setfield /foo table =+=/bar/table
+
+     Only option 1 above is allowed.  In all cases the results are
+     placed in the first interpol, in this example it is the table on
+     /foo.  The following operators are recognized when the second argu-
+     ment is a constant:
+
+           +     adds the constant value to all the table entries
+           -     subtracts the constant from all the table entries
+           *     multiplies all the table entries by the constant
+           /     divides all the table entries by the constant
+           =     assigns all the table entries to the constant
+
+     The following operators are recognized when the second argument is
+     a table. Except for operation `f', the operations are always car-
+     ried out between table entries with the same index.  If the first
+     table has fewer entries than the second, the extra entries are
+     ignored. If it has more entries, then the extra entries in the
+     first table are unaffected.
+
+   +     sums the two tables, placing results in the first.
+   -     subtracts the second table from the first.
+   *     does an item-by-item product.
+   /     divides the first table by the second, item-by-item.
+   =     assigns the values of the first table to the second.
+   e     A = exp(B), where A is the first table and B the second.
+   E     A = exp10(B)
+   l     A = log(B)
+   L     A = log10(B)
+
+   f     fits the source table into the destination using interpolation to
+         make sure we get a reasonable approximation to all entries.
+
+  Note: The memory handling capabilities for interpols have not been
+  implemented. These will free old interpols which are not used by any
+  elements.  At present old interpols just get lost without being freed.
+  Therefore, it is important to call the TABDELETE action before
+  deleting tabchannels or other objects that use interpols and that
+  support this action.
+
+  Also see the documentation for all listed objects and functions that
+  operate on interpol_structs, especially the ``table'' (table.txt)
+  object.
+
+  The following example illustrates some of the uses of setfield with
+  interpol_structs:
+
+   //genesis
+   // This example illustrates the use of the extended 'SET' action
+   // in manipulating tables.
+   // We use the xpts and ypts tables in the shape for displaying
+   // the effects of the manipulations.
+
+   create xform /form -wgeom 500
+   create xcoredraw /form/draw -xmin -1 -xmax 11 -ymin -1 -ymax 1
+   create xlabel /form/label -label "Displaying a plot of table2 vs table1"
+   create xbutton /form/continue -label "Continue with example" \
+           -script "do_arith_ops"
+   xshow /form
+
+   create xshape /form/draw/shape -fg blue -npts 10
+
+   // We will use table1 and table2 for storing the original values
+   create table /table1
+   create table /table2
+   call /table1 TABCREATE 10 0 10
+   call /table2 TABCREATE 10 0 10
+
+   int i
+   // Set up table 1 as a sine wave. This demonstrates the ordinary
+   // set options for tables.
+   for (i = 0; i <= 10 ; i = i + 1)
+                   setfield /table1 table->table[{i}] {i}
+                   setfield /table2 table->table[{i}] {sin {i / 2.0}}
+   end
+   // use the special set option to copy the values from table1 and 2
+   // to xpts and ypts respectively
+   setfield /form/draw/shape xpts /table1/table
+   setfield /form/draw/shape ypts /table2/table
+
+           // This demonstrates using constants for arithmetic operations
+   function do_arith_ops
+           setfield /form/draw/shape fg red ypts =/=2.0
+           setfield /form/label label "Now all y coords have been halved"
+           setfield /form/continue script "do_more_arith_ops"
+   end
+
+           // This demonstrates using other tables for arithmetic operations
+   function do_more_arith_ops
+           setfield /form/draw/shape fg green ypts =-=/table2/table
+           setfield /form/label label \
+                   "Now table2 has been subtracted from the y coords"
+           setfield /form/continue script "do_new_interpol"
+   end
+
+   function do_new_interpol
+           // This demonstrates allocating a new interpol for ypts
+           setfield /form/draw/shape fg yellow &&ypts /table2/table
+           setfield /form/label label\
+             "Now a new interpol has been allocated. It uses values from table2"
+           setfield /form/continue script "do_interpol_ptr"
+   end
+           // this demonstrates copying over a pointer to an interpol for xpts
+   function do_interpol_ptr
+           setfield /form/draw/shape fg black &&xpts &/table1/table
+           setfield /form/label label \
+                   "Now the xpts interpol uses the same pointer as table1"
+           setfield /form/continue script "do_interpol_ptr2"
+   end
+
+           // This shows that the interpol for table1 and xpts are the same
+           // but table2 and ypts are distinct. We change both table1 and 2,
+           // but xpts is the only one that is affected.
+   function do_interpol_ptr2
+           setfield /table1 table->table[0] 1
+           setfield /table2 table->table[0] 1
+           // This is a hack to force the draw to update, since there is no
+           // way for it to know that anything in it has changed.
+           setfield /form/draw xmin -1.0001
+
+           setfield /form/label label \
+                   "Here we change table1 and 2. Only xpts changes."
+           setfield /form/continue script "quit" label "quit"
+   end

@@ -1,0 +1,76 @@
+OBJECT				NAPORES			3/14/92 (AS)
+
+DESCRIPTION:
+    Simulates a population of sodium ion channels proteins (pores) embedded
+    in a patch of membrane over an isopotential region.  Each individual pore
+    undergoes standard Markov kinetics through an eight state scheme:
+
+
+           	  3am->                 2am->                 am->
+  	[m0h1]---------------[m1h1]---------------[m2h1]---------------[m3h1]
+          |       <-bm         |       <-2bm        |        <-3bm       |
+          |                    |                    |                    |
+       /\ |                 /\ |                 /\ |                 /\ |
+       ah | bh              ah | bh              ah | bh              ah | bh
+          | \/                 | \/                 | \/                 | \/
+          |                    |                    |                    |
+          |       3am->        |        2am->       |         am->       |
+	[m0h0]---------------[m1h0]---------------[m2h0]---------------[m3h0]
+           	  <-bm                 <-2bm                 <-3bm
+
+
+    where [m3h1] = Open State and am, bm, ah and bh have voltage
+    dependencies given by:
+
+    am = (malpha_A + malpha_B*Vk)/(malpha_C + exp((malpha_D+Vk)/malpha_F))
+
+    bm = (mbeta_A + mbeta_B*Vk)/(mbeta_C + exp((mbeta_D+Vk)/mbeta_F))
+
+    ah = (halpha_A + halpha_B*Vk)/(halpha_C + exp((halpha_D+Vk)/halpha_F))
+
+    bh = (hbeta_A + hbeta_B*Vk)/(hbeta_C + exp((hbeta_D+Vk)/hbeta_F))
+
+    The total population of pores is given by Nt.  The total number of pores
+    within each of the eight stable states at any given iteration is given by
+    m0h0, m1h0, m2h0, m3h0, m0h1, m1h1, m2h1, and m3h1, respectively.  The
+    total number of pores in the open stable state is given by No = m3h1.
+    The open state conductance of a pore is given by Gmax.  The effective
+    conductance for the population of pores at any given iteration is then
+    Gk = Gmax*No.
+
+SPECIFICATIONS:
+    FUNCTION   		NaPorePop()
+    DATA STRUCTURE   	Na_pore_type
+    CLASS  		segment membrane
+    SIZE   		?? bytes
+    AUTHOR  		A. Strassberg Caltech 3/92
+
+ACTIONS:
+    CHECK       null
+    RESET       sets initial distribution of pores into the various stable
+		states based upon the equilibrium solutions to the Markov
+		matrix for given Vk.
+    PROCESS 	updates the distribution of the stable states of the
+		population based upon the rate constants an and bn, derived
+		from the current transmembrane voltage Vk.
+    INIT 	null
+
+MESSAGES:
+    VOLTAGE	sends transmembrane voltage Vk to the population of pores.
+		This Vk is used to update the state distribution after each
+		iteration.
+
+FIELDS:
+    See DESCRIPTION
+
+
+RELATED COMMANDS/TOPICS:
+    Kpores
+
+ERROR MESSAGES:
+
+BUGS:
+
+NOTES:
+    See Strassberg and DeFelice, 1993, Neural Computation 5:6
+    and the demonstration scripts in Scripts/examples/pore

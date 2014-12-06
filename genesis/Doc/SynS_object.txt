@@ -1,0 +1,46 @@
+Object Type:    SynS_object
+ 
+Description:    Implements voltage-dependent modulation of spike-mediated
+                synaptic transmission.
+ 
+Author:         Calabrese Lab, 3/97
+ 
+------------------------------------------------------------------------------
+ 
+ELEMENT PARAMETERS
+ 
+DataStructure:  SynS_type  [in src/newconn/SynGS_struct.h]
+ 
+Size:           148 bytes
+ 
+Fields:         m_SynS       modulation factor = A+B/(1+exp(C*(Vm+D)))
+                A            A
+                B            B
+                C            C
+                D            D
+                E            E = time constant  
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+ 
+Function:       SynS  [in src/newconn/SynS.c]
+ 
+Classes:        device synchannel
+ 
+Actions:        RESTORE2  SAVE2  CHECK  RESET  PROCESS  INIT
+ 
+Messages:       VOLTAGE         membrane potential Vm
+
+ 
+------------------------------------------------------------------------------
+ 
+Notes:          Calculates the voltage dependent modulation of spike mediated
+                transmission in the leech HN cells.  Therefore, it needs the
+		presynaptic membrane potential.  Modulation is a sigmoidal
+		function of the membrane potential given by
+		m_SynS = A+B/(1+exp(C*(Vm+D))), with a time constant E.
+
+Example:        See http://calabreselx.biology.emory.edu/software.html.
+
+See also:       synchan, SynE_object, SynG_object

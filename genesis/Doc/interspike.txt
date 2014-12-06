@@ -1,0 +1,81 @@
+Object Type: interspike
+
+Description: Generates an interspike interval histogram.
+
+Author:      E. De Schutter Caltech 8/91
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  interspike_type [in src/device/dev_struct.h]
+Size:           116 bytes
+
+Fields:         output        gives the most recent interspike interval
+                threshold     voltage threshold for determining when a spike
+                              occurs
+                binwidth      time interval between bins
+                num_bins      number of table entries (bins)
+                trigger_mode  0 (free run) or 1 (triggered)
+                reset_mode    if 1 then bins will be emptied upon RESET 
+                table         table with the number of spikes for that bin
+                prev_time     time of last event (not set by user)
+                triggered     set to 1 on RESET if trigger_mode = 0 (free run),
+                              else is 0 until a TRIGGER message is received
+                              (not set by user)
+                spiking       flag indicating spike in progress
+                              (not set by user)
+                allocated     flag indicating table has been allocated
+                              (not set by user)
+
+------------------------------------------------------------------------------
+Function:       InterSpikeInterval [in src/device/interspike.c]
+
+Classes:        device
+
+Actions:        CHECK  PROCESS  RESET
+
+Messages:       SPIKE   time     (Time of occurrence of a spike.)
+                TRIGGER state    (If state is > 0, the previous spike time is
+                                 set to the current time, and binning starts
+                                 at first bin.)
+                INPUT   voltage  (The Vm value sent to be compared with
+                                 threshold.)
+
+------------------------------------------------------------------------------
+
+Notes:          interspike produces an interspike interval histogram (ISI).
+                Incoming data is used to fill an internal array (called table)
+                that contains num_bins entries from which the histogram values
+                can be read.  These objects can collect data on-line during a
+                simulation, but do not produce much useful information during
+                the simulation (the output field of interspike can be used to
+                look at the most recent interspike interval).  At the end of
+                the run, the histogram results can be retrieved with commands
+                such as "getfield /interspike table[{i}]", with i taking on
+                values from 0 through nbins-1.  The example script reads the
+                table entries and and plots a histogram after the run phase of
+                the simulation.
+
+                The last bin also contains the number of intervals with
+                values larger than that of the last bin.
+
+                There are two modes that may be used, as determined by the
+                "trigger_mode" field.  If the field is 0, the system is
+                free-running and begins accumulating data right away.
+                Otherwise, the system waits until it receives a trigger to
+                start binning incoming events.  The trigger should be a single
+                time step event like the state field of a 'spikegen' or
+                'randomspike' object, sent with a TRIGGER message.
+
+                Events can be defined in one of two ways.  They can be
+                determined from the time that the value of an INPUT message
+                first exceeds threshold.  The voltage must then fall below
+                threshold before another spike event can be recorded.)
+                Alternatively, a SPIKE message can be sent giving the time
+                that a spike occurs.  Note that this is NOT like the SPIKE
+                message of a synchan, which does not require an argument.
+
+Example:        See Scripts/examples/spike.
+
+See also:       peristim

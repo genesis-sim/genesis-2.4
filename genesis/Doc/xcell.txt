@@ -1,0 +1,223 @@
+Object Type:    xcell
+
+Description:    The cell pix is similar to the view pix, but is specialized to
+                display the geometry and state of compartments in
+                multicompartmental cell models. Each compartment is
+                represented by a line segment of variable thickness and color.
+                The position and length of each line segment comes from the
+                3-D coordinates of the element that the line represents. Each
+                compartment is drawn from the coordinates of the previous
+                compartment (electrically speaking) to the current one.  The
+                color of the compartment may be used to represent the value of
+                a field of the compartment or of one of its subelements.
+
+                As with the view pix, it is displayed within a draw widget,
+                and refreshes itself every time its assigned clock ticks.
+                Therefore, care should be taken to ensure that the cell is
+                only being refreshed as often as you really want it to be.
+                For refreshes that are not associated with a running
+                simulation, the xupdate command can be used on the parent draw
+                widget.
+
+Author:         Upi Bhalla Mount Sinai June/93
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  xcell_type [in src/Xodus/draw/xcell_struct.h]
+
+Size:  		?	Depends on the number of compartments in the cell
+			being displayed.
+Fields:
+		fg	foreground color of cell, applies to labels for
+			compartments, which are as yet unimplemented.
+
+        	script  Script operation(s) to perform on a mouse click.
+
+        	tx      Translation distance in the x dimension. The
+                	cell is displaced in the draw by this amount.
+        	ty      Translation in y.
+        	tz      Translation in z.
+
+		value	contains path to the compartment which is clicked on.
+
+	        pixflags  set of flags specifying visibility, refreshes,
+			mouse sensitivity, and many other options.  Use
+			the 'pixflags' utility command to find out more.
+
+		dia	table of compartment diameters.  For example,
+			"showfield cell dia->table[10]".
+
+		color   table showing the current value of the field which
+			is used to set the color of a compartment.
+
+                colmin  value of the displayed field corresponding to the
+                        minimum of the color scale.
+
+                colmax  value of the displayed field corresponding to the
+                        maximum of the color scale.
+
+                diamin  Compartments of this diameter or less are drawn at
+                        minimum thickness (as a line).
+
+                diamax  Compartments of this diameter or less are drawn at
+                        maximum thickness, specified by diarange.
+
+                diarange  specifies the maximum thickness of the line that
+                        represents a compartment.  There are two modes: if it
+                        is a negative number, then the absolute value is
+                        taken as the thickness of the line in pixels.  If it
+                        is positive, then the value is taken as the diameter
+                        of the compartment in real space.  The pixel
+                        specification is easier to use, but does not scale
+                        when the user zooms in or out in the draw widget. The
+                        real space option requires one to have good values
+                        for diameters, and take care that the units are
+                        correct, or the lines may be so thick that they fill
+                        the screen.  Note that these values are the thickness
+                        of the thickest compartment (usually the soma). The
+                        remaining compartments will be scaled linearly
+                        towards zero. The dependence on diamin and diamax is
+                        described above.  The default value of diarange is
+                        -20, meaning that the thickest compartment will be
+                        drawn with a line 20 pixels wide.
+
+                autocol When set to 1 (or TRUE), colmin and colmax are set to
+                        the minimum and maximum values of the displayed field
+                        in the cell, each time the pix is updated.  The
+                        default is 0 (FALSE), meaning that colmin and colmax
+                        should be set by the user.
+
+                autodia When set to the default value of 1 (or TRUE), the
+                        diamin and diamax values are automatically set to the
+                        minimum and maxiumum compartment diameters of the cell
+                        being represented.  In order to set diamin and diamax
+                        to other values, set autodia to 0 (or FALSE) before
+                        setting diamin and diamax.
+
+                soma    contains the index of the compartment to be displayed
+                        as a spherical soma.  When the xcell is created with
+                        the default value of -1, the soma field is
+                        automatically reset to the index of the compartment
+                        having the largest diameter.  When it has a value of
+                        -2, all compartments are displayed as cylinders.
+
+                names   array of compartment names, eg. "showfield cell
+                        names[10]".
+
+                path    sets the path (as a wildcard list) of all the
+                        compartments (or symcompartments) to be displayed.
+                        For example, /cell/##[TYPE=compartment] is a valid
+                        path for a cell whose parent element is called /cell.
+
+                field   the field to be displayed by color.
+
+                fieldpath may be used to optionally specify the path to a
+                        child element of the compartments, so that "field"
+                        will refer to a field of this element, rather than a
+                        field of the compartment.  For instance, one might
+                        wish to display the current in an ion channel present
+                        in some compartments.
+
+                labelmode  when set, will allow compartments to be labeled by
+                        number or name (not yet implemented).
+
+                cellmode  specifies how to draw the cell.  The allowed values
+                        are endcoords (the default) or midcoords. (One will
+                        usually not want to change this.)
+
+                npts    When path is set, npts gives the number of compartments
+                        which are represented.  This value is useful when
+                        looping over the names, color, or dia tables.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:       XCell [in src/Xodus/draw/xcell.c]
+
+Classes:        output gadget
+
+Actions:        DELETE COPY SET CREATE RESET PROCESS
+
+                XUPDATE: update internal fields when
+                        displayed widget is changed.
+                B1DOWN: Invoked when mouse Button 1 is pressed.
+                B2DOWN: Invoked when mouse Button 2 is pressed.
+                B3DOWN: Invoked when mouse Button 3 is pressed.
+                ANYBDOWN:       Invoked when any mouse button is pressed.
+                B1DOUBLE: Invoked on a double click on mouse button 1.
+                B2DOUBLE: Invoked on a double click on mouse button 2.
+                B3DOUBLE: Invoked on a double click on mouse button 3.
+                XOCOMMAND: an action that can invoke the functions
+                        in the 'script' field
+                XODROP: Called when a another pix is dropped onto this one.
+                XODRAG: Called when the mouse is clicked on this pix, and
+                        the mouse moves while the mouse button is held down.
+                XOWASDROPPED: Called after this pix has been dropped onto
+                        another one.
+
+Messages:       COLDIAPOS color dia x y z
+                COLDIA color dia
+                POSITION x y z
+                DIAMETER dia
+                COLOR color
+
+------------------------------------------------------------------------------
+
+Notes:          The xmin, xmax, ymin, and ymax fields of the parent draw
+                widget should be set to values which are appropriate for the
+                dimensions of the cell.  As with other pixes displayed in a
+                draw widget, the arrow keys may be used to translate the image
+                in the draw, and "<" and ">" to zoom out (smaller) and in
+                (larger).  Likewise, the coordinate transformations described
+                in the xdraw documentation are available.  You may find these
+                keyboard commands useful for fine tuning the xmin, xmax, ymin,
+                and ymax fields.  Then, after inspecting them with showfield,
+                you may enter the final values in your script.
+
+                The messages which are accepted by the cell pix are usually
+                issued automatically, and not explicitly added by SLI addmsg
+                commands.  As may be verified with the showmsg command, each
+                compartment which is represented in the xcell sends a COLOR
+                message to the xcell, giving the value of the field which is
+                to be mapped to a color.
+
+Example:
+
+    // traub91proto.g and CA3.p should be copied from Scripts/traub91
+    include traub91proto.g 
+
+    // Create a library of prototype elements to be used by the cell reader
+    create neutral /library
+    pushe /library
+    create symcompartment symcompartment
+    make_Na
+    make_Ca
+    make_K_DR
+    make_K_AHP
+    make_K_C
+    make_K_A
+    make_Ca_conc
+    pope
+
+    // Build the cell from a parameter file using the cell reader
+    readcell CA3.p /cell
+
+    // create and display the xcell
+    create xform /cellform [620,50,400,400]
+    create xdraw /cellform/draw [0,0,100%,100%]
+    setfield /cellform/draw xmin -0.003 xmax 0.001 ymin -5e-5 ymax 5e-5 \
+        zmin -1e-3 zmax 1e-3 
+    xshow /cellform
+    echo creating xcell
+    create xcell /cellform/draw/cell
+    // Note that this particular cell uses symcompartments, not compartments
+    setfield /cellform/draw/cell colmin -0.1 colmax 0.1 \
+        path /cell/##[TYPE=symcompartment] field Vm \
+    script "echo widget clicked on = <w> value = <v>"
+    xcolorscale hot
+    reset
+
+See also: xpix, xview, xdraw, Clicks

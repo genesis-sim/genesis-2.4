@@ -1,0 +1,534 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS 2.4 Reference Manual</TITLE>
+</HEAD>
+<BODY>
+Previous
+<A HREF="Manual-1.html">Next</A>
+Table of Contents
+<HR>
+<CENTER>
+<H1>GENESIS 2.4 Reference Manual</H1>
+<p>
+<img align=middle src="genesis5.gif">
+<H2>July 2014</H2>
+</CENTER>
+<P>
+<H2><A NAME="toc1">1.</A> <A HREF="Manual-1.html">Introduction</A></H2>
+<UL>
+<LI><A HREF="Manual-1.html#ss1.1">1.1 Getting Started with GENESIS</A>
+<LI><A HREF="Manual-1.html#ss1.2">1.2 Credits and Copyright Notice </A>
+<LI><A HREF="Manual-1.html#ss1.3">1.3 Reporting Bugs</A>
+</UL>
+
+<P>
+<H2><A NAME="toc2">2.</A> <A HREF="Manual-2.html">Changes Introduced in GENESIS 2</A></H2>
+<UL>
+<LI><A HREF="Manual-2.html#ss2.0">2.0 Changes Introduced in GENESIS 2.4</A>
+<LI><A HREF="Manual-2.html#ss2.01">2.01 Changes Introduced in GENESIS 2.3</A>
+<LI><A HREF="Manual-2.html#ss2.1">2.1 Changes Introduced in GENESIS 2.2</A>
+<LI><A HREF="Manual-2.html#ss2.2">2.2 Changes Introduced in GENESIS 2.1</A>
+<LI><A HREF="Manual-2.html#ss2.3">2.3 Changes Introduced in GENESIS 2.0</A>
+<LI><A HREF="Manual-2.html#ss2.4">2.4 Command Names</A>
+<LI><A HREF="Manual-2.html#ss2.5">2.5 Objects</A>
+<LI><A HREF="Manual-2.html#ss2.6">2.6 SLI Syntax Changes</A>
+<LI><A HREF="Manual-2.html#ss2.7">2.7 Synaptic Connections</A>
+<LI><A HREF="Manual-2.html#ss2.8">2.8 Extended Fields</A>
+<LI><A HREF="Manual-2.html#ss2.9">2.9 Extended Objects</A>
+<LI><A HREF="Manual-2.html#ss2.10">2.10 Saving Simulations</A>
+<LI><A HREF="Manual-2.html#ss2.11">2.11 Script Conversion</A>
+<LI><A HREF="Manual-2.html#ss2.12">2.12 The Parallel Library</A>
+<LI><A HREF="Manual-2.html#ss2.13">2.13 Rallpacks Benchmarks</A>
+</UL>
+
+<P>
+<H2><A NAME="toc3">3.</A> <A HREF="Manual-3.html">The GENESIS Script Language Interpreter</A></H2>
+<UL>
+<LI><A HREF="Manual-3.html#ss3.1">3.1 GENESIS Statements and Commands</A>
+<LI><A HREF="Manual-3.html#ss3.2">3.2 Creating Variables</A>
+<LI><A HREF="Manual-3.html#ss3.3">3.3 Functions</A>
+<LI><A HREF="Manual-3.html#ss3.4">3.4 Operators</A>
+<LI><A HREF="Manual-3.html#ss3.5">3.5 Control Structures</A>
+</UL>
+
+<P>
+<H2><A NAME="toc4">4.</A> <A HREF="Manual-4.html">Basic Routines</A></H2>
+
+<P>
+<H2><A NAME="toc5">5.</A> <A HREF="Manual-5.html">Math Routines</A></H2>
+
+<P>
+<H2><A NAME="toc6">6.</A> <A HREF="Manual-6.html">String Manipulation Routines</A></H2>
+
+<P>
+<H2><A NAME="toc7">7.</A> <A HREF="Manual-7.html">Input/Output (I/O) Routines</A></H2>
+<UL>
+<LI><A HREF="Manual-7.html#ss7.1">7.1 Saving Simulations to a File</A>
+<LI><A HREF="Manual-7.html#ss7.2">7.2 Related GENESIS Objects</A>
+</UL>
+
+<P>
+<H2><A NAME="toc8">8.</A> <A HREF="Manual-8.html">Elements</A></H2>
+<UL>
+<LI><A HREF="Manual-8.html#ss8.1">8.1 Related Commands</A>
+<LI><A HREF="Manual-8.html#ss8.2">8.2 Actions</A>
+</UL>
+
+<P>
+<H2><A NAME="toc9">9.</A> <A HREF="Manual-9.html">Hierarchical Structure</A></H2>
+<UL>
+<LI><A HREF="Manual-9.html#ss9.1">9.1 The GENESIS Element Tree Hierarchy</A>
+<LI><A HREF="Manual-9.html#ss9.2">9.2 Traversing the Element Tree</A>
+<LI><A HREF="Manual-9.html#ss9.3">9.3 Pathnames and Wildcards</A>
+</UL>
+
+<P>
+<H2><A NAME="toc10">10.</A> <A HREF="Manual-10.html">Objects</A></H2>
+<UL>
+<LI><A HREF="Manual-10.html#ss10.1">10.1 GENESIS Objects by Category</A>
+<LI><A HREF="Manual-10.html#ss10.2">10.2 Related Commands</A>
+</UL>
+
+<P>
+<H2><A NAME="toc11">11.</A> <A HREF="Manual-11.html">Extended Objects</A></H2>
+<UL>
+<LI><A HREF="Manual-11.html#ss11.1">11.1 Extending Fields</A>
+<LI><A HREF="Manual-11.html#ss11.2">11.2 Extending Actions</A>
+<LI><A HREF="Manual-11.html#ss11.3">11.3 Extending Message Definitions</A>
+<LI><A HREF="Manual-11.html#ss11.4">11.4 Extending Classes</A>
+<LI><A HREF="Manual-11.html#ss11.5">11.5 Using Extended Objects for Specialization</A>
+<LI><A HREF="Manual-11.html#ss11.6">11.6 Using Extended Objects for Composition</A>
+<LI><A HREF="Manual-11.html#ss11.7">11.7 Related Commands</A>
+</UL>
+
+<P>
+<H2><A NAME="toc12">12.</A> <A HREF="Manual-12.html">Neural Simulation Routines</A></H2>
+<UL>
+<LI><A HREF="Manual-12.html#ss12.1">12.1 Buffer Routines</A>
+<LI><A HREF="Manual-12.html#ss12.2">12.2 Compartment Routines</A>
+<LI><A HREF="Manual-12.html#ss12.3">12.3 Miscellaneous Neural Routines</A>
+</UL>
+
+<P>
+<H2><A NAME="toc13">13.</A> <A HREF="Manual-13.html">Messages</A></H2>
+
+<P>
+<H2><A NAME="toc14">14.</A> <A HREF="Manual-14.html">Synaptic Connections</A></H2>
+
+<P>
+<H2><A NAME="toc15">15.</A> <A HREF="Manual-15.html">Simulations</A></H2>
+<UL>
+<LI><A HREF="Manual-15.html#ss15.1">15.1 Running a Simulation</A>
+<LI><A HREF="Manual-15.html#ss15.2">15.2 Simulation Clocks</A>
+<LI><A HREF="Manual-15.html#ss15.3">15.3 GENESIS Jobs</A>
+</UL>
+
+<P>
+<H2><A NAME="toc16">16.</A> <A HREF="Manual-16.html">Simulation Schedules</A></H2>
+
+<P>
+<H2><A NAME="toc17">17.</A> <A HREF="Manual-17.html">Tables and Arrays: The interpol_struct</A></H2>
+<UL>
+<LI><A HREF="Manual-17.html#ss17.1">17.1 Using interpol_structs</A>
+</UL>
+
+
+
+<P>
+
+<H2><A NAME="toc17.5">17.5</A> <A HREF="chemesis.html">The
+'chemesis' library of GENESIS objects</A></H2>
+<P>
+<H2><A NAME="toc18">18.</A> <A HREF="Manual-18.html">The GENESIS Parameter Search Library</A></H2>
+<UL>
+<LI><A HREF="Manual-18.html#ss18.1">18.1 What is automated parameter searching?</A>
+<LI><A HREF="Manual-18.html#ss18.2">18.2 The parameter searching process</A>
+<LI><A HREF="Manual-18.html#ss18.3">18.3 The GENESIS parameter search library</A>
+<LI><A HREF="Manual-18.html#ss18.4">18.4 Recommendations</A>
+<LI><A HREF="Manual-18.html#ss18.5">18.5 Bug reports.</A>
+<LI><A HREF="Manual-18.html#ss18.6">18.6 Caveats</A>
+<LI><A HREF="Manual-18.html#ss18.7">18.7 Information about the Parameter-search (paramtable) Objects</A>
+</UL>
+
+<P>
+<H2><A NAME="toc19">19.</A> <A HREF="Manual-19.html">The XODUS Graphical Interface</A></H2>
+<UL>
+<LI><A HREF="Manual-19.html#ss19.1">19.1 Introduction and Overview of XODUS</A>
+<LI><A HREF="Manual-19.html#ss19.2">19.2 Basic Widgets</A>
+<LI><A HREF="Manual-19.html#ss19.3">19.3 Specifying Widget Geometries</A>
+<LI><A HREF="Manual-19.html#ss19.4">19.4 The Draw Widget Family</A>
+<LI><A HREF="Manual-19.html#ss19.5">19.5 XODUS Commands</A>
+</UL>
+
+<P>
+<H2><A NAME="toc20">20.</A> <A HREF="Manual-20.html">XODUS Mouse Clicks -- a summary of syntax conventions</A></H2>
+<UL>
+<LI><A HREF="Manual-20.html#ss20.1">20.1 Conventions</A>
+<LI><A HREF="Manual-20.html#ss20.2">20.2 Overview</A>
+<LI><A HREF="Manual-20.html#ss20.3">20.3 Graphical User Interface Actions.</A>
+<LI><A HREF="Manual-20.html#ss20.4">20.4 Scripts and Actions: Assigning the <EM>script</EM> Field</A>
+<LI><A HREF="Manual-20.html#ss20.5">20.5 Scripts and Actions: Arguments Passed to the <EM>script</EM> Function.</A>
+</UL>
+
+<P>
+<H2><A NAME="toc21">21.</A> <A HREF="Manual-21.html">Customizing GENESIS</A></H2>
+<UL>
+<LI><A HREF="Manual-21.html#ss21.1">21.1 Defining New Objects and Commands</A>
+<LI><A HREF="Manual-21.html#ss21.3">21.3 Creating New Synaptic Objects</A>
+<LI><A HREF="Manual-21.html#ss21.4">21.4 Creating New Synaptic Plasticity Objects</A>
+<LI><A HREF="Manual-21.html#ss21.2">21.2 Compiling a New Version of GENESIS</A>
+</UL>
+
+<P>
+<H2><A NAME="toc22">22.</A> <A HREF="Manual-22.html">Converting GENESIS 1.4 Scripts to GENESIS 2.0</A></H2>
+<UL>
+<LI><A HREF="Manual-22.html#ss22.1">22.1 The Conversion Process</A>
+<LI><A HREF="Manual-22.html#ss22.2">22.2 Using the Convert Program</A>
+<LI><A HREF="Manual-22.html#ss22.3">22.3 Global Script Variables</A>
+<LI><A HREF="Manual-22.html#ss22.4">22.4 Compatibility Libraries</A>
+<LI><A HREF="Manual-22.html#ss22.5">22.5 The X1compat Library</A>
+<LI><A HREF="Manual-22.html#ss22.6">22.6 The Connection Compatibility Library</A>
+<LI><A HREF="Manual-22.html#ss22.7">22.7 Converting User Libraries</A>
+<LI><A HREF="Manual-22.html#ss22.8">22.8 Convert Problem Areas</A>
+<LI><A HREF="Manual-22.html#ss22.9">22.9 Script Callbacks</A>
+<LI><A HREF="Manual-22.html#ss22.10">22.10 Command Options in Script Variables</A>
+<LI><A HREF="Manual-22.html#ss22.11">22.11 Command Arguments That Look Like Options</A>
+<LI><A HREF="Manual-22.html#ss22.12">22.12 Script Variable/Command Name Conflicts</A>
+<LI><A HREF="Manual-22.html#ss22.13">22.13 Setting Integration Methods</A>
+<LI><A HREF="Manual-22.html#ss22.14">22.14 Sizing of XODUS Forms</A>
+<LI><A HREF="Manual-22.html#ss22.15">22.15 Positioning and Sizing of Widgets</A>
+</UL>
+
+<P>
+<H2><A NAME="toc23">23.</A> <A HREF="Manual-23.html">The Book of GENESIS</A></H2>
+
+<P>
+<H2><A NAME="toc24">24.</A> <A HREF="Manual-24.html">GENESIS Startup Command Reference</A></H2>
+<UL>
+<LI><A HREF="Manual-24.html#ss24.1">24.1 addfunc</A>
+<LI><A HREF="Manual-24.html#ss24.2">24.2 newclass</A>
+<LI><A HREF="Manual-24.html#ss24.3">24.3 object</A>
+</UL>
+
+<P>
+<H2><A NAME="toc25">25.</A> <A HREF="Manual-25.html">GENESIS Command Reference</A></H2>
+<UL>
+<LI><A HREF="Manual-25.html#ss25.1">25.1 abort</A>
+<LI><A HREF="Manual-25.html#ss25.2">25.2 abs</A>
+<LI><A HREF="Manual-25.html#ss25.3">25.3 acos</A>
+<LI><A HREF="Manual-25.html#ss25.4">25.4 addaction</A>
+<LI><A HREF="Manual-25.html#ss25.5">25.5 addalias</A>
+<LI><A HREF="Manual-25.html#ss25.6">25.6 addclass</A>
+<LI><A HREF="Manual-25.html#ss25.7">25.7 addescape</A>
+<LI><A HREF="Manual-25.html#ss25.8">25.8 addfield</A>
+<LI><A HREF="Manual-25.html#ss25.9">25.9 addforwmsg</A>
+<LI><A HREF="Manual-25.html#ss25.10">25.10 addglobal</A>
+<LI><A HREF="Manual-25.html#ss25.11">25.11 addmsg</A>
+<LI><A HREF="Manual-25.html#ss25.12">25.12 addmsgdef</A>
+<LI><A HREF="Manual-25.html#ss25.13">25.13 addobject</A>
+<LI><A HREF="Manual-25.html#ss25.14">25.14 addtask</A>
+<LI><A HREF="Manual-25.html#ss25.15">25.15 argc</A>
+<LI><A HREF="Manual-25.html#ss25.16">25.16 arglist</A>
+<LI><A HREF="Manual-25.html#ss25.17">25.17 argv</A>
+<LI><A HREF="Manual-25.html#ss25.18">25.18 asciidata</A>
+<LI><A HREF="Manual-25.html#ss25.19">25.19 asin</A>
+<LI><A HREF="Manual-25.html#ss25.20">25.20 atan</A>
+<LI><A HREF="Manual-25.html#ss25.21">25.21 call</A>
+<LI><A HREF="Manual-25.html#ss25.22">25.22 callfunc</A>
+<LI><A HREF="Manual-25.html#ss25.23">25.23 cd</A>
+<LI><A HREF="Manual-25.html#ss25.24">25.24 ce</A>
+<LI><A HREF="Manual-25.html#ss25.25">25.25 cellsheet</A>
+<LI><A HREF="Manual-25.html#ss25.26">25.26 check</A>
+<LI><A HREF="Manual-25.html#ss25.27">25.27 chr</A>
+<LI><A HREF="Manual-25.html#ss25.28">25.28 clearerrors</A>
+<LI><A HREF="Manual-25.html#ss25.29">25.29 closefile</A>
+<LI><A HREF="Manual-25.html#ss25.30">25.30 convert</A>
+<LI><A HREF="Manual-25.html#ss25.31">25.31 copy</A>
+<LI><A HREF="Manual-25.html#ss25.32">25.32 cos</A>
+<LI><A HREF="Manual-25.html#ss25.33">25.33 countchar</A>
+<LI><A HREF="Manual-25.html#ss25.34">25.34 countelementlist</A>
+<LI><A HREF="Manual-25.html#ss25.35">25.35 cpu</A>
+<LI><A HREF="Manual-25.html#ss25.36">25.36 create</A>
+<LI><A HREF="Manual-25.html#ss25.37">25.37 createmap</A>
+<LI><A HREF="Manual-25.html#ss25.38">25.38 debug</A>
+<LI><A HREF="Manual-25.html#ss25.39">25.39 delete</A>
+<LI><A HREF="Manual-25.html#ss25.40">25.40 deleteaction</A>
+<LI><A HREF="Manual-25.html#ss25.41">25.41 deleteall</A>
+<LI><A HREF="Manual-25.html#ss25.42">25.42 deleteclass</A>
+<LI><A HREF="Manual-25.html#ss25.43">25.43 deletefield</A>
+<LI><A HREF="Manual-25.html#ss25.44">25.44 deleteforwmsg</A>
+<LI><A HREF="Manual-25.html#ss25.45">25.45 deletemsg</A>
+<LI><A HREF="Manual-25.html#ss25.46">25.46 deletemsgdef</A>
+<LI><A HREF="Manual-25.html#ss25.47">25.47 deletetasks</A>
+<LI><A HREF="Manual-25.html#ss25.48">25.48 disable</A>
+<LI><A HREF="Manual-25.html#ss25.49">25.49 echo</A>
+<LI><A HREF="Manual-25.html#ss25.50">25.50 egg</A>
+<LI><A HREF="Manual-25.html#ss25.51">25.51 el</A>
+<LI><A HREF="Manual-25.html#ss25.52">25.52 enable</A>
+<LI><A HREF="Manual-25.html#ss25.53">25.53 enddump</A>
+<LI><A HREF="Manual-25.html#ss25.54">25.54 eof</A>
+<LI><A HREF="Manual-25.html#ss25.55">25.55 exists</A>
+<LI><A HREF="Manual-25.html#ss25.56">25.56 exit</A>
+<LI><A HREF="Manual-25.html#ss25.57">25.57 exp</A>
+<LI><A HREF="Manual-25.html#ss25.58">25.58 file2tab</A>
+<LI><A HREF="Manual-25.html#ss25.59">25.59 fileconnect</A>
+<LI><A HREF="Manual-25.html#ss25.60">25.60 findchar</A>
+<LI><A HREF="Manual-25.html#ss25.61">25.61 findsolvefield</A>
+<LI><A HREF="Manual-25.html#ss25.62">25.62 floatformat</A>
+<LI><A HREF="Manual-25.html#ss25.63">25.63 flushfile</A>
+<LI><A HREF="Manual-25.html#ss25.64">25.64 gaussian</A>
+<LI><A HREF="Manual-25.html#ss25.65">25.65 gen2spk</A>
+<LI><A HREF="Manual-25.html#ss25.66">25.66 genesis</A>
+<LI><A HREF="Manual-25.html#ss25.67">25.67 getarg</A>
+<LI><A HREF="Manual-25.html#ss25.68">25.68 getclock</A>
+<LI><A HREF="Manual-25.html#ss25.69">25.69 getdate</A>
+<LI><A HREF="Manual-25.html#ss25.70">25.70 getdefault</A>
+<LI><A HREF="Manual-25.html#ss25.71">25.71 getelementlist</A>
+<LI><A HREF="Manual-25.html#ss25.72">25.72 getenv</A>
+<LI><A HREF="Manual-25.html#ss25.73">25.73 getfield</A>
+<LI><A HREF="Manual-25.html#ss25.74">25.74 getfieldnames</A>
+<LI><A HREF="Manual-25.html#ss25.75">25.75 getglobal</A>
+<LI><A HREF="Manual-25.html#ss25.76">25.76 getmsg</A>
+<LI><A HREF="Manual-25.html#ss25.77">25.77 getparamGA</A>
+<LI><A HREF="Manual-25.html#ss25.78">25.78 getpath</A>
+<LI><A HREF="Manual-25.html#ss25.79">25.79 getsolvechildname</A>
+<LI><A HREF="Manual-25.html#ss25.80">25.80 getsolvecompname</A>
+<LI><A HREF="Manual-25.html#ss25.81">25.81 getstat</A>
+<LI><A HREF="Manual-25.html#ss25.82">25.82 getsyncount</A>
+<LI><A HREF="Manual-25.html#ss25.83">25.83 getsyndest</A>
+<LI><A HREF="Manual-25.html#ss25.84">25.84 getsynindex</A>
+<LI><A HREF="Manual-25.html#ss25.85">25.85 getsynsrc</A>
+<LI><A HREF="Manual-25.html#ss25.86">25.86 h</A>
+<LI><A HREF="Manual-25.html#ss25.87">25.87 help</A>
+<LI><A HREF="Manual-25.html#ss25.88">25.88 initdump</A>
+<LI><A HREF="Manual-25.html#ss25.89">25.89 initparamBF</A>
+<LI><A HREF="Manual-25.html#ss25.90">25.90 initparamCG</A>
+<LI><A HREF="Manual-25.html#ss25.91">25.91 initparamGA</A>
+<LI><A HREF="Manual-25.html#ss25.92">25.92 initparamSA</A>
+<LI><A HREF="Manual-25.html#ss25.93">25.93 initparamSS</A>
+<LI><A HREF="Manual-25.html#ss25.94">25.94 input</A>
+<LI><A HREF="Manual-25.html#ss25.95">25.95 isa</A>
+<LI><A HREF="Manual-25.html#ss25.96">25.96 le</A>
+<LI><A HREF="Manual-25.html#ss25.97">25.97 listcommands</A>
+<LI><A HREF="Manual-25.html#ss25.98">25.98 listescape</A>
+<LI><A HREF="Manual-25.html#ss25.99">25.99 listfiles</A>
+<LI><A HREF="Manual-25.html#ss25.100">25.100 listglobals</A>
+<LI><A HREF="Manual-25.html#ss25.101">25.101 listobjects</A>
+<LI><A HREF="Manual-25.html#ss25.102">25.102 log</A>
+<LI><A HREF="Manual-25.html#ss25.103">25.103 logfile</A>
+<LI><A HREF="Manual-25.html#ss25.104">25.104 max</A>
+<LI><A HREF="Manual-25.html#ss25.105">25.105 maxerrors</A>
+<LI><A HREF="Manual-25.html#ss25.106">25.106 maxwarnings</A>
+<LI><A HREF="Manual-25.html#ss25.107">25.107 min</A>
+<LI><A HREF="Manual-25.html#ss25.108">25.108 move</A>
+<LI><A HREF="Manual-25.html#ss25.109">25.109 msgsubstitute</A>
+<LI><A HREF="Manual-25.html#ss25.110">25.110 notes</A>
+<LI><A HREF="Manual-25.html#ss25.111">25.111 objsubstitute</A>
+<LI><A HREF="Manual-25.html#ss25.112">25.112 openfile</A>
+<LI><A HREF="Manual-25.html#ss25.113">25.113 planarconnect</A>
+<LI><A HREF="Manual-25.html#ss25.114">25.114 planardelay</A>
+<LI><A HREF="Manual-25.html#ss25.115">25.115 planardelay2</A>
+<LI><A HREF="Manual-25.html#ss25.116">25.116 planarweight</A>
+<LI><A HREF="Manual-25.html#ss25.117">25.117 planarweight2</A>
+<LI><A HREF="Manual-25.html#ss25.118">25.118 plane</A>
+<LI><A HREF="Manual-25.html#ss25.119">25.119 pope</A>
+<LI><A HREF="Manual-25.html#ss25.120">25.120 position</A>
+<LI><A HREF="Manual-25.html#ss25.121">25.121 pow</A>
+<LI><A HREF="Manual-25.html#ss25.122">25.122 printargs</A>
+<LI><A HREF="Manual-25.html#ss25.123">25.123 printenv</A>
+<LI><A HREF="Manual-25.html#ss25.124">25.124 pushe</A>
+<LI><A HREF="Manual-25.html#ss25.125">25.125 putevent</A>
+<LI><A HREF="Manual-25.html#ss25.126">25.126 pwe</A>
+<LI><A HREF="Manual-25.html#ss25.127">25.127 quit</A>
+<LI><A HREF="Manual-25.html#ss25.128">25.128 rand</A>
+<LI><A HREF="Manual-25.html#ss25.129">25.129 randcoord</A>
+<LI><A HREF="Manual-25.html#ss25.130">25.130 randseed</A>
+<LI><A HREF="Manual-25.html#ss25.131">25.131 readcell</A>
+<LI><A HREF="Manual-25.html#ss25.132">25.132 readfile</A>
+<LI><A HREF="Manual-25.html#ss25.133">25.133 reclaim</A>
+<LI><A HREF="Manual-25.html#ss25.134">25.134 relposition</A>
+<LI><A HREF="Manual-25.html#ss25.135">25.135 resched</A>
+<LI><A HREF="Manual-25.html#ss25.136">25.136 reset</A>
+<LI><A HREF="Manual-25.html#ss25.137">25.137 resetsynchanbuffers</A>
+<LI><A HREF="Manual-25.html#ss25.138">25.138 restore</A>
+<LI><A HREF="Manual-25.html#ss25.139">25.139 rotcoord</A>
+<LI><A HREF="Manual-25.html#ss25.140">25.140 round</A>
+<LI><A HREF="Manual-25.html#ss25.141">25.141 save</A>
+<LI><A HREF="Manual-25.html#ss25.142">25.142 scaletabchan</A>
+<LI><A HREF="Manual-25.html#ss25.143">25.143 setclock</A>
+<LI><A HREF="Manual-25.html#ss25.144">25.144 setdefault</A>
+<LI><A HREF="Manual-25.html#ss25.145">25.145 setenv</A>
+<LI><A HREF="Manual-25.html#ss25.146">25.146 setfield</A>
+<LI><A HREF="Manual-25.html#ss25.147">25.147 setfieldprot</A>
+<LI><A HREF="Manual-25.html#ss25.148">25.148 setglobal</A>
+<LI><A HREF="Manual-25.html#ss25.149">25.149 setmethod</A>
+<LI><A HREF="Manual-25.html#ss25.150">25.150 setparamGA</A>
+<LI><A HREF="Manual-25.html#ss25.151">25.151 setpostscript</A>
+<LI><A HREF="Manual-25.html#ss25.152">25.152 setprompt</A>
+<LI><A HREF="Manual-25.html#ss25.153">25.153 setrand</A>
+<LI><A HREF="Manual-25.html#ss25.154">25.154 setrandfield</A>
+<LI><A HREF="Manual-25.html#ss25.155">25.155 setsearch</A>
+<LI><A HREF="Manual-25.html#ss25.156">25.156 setupNaCa</A>
+<LI><A HREF="Manual-25.html#ss25.157">25.157 setupalpha</A>
+<LI><A HREF="Manual-25.html#ss25.158">25.158 setupgate</A>
+<LI><A HREF="Manual-25.html#ss25.159">25.159 setupghk</A>
+<LI><A HREF="Manual-25.html#ss25.160">25.160 setuptau</A>
+<LI><A HREF="Manual-25.html#ss25.161">25.161 sh</A>
+<LI><A HREF="Manual-25.html#ss25.162">25.162 shapematch</A>
+<LI><A HREF="Manual-25.html#ss25.163">25.163 showclocks</A>
+<LI><A HREF="Manual-25.html#ss25.164">25.164 showcommand</A>
+<LI><A HREF="Manual-25.html#ss25.165">25.165 showfield</A>
+<LI><A HREF="Manual-25.html#ss25.166">25.166 showmsg</A>
+<LI><A HREF="Manual-25.html#ss25.167">25.167 showobject</A>
+<LI><A HREF="Manual-25.html#ss25.168">25.168 showsched</A>
+<LI><A HREF="Manual-25.html#ss25.169">25.169 showstat</A>
+<LI><A HREF="Manual-25.html#ss25.170">25.170 silent</A>
+<LI><A HREF="Manual-25.html#ss25.171">25.171 simdump</A>
+<LI><A HREF="Manual-25.html#ss25.172">25.172 simobjdump</A>
+<LI><A HREF="Manual-25.html#ss25.173">25.173 simundump</A>
+<LI><A HREF="Manual-25.html#ss25.174">25.174 sin</A>
+<LI><A HREF="Manual-25.html#ss25.175">25.175 spkcmp</A>
+<LI><A HREF="Manual-25.html#ss25.176">25.176 sqrt</A>
+<LI><A HREF="Manual-25.html#ss25.177">25.177 stack</A>
+<LI><A HREF="Manual-25.html#ss25.178">25.178 step</A>
+<LI><A HREF="Manual-25.html#ss25.179">25.179 stop</A>
+<LI><A HREF="Manual-25.html#ss25.180">25.180 strcat</A>
+<LI><A HREF="Manual-25.html#ss25.181">25.181 strcmp</A>
+<LI><A HREF="Manual-25.html#ss25.182">25.182 strlen</A>
+<LI><A HREF="Manual-25.html#ss25.183">25.183 strncmp</A>
+<LI><A HREF="Manual-25.html#ss25.184">25.184 strsub</A>
+<LI><A HREF="Manual-25.html#ss25.185">25.185 substituteinfo</A>
+<LI><A HREF="Manual-25.html#ss25.186">25.186 substring</A>
+<LI><A HREF="Manual-25.html#ss25.187">25.187 swapdump</A>
+<LI><A HREF="Manual-25.html#ss25.188">25.188 syndelay</A>
+<LI><A HREF="Manual-25.html#ss25.189">25.189 tab2file</A>
+<LI><A HREF="Manual-25.html#ss25.190">25.190 tan</A>
+<LI><A HREF="Manual-25.html#ss25.191">25.191 trunc</A>
+<LI><A HREF="Manual-25.html#ss25.192">25.192 tweakalpha</A>
+<LI><A HREF="Manual-25.html#ss25.193">25.193 tweaktau</A>
+<LI><A HREF="Manual-25.html#ss25.194">25.194 useclock</A>
+<LI><A HREF="Manual-25.html#ss25.195">25.195 version</A>
+<LI><A HREF="Manual-25.html#ss25.196">25.196 volumeconnect</A>
+<LI><A HREF="Manual-25.html#ss25.196.1">25.196.1 volumeconnect3</A>
+<LI><A HREF="Manual-25.html#ss25.197">25.197 volumedelay</A>
+<LI><A HREF="Manual-25.html#ss25.198">25.198 volumedelay2</A>
+<LI><A HREF="Manual-25.html#ss25.198.1">25.198.1 volumedelay3</A>
+<LI><A HREF="Manual-25.html#ss25.199">25.199 volumeweight</A>
+<LI><A HREF="Manual-25.html#ss25.200">25.200 volumeweight2</A>
+<LI><A HREF="Manual-25.html#ss25.200.1">25.200.1 volumeweight3</A>
+<LI><A HREF="Manual-25.html#ss25.201">25.201 where</A>
+<LI><A HREF="Manual-25.html#ss25.202">25.202 writecell</A>
+<LI><A HREF="Manual-25.html#ss25.203">25.203 writefile</A>
+<LI><A HREF="Manual-25.html#ss25.204">25.204 xcolorscale</A>
+<LI><A HREF="Manual-25.html#ss25.205">25.205 xgetstat</A>
+<LI><A HREF="Manual-25.html#ss25.206">25.206 xps</A>
+<LI><A HREF="Manual-25.html#ss25.207">25.207 xsimplot</A>
+</UL>
+
+<P>
+<H2><A NAME="toc26">26.</A> <A HREF="Manual-26.html">GENESIS Object Reference</A></H2>
+<UL>
+<LI><A HREF="Manual-26.html#ss26.1">26.1 Ca_concen</A>
+<LI><A HREF="Manual-26.html#ss26.2">26.2 Kpores</A>
+<LI><A HREF="Manual-26.html#ss26.3">26.3 Mg_block</A>
+<LI><A HREF="Manual-26.html#ss26.4">26.4 Napores</A>
+<LI><A HREF="Manual-26.html#ss26.5">26.5 PID</A>
+<LI><A HREF="Manual-26.html#ss26.6">26.6 RC</A>
+<LI><A HREF="Manual-26.html#ss26.6.1">26.6.1 SynE_object</A>
+<LI><A HREF="Manual-26.html#ss26.6.2">26.6.2 SynG_object</A>
+<LI><A HREF="Manual-26.html#ss26.6.3">26.6.3 SynS_object</A>
+<LI><A HREF="Manual-26.html#ss26.7">26.7 asc_file</A>
+<LI><A HREF="Manual-26.html#ss26.8">26.8 autocorr</A>
+<LI><A HREF="Manual-26.html#ss26.9">26.9 calculator</A>
+<LI><A HREF="Manual-26.html#ss26.10">26.10 compartment</A>
+<LI><A HREF="Manual-26.html#ss26.11">26.11 concchan</A>
+<LI><A HREF="Manual-26.html#ss26.12">26.12 concpool</A>
+<LI><A HREF="Manual-26.html#ss26.13">26.13 crosscorr</A>
+<LI><A HREF="Manual-26.html#ss26.14">26.14 ddsyn</A>
+<LI><A HREF="Manual-26.html#ss26.15">26.15 dif2buffer</A>
+<LI><A HREF="Manual-26.html#ss26.16">26.16 difbuffer</A>
+<LI><A HREF="Manual-26.html#ss26.17">26.17 diffamp</A>
+<LI><A HREF="Manual-26.html#ss26.18">26.18 difshell</A>
+<LI><A HREF="Manual-26.html#ss26.19">26.19 disk_in</A>
+<LI><A HREF="Manual-26.html#ss26.20">26.20 disk_out</A>
+<LI><A HREF="Manual-26.html#ss26.21">26.21 diskio</A>
+<LI><A HREF="Manual-26.html#ss26.22">26.22 efield</A>
+<LI><A HREF="Manual-26.html#ss26.23">26.23 enz</A>
+<LI><A HREF="Manual-26.html#ss26.24">26.24 event_tofile</A>
+<LI><A HREF="Manual-26.html#ss26.25">26.25 facsynchan</A>
+<LI><A HREF="Manual-26.html#ss26.26">26.26 fixbuffer</A>
+<LI><A HREF="Manual-26.html#ss26.27">26.27 freq_monitor</A>
+<LI><A HREF="Manual-26.html#ss26.28">26.28 funcgen</A>
+<LI><A HREF="Manual-26.html#ss26.29">26.29 fura2</A>
+<LI><A HREF="Manual-26.html#ss26.30">26.30 ghk</A>
+<LI><A HREF="Manual-26.html#ss26.31">26.31 hebbsynchan</A>
+<LI><A HREF="Manual-26.html#ss26.32">26.32 hh_channel</A>
+<LI><A HREF="Manual-26.html#ss26.33">26.33 hillpump</A>
+<LI><A HREF="Manual-26.html#ss26.34">26.34 hsolve</A>
+<LI><A HREF="Manual-26.html#ss26.35">26.35 interspike</A>
+<LI><A HREF="Manual-26.html#ss26.36">26.36 leakage</A>
+<LI><A HREF="Manual-26.html#ss26.37">26.37 metadata</A>
+<LI><A HREF="Manual-26.html#ss26.38">26.38 mmpump</A>
+<LI><A HREF="Manual-26.html#ss26.39">26.39 nernst</A>
+<LI><A HREF="Manual-26.html#ss26.40">26.40 neutral</A>
+<LI><A HREF="Manual-26.html#ss26.41">26.41 paramtableBF</A>
+<LI><A HREF="Manual-26.html#ss26.42">26.42 paramtableCG</A>
+<LI><A HREF="Manual-26.html#ss26.43">26.43 paramtableGA</A>
+<LI><A HREF="Manual-26.html#ss26.44">26.44 paramtableSA</A>
+<LI><A HREF="Manual-26.html#ss26.45">26.45 paramtableSS</A>
+<LI><A HREF="Manual-26.html#ss26.46">26.46 peristim</A>
+<LI><A HREF="Manual-26.html#ss26.47">26.47 playback</A>
+<LI><A HREF="Manual-26.html#ss26.48">26.48 pool</A>
+<LI><A HREF="Manual-26.html#ss26.49">26.49 pulsegen</A>
+<LI><A HREF="Manual-26.html#ss26.50">26.50 randomspike</A>
+<LI><A HREF="Manual-26.html#ss26.51">26.51 reac</A>
+<LI><A HREF="Manual-26.html#ss26.52">26.52 receptor</A>
+<LI><A HREF="Manual-26.html#ss26.53">26.53 receptor2</A>
+<LI><A HREF="Manual-26.html#ss26.54">26.54 script_out</A>
+<LI><A HREF="Manual-26.html#ss26.55">26.55 sigmoid</A>
+<LI><A HREF="Manual-26.html#ss26.56">26.56 spikegen</A>
+<LI><A HREF="Manual-26.html#ss26.57">26.57 spikehistory</A>
+<LI><A HREF="Manual-26.html#ss26.57.1">26.57.1 stdp_rules</A>
+<LI><A HREF="Manual-26.html#ss26.58">26.58 symcompartment</A>
+<LI><A HREF="Manual-26.html#ss26.59">26.59 synchan</A>
+<LI><A HREF="Manual-26.html#ss26.60">26.60 synchan2</A>
+<LI><A HREF="Manual-26.html#ss26.61">26.61 tab2Dchannel</A>
+<LI><A HREF="Manual-26.html#ss26.62">26.62 tabchannel</A>
+<LI><A HREF="Manual-26.html#ss26.63">26.63 tabcurrent</A>
+<LI><A HREF="Manual-26.html#ss26.64">26.64 tabgate</A>
+<LI><A HREF="Manual-26.html#ss26.65">26.65 table</A>
+<LI><A HREF="Manual-26.html#ss26.66">26.66 table2D</A>
+<LI><A HREF="Manual-26.html#ss26.67">26.67 taupump</A>
+<LI><A HREF="Manual-26.html#ss26.68">26.68 timetable</A>
+<LI><A HREF="Manual-26.html#ss26.69">26.69 variable</A>
+<LI><A HREF="Manual-26.html#ss26.70">26.70 vdep_channel</A>
+<LI><A HREF="Manual-26.html#ss26.71">26.71 xbutton</A>
+<LI><A HREF="Manual-26.html#ss26.72">26.72 xcell</A>
+<LI><A HREF="Manual-26.html#ss26.73">26.73 xcoredraw</A>
+<LI><A HREF="Manual-26.html#ss26.74">26.74 xdialog</A>
+<LI><A HREF="Manual-26.html#ss26.75">26.75 xdraw</A>
+<LI><A HREF="Manual-26.html#ss26.76">26.76 xdumbdraw</A>
+<LI><A HREF="Manual-26.html#ss26.77">26.77 xfastplot</A>
+<LI><A HREF="Manual-26.html#ss26.78">26.78 xform</A>
+<LI><A HREF="Manual-26.html#ss26.79">26.79 xgif</A>
+<LI><A HREF="Manual-26.html#ss26.80">26.80 xgraph</A>
+<LI><A HREF="Manual-26.html#ss26.81">26.81 ximage</A>
+<LI><A HREF="Manual-26.html#ss26.82">26.82 xlabel</A>
+<LI><A HREF="Manual-26.html#ss26.83">26.83 xpix</A>
+<LI><A HREF="Manual-26.html#ss26.84">26.84 xplot</A>
+<LI><A HREF="Manual-26.html#ss26.85">26.85 xshape</A>
+<LI><A HREF="Manual-26.html#ss26.86">26.86 xsphere</A>
+<LI><A HREF="Manual-26.html#ss26.87">26.87 xtext</A>
+<LI><A HREF="Manual-26.html#ss26.88">26.88 xtoggle</A>
+<LI><A HREF="Manual-26.html#ss26.89">26.89 xtree</A>
+<LI><A HREF="Manual-26.html#ss26.90">26.90 xvar</A>
+<LI><A HREF="Manual-26.html#ss26.91">26.91 xview</A>
+</UL>
+
+
+<HR>
+Previous
+<A HREF="Manual-1.html">Next</A>
+Table of Contents
+</BODY>
+</HTML>

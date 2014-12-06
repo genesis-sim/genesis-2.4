@@ -1,0 +1,15 @@
+Routine Name:	deleteaction
+
+Description:	Deletes an action from an element added by a previous
+		addaction command
+
+Usage:		deleteaction element action-name
+
+		element		element to delete the action from
+	
+		action-name	name of the action to delete
+
+Notes:		An object's built in actions are permanent and may
+		not be deleted using deleteaction.
+
+See also:	addaction, listactions, Extended

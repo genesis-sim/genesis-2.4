@@ -1,0 +1,303 @@
+Routine Name:   readcell
+
+Description:    Creates a model neuron from a description in a cell parameter
+		file.
+
+Usage:          readcell filename cellname -hsolve -prand SDlen SDdia
+                         -rand SDlen SDdia -split Number -lambdasplit maxl
+
+                filename	name of the  cell descriptor file
+				(should end with extension .p)
+
+                cellname        name of the neutral element to be at the
+				head of the tree of elements which comprise
+				the cell
+
+                -hsolve         create cellname as an hsolve element
+
+Example:        readcell cell.p /cell
+                readcell cell.p /hcell -hsolve
+
+	"cell.p" contains:
+
+	*relative
+	*cartesian
+	*asymmetric
+
+	*set_compt_param        RM      0.33333
+	*set_compt_param        RA      0.3
+	*set_compt_param        CM      0.01
+	*set_compt_param     EREST_ACT  -0.07
+
+	// For the soma, use the leakage potential (-0.07 + 0.0106) for Em
+	*set_compt_param     ELEAK      -0.0594
+	soma  none   30  0  0  30 Na_squid_hh 1200 K_squid_hh 360 spike 0.0
+
+	// The dendrite has no H-H channels, so ELEAK = EREST_ACT
+	*set_compt_param     ELEAK      -0.07
+	dend  soma  100  0  0   2   Ex_channel 0.795775
+
+
+Notes:
+
+    The first example above will produce the element tree
+
+        /cell/soma:
+        Na_squid_hh K_squid_hh  spike
+
+        /cell/dend:
+        Ex_channel
+
+    with the maxium channel conductances scaled by the area of the
+    compartment.  Here, "/cell" will be a neutral element.  In the second
+    example, "/hcell" will be an hsolve element.  This is the preferred way of
+    creating a cell which is to be taken over by the Hines solver, as it
+    automatically creates the hsolve element as the root of the element tree
+    and sets the path for the elements to be solved.  Note that, starting with
+    GENESIS version 2.2, it is necessary to provide the full path to the cell
+    when using readcell to directly create an hsolve.  (e.g.  you can't use
+    "readcell cell.p hcell -hsolve", even if "/" is the current working
+    element.)  
+
+    In cartesian coordinates, the format for each compartment parameter line
+    in a cell parameter file is
+    
+	name parent x y z dia chan dens [chan dens] ...  
+
+    For polar coordinates, it is
+
+	name parent r theta phi dia chan dens [chan dens] ...
+
+    Here, 'name' gives the name of the compartment, and 'parent' refers to the
+    adjacent compartment to which it is connected.  'parent' may be replaced
+    by '.' to refer to the compartment defined on the preceding line.  For
+    asymmetric compartments, the connection to 'parent' is through the axial
+    resistance (Ra) of 'name'.  The coordinates and diameter (x, y, z, dia)
+    are in microns, all other units are SI (Meter, Kg, Second, Ampere).  In
+    polar mode 'r' is in microns, theta and phi in degrees.  Theta is measured
+    from the z-axis and phi from the x-axis in the x-y plane.  The compartment
+    length, which is not stated explicitly, is calculated from the coodinates
+    of the compartment and its parent.
+
+    'chan' is the name of one of the channel prototypes under the neutral
+    element '/library'.  At present, the supported channel types are
+    hh_channel, tabchannel, tab2Dchannel, tabcurrent, vdep_channel, synchan,
+    hebbsynchan, ddsyn, receptor2, manuelconduct, and graded.  'chan' may also
+    refer to the other neural element types:  spikegen, Ca_concen, difshell,
+    difbuffer, concpool, mmpump, and hillpump.  Presently, the obsolete
+    channelC, channelC2, channelC3, and spike objects are also supported.
+
+    For channels, 'dens' is the conductance density (Gbar or gmax per unit
+    compartment area) in Siemens/m^2.  If a negative value is specified, the
+    absolute value is taken, and it is interpreted as the maximum
+    conductance in Siemens, without scaling by the compartment area.
+
+    For spikegen elements, the 'dens' parameter is the 'thresh' field of the
+    element.  For Ca_concen elements, it is the 'B' field, divided by the
+    volume of the compartment.  However, if the 'thick' field of the Ca_concen
+    element is non-zero, the volume is scaled using the volume of a true shell
+    of thickness 'thick'.  A negative value of 'dens' is used to indicate that
+    it should be taken as an absolute value of B, without scaling.
+
+    A maximum of 30 'chan dens' pairs are allowed in a compartment
+    specification.  The '*compt' option described below provides a way to
+    overcome this limitation.
+
+    Several types of options may be specified in the cell parameter file.
+    These options start with a '*', and affect all lines following them,
+    until canceled by the opposite command.
+
+    COMPARTMENT COORDINATES
+
+    *relative		coordinates are relative to parent
+    *absolute           coordinates are absolute (default)
+    *polar              polar coordinates
+    *cartesian          cartesian coordinates (default)
+
+    *lambda_warn	will issue warning if the electrotonic length of the
+			compartment (in terms of the space constant, lambda)
+			is outside the range 0.01-0.20.
+
+    *lambda_warn MIN MAX    same as above, but uses the range MIN-MAX.
+
+    *lambda_unwarn      turns off lambda warning (default)
+
+    *double_endpoint
+
+        allows both endpoints to be explicitly entered for all compartments.
+        The syntax is:
+
+        name parent x0 y0 z0 x y z chans dens... for cartesian mode, and
+        name parent r0 t0 p0 r t p chans dens... for polar mode.
+
+        The double endpoint mode has two main uses.  First, when one is adding
+        dendrites to a spherical compartment like a soma, one wants the
+        dendrite to begin at the edge of the sphere, not in the middle.  The
+        double endpoint mode allows the user to attach the cylinder at any
+        desired point.  While this does not matter electrically, the cell will
+        be prettier when displayed with xcell.
+
+        Second, this allows the anatomical (not electrical) attachment of
+        dendrites in the middle of another compartment rather than at an
+        endpoint.  This flexibility may be particularly important for modeling
+        invertebrate neurons, whose large process diameters often mean that
+        the distance between two branch points is just a tiny fraction of the
+        electrotonic length constant.  The only caveat in using the mode for
+        this purpose is that the view in xcell gives less information about
+        how the model is performing electrically.  For example, if a branch is
+        connected in the middle of a compartment anatomically (and thus it
+        will be displayed as such in the cell viewer), one must remember that
+        it is not connected electrically at that point, but (presumably) at
+        the closer endpoint of that compartment.
+
+    *double_endpoint_off    turns off double endpoint mode
+
+    COMPARTMENT SHAPE
+
+    *spherical          make a spherical compartment
+    *cylindrical        make a cylindrical compartment (default)
+    *symmetric          make symmetric compartments
+    *asymmetric         make asymmetric compartments (default)
+
+    PARAMETER VALUES
+
+    *set_compt_param variable value
+
+        sets one of the following internal variables used by the cell
+	reader to 'value'.  'value' may be a number, or the name of a
+	globally defined script variable.
+
+        RM            specific membrane resistance in ohm*m^2
+        RA            specific axial resistance in ohm*m
+        CM            specific membrane capacitance in farad/m^2
+        EREST_ACT     resting potential in volts (initial Em and initVm)
+        ELEAK         if specified, gives an alternate value for initial Em,
+	              so that Vm will be initialized to initVm (EREST_ACT)
+		      on reset, instead of Em.  Otherwise, ELEAK = EREST_ACT.
+
+    *set_global variable value    
+
+        similar to the above, but also sets the value of global script
+	variables of the same name.  However, it does not support the ELEAK
+	internal variable.  If the RM, CM, RA and EREST_ACT global variables
+	have not been previously declared, readcell will create them.
+	'variable' may also be the name of any other previously declared
+	global script variable other than the internal variables listed
+	above.  In this case '*set_global' may be used to set the values of
+	these script variables.
+
+    COMPARTMENT AND CELL PROTOTYPES
+
+    *start_cell CELL_NAME     start new cell (in separate tree)
+
+    *append_to_cell CELL_NAME append to existing cell
+
+    *makeproto COMP_NAME      converts new cell to prototype configuration
+
+    *compt COMP_NAME          all following compartments will be copies of
+    			      COMP_NAME, including its complete subtree and
+                              messages between its elements, with gmax/Gbar
+                              appropriately scaled (unless 'dens' is
+                              negative).  This allows you to avoid repeating
+                              many long strings of channel specifications when
+                              there are many compartments that have the same
+                              channels with the same conductance densities.
+                              It also permits compartments to contain elements
+                              of types other than the ones recognized by
+                              readcell.  In this case, create a prototype
+                              compartment that contains the desired channels
+                              or other elements linked by any necessary
+                              messages, and use "*compt" in the cell parameter
+                              file to make additional copies of the
+                              compartment.
+
+    These commands are illustrated in Scripts/int_methods/granule.p and
+    Scripts/examples/pore/markov.
+
+    Messages can be specified between elements in different compartment
+    subtrees by creating and setting an extended field "addmsg#", where "#" is
+    an integer.  This field will contain a string of the form "source
+    destination message-name [values]", defining the message.  For example,
+    this commonly done to allow readcell to properly set up the needed
+    messages between calcium channels, Ca_concen elements, and calcium
+    dependent potassium channels.  This is illustrated in
+    Scripts/neurokit/prototypes/traub91chan.g.
+
+    SPINES and BRANCHES
+
+    There are a variety of commands used for adding dendritic spines and
+    branches to compartments.  These commands affect the passive structure
+    of the neuron only.
+
+    *memb_factor MEMB_FACTOR    scales all membrane surface by this factor
+
+    *add_spines DENDR_DIAM SPINE_DENS SPINE_SUR   
+
+        Adds membrane surface for collapsed spines to all compartments with
+	dia <= DENDR_DIAM; units: um, 1/um, um^2.
+
+    *rand_spines DENDR_DIAM SPINE_DENS SPINE_SURF AV_LENGTH SPINE_FREQ
+        spine_proto
+
+        Like above, but a random number of spines will be attached as copies
+	of the compartment(s) spine_proto. The number of spines added
+	depends on SPINE_FREQ and AV_LENGTH.  On the average a compartment
+	with dia <= DENDR_DIAM and len = AV_LENGTH will receive n =
+	SPINE_FREQ spines.  If SPINE_FREQ >= 1.0 then all compartments with
+	dia <= DENDR_DIAM will receive at least one spine.  The dendritic
+	surface area is still corrected for the 'missing' spines.
+        (See, for example, Scripts/purkinje/Purk2M9s.p.)
+
+    *mrand_spines DENDR_MIN DENDR_DIAM SPINE_DENS SPINE_SURF AV_LENGTH
+        SPINE_FREQ spine_proto
+
+	Like above, but a random number of spines will be attached as copies
+	of the compartment(s) spine_proto. Number of spines added depends on
+	SPINE_FREQ and AV_LENGTH.  On the average a compartment with
+	DENDR_MIN < dia <= DENDR_DIAM and len = AV_LENGTH will receive
+	n=SPINE_FREQ spines.  If SPINE_FREQ >= 1.0 then all compartments
+	with DENDR_MIN < dia <= DENDR_DIAM will receive at least one spine.
+	The dendritic surface area is still corrected for the 'missing'
+	spines on dendrites with dia <= DENDR_DIAM.
+
+    *fixed_spines DENDR_DIAM SPINE_NUM SPINE_SURF SPINE_SKIP spine_proto
+
+	Like above, but a fixed number of spines will be attached as copies
+	of the compartment(s) spine_proto. Number of spines added is
+	SPINE_NUM, from this command onward a spine will be added every
+	SPINE_SKIP compartments (if dia <= DENDR_DIAM) The dendritic surface
+	area is still corrected for the 'missing' spines.
+
+    *mfixed_spines DENDR_MIN DENDR_DIAM SPINE_NUM SPINE_SURF SPINE_SKIP
+        spine_proto
+
+	Like above, but a fixed number of spines will be attached as copies
+	of the compartment(s) spine_proto. Number of spines added is
+	SPINE_NUM, from this command onward a spine will be added every
+	SPINE_SKIP compartments (if DENDR_MIN < dia <= DENDR_DIAM).  The
+	dendritic surface area is still corrected for the 'missing' spines.
+
+    *rand_branches MAX_DIA RAND_FREQ NUM_ORDERS POSTFIX NUM_COMPS MIN_L
+        MAX_L MIN_D MAX_D [NUM_COMPS MIN_L MAX_L MIN_D MAX_D] ...
+
+	Adds more branches randomly at the end of dendrites.  The routine
+	assumes that the .p file has a logical order, where each branch
+	segment is defined in continuing lines and the first segment after a
+	branchpoint is defined immediately after the segment before the
+	branchpoint (if this is not the case the things might still work
+	correctly by the MAX_DIA control).  The branching is binary (thus
+	either 2 or 4 or 8 or ...  segments are added.  NUM_ORDERS (1-5)
+	determines the number of branchpoints that are added.  For each
+	branchpoint one gives the MIN_L and MAX_L (length) and MIN_D and
+	MAX_D (diameter) and NUM_COMPS, the number of compartments per
+	segment.  Adds smartly:  will skip thick segments if the existing
+	dendritic tip is thin and will only add to 'tips' with a diameter <
+	MAX_DIAM.  Frequency of addition of these branches is controlled by
+	RAND_FREQ (0-1): if RAND_FREQ == 1 all tips smaller than MAX_DIAM
+	will have branches appended.  The name will be the name of the
+	parent + POSTFIX, indexed from 0 to 2^(NUM_ORDERS-1).  For a "full"
+	addition (to a thick dendritic tip) the number of added compartments
+	is 2*NUM_COMPS[1] + ... + 2*NUM_COMPS[NUM_ORDERS].
+
+See also:	writecell, compartment, Scripts/neurokit/README,
+		Scripts/int_methods/granule.p

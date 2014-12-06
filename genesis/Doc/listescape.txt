@@ -1,0 +1,28 @@
+Routine Name:	listescape
+
+Description:	Lists available escape-key/command-sequence bindings.
+
+Usage:		listescape
+
+Example:	genesis >  listescape
+		AVAILABLE ESCAPE KEYS
+		---------------------
+		[29~       Do              REPLACE   step<CR>
+		[28~       Help            EXEC      commands | more
+		[18~       F7              EXEC      status
+		[17~       F6              EXEC      status -process
+		[11~       F1              EXEC      stop
+		[3~        Remove          REPLACE   <^D>
+		[2~        Insert Here     REPLACE   <^I>
+		[1~        Find            EXEC      execute movebol
+		[D         left arrow      REPLACE   <^H>
+		[C         right arrow     REPLACE   <^F>
+		[B         down arrow      REPLACE   <^N>
+		[A         up arrow        REPLACE   <^P>
+
+Notes:		The listescape routine displays a list of the current escape
+		key to string bindings which have been created using the
+		addescape routine (in reverse order of creation).
+
+See also:	addescape
+

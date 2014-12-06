@@ -1,0 +1,84 @@
+Prototypes directory for neurokit.  Developed by U.S. Bhalla.
+
+This directory contains a variety of compartments, concens, and
+ion channels, both voltage and ligand gated, which have been
+implemented in Genesis. Additions to this library are extremely welcome.
+
+In order for prototypes to be compatible with the neurokit utility,
+the following guidelines should be adhered to :
+
+**********************************************************************
+
+All of the files should be executable by the command
+	include <filename>
+
+Dependencies on other files should be explicitly stated and
+kept to a minimum. 
+
+The format of the files are :
+
+1 The //genesis header
+2 In comments, the following information about the file :
+	Contents of file
+	Author and sources of data
+	Conventions used
+	Dependencies on other files
+3 A set of constant definitions.
+4 functions for creating individual prototypes onto the current element.
+	For channels, these functions are of the form:
+
+function make_channelname
+	if ({exists(channelname)})
+		return
+	end
+
+// channel creation routine.
+end
+
+
+	The channelname should be chosed carefully to avoid overlap with
+	other names. I would suggest a syntax 
+
+		channel_cell_suffix
+
+	with the suffix identifying multiple versions of the same channel.
+	I have adopted a convention of using the authors of the original
+	reference for the channel parameters as the suffix. In many
+	cases this does not do justice to the considerable efforts involved
+	in converting the source data to hh-type parameters. Appropriate
+	credits should be given in the comments section (2).
+
+Similar guidelines apply to non-channel of prototypes.
+
+**********************************************************************
+
+A list of all prototypes defined in this directory is maintained in
+the file LIST. It should be updated every time a new prototype is added.
+
+Also in this directory is a file called 'library.g' which sets up the
+library element and some utility functions. It provides a way of using
+these prototypes if you do not want to do so in the context of 
+neurokit.
+**********************************************************************
+
+As a general rule, all prototypes should be made onto the /library
+element.
+
+In order for complex channels implemented as multiple Genesis elements,
+(such as those which interact with calcium concentration) to be handled
+by the cell builder, the following rules must be followed :
+
+There must be a parent element for all the other elements in the
+channel. This element has be the current carrying component of the
+channel, and in all cases so far is of the class vdep_channel.
+
+All the message passing between the elements composing the channel
+must be specified, with the exception of the messages between the
+compartment and the channel.  When messages must be passed between
+different prototypes, then the environment message passing scheme
+can be used.
+
+Units must be set appropriately according to the mode of the cell
+builder. In the default modes, the read_cell command scales
+conductances and Ca concentration parameters according to the
+dimensions of the compartment.

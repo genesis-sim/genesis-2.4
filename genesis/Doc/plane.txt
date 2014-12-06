@@ -1,0 +1,62 @@
+Routine Name:	plane
+
+Description:	Generates 3-D coordinates for a plane with specified
+		dimensions and characteristics.
+
+Usage:		plane filename x y dx dy [-center cx cy] [-jitter jx jy]
+			[-normal] [-ellipse] [-hexagonal]
+
+		filename	name for file into which to put generated
+				coordinates
+
+		x		x dimension of rectangular area; if -e option
+				selected, x axis of ellipsoid area
+
+		y		y dimension of rectangular area; if -e option
+				selected, y axis of ellipsoid area
+
+		dx		spacing in x dimension between points
+
+		dy		spacing in y dimension between points
+
+		-center		flag specifying that center of plane should be
+				set at coordinates (cx,cy) (default: (0,0))
+
+		cx		x coordinate of center of plane (default: 0)
+
+		cy		y coordinate of center of plane (default: 0)
+
+		-jitter		flag specifying that linearly random jitter
+				should be added to offset coordinates from a
+				perfect array (jitter in x dimension will vary
+				in range -jx*dx < jitter < jx*dx; jitter in y
+				dimension will vary in range
+				-jy*dy < jitter < jy*dy)
+
+		jx		jitter in x dimension (as fraction of dx)
+				(default: 0)
+
+		jy		jitter in y dimension (as fraction of dy)
+				(default: 0)
+
+		-normal		flag specifying that an additional set of 3
+				coordinates is generated per line, to define
+				the normal to the surface (this format is
+				compatible with that read by the cellsheet
+				routine)
+
+		-ellipse	flag specifying that generated coordinates
+				should be restricted to lie in an ellipse with
+				major axes specified by x,y
+
+		-hexagonal	(not yet implemented) flag specifying that
+				generated coordinates should lie in a
+				hexagonal (rather than rectangular) array
+
+Example:	plane planepoints 400e-6 400e-6 100e-6 100e-6 -normal
+
+Notes:		All of the cells in the plane have an initial z coordinate of
+		0.0.  (See position for how to change this).
+
+See also:	egg, cellsheet
+

@@ -1,0 +1,15 @@
+Routine Name:	listcommands
+
+Description:	Displays a list of routines currently recognized by GENESIS.
+
+Usage:		listcommands
+
+Example:	genesis > listcommands | more
+
+		Available commands:
+		[routines are listed, one screen at a time]
+
+Notes:		
+
+See also:	
+

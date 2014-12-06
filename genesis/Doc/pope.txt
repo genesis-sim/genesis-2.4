@@ -1,0 +1,23 @@
+Routine Name:	pope
+
+Description:	Restores previously stacked ("pushed") element as current
+		working element.
+
+Usage:		pope
+
+Example:	genesis >  pwe
+		/neuron
+		genesis >  pushe /somewhereelse
+		/somewhereelse
+		genesis >  pwe
+		/somewhereelse
+		genesis >  pope
+		/neuron
+		genesis >  pwe
+		/neuron
+
+Notes:		This routine ("pop element") is analogous to the
+		operating-system shell "popd" feature for directories.
+
+See also:	pushe, stack
+

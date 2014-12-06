@@ -1,0 +1,54 @@
+[14:34] (2,2) Release2-2 $ prcs merge -r multi-cell-views 
+prcs: Working version:  Release2-2.11(w)
+prcs: Common version:   Release2-2.11
+prcs: Selected version: multi-cell-views.15
+prcs: *** Action on file `xgraph.g'
+prcs: Choose an action on file `xgraph.g' for rule 3: All three files exist and are alike in the working and common versions.
+Please select(dnmrhvq!?)[r] !
+prcs: Replace file `xgraph.g' by rule 3
+prcs: *** Action on file `xcell.g'
+prcs: Replace file `xcell.g' by rule 3
+prcs: *** Action on file `utility.g'
+prcs: Replace file `utility.g' by rule 3
+prcs: *** Action on file `settings.g'
+prcs: Replace file `settings.g' by rule 3
+prcs: *** Action on file `credits.txt'
+prcs: Replace file `credits.txt' by rule 3
+prcs: *** Action on file `control.g'
+prcs: Replace file `control.g' by rule 3
+prcs: *** Action on file `library/cells/purkinje_eds1994/purkinje_eds1994.g'
+prcs: Replace file `library/cells/purkinje_eds1994/purkinje_eds1994.g' by rule 3
+prcs: *** Action on file `bounds.txt'
+prcs: Replace file `bounds.txt' by rule 3
+prcs: *** Action on file `actions.g'
+prcs: Replace file `actions.g' by rule 3
+prcs: *** Action on file `TUTORIAL.g'
+prcs: Replace file `TUTORIAL.g' by rule 3
+prcs: *** Action on file `README'
+prcs: Replace file `README' by rule 3
+prcs: *** Action on file `help.txt'
+prcs: Replace file `help.txt' by rule 3
+prcs: *** Action on file `library/channels/Purk_chan.g'
+prcs: Replace file `library/channels/Purk_chan.g' by rule 3
+prcs: *** Action on file `library/cells/example/passive.g'
+prcs: Replace file `library/cells/example/passive.g' by rule 3
+prcs: *** Action on file `output.g'
+prcs: Replace file `output.g' by rule 3
+prcs: *** Action on file `input.g'
+prcs: Replace file `input.g' by rule 3
+prcs: *** Action on file `configuration/main.g'
+prcs: Choose an action on file `configuration/main.g' for rule 14: Only the selected file is present.
+Please select(anhvq!?)[a] !
+prcs: Add file `configuration/main.g' by rule 14
+prcs: *** Action on file `configuration/pf_beam.g'
+prcs: Add file `configuration/pf_beam.g' by rule 14
+prcs: *** Action on file `configuration/background.g'
+prcs: Add file `configuration/background.g' by rule 14
+prcs: *** Action on file `configuration/excitation_demo.g'
+prcs: Add file `configuration/excitation_demo.g' by rule 14
+prcs: *** Action on file `license.txt'
+prcs: Add file `license.txt' by rule 14
+prcs: *** Action on file `TUTORIAL_excitation_demo.g'
+prcs: Add file `TUTORIAL_excitation_demo.g' by rule 14
+prcs: Merge against version multi-cell-views.15 complete.
+[14:34] (2,2) Release2-2 $ 

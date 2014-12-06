@@ -1,0 +1,15 @@
+Routine Name:	tweakalpha
+
+Description:	Allows one to fill the A and B tables of a tabchannel
+		with values of the rate constants alpha and beta, and
+		then convert them to the proper values A = alpha and
+		B = alpha + beta.
+
+Usage:		tweakalpha channel-element gate
+		gate	X, Y, or Z
+
+Example:	tweakalpha K_mit_usb X
+
+Notes:
+
+See also:	tabchannel, tweaktau

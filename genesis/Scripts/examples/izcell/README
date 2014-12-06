@@ -1,0 +1,124 @@
+The izcell.g and iznet.g scripts demonstrate the use of the 'izcell' object, a
+GENESIS implementation of the Izhikevich simple spiking neuron model.
+(Izhikevich, 2003).  With this model, four parameters A, B, C, and D can be
+used to produce a wide variety of action potential shapes and firing patterns,
+with greater computational speed than the usual compartmental cell models.
+These scripts require GENESIS version 2.3 or later.
+
+izcell.g:
+
+This creates a single izcell object, with a GUI (izgraphics.g) to allow
+changes in A, B, C, and D, and the ability to provide different types of
+pulsed injection currents.  The text file izcell.hlp gives suggested parameter
+sets and further details of the simulation.  It may also be viewed by clicking
+on the HELP button when running the simulation.  Figures from the papers
+listed in the References below (figure1.gif and figure2.gif) may be displayed
+by clicking on the appropriate buttons.  (Electronic versions of the figures
+and reproduction permissions are freely available at www.izhikevich.com.)
+
+iznet.g:
+
+This extends the izcell.g script to:
+
+1. create a prototype izcell, coupled to an excitatory synchan and a pulsegen,
+2. use the createmap command to copy the prototype into a 2D array of cells,
+3. use the planarconnect command to connect each cell's spikegen to synchans
+   on the four nearest neighbors,
+4. and use the planardelay and planarweight commands to provide appropriate
+   axonal delays and synaptic weights to the connections.
+
+The CONTROL PANEL of the GUI (iznet_graphics.g) allows injection pulses to be
+applied to a selected cell in the network and/or random synaptic activation to
+be applied to each cell.  The latter is done by setting the 'Frequency' dialog
+box to a non-zero value, typically several Hz.  This sets the frequency field
+of each synchan to the given value.  The injection may be turned on and off by
+clicking on the 'Current Injection ON/OFF' toggle.
+
+As with izcell.g, different action potential shapes and firing patterns may be
+chosen by varying the parameters A, B, C, and D in the dialog boxes under
+'Spike Parameters'.  The file izcell.hlp and comments in iznet.g list some
+alternatives to the "regular spiking rat motor cortex" parameters used here.
+
+Under 'Connection Parameters', 'synchan gmax' is used to set the gmax field of
+the synchan of each cell. The 'Weight' parameter acts as a multiplier of gmax
+for connections to the cells, but not for the random activation.  Thus, the
+amplitude of the of the random synaptic input can be increased or decreased
+relative to the network synaptic input by appropriate scaling of 'synchan
+gmax' and 'Weight'.  As explained in Doc/izcell.txt, the units of the injection
+current and gmax are different for this point neuron, which has no membrane
+area or membrane capacitance.  To use values that are equivalent to those for
+a neural compartment, use (for SI units) Injection = Idens*100, where Idens is
+the injection current in Amperes divided by the membrane area in square
+meters.  Likewise the gmax of a synchan should be 100*gdens (S/m^2).
+
+The 'Delay' dialog is for setting the fixed axonal delay of each synchan to
+the same value.  Comments in the script explain how to use a conduction
+velocity instead, to scale the delay according to the distance between cells.
+
+The 'abs_refract' dialog sets the abs_refract field of each spikegen, and
+merits some additional consideration.  This demonstration reveals a possible
+limitation of the Izhikevich model when used in a network with strong
+excitatory coupling.  For a normal compartmental model of a cell with
+Hodgkin-Huxley type channels, abs_refract would be set to a value larger than
+the the maximum width of an action potential while Vm is above 0 (the default
+value of the thresh field), and less than the minimum interval between action
+potentials.  This is to insure that each action potential generates a single
+spike event, and that none are missed.  However, it appears that the
+hyperpolarized interval following an izcell action potential leads to a rather
+"soft" refractory period rather than an absolute one.  With sufficient
+stimulation, the cell may fire again during what would normally be the
+absolute refractory period.  In this demonstration, excitation from
+neighboring cells can can result in arbitrarily fast spiking, unless it is
+limited by the abs_refract parameter of the spikegen.  The value of 0.003 used
+here is a compromise.  By setting it lower or higher, you can change the rate
+of spiking during a burst.  This is something of a hack, because it doesn't
+directly change the rate of firing of a given cell.  It merely prevents action
+potentials from being transmitted to other cells if they occur within
+abs_refract of another action potential.  This may not be a problem in more
+realistic networks containing a population of inhibitory interneurons.
+It may also be less of a problem for other values of the cell parameters,
+such as the layer 5 RS cortical pyramidal cell model described in
+Izhikevich (2006).  (This is left as 'an exercise for the reader'.)
+
+Comments in iznet.g explain some of the options for the planarconnect command,
+so that you can construct other patterns of connections.  For more details
+see Chapter 18 of the BoG available for download from the GENESIS web
+web sites), and the documentation for planarconnect.
+
+You can explore the connections that are made by invoking the 'synapse_info'
+function at the genesis prompt:
+   Usage:   synapse_info path_to_synchan
+   Example: synapse_info /network/cell[5]/Ex_channel
+This function is defined, with further explanation, in the file synapseinfo.g,
+which is included by iznet.g.
+
+The documentation for planardelay and planarweight tells of options for
+adding random variations to the weights and delays, to make a more realistic
+simulation of a biological network.  If you would like to experiment with
+models of spike timing dependent plasticity, see the documentation for
+the hebbsynchan and facsynchan objects, and the examples in the GENESIS
+Scripts/examples directory.
+
+Another 'exercise for the reader' would be to use the GENESIS parameter search
+routines to create an izcell that duplicates the current injection behavior of
+an existing GENESIS cell model, and to compare the two models when used in
+a network.  It is an open question whether such a simple model can
+accurately reproduce the spiking behavior of a detailed model that contains
+a variety of calcium and calcium-dependent Hodgkin-Huxley conductances.
+
+The function make_netview, defined in iznet_graphics.g, illustrates the use
+of the xview widget to display the Vm of each cell on the grid, using a cold
+to hot colorscale.  If you get tired of watching the waves of action
+potentials leaving troughs of hyperpolarization behind, you can remove the
+call to make_netview.  This will speed up the simulation by about 40%.
+
+References:
+
+Eugene M. Izhikevich (2003) Simple Model of Spiking Neurons,
+IEEE Transactions on Neural Networks 14:1569-1572.
+
+Eugene M. Izhikevich (2004) Which Model to Use for Spiking Cortical Networks?,
+IEEE Transactions on Neural Networks 15:1063-1070.
+
+Eugene M. Izhikevich (2006) Dynamical Systems in Neuroscience: The Geometry of
+Excitability and Bursting, MIT Press.

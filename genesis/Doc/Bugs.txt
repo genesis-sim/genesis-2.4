@@ -1,0 +1,37 @@
+  1.3.  Reporting Bugs
+
+  Most software has bugs, and GENESIS is no exception.  If you believe
+  you have found a bug, please follow the procedure outlined below.
+  Doing so will vastly increase the speed with which the bug gets fixed.
+
+  1. Simplify the simulation with the bug to the simplest possible
+     simulation that still contains the bug.  Doing so very often shows
+     that the bug is simply a script error that can be fixed by the
+     user.  If not, send the simplified simulation along with a complete
+     description of the bug and any other pertinent information to
+     "genesis@genesis-sim.org".  It is much easier to debug a simple
+     simulation than a large one with lots of irrelevant detail.  Thus,
+     even though you may be tempted to send us your entire
+     1,000,000-cell hippocampal network simulation which includes thirty
+     different cell types and is self-aware, if you do we will probably
+     never get around to fixing the bug.  If you can do this and also
+     run genesis using a debugger like gdb, then that's even better;
+     however, if you're that advanced you probably don't need our help
+     :-)
+
+  2. Be courteous.  Telling us to ``fix this bug or else!'' will not
+     produce nearly as quick results as a polite request.  Neither will
+     "fix this bug right now; I'm using genesis for an assignment which
+     is due in a week" (yes, this has happened!).  Most of the GENESIS
+     team does not get paid for their work; we do this as a service to
+     the community.  We have deadlines just like you do.  However, it is
+     not impolite to remind us of the bug if we haven't done anything
+     after a reasonable amount of time (say a couple of weeks/months) or
+     if we don't respond to your email quickly.
+
+  3. If you experience any trouble compiling GENESIS, or encounter
+     segmentation violations (core dumps) when running GENESIS, please
+     visit the Bug-fixes directory on the GENESIS web site before
+     reporting problems.  The "README" and "compiling.problems"
+     files describe recent bug fixes for GENESIS and give suggestions
+     for dealing with commonly encountered compilation problems.

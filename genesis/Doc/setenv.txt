@@ -1,0 +1,32 @@
+Routine Name:	setenv
+
+Description:	Set value of operating system environmental variable.
+
+Usage:		setenv environment-variable [new-value...]
+
+Example:	genesis > setenv SIMPATH . ~/genesis/Scripts/neurokit
+		SIMPATH=. ~/genesis/Scripts/neurokit
+
+		[also see the GENESIS default .simrc file]
+
+Notes:		This is a GENESIS implementation of the operating system
+		command setenv, which lets you set the value of a particular
+		operating system environmental variable.  Unlike its
+		operating-system counterpart, setenv from within GENESIS
+		requires that you supply a variable name (outside of GENESIS,
+		setenv with no arguments displays the list of all your
+		environmental variables).
+
+		Unlike its operating system counterpart, setenv from within
+		GENESIS displays the change that you make (outside of GENESIS,
+		setenv just returns you to the prompt with no acknowledgement).
+
+		The setenv routine is used most commonly from within GENESIS
+		to define the DISPLAY and SIMPATH environment variables.
+		DISPLAY determines the X11 host on which the display is made
+		and SIMPATH lists the path which the simulator will search
+		through for script files (cf. where).
+
+See also:	printenv, getenv
+
+

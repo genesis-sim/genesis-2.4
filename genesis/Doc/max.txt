@@ -1,0 +1,13 @@
+Routine Name:	max
+
+Description:	Returns maximum value of two numbers.
+
+Usage:		maximum-value = {max value1 value2}
+
+Example:	genesis > echo {max {tan 0.1} 0.1}
+		0.1003346741
+
+Notes:				
+
+See also:	min
+

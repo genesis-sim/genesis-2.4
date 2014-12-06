@@ -1,0 +1,12 @@
+Routine Name:	putevent
+
+Description:	Used to place events into a buffer class element
+
+Usage:		putevent buffer time amplitude [time amplitude]
+
+Example:	
+
+create playback /test
+putevent /test 10 10.0 20 0.0 30 30.0 40 0.0 50 50.0 60 0.0
+
+See also:	playback

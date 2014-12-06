@@ -1,0 +1,115 @@
+do_simulate
+do_ps
+do_date
+do_reset
+do_debug
+do_srandom
+do_silent
+do_notes
+
+do_pwe
+do_pushe
+do_pope
+do_show_estack
+
+do_set
+do_show
+do_create
+do_copy
+do_move
+do_create_map
+do_position
+
+do_delete_element
+
+do_getinfo
+CheckSimulation
+
+do_list_elements
+do_change_element
+
+do_help
+
+do_show_binding
+
+ShowClocks
+do_set_clock
+
+SetBreakFlag
+
+do_clean
+do_add_msg
+do_show_msg
+
+do_add_object
+do_list_objects
+do_show_object
+
+ExecuteTasks
+do_list_classes
+do_add_class
+do_clear_schedule
+do_add_schedule
+Reschedule
+do_list_tasks
+
+do_add_action
+do_call_element
+ResetErrors
+
+do_logon
+do_logoff
+StepSimulation
+TStepSimulation
+do_alias
+do_enable
+do_disable
+do_element_clock
+do_delete_msg
+
+float	do_getclock
+char	*do_getfield
+char	**do_construct_list
+char	**do_readfile
+
+do_writefile
+do_flushfile
+do_closefile
+do_openfile
+do_showfiles
+BufferCopy
+BufferCreate
+int	do_exists
+
+int	do_setobjenv
+char	*do_getobjenv
+do_setdefault
+char* do_getdefault
+
+char	*do_getmsg
+float do_getstatus
+do_showstatus
+int	do_insert_event
+char	**do_getfields
+char	*do_pathname
+int	do_checkeof
+int	do_saveparms
+int	do_restoreparms
+
+Simulate
+BUILD_Simulate
+
+do_set_method
+float do_version
+
+do_addfield
+do_deletefield
+int do_setdefault
+char* do_getdefault
+do_add_extobject
+int do_add_msglist
+int do_delete_msglist
+int do_delete_class
+int do_add_class
+int do_delete_action
+int do_setfieldprot

@@ -1,0 +1,360 @@
+Object Type:	xview
+
+Description:	Object for displaying large numbers of numerical values
+	graphically. Xview can be thought of as an array of xvars, though it
+	uses much less memory than multiple xvars would. It also provides
+	many more features for accessing the fields and messages of groups
+	of elements.  Xview is subclassed from pix and can only be displayed
+	in coredraw or its subclasses.
+
+	Xview displays multiple 'points' in space, each behaving rather like
+	an xvar.  Each 'point' in xview usually represents a single entity
+	in the simulation, such as a compartment.
+
+	Each 'point' in xview can be clicked to select, and the 'value'
+	field of the xview will be set according to the 'valuemode'. By
+	default the 'valuemode' is set to "path", so a click action will
+	place the path of the element represented by the clicked point in
+	xview into the 'value' field. Alternative valuemodes are "index",
+	which returns the index of clicked point in the internal xview list;
+	and "lookup", which looks up the value displayed for the clicked
+	point.
+
+	Values in xview are specified in three ways.
+
+	- First, one can set the 'values' array directly (e.g., using the set
+	command). Note that 'values' is 2-dimensional in xview.
+
+	- Second, one can send up to 5 messages (VAL1, VAL2, VAL3, VAL4,
+	VAL5), for each point. The points themselves must be previously
+	specified using the COORDS message. It is assumed that the order of
+	sending the COORDS messages is identical to the order of sending the
+	values.  This is guaranteed if a wildcard list is used to set up the
+	messages.  This method is recommended for all dynamic displays, as
+	it is far and away the most efficient. The use of messages also
+	enables displays on parallel machines.
+
+	- Third, one can specify 'path' for looking up the coords. 'path' is
+	usually a wildcard list of elements.  'relpath' is used for finding
+	the actual elements containing the fields, relative to the coords.
+	This is NOT a wildcard list. If no relpath is used, it can be set to
+	"" or ".".  Only two values can be displayed in this mode, using
+	'field' and 'field2'. 
+
+	In addition, one can set 'field' to one of "msgout" or "msgin". If
+	these options are selected, one can view values that are contained
+	in messages. The 'msgpath' is a wildcard list of elements connected
+	to the 'path' by the message type specified in 'msgtype'. The
+	direction of the messages is specified, as mentioned above, by
+	'field'. The view looks for the first message that satisfies all the
+	above criteria for each coordinate, and displays the appropriate
+	value. If it fails to find a suitable message the value becomes 0.
+	This option enables one to display connectivity patterns in a
+	network.  Using 'path' and its related options for displaying values
+	is the most flexible option, and the slowest. Connections can only be
+	displayed using this option. It is recommended for static displays
+	such as during setup.
+
+	The display options outlined below are essentially identical to
+	the 'xvar' widget. 
+
+	The following parameters of the graphical display can be
+	used to display values in xview:
+		1. Color
+		2-4. x,y and z offsets
+		5. Coordinates (morphing)
+		6. Line thickness. *
+		7. Text color *
+		8. Text
+		9. Minigraph. *
+		10. Surface *
+		11. Contour *
+	* Not yet available.
+	Any or all of the display parameters can in principle be used to 
+	simultaneously display values pertaining to each point.
+	In practice it gets rather confusing if more than 2 or 3 are
+	used at a time.
+	The color_val, xoffset_val, morph_val etc.
+	fields are used to bind the message number to the specified
+	display variable. Thus setting color_val to 1 means that
+	message VAL1 will be used to control the color of the xview pix.
+	By default all _vals are set to 0, which disables them.
+
+	The xview pix displays values (except text and minigraph) by linear 
+	interpolation. Every xview has at least two child elements of class
+	xshape, named shape[0], shape[1], etc. These shapes determine the
+	extreme points for the linear interpolation. Therefore if shape[0]
+	has foreground color 0, and shape[1] has color 10, the range of
+	colors displayed would be interpolated between 0 and 10. Likewise,
+	if shape[0] displays a tall thin rectangle, and shape[1] a short
+	wide rectangle, the shapes displayed would be 'morphed' between
+	these two extremes. Of course, to get these effects one would have
+	to set the color_val and morph_val to the appropriate values.
+	In addition to the shapes themselves, three arrays are used to specify
+	how the xview does interpolation. As already mentioned, the 'values'
+	array specifies the actual values to be displayed. 'value_min'
+	contains the values that correspond to the lower end of the 
+	interpolated range. Thus if value[0][0] was equal to value_min[0],
+	the parameter displayed would correspond to shape[0]. Likewise,
+	value_max contains the upper end of the interpolated range.
+
+	One can have multiple xshapes. In this case the interpolation first
+	decides which pair of shapes to use. In this version, each pair of
+	shapes handles an equal range between value_min and value_max.
+	Having selected the appropriate pair of shapes, the algorithm then
+	proceeds as outlined above.
+
+	The 'text' option simply prints out the floating point value of the
+	appropriate message. The 'minigraph' option (which will be
+	implemented one of these days) displays a little graph of the 
+	value, without any optional extras like axes.
+
+	By default, the xview object is created along with two child shapes,
+	shape[0] and shape[1]. The default shapes are squares, shape[0] being
+	a small one with color 0 and shape[1] a big (1x1) square in color 63.
+	The child shapes can have parameters set in the usual ways, but are
+	not displayed independently of the xview pix. For the technically
+	minded, this is because their pixflags have been set to visible_not.
+
+	Note on 'morphing': Morphing in the xview pix is simply linear
+	interpolation between corresponding points. When one shape has a 
+	different number of points from the other, then the algorithm
+	assumes that the missing points are [0,0,0] and does interpolation
+	accordingly. This may lead to peculiar effects, so usually one
+	uses the same number of points in all xshapes.
+
+	Note on 'value_min' and 'value_max' arrays: The same min and max
+	apply to all points in an xview. At this time autoscaling has
+	not been implemented, but this should be easy.
+
+Author:		Upi Bhalla Caltech Dec 93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xview_type [in src/Xodus/draw/xview_struct.h]
+
+Size:		?	Depends on number of associated shapes and number of
+			points being displayed.
+
+
+Fields:
+	The following fields are the same as for xvar:
+		fg	Foreground color of view.
+		script	Script operation(s) to perform on a mouse
+			click. The script calls of the view are only made
+			if the draw determines that the view is the nearest
+			to the event and if the event occurred within the
+			bounding region of the view. 
+		tx	Transposition distance in the x dimension. The
+			view is transposed (ie, displaced, offset) by this
+			amount.
+		ty	Transposition in y.
+		tz	Transposition in z.
+		pixflags	Set of flags specifying visibility,
+			refreshes, mouse sensitivity and many other options.
+			Use the 'pixflags' utility function to find out more.
+
+		viewmode	Specifies the mode of operation of the
+				xview. Can be one of:
+			shape - Does interpolation between shapes
+			graph - draws a minigraph (Not yet implemented)
+			surface - Draws a plane in 3-d, specified by 3
+					points in space (not yet implemented)
+			contour - Draws contour lines for a plane in 3-d. NYI.
+			colorview - Backwards compatibility hack. Uses 'shape'
+				  mode to display boxes of different color. 
+			boxview - Backwards compatibility hack. Uses 'shape'
+				  mode to display boxes of different sizes. 
+			colorboxview - Backwards compatibility hack. Default
+				  viewmode. Uses 'shape' mode to display VAL1
+				  using both the morph and color modes for
+				  a box.
+			fillboxview - Backwards compatibility hack. Uses
+				'shape' mode to display filled boxes of
+				different sizes. 
+		value_min 	1-d array with lower limits for shape
+				  parameters.
+		value_max	1-d array with upper limits for shape
+				  parameters.
+		values		2-d array with display values.
+		color_val	Specifies message to use for color
+				  display values. 0=disabled is default.
+				  If you wish to cause view to change
+				  colors, use color_val.
+		morph_val	Specifies message to use for morphing.
+				  If you wish to have the view change
+				  shape, use morph_val.
+		xoffset_val	Specifies message to use for xoffset.
+				  If you wish to cause a view to
+				  bounce around on the screen, 
+				  use the offset_vals.
+		yoffset_val	Specifies message to use for yoffset.
+		zoffset_val	Specifies message to use for zoffset.
+		text_val	Specifies message whose value should
+				  be printed out.
+		textcolor_val	Specifies message which determines
+				  the color of the text.
+		linethickness_val  Specifies message determining the
+				  line thickness used in the view.
+		sizescale	Rescales all the shapes. The default
+				  shapes have a size of 1.
+
+	The following fields are new for xview:
+		xpts		1-d array with x-coordinates of points.
+				This is automatically set if the 'path' field
+				is set, or if COORD messages are present.
+		ypts		1-d array with y-coordinates of points.
+				This is automatically set if the 'path' field
+				is set, or if COORD messages are present.
+		zpts		1-d array with z-coordinates of points.
+				This is automatically set if the 'path' field
+				is set, or if COORD messages are present.
+		ncoords		Number of points.
+				This is automatically set if the 'path' field
+				is set, or if COORD messages are present.
+		autoscale	Flag for determining if the xview should
+				calculate value_min and max by itself. Options:
+				0 = off. 1 = max ever reached. 2 = max current.
+				(Not Yet Implemented)
+		undraw_by_blanking 
+				Flag for deciding if the xview should clear
+				the whole display every step for redrawing.
+				This may be faster in some cases, but may also
+				leads to flicker. 
+				(Not Yet Implemented)
+		path		Wildcard path for elements specifying
+				coordinates. (xpts, ypts and zpts)
+		relpath		Relative path for child elements off 'path',
+				determining where the fields are located.
+		field		Name of field to display. Can have the
+				special values "msgin" or "msgout".
+		field2		An extra field to display. Cannot have
+				"msgin" or "msgout"
+		msgpath		Wildcard path for elements connected via
+				msgs to 'path'. Only used for "msgin" or
+				"msgout" modes of 'field'.
+		msgtype		Specifies type of msgs to display.
+		msgslotno	Specifies slot number of msgs to display.
+                value           Set by a click action, according to valuemode.
+		valuemode	Specifies how xview fills the 'value' field
+				when a click event occurs on the view. 
+				Can be one of "path"; "index"; "lookup"
+				Default = "path".
+				path: Finds the path of the element represented
+					at the click site
+				index: Returns the internal xview 
+					index of the click site
+				lookup: Returns the value displayed at
+					the click site from values[0].
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XVar [in src/Xodus/draw/xview.c]
+
+Classes:	gadget output
+
+Actions:	PROCESS: Redo interpolation and display.
+		RESET:	Required when changing child xshapes,
+			looks up coordinates.
+		CREATE: Automatically creates 2 child xshapes.
+		XUPDATE: update internal fields when
+			displayed widget is changed.
+		B1DOWN:	Invoked when mouse Button 1 is pressed.
+		B2DOWN:	Invoked when mouse Button 2 is pressed.
+		B3DOWN:	Invoked when mouse Button 3 is pressed.
+		ANYBDOWN:	Invoked when any mouse button is pressed.
+		B1DOUBLE: Invoked on a double click on mouse button 1.
+		B2DOUBLE: Invoked on a double click on mouse button 2.
+		B3DOUBLE: Invoked on a double click on mouse button 3.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		XODROP: Called when a another pix is dropped onto this one.
+		XODRAG: Called when the mouse is clicked on this pix, and
+			the mouse moves while the mouse button is held down.
+		XOWASDROPPED: Called after this pix has been dropped onto
+			another one.
+
+Messages:	VAL1 data
+		VAL2 data
+		VAL3 data
+		VAL4 data
+		VAL5 data
+
+		All messages can contain values for any display parameter.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a coredraw widget subclass.
+		The xview performs the interpolation between shapes and
+		redraws them on every clock tick.
+
+Examples:	
+//=================================CUT HERE=================================
+
+//genesis
+//
+// This example demonstrates how xview can use the fields
+// 'path', 'field' and 'field2' to display a combination of message
+// values and field values. Note how the
+// color of the boxes (displaying msgin) in the view display is
+// related to the size of the boxes (displaying the 'output' field
+// of the tables) preceding them.
+//
+int side = 10
+
+xcolorscale rainbow2
+create xform /form [0,0,500,550]
+xshow /form
+create xdraw /form/draw [0,0,100%,500]
+	setfield /form/draw xmin -1 xmax 11 ymin -1 ymax 11
+create xview /form/draw/view
+
+create xbutton /form/run -wgeom 50% -script "step 100"
+create xbutton /form/quit -ygeom 0:draw -xgeom 50% -wgeom 50% \
+	-script quit
+
+/* Set up the connectivity that the view will look at */
+create table /tab
+call /tab TABCREATE 1 0 1
+setfield /tab \	
+	stepsize 1 \
+	step_mode 0 \
+	table->table[0] 0 \
+	table->table[1] 1
+addobject tabobj /tab
+
+createmap tabobj /manytabs {side} {side}
+
+gen_3d_msg /manytabs/tab[] /manytabs/tab[] 0.5 1 INPUT output -o -1 0 0
+gen_3d_msg /manytabs/tab[] /manytabs/tab[] 0.5 1 INPUT output -o 9 -1 0
+
+call /manytabs/tab[99] TABCREATE 100 0 1 
+setfield /manytabs/tab[99] \
+	stepsize 0.01 \
+	step_mode 1
+/* Set up some values for the tabs to display */
+int i
+for(i = 0 ; i < 100 ; i = i + 1)
+	setfield /manytabs/tab[99] table->table[{i}] {{rand 0 100 }/100.0}
+end
+
+/* Set up the view widget */
+setfield /form/draw/view \
+	 path /manytabs/tab[] \
+	 field msgin \
+	 field2 output \
+	 morph_val 2 \
+	 relpath "" \
+	 msgpath "" \
+	 msgtype INPUT \
+	 msgslotno 0
+
+reset
+
+//=================================CUT HERE=================================
+
+See also:	xvar, xshape

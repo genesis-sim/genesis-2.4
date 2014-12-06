@@ -1,0 +1,15 @@
+Routine Name:	tweaktau
+
+Description:	Allows one to fill the A table of a tabchannel with the
+		activation time constant tau, and the B table with the steady
+		state activation m_inf, and then convert the tables to the
+		proper values A = alpha and B = alpha + beta.
+
+Usage:		tweaktau channel-element gate
+		gate	X, Y, or Z
+
+Example:	tweaktau Na_rat_smsnn X
+
+Notes:
+
+See also:	tabchannel, tweakalpha

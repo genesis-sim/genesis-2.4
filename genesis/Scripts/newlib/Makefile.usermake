@@ -1,0 +1,308 @@
+# $Id: Makefile.usermake,v 1.6 2005/11/07 21:14:19 svitak Exp $
+#
+# Updated for GENESIS 2.4 - 2014/10/17 dbeeman
+#
+# Usermake: A Makefile template for compiling a new version of
+#           GENESIS that includes user-defined objects and libraries.
+#
+# SYNOPSIS: This is the GENESIS top-level user Makefile.  It can be used
+# to compile a version of the GENESIS neural simulator containing
+# additional user-defined libraries.  See the document "NewGenesis.txt"
+# in the GENESIS Doc subdirectory (usually genesis/Doc) for details on
+# adding a new library.
+#
+# PROCEDURE:
+# 0) If there is any doubt about whether your copy of GENESIS (and in
+#    particular the contents of genesis/lib) was compiled under the
+#    identical environment under which you are now trying to compile
+#    your user objects and libraries, we strongly urge you to recompile
+#    the full GENESIS on the same computer system first.  Many subtle
+#    problems can arise when users compile their user-modified GENESIS
+#    under slightly different versions of the operating system or 
+#    computer hardware, so it is safest to ensure consistency by
+#    explicitly compiling GENESIS under your present hardware + OS.
+#
+# 1) This file should first be copied into the directory from which you
+#    are compiling your new version of GENESIS, and it should be renamed
+#    'Makefile'.
+#
+# 2) You must look at your original GENESIS top-level Makefile, and set
+#    the following variables identically in your Usermake file:
+#
+#       MACHINE		    CC		    LDFLAGS
+#       OS		    CPP		    LEXLIB
+#       XVERSION	    CFLAGS
+#       XLIB		    LD
+#
+#    These variables need to be set in the section below named "SYSTEM
+#    CONFIGURATION VARIABLES".
+# 
+# 3) Set the values of the other symbols in the user-configurable
+#    section below, based on such things as what should be the name of
+#    your new GENESIS executable.
+#
+# 4) Execute 'make'.
+# 
+
+# ----------------------------------------------------------------------
+# BEGINNING OF USER-CONFIGURABLE SECTION
+# ----------------------------------------------------------------------
+#
+# SYSTEM CONFIGURATION VARIABLES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# The INSTALLDIR variable should refer to the GENESIS installation
+# directory.  This is equivalent to the value of the variable in
+# the top-level GENESIS Makefile. Note that `pwd`/<something> will
+# NOT WORK! Use a full path here.
+
+INSTALLDIR   = /usr/local/genesis-2.4/genesis
+TMPDIR   = /tmp
+
+# The following should have the same values as the settings you used for
+# these same variables in the file genesis/src/Makefile.  Please consult
+# that file for the values to use.
+#
+# The values given below are for a typical x86_64 Linux installation
+# 
+
+MACHINE   = Linux
+OS	  = BSD
+XLIB      = /usr/lib64
+CC	  = cc
+CFLAGS	  = -O2 -D__NO_MATH_INLINES -DLONGWORDS
+CPP	  = cpp -P
+LD        = ld
+LDFLAGS   = 
+LEXLIB    = -lfl
+TERMCAP   = -lncurses
+#
+# USER CONFIGURATION VARIABLES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+
+# Name to give your new GENESIS executable.
+
+SIMNAME = newgenesis
+
+# The directory containing any user library modules.
+# E.g.: USERDIR = newlib1 newlib2
+
+USERDIR	= newlib
+
+# The pathnames of any library object modules, other than the basic
+# system libraries, should be specified in USEROBJ.  These should be
+# the same as those used for the TARGET_OBJ variable in the 'Libmake'
+# file.   E.g. USEROBJ = newlib1/newlib1.o newlib2/newlib2.o
+
+USEROBJ	= newlib/examplelib.o
+
+# In USERLIB, list the library names of each user library.  The library
+# name is set in each library's Makefile as the value of the variable
+# "LIBRARY_NAME".
+
+USERLIB	= example
+
+# Place any additional system-dependent libraries in SYSLIBS.
+# Some of the known settings needed for different systems are:
+#
+# For IRIX 6.x:
+#	    SYSLIBS = -lmalloc
+
+SYSLIBS = 
+
+#
+# OPTIONAL GENESIS LIBRARIES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+
+# oldconn
+#
+# These are the GENESIS 1.4 connection facility compatibility libraries.
+# Comment out the OLDCONN and OLDCONNLIB macros to exclude 1.4 style
+# connections.  You must also remove the libraries from the liblist
+# file.
+#
+# NOTE: Several of the simulations in the Scripts directory use the
+# oldconn library (e.g. MultiCell, Piriform, etc.) and will not run
+# without oldconn.
+
+OLDCONN    = $(SIMLIB)/axonlib.o \
+	     $(SIMLIB)/synlib.o \
+	     $(SIMLIB)/perlib.o \
+	     $(SIMLIB)/simconnlib.o \
+	     $(SIMLIB)/toolconnlib.o
+OLDCONNLIB = axon synapse personal simconn toolconn
+
+# kinetics
+#
+# This library is for kinetic modeling.  Comment out KINETICS and
+# KINETICSLIB to exclude the kinetics library.
+#
+# NOTE: the kkit kinetics modeling kit requires the kinetics library.
+
+KINETICS    = $(SIMLIB)/kinlib.o
+KINETICSLIB = kin
+
+# diskio
+#
+# The diskio and related objects from this library provide a disk_in
+# disk_out backward compatible interface for netCDF portable binary
+# files.  Comment out the DISKIO and DISKIOLIB macros to exclude the
+# diskio library.  There are currently no kits or tutorials which depend
+# on this library.
+#
+# NOTE: The netCDF library is known not to compile on Linux a.out
+# systems.  Any Linux 1.3 or later (and some 1.2 versions) will work.
+
+FMT1OBJ   = $(SIMLIB)/FMT1lib.o
+NETCDFOBJ = $(SIMLIB)/netcdflib.o \
+	    $(SIMLIB)/libnetcdf.a
+DISKIO    = $(SIMLIB)/diskiolib.o $(FMT1OBJ) $(NETCDFOBJ)
+DISKIOLIB = diskio
+
+# SPRNG
+
+SPRNG_LIB = lfg
+SPRNGLIB   = $(SIMLIB)/lib$(SPRNG_LIB).a
+
+# XODUS
+#
+# This is the graphics widget and draw library.  It is needed by just
+# about everything in the Scripts directory.  If you want to run GENESIS
+# in batch mode without graphics, comment out XLIBS, XODUS and XODUSLIB
+# to get a non-Xodus genesis.
+
+XLIBS    = -L$(XLIB)  -lXt  -lX11
+# Some systems may need libXmu and libXext
+# XLIBS    = -L$(XLIB)  -lXt  -lXmu  -lXext  -lX11
+XODUS 	 = $(SIMLIB)/drawlib.o \
+	   $(SIMLIB)/widglib.o \
+	   $(SIMLIB)/xolib.o \
+	   $(SIMLIB)/libDraw.a \
+	   $(SIMLIB)/libWidg.a \
+	   $(SIMLIB)/libXo.a
+XODUSLIB = xo  draw  widg
+
+# end of user-configurable section.
+
+# ----------------------------------------------------------------------
+# BEGINNING OF COMMON SECTION
+#
+# NOTHING BEYOND THIS POINT SHOULD HAVE TO BE MODIFIED BY THE USER
+# ----------------------------------------------------------------------
+
+NXSIMNAME     = nx$(SIMNAME)
+
+SHELL	      = /bin/sh
+
+SIMLIB 	      = $(INSTALLDIR)/lib
+SIMSRC 	      = $(INSTALLDIR)/src
+
+BASE          = $(SIMLIB)/simlib.o \
+		$(SIMLIB)/ss.o \
+		$(SIMLIB)/shelllib.o \
+		$(SIMLIB)/utillib.o \
+		$(SIMLIB)/buflib.o \
+		$(SIMLIB)/seglib.o \
+		$(SIMLIB)/hhlib.o \
+		$(SIMLIB)/devlib.o \
+		$(SIMLIB)/outlib.o \
+		$(SIMLIB)/olflib.o \
+		$(SIMLIB)/toollib.o \
+		$(SIMLIB)/conclib.o \
+		$(SIMLIB)/userlib.o \
+		$(SIMLIB)/hineslib.o \
+		$(SIMLIB)/paramlib.o \
+		$(SIMLIB)/parlib.o \
+		$(SIMLIB)/porelib.o \
+		$(OLDCONN) \
+		$(SIMLIB)/newconnlib.o \
+		$(KINETICS) \
+		$(DISKIO) \
+		$(SPRNGLIB)
+
+GENESIS       = $(BASE) loadlib.o
+NXGENESIS     = $(BASE) nxloadlib.o
+
+NXLIBS 	      = $(LEXLIB) -lm $(SYSLIBS) $(TERMCAP)
+LIBS	      = $(XLIBS) $(NXLIBS)
+
+LIBLIST       = output \
+		hh \
+		devices \
+		buffer \
+		segment \
+		user \
+		$(XODUSLIB) \
+		olf \
+		tools \
+		concen \
+		hines \
+		param \
+		pore \
+		newconn \
+		$(DISKIOLIB) \
+		$(OLDCONNLIB) \
+		$(KINETICSLIB) \
+		$(USERLIB)
+
+NXLIBLIST     = output \
+		hh \
+		devices \
+		buffer \
+		segment \
+		user \
+		olf \
+		tools \
+		concen \
+		hines \
+		pore \
+		newconn \
+		$(DISKIOLIB) \
+		$(OLDCONNLIB) \
+		$(KINETICSLIB) \
+		$(USERLIB)
+
+default: userlibs $(SIMNAME)
+
+userlibs:
+	@(for i in $(USERDIR); do \
+		echo cd $$i; \
+		cd $$i; \
+		make CPP="$(CPP)" CC="$(CC)" LD="$(LD)" \
+		  LDFLAGS="$(LDFLAGS)" \
+		  CFLAGS="$(CFLAGS) -D$(MACHINE) -D$(OS)" \
+		  INSTALLDIR="$(INSTALLDIR)" \
+		  GENINST="$(INSTALLDIR)" \
+		  TMPDIR="$(TMPDIR)"; \
+		cd ..; \
+	done)
+
+liblist: Makefile
+	echo "# liblist - This file is generated automatically." > liblist
+	echo "#           DO NOT EDIT.  Edit Makefile instead." >> liblist
+	echo $(LIBLIST) | tr ' ' '\012' >> liblist
+
+nxliblist: Makefile
+	@echo "# nxliblist - This file is generated automatically." > nxliblist
+	@echo "#             DO NOT EDIT unless you are sure you" >> nxliblist
+	@echo "#             know what you are doing.  Generally" >> nxliblist
+	@echo "#             Makefile should be edited instead." >> nxliblist
+	@echo $(NXLIBLIST) | tr ' ' '\012' >> nxliblist
+
+loadlib.c: liblist
+	$(SIMSRC)/libsh < liblist > loadlib.c
+
+nxloadlib.c: nxliblist
+	$(SIMSRC)/libsh < nxliblist > nxloadlib.c
+
+clean:
+	@(for i in $(USERDIR); do echo cd $$i; cd $$i; make clean; cd ..;done)
+	@rm -f loadlib.[oc]
+
+$(SIMNAME): $(GENESIS) $(XODUS) $(USEROBJ)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(GENESIS) $(XODUS) $(USEROBJ) $(LIBS) -o $(SIMNAME)
+
+nxgenesis $(NXSIMNAME): userlibs $(NXGENESIS) $(USEROBJ) 
+	$(CC) $(CFLAGS) $(LDFLAGS) $(NXGENESIS) $(USEROBJ) $(NXLIBS) -o $(NXSIMNAME)
+
+# End of Usermake.

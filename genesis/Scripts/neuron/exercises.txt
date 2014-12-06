@@ -1,0 +1,99 @@
+             EXERCISES TO ACCOMPANY THE NEURON TUTORIAL
+
+The simulation loads with a number of defaults set. You should see six graph
+windows on your screen. For purposes of this assignment, the upper left window
+is #1. We will number the rest of the windows COUNTER-CLOCKWISE so that the
+window in the upper right corner is #6. Window number #6 will not always be
+present. Under the graph windows are a bunch of "buttons" and dialogue boxes.
+Move the mouse cursor to the button labeled "Step". This button starts the
+simulation. Click the left mouse button on "Step". (Normally you will click on
+"Reset" first.) The default simulation will begin.
+
+In window #1, there are three stimuli: one long square pulse and two strings
+of impulses. From the top they are: "Source B", "Source A" and the "soma
+injection current". In a dialogue box below you will see that the injection
+current is set to 0.0002. To the right of that you will see that synaptic
+weights for all the sources and dendrites are set to 0.0. Therefore, only the
+injection current is currently stimulating the cell. (Call up help and click
+on "neuron inputs" for a drawing of the model cell.) Study windows #2
+through #5 until you understand what is going on.
+
+QUESTION 1: In 20 words or less, what is the relationship between what you
+see in window #4 and window #3?  Why do you see action potentials in window
+#3 (Dendrite #1 Vm)?
+
+Move the mouse cursor into the dialogue box for the soma injection current.
+Backspace (key) once. This should delete the "2" and leave only "0.000" show-
+ing. Hit "return". (NOTE: you must hit "return" after changing the contents
+of a dialogue box. If you don't, the number will show as changed, but the new
+value will not be installed and you will get an incorrect simulation.)
+Click on "Reset" and then "Step". You should get a lot of straight lines.
+Make sure you understand what you've just done.
+
+Leave the soma injection current set to zero. Set the synaptic weight for
+dendrite #1 excitatory input to 12 and make sure it is toggled to "Source A".
+Click on the button labeled "inputs". This will bring up a menu of dialogue
+boxes for some input parameters. Look at the parameters and relate them to
+the plots in window #1. Note that the "Source A interval" is set to 10. Put
+the menu away and "Step" the simulation (Click on "Reset" first). Study what
+you see. Open the "input" menu and change "Source A interval" to 3 (Don't
+forget to hit "return". Click on "Done". Toggle "overlay mode" on. Click on
+"Reset" then "step". You should get the result of the second simulation
+overlayed on the first. Leave overlay on and repeat for "Source A intervals"
+of 2, 1, and 0.5.  Watch each set of curves form so that you know where each
+tracing came from. If you screw up or need to run the simulations again,
+just toggle overlay off, hit reset and begin again.
+
+QUESTION 2: In 10 words or less, what principle does the overlayed plot in
+window #2 demonstrate?  (There is a two-word phrase for this.)
+
+QUESTION 3: Make a plot of the input-output transfer function. That is, plot
+output rate vs input spikes rate.  (To make a more accurate estimate of the
+output spike interval, you may wish to use the "SCALE" button in the upper
+left corner of the graph to change xmin and xmax.)
+
+Now set the "Source A interval" to "2", keeping it connected to the
+excitatory input of dendrite #1 with a synaptic weight of 12.  Set the
+synaptic weight for dendrite #1 inhibitory input to 12 and make sure that it
+is toggled to "Source B".  Leave everything else as it was. "Reset" and
+"Step" for a new simulation.  You should note that the inhibitory input has
+little effect upon the generation of action potentials.
+
+QUESTION 4: Using only the "synaptic weight for dendrite #1 inhibitory input"
+and the three "Source B" parameters (delay, width and interval, inhibit
+(suppress) the middle of the three action potentials produced by "Source A"
+input. You may not modify any "Source A" parameters, and both the first and
+last action potentials must remain. Answer the question by stating the
+parameter values you had to use and by submitting hard copy of window #2 if
+your system allows you to make prints of the screen.
+
+Toggle "Plot Soma" to "Plot Dendrite 2". Move the inhibitory input ("Source
+B") to Dendrite #2.
+
+QUESTION 5: For the above configuration, is the inhibitory synapse more or
+less effective at suppressing the middle action potential?  Defend your
+answer with numbers by varying the synaptic weights used in this
+configuration and the previous one.  Give reasons for the results which you
+see.
+
+Reverse the inputs. That is, place the excitatory input on dendrite #2 and the
+inhibitory input on dendrite #1.
+
+QUESTION 6: For the above configuration, is the inhibitory synapse more or
+less effective at suppressing the middle action potential?  Defend your
+answer in the same manner as in QUESTION 5, and explain the differences
+between this situation and the previous one.
+
+
+There is a dialog box called "Cable Compts.". It lets you add a number of
+cable segments between dendrites 2 and 1.  (If you wish, you may try using
+this to exaggerate the effects seen in questions 5 and 6.)
+
+Now apply a sub-threshold EPSP to the distal dendrite section (Dendrite #2).
+
+QUESTION 7: Using various numbers of inserted segments, estimate the length
+constant, "lambda", for this dendrite.  Express your answer in units of
+"number of segments" and compare your result with the predictions of theory.
+(HINT: Use the "SCALE" button to change ymin and ymax to suitable values for
+accurate measurement of the evoked potentials.  The "Cell Parameters" menu
+will tell you the values of relevant dendrite parameters.)

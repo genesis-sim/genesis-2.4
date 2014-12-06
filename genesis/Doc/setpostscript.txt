@@ -1,0 +1,11 @@
+Routine Name:	setpostscript
+
+Description:	Sets parameters used to generate postscript output of widgets.
+
+Usage:		setpostscript [-maxgray maxgray] [-mingray mingray]
+			[-inverse inverse-flag] [-dpi screendpi]
+			[-filename name] [-printer]
+
+Notes:		This is an alias for xps.
+
+See also:       xps

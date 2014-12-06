@@ -1,0 +1,42 @@
+Routine Name:   asciidata
+
+Description:  
+    Converts a FMT1 formatted binary file (as produced by the
+    disk_out object, for example) to ASCII.  Output is to stdout.
+
+Usage: 
+    asciidata file-name -time t -cell cell -gain g -old -xy -skip n -header
+    One of options -cell, -time or -header must be given.
+
+
+Example: (using the horiz_disk file from Scripts/orient_tut)
+
+genesis > asciidata horiz_disk -header
+FMT1
+start time           = 0.000000e+00
+time step            = 1.000000e-05
+cellnum              = 25
+data type            = 4
+data size            = 4
+
+genesis  > asciidata horiz_disk -cell 24 | more
+-7.006086e-02
+-7.012120e-02
+.
+.
+-7.597300e-02
+-7.596859e-02
+//(provides Vm at each time step; adding -xy option gives t and Vm)
+
+genesis > asciidata horiz_disk -time 1.e-4 -xy
+0       -0.0706427
+1       -0.0706427
+2       -0.0706427
+.
+.
+23      -0.0706427
+24      -0.0706427
+//(cell number and Vm for each of the 25 cells)
+
+See also:       disk_out
+

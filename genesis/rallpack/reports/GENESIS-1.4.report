@@ -1,0 +1,157 @@
+Rallpack report for Genesis version 1.4
+
+
+
+#############################################################################
+
+General report.
+
+Peak speed 		 	44,000 steps/sec
+Compartment equivalents		1 : 1 : 0.5
+Asymptotic accuracy		0.9%
+Semi-accurate timestep		50 usec.
+Hardware information		Sun sparc 2; Sun OS 4.1; 26 MIPS.
+Simulation setup time		13 sec.
+Base memory			3.42 Meg
+Integration method		Hines/Crank-Nicolson
+
+#############################################################################
+
+
+Specific reports.
+
+=============================================================================
+
+Results for rallpack 1 using Genesis version 1.4
+
+Peak speed/model size	: 44K for >= 1000 compartments.
+Asymptotic accuracy	: 0.02%
+Semi-accurate timestep	: 100 usec
+Hardware information	: Sun sparc 2; Sun OS 4.1; 26 MIPS
+Setup time              : 9 sec
+Integration method      : Hines/Crank Nicolson
+Compartment equivalents : Not Applicable.
+
+=============================================================================
+Detailed report
+
+1	Accuracy vs Timestep.
+2	Accuracy vs Simulation Speed.
+Timestep (usec)		Simulation Speed	Accuracy (% error)
+	10			0.44			0.02%
+	20			0.88			0.02%
+	50			2.2			0.02%
+	100			4.38			0.03%
+	200			8.77			0.05%
+	500			21.9			0.13%
+	1000			43.8			0.25%
+	2000			87.7			0.49%
+	5000			219			1.17%
+	10000			438			2.3%
+(Model size = 1000 compartments)
+
+
+3       Raw Speed vs Model size.
+4       Memory/compt vs Model size
+Raw Speed			Model Memory per compt	Size
+(ncompts * steps/sec)		(Bytes/compt)		(compartments)
+        667                     150000                  1
+        5880                    15000                   10
+        28K                     1700                    100
+        44K                     350                     1000
+        42K                     409                     10000
+(Timestep = 50 usec)
+
+=============================================================================
+
+=============================================================================
+
+Results for rallpack 2 using Genesis version 1.4
+
+Peak speak/model size	: 44K for >= 500 compartments.
+Asymptotic accuracy	: 0.016%
+Semi-accurate timestep	: 1000 usec
+Hardware information	: Sun sparc 2; Sun OS 4.1; 26 MIPS
+Setup time              : 8 sec
+Integration method      : Hines/Crank Nicolson
+Compartment equivalents : 1 branching compartment == 1 compartments
+
+=============================================================================
+Detailed report
+
+1	Accuracy vs Timestep.
+2	Accuracy vs Simulation Speed.
+Timestep (usec)		Simulation speed	Accuracy (% error)
+	10			0.44			0.016%
+	20			0.88			0.016%
+	50			2.2			0.016%
+	100			4.38			0.016%
+	200			8.77			0.017%
+	500			21.9			0.020%
+	1000			43.8			0.028%
+	2000			87.7			0.048%
+	5000			219			0.10%
+	10000			438			0.16%
+(Model size = 1023 compartments)
+
+
+Raw Speed/compt vs Model size.
+Raw Speed		Model Memory per compt	Size 		Branching depth
+(ncompts * steps/sec)	(Bytes/compt)		(compartments)
+	714		150K			1		1
+	6250		21K			7		3
+	27K		2381			63		6
+	35K             1250                    128             7
+	45K		470			511		9
+	44K		352			1023		10
+	51K		416			8191		13
+(Timestep=50 usec)	
+
+=============================================================================
+
+=============================================================================
+
+Results for rallpack 3 using Genesis version 1.4
+
+Peak speed/model size	: 22K for >= 1000 compartments
+Asymptotic accuracy	: 0.9%
+Semi-accurate timestep	: 50 usec
+Hardware information 	: Sun sparc 2; Sun OS 4.1; 26 MIPS
+Setup time		: 13 sec
+Integration method	: Hines/Crank Nicolson
+Compartment equivalents : 1 HH channel == 0.5 compartments
+
+=============================================================================
+Detailed report.
+
+1	Accuracy vs Timestep.
+2	Accuracy vs Simulation Speed.
+Timestep (usec)		Simulation Speed	Accuracy (% error)
+	5			0.111			0.9%
+	10			0.222			0.95%
+	20			0.444			1.1%
+	50			1.11			1.3%
+	75			1.67			2.5%
+	100			2.22			3.6%
+	150			3.33			6.6%
+	200			4.44			10.2%
+	250			5.55			14.4%
+	300			6.66			12%
+	400			8.88			27%
+	500			11.1			32%
+(Model size = 1000 compartments)
+
+
+3	Raw Speed vs Model size.
+4	Model memory per compartment vs Model size
+
+Raw Speed			Model Memory per compt	Size
+(ncompts * steps/sec)		(Bytes/compt)		(compartments)
+	667			450K			1
+	5555			45K			10
+	18.7K			4.7K			100
+	22K			1290			1000
+	22K			1099			10000
+(Timestep = 50 usec)
+	
+=============================================================================

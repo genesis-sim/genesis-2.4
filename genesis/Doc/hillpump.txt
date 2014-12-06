@@ -1,0 +1,51 @@
+Object Type:    hillpump
+
+Description:    A simple model for the store membrane pump (SERCA), similar
+                to the mmpump, but with a Hill exponent.
+
+Author:         E. De Schutter BBF-UIA 11/97
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	hillpump_type [in src/concen/conc_struct.h]
+
+Size:           92 bytes
+
+Fields:         vmax            maximum pump velocity, scaled by mebrane
+                                surface area.  i.e., max ion flux in moles/sec.
+                Kd              disassociation constant
+                Hill            Hill exponent
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	HillPump [in src/concen/hillpump.c]]
+
+Classes::       gate segment
+
+Actions:        CHECK  RESET  PROCESS  INIT
+
+Messages:       MMKD   Kd  (changes Kd value)
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The hillpump is similar to the mmpump, and is coupled to a difshell to reduce
+the concentration in the shell, and to a concpool to increase the
+concentration.  The message "HILLPUMP vmax Kd Hill" to a difshell causes the
+concentration to change as dC/dt = -vmax*(C^Hill/(C^Hill+Kd)/vol.  When sent
+to a concpool, it changes the concentration with the opposite sign.  Note that
+the maximum pump velocity vmax should have previously been multiplied by the
+membrane surface area, so that it is in moles/sec.
+
+This does not have the electrogenic effect (Ik) calculation of the mmpump.  It
+gets Kd from a MMKD message (or a setfield), and simply stores Kd, vmax, Hill,
+letting the difshell or concpool do the calculations.
+
+Example:	
+
+See also:	mmpump, difshell, concpool

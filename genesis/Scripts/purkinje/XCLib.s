@@ -1,0 +1,11 @@
+CaP
+CaT
+h1
+h2
+K2
+KA
+KC
+Kdr
+KM
+NaF
+NaP

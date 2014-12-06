@@ -1,0 +1,50 @@
+A. Strassberg
+Caltech
+April 1992
+(VClamp/README)
+
+VClamp Demo
+- this GENESIS script simulates the response of a voltage- and space-
+clamped patch of squid giant axon membrane to a step change in
+membrane voltage.
+- the membrane consists of a population of Na and K channels
+channels undergoing Markov kinetics with voltage-dependent
+rate constants.  The Na and K channel population objects are
+demonstrated.  A Voltage clamp is applied to the membrane and
+the dynamics of the total ionic conductances gNa and gK can be
+observed for step changes in the membrane voltage.
+
+I. Installment
+- the entire script for the VClamp demo is contained within the
+file <VClamp.g>.
+
+II. Units
+                time            ms
+                voltage         mV
+                area            um2
+                conductance     pS
+                density         channels/um^2
+
+III. Simulation Operation
+- for given membrane surface area, Na and K channel densities,
+Na and K open channel conductances, initial holding membrane
+voltage, and final holding membrane voltage after the voltage
+step, the simulation computes the behavior of the total membrane
+conductances to Na and to K, gNa(t) and gK(t) respectively.
+- note: The voltage step occurs at 5 ms, which is preset within the
+script code.  The specific Na and K voltage-dependent probabilities
+also are preset within the script code.
+
+IV. See Also
+
+        UnClamp/README
+        ConClamp/README
+
+        Strassberg and DeFelice, 1992, Neural Computation (submitted)
+        Strassberg and DeFelice, 1992, CNS Memo
+
+V.  Questions
+
+        Please send any questions to
+        strass@cns.caltech.edu
+

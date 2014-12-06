@@ -1,0 +1,77 @@
+Object Type:	pulsegen
+
+Description:	General purpose pulse generator
+
+Author:		M. Nelson, Caltech (4/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	pulsegen_type  [in src/user/user_struct.h]
+
+Size:		120 bytes
+
+Fields:		level1		level of pulse1
+		width1		width of pulse1
+		delay1		delay of pulse1
+				  (wrt ext. input - trig or gate mode)
+				  (wrt pulse2     - free run mode)
+                level2		level of pulse2
+		width2		width of pulse2
+		delay2		delay of pulse2 (wrt pulse1)
+		baselevel	baseline level
+		trig_mode	flag: 0=free run, 1=ext. trig, 2=ext. gate
+		output		output
+		trig_time	internal state variable
+		previous_input	internal state variable
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	PulseGen  [in src/user/pulsegen.c]
+
+Classes:	device
+
+Actions:	PROCESS  RESET
+
+Messages:	INPUT "gate/trig"   (0 = low, non-0 = high)
+		LEVEL pulse# level
+		WIDTH pulse# width
+		DELAY pulse# delay
+
+------------------------------------------------------------------------------
+
+Notes:
+
+This device can generate a variety of pulse patterns:  single pulses, double
+pulses (each with its own level and width), and pulse trains (of single
+pulses or pairs).  It can be triggered, gated, or allowed to free run.
+
+In combination with a spikegen object, it can be used to generate bursts of
+spikes for use as synaptic input.  (See Scripts/neuron/inputs.g.)
+
+The following diagram illustrates the relationships between the fields:
+
+                      +-----------------+ level1
+  trigger             |                 |
+     |                |                 |        +-------------+ level2
+     |                |                 |        |             |
+     V                |                 |        |             |
+     +--- baselevel --+                 +--------+             +----
+
+     <---- delay1 ----><---- width1 ---->         <-- width2 -->
+                       <--------- delay2 -------->
+If delay2 <= width1, then level2 starts imediately after the end of the
+pulse at level1.  This means that if delay2, width2 and level2 are not set
+and remain at their default values of 0, there will be only one type of
+pulse.  It will repeat after a time delay1 after the end of the pulse
+(free run mode) or a time delay1 after it is triggered (trigger or gate
+mode).
+
+
+Example:	Scripts/examples/pulsegen/PulseGenDemo.g
+
+See also:	
+

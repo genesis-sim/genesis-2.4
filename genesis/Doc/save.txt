@@ -1,0 +1,28 @@
+Routine Name:	save
+
+Description:	Saves current field values for specified element in a file. 
+
+Usage:		save  path  file-name  -append
+
+		path		pathname of element for which to save
+				field values in file
+
+		file-name		name of file in which to store field values
+
+		-append		flag specifying that field values should
+				be appended to file (if omitted, field
+				values overwrite any existing values in file)
+
+Example:	save /cell/## mycell.save
+		reset  // (Or quit and restart genesis)
+		restore mycell.save
+
+Notes:		The save and restore commands are useful when you need to
+		resume a long simulation at the point where you left off.
+		However, some of the older simulation objects do not have
+		the required SAVE2 action which is invoked with save.  (The
+                showobject command will list the actions performed by an
+                object.)  When using hsolve elements in chanmode 2 or 3, one
+                must also call HSAVE and HRESTORE for the hsolve element.
+
+See also:	restore, hsolve

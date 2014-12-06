@@ -1,0 +1,313 @@
+Object Type:	xfastplot
+
+Description:	Optimised but limited graphing widget. Designed mainly for
+		high-speed display similar to an oscilloscope. Also designed
+		to use minimal memory so that large numbers of xfastplots
+		can be in use simultaneously. Limitations are that the number
+		of points on the plot must be known in advance, axes are
+		rudimentary, and only single plots are possible.
+
+		Plots in 6 modes, related to what an oscilloscope might do.
+		roll, oscilloscope, ring, xyring, waveplot, xywaveplot.
+
+		roll: New data points appear on the right and the old data
+		points shift leftwards.
+
+		oscilloscope: Trace fills in data points from left to right,
+		clearing after screen is full. Various trigger options.
+
+		ring: Similar to oscilloscope except that screen does not 
+		clear. Instead the oldest points are overwritten. No triggering.
+
+		xyring: Same as ring except both x and y coordinates are
+		specified by separate messages for each point. Oldest points
+		are overwritten.
+
+		waveplot: All the Y points on the plot are simultaneously 
+		specified. X points increase linearly across the plot. 
+		Previous plot is lost.
+
+		xywaveplot: X and Y coordinates for all points are
+		simultaneously specified by separate messages for each point.
+
+		Each mode can be displayed using points or lines. Overlay
+		can be enabled for any mode, in which case old points are not
+		erased.
+		
+		The color of each new set of data points can be
+		specified by the COLOR message. 
+
+		Data points can abe added a variable number of points at a
+                time (Roll, oscilloscope, ring and xyring modes).  Here the
+                NPLOT message is used. The first argument is the first entry
+                in an array of data points (e.g. an interpol_struct). The
+                second argument is the number of points to be plotted, and the
+                third is the starting index in the array.  Scalar fields (e.g.
+                Vm) can be plotted as single-entry arrays with a starting
+                index of 0.  The XPLOT message can be used along with NPLOT to
+                specify xyring mode. In this case, the argument to the XPLOT
+                message is the first entry in the corresponding X array of
+                data points.
+
+		Data points can also be plotted a full screen at a time
+		(waveplot or xywaveplot modes). The WAVEPLOT message
+		is used, and the argument of the message is the first
+		entry in the array of Y data points. If the XPLOT message
+		is also present, this becomes an xywaveplot. Again, the
+		argument of the XPLOT message is the first entry in the
+		array of X data points.
+
+		The fastplot widget has a number of special key and mouse
+		mappings:
+
+		event		operation
+		-------------------------------------------------------	
+		arrow keys	Move the little tick marks on the x and
+				y axes up and down. The xval and yval
+				fields are updated to match the position
+				of the tick marks. This event triggers script
+				function calls if the function has the 
+				.k suffix.  
+
+		Mouse button	Standard click operations. Passes x and y
+				coordinate values to the script using
+				the <x> and <y> special arguments.
+
+Author:		Upi Bhalla NCBS Bangalore May 1998
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xfastplot_type [in src/Xodus/widg/xfastplot_struct.h]
+
+Size:		384 bytes (element) + 236 bytes (graphics) + 4 * npts (data)
+
+Fields:		fg	Foreground color of graph (used for axes and labels)
+		bg	Background color.
+		xgeom	Position of left edge of graph.
+		ygeom	Position of upper edge of graph.
+		wgeom	Width of graph
+		hgeom	Height of graph
+		npts	int, number of points in plot.
+		overlay_flag	If 1, overlay output traces rather than clearing
+		line_flag	If 1, draw lines rather than dots
+		roll_flag	If 1, use roll mode rather than ring mode
+		oscope_flag	If 1, use oscilloscope mode rather than ring
+		trig_sign	0: Auto triggering
+				1: Trigger on +ve going events
+				-1: Trigger on -ve going events
+		ac_trig_flag	0: DC trig
+				1: AC trig
+		trig_thresh	(double): Threshold for triggering.
+		update_dt	average dt to maintain between X updates
+		request_dt	Not yet used
+		xval		Position of x tick mark
+		yval		Position of y tick mark
+		xaxis_flag	Draw x axis and tick if 1
+		yaxis_flag	Draw y axis and tick if 1
+		color		Color (0 - 64) to use for next point(s)
+		title		Title text, top middle of graph
+		xtextmax	X axis top text, lower right of graph
+		xtextmid	X axis middle text, lower middle of graph
+		xtextmin	X axis origin text, lower left of graph
+		ytextmax	Y axis top text, top left of graph
+		ytextmid	Y axis middle text, middle left of graph
+		ytextmin	Y axis origin text, lower left of graph
+		script		Script function to execute on clicks and
+				key events.
+		shortptr_flag	If 1, treat the message as a pointer to
+				a short. Needed to work around a GENESIS
+				messaging limitation.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	FastPlot [in src/Xodus/widg/xfastplot.c]
+
+Classes:	widget output
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		PROCESS: Update the plot display with new values
+		RESET: Clear out the plot display, zero out the values
+		CREATE: Make the plot
+		SET: used to handle special cases of set where memory
+			allocation is involved. The remainder
+			use the generic GENESIS set methods. 
+		DELETE: Destroys the element and widget and storage
+			
+
+Messages:	
+		NPLOT	data_array n index
+                        The first argument is the first entry in the data
+                        array.  The second argument is the number of entries
+                        to use for data, and the third argument is the index
+                        of the starting data entry.
+                WAVEPLOT data_array n
+                        The first argument is the first entry in the data
+                        array.  The second argument is the number of points to
+                        use.
+                XPLOT	data
+			This message is only used in combination with NPLOT or
+                        WAVEPLOT.  The data argument is the first entry in the
+                        x data array.
+                COLOR	data
+			An integer from 1 to 64.
+		UPDATE_DT 
+			Not yet implemented.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a form widget
+
+Example: This example sets up 20 xfastplots getting various kinds of inputs.
+The inputs are shown in the conventional xgraph on the left of the screen.
+Most of this example is actually devoted to setting up interesting inputs.
+The type of the xfastplot is indicated in the title of each plot.
+The display mode is indicated at the bottom.
+
+================================= cut here =================================
+//genesis
+int i, j
+
+xcolorscale rainbow
+
+create xform /form [0,0,1000,600]
+create xgraph /form/graph [0,0,30%,100%] \
+	-xmax 400 -ymax 4 -yoffset 1 -ymin -1
+for (i = 0; i < 5; i = i + 1)
+	for (j = 0; j < 4; j = j + 1)
+		create xfastplot /form/plot{i}{j} \
+			[{i * 12 + 30}%,{j * 15}%,12%,15%]
+	end
+end
+xshow /form
+
+create xform /form2 [500,500,200,220]
+create xbutton /form2/quit -script quit
+create xtoggle /form2/overlay \
+	-onlabel "Overlay ON" -offlabel "Overlay OFF" \
+	-script "do_set overlay_flag <v>"
+create xtoggle /form2/line \
+	-onlabel "Line mode" -offlabel "Dot mode" \
+	-script "do_set line_flag <v>"
+create xtoggle /form2/xaxis \
+	-onlabel "X axis on" -offlabel "X axis off" \
+	-script "do_set xaxis_flag <v>"
+create xtoggle /form2/yaxis \
+	-onlabel "Y axis on" -offlabel "Y axis off" \
+	-script "do_set yaxis_flag <v>"
+create xbutton /form2/run -script "step 400"
+create xbutton /form2/reset -script reset
+xshow /form2
+
+create table /tab[0]
+call /tab[0] TABCREATE 100 0 100
+for (i = 0; i < 101; i = i + 1)
+	setfield /tab[0] table->table[{i}] {sin {i / 10.0}}
+end
+setfield /tab[0] step_mode 1
+
+create table /tab[1]
+call /tab[1] TABCREATE 1 0 100
+setfield /tab[1] table->table[0] 0
+setfield /tab[1] table->table[1] 1
+setfield /tab[1] step_mode 1
+
+create table /tab[2]
+call /tab[2] TABCREATE 100 0 100
+for (i = 0; i < 101; i = i + 1)
+	setfield /tab[2] table->table[{i}] {sin {0.5 + i / 17.0}}
+end
+setfield /tab[2] step_mode 1
+
+
+create table /tab[3]
+call /tab[3] TABCREATE 100 0 100
+for (i = 0; i < 101; i = i + 1)
+	setfield /tab[3] table->table[{i}] {rand 0 1}
+end
+setfield /tab[3] step_mode 1
+
+create table /tab[4]
+call /tab[4] TABCREATE 100 0 100
+for (i = 1; i < 51; i = i + 1)
+	addmsg /tab[4] /tab[4] INPUT2 table->table[{i}] {i - 1}
+	addmsg /tab[4] /tab[4] INPUT2 table->table[{100 - i}] {101 - i}
+end
+addmsg /tab[0] /tab[4] INPUT2 output 50
+setfield /tab[4] step_mode 5
+
+create table /tab[5]
+call /tab[5] TABCREATE 100 0 100
+for (i = 1; i < 51; i = i + 1)
+	addmsg /tab[5] /tab[5] INPUT2 table->table[{i}] {i - 1}
+	addmsg /tab[5] /tab[5] INPUT2 table->table[{100 - i}] {101 - i}
+end
+addmsg /tab[2] /tab[5] INPUT2 output 50
+setfield /tab[5] step_mode 5
+
+create table /tab[6]
+call /tab[6] TABCREATE 63 0 63
+for (i = 0; i < 64; i = i + 1)
+	setfield /tab[6] table->table[{i}] {i}
+end
+setfield /tab[6] step_mode 1
+addmsg /tab[6] /form/plot# COLOR output
+
+addmsg /tab[0] /form/graph PLOT output *tab0 *red
+addmsg /tab[1] /form/graph PLOT output *tab1 *green
+addmsg /tab[2] /form/graph PLOT output *tab2 *blue
+addmsg /tab[3] /form/graph PLOT output *tab3 *black
+
+for (i = 0; i < 4; i = i + 1)
+	addmsg /tab[{i}] /form/plot0{i} NPLOT output 1 0
+	setfield /form/plot0{i} title NPLOT npts 256
+
+	addmsg /tab[{i %2 + 4}] /form/plot1{i} NPLOT table->table[0] index 0
+	setfield /form/plot1{i} title NPLOT npts 256
+
+	addmsg /tab[{i % 2 + 4}] /form/plot2{i} WAVEPLOT table->table[0] 100
+	setfield /form/plot2{i} title WAVEPLOT npts 100
+
+	addmsg /tab[{i}] /form/plot3{i} NPLOT output 1 0
+	addmsg /tab[{(i + 1)%4}] /form/plot3{i} XPLOT output
+	setfield /form/plot3{i} title XYRING npts 256 xmin -1 xmax 1
+
+	addmsg /tab[{i % 2 + 4}] /form/plot4{i} WAVEPLOT table->table[0] 100
+	addmsg /tab[{(i + 1)%2 + 4}] /form/plot4{i} XPLOT table->table[0]
+	setfield /form/plot4{i} title XYWAVEPLOT npts 100 xmin -1 xmax 1
+end
+
+setfield /form/plot00 xtextmid ring
+setfield /form/plot01 xtextmid ring
+setfield /form/plot02 roll_flag 1 xtextmid roll
+setfield /form/plot03 oscope_flag 1 xtextmid oscope
+
+setfield /form/plot10 xtextmid ring
+setfield /form/plot11 xtextmid ring
+setfield /form/plot12 roll_flag 1 xtextmid roll
+setfield /form/plot13 oscope_flag 1 xtextmid oscope
+
+setfield /form/plot# script "echo Hi from <w>; show_val.k <w>" ymin -1
+
+function do_set(field, value)
+	str field
+	int value
+
+	setfield /form/plot# {field} {value}
+end
+
+function show_val(widget)
+	echo xval={getfield {widget} xval}, yval={getfield {widget} yval}
+end
+
+reset
+
+================================= cut here =================================
+
+See also:	xgraph, XODUS documentation

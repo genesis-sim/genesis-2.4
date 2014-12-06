@@ -1,0 +1,119 @@
+Object Type:    dif2buffer
+
+Description:    Implementation of a first-order diffusible (mobile) buffer
+                with variable total buffer concentration.  Should be coupled
+                to a difshell, where the change in the concentration of the
+                buffered ion is computed.
+
+Author:         E. De Schutter BBF-UIA 8/94 - 4/96
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  dif2buffer_type [in src/concen/conc_struct.h]
+
+Size:           172 bytes
+
+Fields:         activation     ion concentration from incoming CONCEN message
+                Bfree          free buffer concentration (calculated) in mM
+                Bbound         bound buffer concentration (calculated) in mM
+                prev_free      Bfree at previous time step
+                prev_bound     Bbound at previous time step
+                Btot           total buffer concentration in mM (used on reset)
+                kBf            forward rate constant in 1/(mM*sec)
+                kBb            backward rate constant in 1/sec
+                Dfree          diffusion constant for Bfree in m^2/sec
+                Dbound         diffusion constant for Bbound in m^2/sec
+                shape_mode     Set to one of the predefined global
+                               variables SHELL=0, SLICE=SLAB=1, USERDEF=3.
+
+                    SHELL: onion shell, for radial diffusion. Set len for
+                    cylindrical shell (zero length for spherical shell), dia
+                    (outer diameter of shell) and thick (thickness of shell);
+                    vol, surf_up, and surf_down are computed on RESET.
+
+                    SLICE (or SLAB): salami slices of cylinder, for axial
+                    diffusion. Set dia (diameter of cylinder) and thick
+                    (thickness of slab), len is not used; vol, surf_up, and
+                    surf_down are computed on RESET.
+
+                    USERDEF: len, dia, thick are not used. Set vol, surf_up
+                    and surf_down.
+
+                len             shell length
+                dia             shell diameter
+                thick           shell thickness
+                vol             shell volume
+                surf_up         area of upper (outer) shell surface
+                surf_down       area of lower (inner) shell surface
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:       Dif2Buffer [in src/concen/dif2buffer.c]
+
+Classes:        concbuffer segment
+
+Actions:        RESTORE2  SAVE2  CHECK  RECALC  RESET  PROCESS  INIT  
+
+Messages:       CONCEN  C                  (buffered ion concentration, sent
+                                           from a difshell or concpool)
+                BDIFF_DOWN prev_free prev_bound thick (diffusion to inner shell,
+                                           sent from an outer shell)
+                BDIFF_UP prev_free prev_bound thick   (diffusion to outer shell,
+                                           sent from an inner shell)
+
+------------------------------------------------------------------------------
+
+Notes:
+
+The buffers (e.g, fixbuffer) interact with a difshell to model the binding of
+calcium to buffer molecules and to calculate the concentrations of free and
+bound buffer molecules, using a kinetic scheme with forward and backward rate
+constants for the binding and release of calcium.  Intracellular buffers are
+often mobile, and the diffusion of buffer molecules can carry calcium with
+them.  This can often make a significant contribution to the transport of
+calcium, in addition to the diffusion of free Ca++ ions that is modeled by the
+difshell object.  These diffusible buffers can be modeled with the difbuffer
+and dif2buffer objects, instead of using the non-mobile fixbuffer.
+
+Like the fixbuffer, the dif2buffer interacts with a difshell to model the
+binding of calcium to buffer molecules and to calculate the concentrations of
+free and bound buffer molecules using a kinetic scheme with forward and
+backward rate constants for the binding and release of calcium.  The rate
+constants kBf and kBb are set by the user, and the concentration C is sent
+with a CONCEN message from the difshell.  The BUFFER message to a difshell
+from a buffer passes on the rate constants and the calculated free and bound
+buffer concentrations.
+
+In addition, the dif2buffer acts like a difshell, in the sense that it allows
+diffusion between adjacent buffer shells.  However, it is the free and bound
+buffer molecules, rather than free ions that are diffusing.  Adjacent buffer
+shells are coupled by BDIFF_DOWN and BDIFF_UP messages that are analogous to
+the DIFF_DOWN and DIFF_UP messages that link adjacent difshells.  Note that a
+dif2buffer should have the same dimensions and shape_mode as the difshell to
+which it is coupled.
+
+For the difbuffer, the assumption is made that the diffusion rate for bound
+and free buffer molecules is the same (as they are much larger than the Ca
+atoms), so there is a single diffusion constant D, and they diffuse together,
+with dBbound/dt = -dBfree/dt.  The dif2buffer does not make this assumption,
+and treats the diffusion of free and bound molecules separately.  Thus, there
+are separate diffusion constants Dfree and Dbound, and the BDIFF_DOWN and
+BDIFF_UP messages pass both the previous step Bfree and Bbound values along
+with the buffer shell thickness.
+
+NOTE: When using difshell, difbuffer, or dif2buffer elements without hsolve
+(or in chanmodes 0 or 1), it will be necessary to issue two reset commands
+after setting up the simulation.
+
+For a general description of buffered calcium diffusion see:
+De Schutter E., and Smolen P., "Calcium dynamics in large neuronal
+models", in Methods in neuronal modeling: From ions to networks
+(2nd edition), C. Koch and I. Segev editors, pp. 211-250 (1998).
+
+Example:
+
+See also:       difshell, difbuffer, fixbuffer

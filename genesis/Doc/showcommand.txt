@@ -1,0 +1,15 @@
+Routine Name:	showcommand
+
+Description:	Displays name of C function invoked by a GENESIS routine.
+
+Usage:		showcommand routine-name
+
+Example:	genesis >  showcommand el
+		'el' ==> 'do_construct_list'
+
+Notes:		This command is useful when you are looking in the GENESIS
+		source code for the function which implements a particular
+		command.
+
+See also:
+

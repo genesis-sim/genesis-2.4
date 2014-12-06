@@ -1,0 +1,15 @@
+Routine Name:	strlen
+
+Description:	Returns length of string in number of characters.
+
+Usage:		length-int = {strlen string}
+
+Example:	genesis >  echo { strlen "string" }
+		6
+		genesis >  echo { strlen "hi there" }
+		8
+
+Notes:		Blanks, TABs, and so forth are included in the count.
+
+See also:	strcat, strcmp, substring, findchar
+

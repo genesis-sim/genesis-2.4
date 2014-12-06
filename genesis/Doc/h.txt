@@ -1,0 +1,43 @@
+Routine Name:	h
+
+Description:	Displays the contents of the command-history buffer.
+
+Usage:		h
+		h [start [end] ]
+
+		start		number of first command to list (default: 1)
+
+		end		number of last command to list (default:
+				number of most recently issued command)
+
+Example:	genesis > h 1 5
+		     1    echo { x }
+		     2    floatformat %0.5g
+		     3    echo { x }
+		     4    floatformat %2.5g
+		     5    echo { x }
+
+Notes:		Every command typed into the simulator at the keyboard is
+		saved into a command buffer referred to as the 'history'.
+		Commands saved in the history buffer can be re-executed using
+		command recall mechanisms built into the script language.  The
+		h routine displays the list of all commands in the range
+		specified.  Typing h without any arguments will print the
+		entire history buffer.  Typing h with a range will print all
+		of the commands executed in the range specified.
+
+		The following history recall functions are also built into the
+		script language:
+
+		Command   Example   Description
+		--------------------------------------------------------------
+		!!        !!        Re-execute last command.
+		!n        !5        Re-execute the fifth command entered.
+		!string   !echo     Re-execute the last command whose first
+		                    chars match the string entered.
+		ctrl-P    ctrl-P    Retrieve previous command in the history
+		                    buffer. Repeat ctrl-P's to scan backwards
+		                    through previous commands.
+		ctrl-N    ctrl-N    Scan forward, after executing ctrl-P's,
+                		    to echo next command.
+

@@ -1,0 +1,49 @@
+Routine Name:   setupgate
+
+Description:    Sets up the internal tables of tabgate or table elements,
+		based on a generic equation describing the values of the
+		entries.
+
+Usage:		setupgate channel-element table A B C D F -size n \
+		-range min max -noalloc
+
+                channel-element   This must be a tabgate or a table
+
+                gate              The name of the table (must be
+				  alpha or beta for tabgates, "table" for
+				  table elements)
+
+                A-F               Coefficients A to F of the table 
+                                  equation (see below).
+
+                -size n           Number of divisions in the table 
+                                  (default = 3000).
+
+                -range min max    Range of the table (default: min = -0.100; 
+                                  max = 0.050).
+
+		-noalloc 	  used to prevent allocation of the table
+				  when the table has already been allocated
+				  with a call to TABCREATE or a previous use
+				  of setupgate
+                
+                This routine makes it easy to set up the internal tables of
+		tagate or table elements when the equations describing them
+		are of the form:
+
+                y(x) = (A + B * x) / (C + exp((x + D) / F))
+
+		setupgate calls the TABCREATE action of the element
+		to allocate tables with n divisions (n + 1 entries)
+		representing x values from min to max.  It then evalutes the
+		functions at these points to fill the tables.
+
+Example:	see Scripts/neurokit/prototypes/newbulbchan.g
+
+Notes:		The setupgate routine may not be used on tabchannels.
+                The state equation described above has a removable singularity
+		when C = -1 at the point x = -D.  common case).  In this case
+		the routine may generate inaccurate results due to roundoff
+		errors.
+
+See also:       setupalpha, setuptau, Tables

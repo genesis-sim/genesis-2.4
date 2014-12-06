@@ -1,0 +1,102 @@
+Object Type:    peristim
+
+Description:    Generates a peristimulus spike histogram.
+
+Author:         E. De Schutter Caltech 8/91; embellished by D. Jaeger 8/92
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	new_peristim_type [in src/device/dev_struct.h]
+
+Size:           112 bytes
+
+Fields:         output        gives the most recent peristimulus value
+                threshold     voltage threshold for determining when a spike
+                              occurs
+                binwidth      time interval between bins
+                num_bins      number of table entries (bins)
+                trigger_mode  0 (free run) or 1 (triggered)
+                reset_mode    if 1 then bins will be emptied upon RESET
+                table         contains num_bins entries of histogram values
+                bin_index     index into the table, giving current bin
+                              (not set by user)
+                bin_steps     time steps since the start of the current bin
+                              (not set by user)
+                spiking       flag indicating spike in progress
+                              (not set by user)
+                allocated     flag indicating table has been allocated
+                              (not set by user)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	NewPeriStimulusDistribution [in src/device/new_peristim.c]
+
+Classes:        device
+
+Actions:        CHECK  PROCESS  RESET
+
+Messages:       INVM      voltage   (Records a spike event when voltage first
+                                    exceeds threshold.  The voltage must then
+                                    fall below threshold before another spike
+                                    event can be recorded.)
+
+                TRIGGER   state     (Starts recording spikes starting with the
+                                    first bin, when state is non-zero.)
+
+                READTIME  time      (Adds a spike event to the table in the
+                                    bin appropriate for the value of time.
+                                    This could be used with a timetable,
+                                    table, or asc_file element to retrieve
+                                    spike times from a table or a file.)
+
+                INSPIKE   state     (Records a spike event whenever state
+                                    exceeds threshold.  This message would be
+                                    sent by an element, such as a spikegen,
+                                    that represents a spike by a state that
+                                    lasts for a single time step.)
+
+------------------------------------------------------------------------------
+
+Notes:          In the example below, there are 1000 bins to process 1 second
+                of spike events, using a 1 msec bin width.  The typical use
+                would be to run the simulation, and send a trigger event to
+                the peristim element at 1 second intervals.  This would
+                normally coincide with the application of some stimulus to the
+                cell.
+
+                Each time the triggering device generates a triggering event
+                and stimulates the cell, the resulting action potentials will
+                be counted and placed in bins according to the time that they
+                occurred since the trigger event.  At the end of the run, the
+                histogram results can be retrieved with commands such as
+                "getfield /peristim table[{i}]", with i taking on values from
+                0 through nbins-1.
+
+                If trigger_mode is set to zero (free run mode), then spike
+                data is gathered continously, looping through all the bins and
+                then starting again in the first bin.  Otherwise, data after
+                the last bin is ignored until a TRIGGER message is received.
+                When a non-zero TRIGGER message is received, subseqent spike
+                events are binned starting with the the first bin, table[0].
+                This is true regardless of the value of trigger_mode.
+                Normally the source of the TRIGGER message is an element, such
+                as a spikegen, that sends the value of a state field that
+                lasts for a single time step.
+
+Example:	
+
+float binwidth = 0.001; int nbins = 1000
+create peristim /peristim
+setfield /peristim threshold 0 num_bins {nbins}  binwidth {binwidth}
+setfield /peristim trigger_mode 1
+
+// Assume that /trigger_device generates spike events in its state field
+addmsg /trigger_device  /peristim TRIGGER state
+// Assume a cell, generating action potentials in the soma compartment
+addmsg /cell/soma /peristim INVM Vm
+
+See also:	interspike

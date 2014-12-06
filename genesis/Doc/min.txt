@@ -1,0 +1,15 @@
+Routine Name:	min
+
+Description:	Returns minumum value of two numbers.
+
+Usage:		minimum-value = min {value1 value2}
+
+Example:	genesis > float x = 33.333
+		genesis > int y = {x}
+		genesis > echo {min {x} {y}}
+		33
+
+Notes:		
+
+See also:	max
+

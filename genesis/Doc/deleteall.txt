@@ -1,0 +1,38 @@
+Routine Name:	deleteall
+
+Description:	Deletes all existing elements.  [not recommended]
+
+Usage:		deleteall -force
+
+		-f		flag to force deletions
+
+Example:	genesis > deleteall
+		
+		*** WARNING ***
+		This function removes all elements from the simulation.
+		If you really want to do this use 'deleteall -force'.
+
+		usage: deleteall -force
+
+		genesis > deleteall -f
+		Simulator cleaned out.
+
+
+Notes:		If no flags are specified, deleteall displays a warning
+		message.
+
+		The deleteall routine can be used to return the simulator to
+		a startup state by deleting all existing elements, including
+		elements which may be provided by default at startup.  If
+		this is done, running the simulation scripts again could
+		produce different results.
+
+		If you really need to delete all the elements in your GENESIS
+		session, you might as well quit exit from GENESIS completely
+		and start again -- deleteall just deletes all the elements
+		and might not reset other parameters to appropriate values.
+
+		In general, you should not use the deleteall routine.
+
+See also:	delete
+

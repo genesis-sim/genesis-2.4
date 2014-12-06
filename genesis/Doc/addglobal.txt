@@ -1,0 +1,32 @@
+Routine Name:	addglobal
+
+Description:	Declares a global variable of the specified type, allowing the
+		name of the global variable to be held in a string variable.
+
+Usage:	        addglobal type name [value]
+		type must be one of int, float or str.
+
+Example:
+
+		genesis > str name = "foo"
+		genesis > addglobal float {name} 5.55
+		genesis > listglobals
+		float           foo = 5.55
+		str             name = "foo"
+		(plus many others)
+
+
+Notes:
+
+Often it is useful to use a string variable name to hold the name of a
+global variable.  For example, one may want to pass the name of a global
+variable to a function that declares a global variable, or that sets or
+returns its value.  However, normal GENESIS syntax for declarations and
+assignments does not permit a variable name to be specified by a string
+variable.   The routines addglobal, getglobal, and setglobal are designed
+to overcome this limitation.
+
+Note that if addglobal is used within a function definition, the declared
+variable will nevertheless be global, and not local to the function.
+
+See also:       Variables, setglobal, getglobal, listglobals

@@ -1,0 +1,18 @@
+Routine Name:	enable
+
+Description:	Enables previously disabled elements to participate in a
+		simulation.
+
+Usage:		enable  element
+
+Example:	enable /neuron
+
+Notes:		The enable routine is used to enable an element which has been
+		disabled using the disable routine.
+
+		You should run reset or resched after you enable a previously
+                disabled element to be sure that the simulation state properly
+                takes into account the newly enabled element.
+
+See also:	disable, step, reset
+

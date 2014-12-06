@@ -1,0 +1,23 @@
+Routine Name:	listfiles
+
+Description:	Lists ASCII files currently opened by openfiles routine.
+
+Usage:		listfiles
+
+Example:	genesis > listfiles
+
+		OPEN ASCII FILES
+		-----------------
+
+		genesis > openfile run.g r
+		genesis > listfiles
+
+		OPEN ASCII FILES
+		-----------------
+		run.g                r
+
+Notes:		
+
+See also:	openfile
+
+

@@ -1,0 +1,22 @@
+		   Summary: The SPRNG libraries in GENESIS
+
+		   Michael Hucka <mhucka@bbb.caltech.edu>
+				 1999-10-13
+
+This subdirectory ("src/sprng") contains the source distribution of the
+Scalable Parallel Random Number Generators (SPRNG) Library version 1.0 from
+NCSA.  The home page for SPRNG is
+
+			http://sprng.cs.fsu.edu/RNG/
+
+In order to save disk space, we have omitted the documentation and examples
+directories from the copy of the SPRNG distribution provided with
+GENESIS.  The full documentation for SPRNG is available online from
+
+	   http://daniel.scri.fsu.edu/RNG/www/version1.0/toc.html
+
+The SPRNG examples directory can be obtained by downloading the SPRNG
+distribution from the home page mentioned above.
+
+There are no copyrights in the SPRNG code, but see the comments in the file
+"README".

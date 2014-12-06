@@ -1,0 +1,32 @@
+Routine Name:	getsynindex
+
+Description:	getsynindex is used to find the index of synapses between
+		particular presynaptic and postsynaptic elements.  
+
+Usage:		getsynindex presynaptic-element postsynaptic-element
+                        [-number n]
+
+                presynaptic-element  The element sending SPIKE messages to
+                        postsynaptic targets.
+
+		postsynaptic-element The synchan or derived element
+		       receiving the SPIKE message from the presynaptic
+		       element.
+
+		-number n  If there is more than one synapse between the
+			   given pre- and postsynaptic elements, this option
+			   will return the index of the nth such synapse.
+			   This option will rarely be necessary, since
+			   usually there is at most one synapse between a
+			   given presynaptic and postsynaptic element.  
+
+Example:	int index = {getsynindex /input[0]/spike /cell/soma/Ex_channel}
+		if (index >= 0)
+		    setfield /cell/soma/Ex_channel synapse[{index}].weight 10.0
+		end
+
+Notes:		If the desired synapse does not exist a value of -1 is
+                returned.
+
+See also:	getsyncount, getsynsrc, getsyndest, BoG chapter 17
+

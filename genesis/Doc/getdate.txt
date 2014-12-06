@@ -1,0 +1,16 @@
+Routine Name:	getdate
+
+Description:	Returns operating system date-time.
+
+Usage:		str-value = getdate
+
+Example:	genesis >  echo { getdate }
+		Thu Jun 22 22:11:13 1995
+
+Notes:		This is a GENESIS implementation of the operating system
+		date command, to have the value returned by the routine rather
+		than displayed directly to the user.  This allows the current
+		date to be used as a data value within GENESIS.
+
+See also:	sh
+

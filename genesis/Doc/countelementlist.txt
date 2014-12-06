@@ -1,0 +1,28 @@
+Routine Name:	countelementlist
+
+Description:	Returns the number of elements in an element list.
+
+Usage:		countelementlist path [-listname listname]
+
+                path         path specification, which may include
+                             wildcards such as [] or #  (note,
+                             however, that operating-system style
+                             use of * is not supported)
+
+                listname     The listname argument tells it to look for the
+                             field <listname> on the element in <path> and
+                             treat that as an element list.
+Example:
+
+                genesis > echo {el /#}
+                /proto /output /cell /control /data
+
+                genesis > echo {countelementlist /#}
+                5
+
+                genesis > echo {countelementlist /##}
+                19
+
+Notes:
+
+See also:	el, Tree

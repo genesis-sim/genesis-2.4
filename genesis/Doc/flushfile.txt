@@ -1,0 +1,34 @@
+Routine Name:	flushfile
+
+Description:	The contents of a file opened with ``openfile <filename> w''
+		and written with ``writefile <filename>'' are flushed from
+		the buffer onto disk. The file remains open for further
+		writefile operations.
+
+Usage:		flushfile file-name
+
+Example:
+
+	genesis > openfile test w
+	genesis > writefile test 1.0 2.0 3.0
+	genesis > more test
+	genesis >
+	genesis > flushfile test
+	genesis > more test
+	1.0 2.0 3.0
+	genesis > writefile test 4.0 5.0 6.0
+	genesis > more test
+	1.0 2.0 3.0
+	genesis > closefile test
+	genesis > more test
+	1.0 2.0 3.0
+	4.0 5.0 6.0
+
+
+Notes:		This command is useful when the contents of a file need to
+		be checked before a simulation has terminated. (Writefile
+		alone does not flush the buffer, and file contents are only
+		available after closefile has been issued).
+
+See also:	openfile, writefile, closefile
+

@@ -1,0 +1,187 @@
+Object Type:	xtree
+
+Description:	Object for displaying and manipulating the relationships
+	between elements and objects in a simulation. This is an extremely
+	complex widget designed for building click-and-drag interfaces
+	within Xodus.  The default mode provides a heirarchical
+	tree display of a simulation. The additional options include
+	alternative display modes, issuing script calls based on the
+	source and destinations of mouse-drag operations, and options
+	for changing the appearance of individual items in the tree.
+
+	Xtree is subclassed from pix and can only be displayed in coredraw
+	or its subclasses.
+
+	xtree is not designed to be updated every time step. It is quite
+	expensive to recalculate. The contents of xtree are updated by
+	calling the RESET action.
+
+	Like xvar and xview, xtree maintains a set of child xshapes named
+	shape[0], shape[1], ... The items displayed by the xtree use
+	the coordinate and drawing information in these shapes for display.
+	When drawing an item, the tree finds a string associated with
+	the item (usually its object name, see below). It then scans the
+	list of child shapes to find a match between the 'value' field of
+	the xshape and this string. The selected shape is used as the icon
+	for representing the item in the tree. If no match is found, shape[0]
+	is used. The child xshape shape[0] is created automatically when
+	the xtree is created.
+
+	The 'items' that the xtree can represent include elements and
+	objects. In addition to representing these items, xtree can also
+	display heirarchical (parent-child-sibling) relationships between
+	them in the form of a tree structure as one of the display options.
+	Furthermore, xtree can display messages between elements in the
+	form of arrows.
+
+Display options
+
+	Several display options are available:
+	tree:	a heirarchical display, eg, of a directory structure or
+		a GENESIS heirarchy.  Any orientation can be selected.
+	treenotrunc: ?
+	custom: The coordinates of the items are user-specified and just
+		stored in an array.
+	grid:	The items are placed on a rectangular grid or as a single
+		row or column, as specified by the orientation option.
+	geometry: The items are located according to their x,y,z coords.
+	obj_grid: The objects are located on a rectangular grid. This
+		may be modified depending on the orientation option.
+	obj_custom: The objects are located according to user-specified
+		positions.
+	orientation: Determines two kinds of things: first, the orientation
+		of the heirarchy in the tree mode. Second, the orientation
+		and layout of the grid. 
+		In the tree mode the orientation can be one of
+		u: up - the leaves are up , the root is down
+		d: down - the leaves are down, the root is up.
+		l: left - the leaves are on the left, the root on the right.
+		r: right - the leaves are on the right, the root on the left.
+
+		In the grid or obj-grid modes, the orientation can be
+		u: Grid with horizontal long axis
+		U: Grid with horizontal long axis and staggered entries.
+		d: Single column
+		l: Grid with vertical long axis
+		r: Single row
+		R: Single row with staggered entries
+		m<n>: multiple rows with n entries each.
+		M<n>: multiple rows with n entries each, staggered in the y
+			direction to minimize text overlap.
+
+Displaying messages
+	The tree is frequently used to display messages between elements.
+	Messages can be displayed in any treemode, except, of course,
+	between objects. Messages are displayed as arrows which start and
+	end a few pixels from the item on the screen. If the pair of items
+	being displayed is very close, the messages are not displayed.
+	The details of the message display are determined by the MSGARROW
+	array, which is manipulated using the ADDMSGARROW action.
+
+Executing functions in response to graphical events.
+	Trees are especially useful for performing drag-and-drop operations,
+	though the usual set of actions on the tree is also allowed. The
+	ADDMSGARROW action, in addition to loading in the specification 
+	for msg display, is also used to set up the script functions to
+	be performed under various sets of drag-drop operations between
+	specified object classes.
+
+The ADDMSGARROW action.
+	As already described, ADDMSGARROW is used both to specify how to
+	display msgs between elements of particular object-classes, and
+	also to execute functions in response to particular graphical
+	operations like drag-and-drop.
+
+	The syntax of ADDMSGARROW is:
+	call tree ADDMSGARROW msgsrc msgdest msgtype msgdesttype fg index 
+		fliparrow script script_add script_drop
+
+	msgsrc and msgdest are wildcard paths to two sets of elements.
+	msgtype is a string defining the type of msg.
+	msgdesttype is the type of the element at the destination of the msg
+	fg is the color of the arrow used to draw the msg
+	index is for identifying this ADDMSGARROW entry among the array
+		of other entries. If it is >=  0, the msgarrow
+		information is placed at the specified index, overwriting
+		whatever else may have been stored there. If it is
+		less than 0, the the information is first checked to ensure
+		that it does not duplicate an existing entry. If not, then
+		the information is placed in the first free entry.
+	fliparrow is a flag (0 or 1) to tell the display routines to draw
+		the arrow backwards. Normally (fliparrow = 0) the arrowhead
+		points to the destination of the msg.
+	script, script_add and script_drop are strings with the standard
+		Xodus syntax for specifying functions and arguments.
+
+	The msgsrc and msgdest wildcards are used in two ways. If one is
+	drawing messages, they are used to specify the elements that the
+	tree is supposed to check for the sources and the dests of the message,
+	respectively.  If one is executing functions, then the lists are
+	scanned to check if the source and dest elms of a drag-drop operation
+	lie on the lists. If so, then the function named in "script" is
+	executed every time; the function named in "script_add" is executed if
+	there is NO message of the specified msgtype between the src and dest,
+	and the function named in "script_drop" is executed if there is
+	already a message between src and dest. The intention is that
+	operations involving creation of messages be specified with the
+	"script_add", deletion by "script_drop", and other operations by the
+	function defined in "script".
+
+
+SIMULATION PARAMETERS
+
+Function:	XTree [in src/Xodus/widg/xtree.c]
+
+Classes:	gadget output
+
+Actions:	PROCESS: redraws tree - does NOT check for changes to contents.
+		RESET:	rebuilds tree from scratch, thereby updating any
+			changes.
+		CREATE: Creates the tree and the default child xshape
+		COPY : currently incomplete
+		SET: Special handling for the fields
+			pixflags
+			sizescale
+		DELETE: Frees up allocated entries.
+		DUMP: Saves all the internal information for the tree,
+			specially the ADMMSGARROW info and the coords of
+			the display items in certain modes.
+		UNDUMP: Loads in the information stored using DUMP
+		ADDMSGARROW: Sets modes for displaying msgs and handling
+			drag-drop operations. See above.
+		SHOWMSGARROW: Lists existing msgarrows
+		MOVECUSTOM: args: elmpath x y z recurse_flag
+			Handles xyz moves of tree items in custom mode
+		TRUNCATE: args: elmname [mode]
+			Applies to treemode 'tree'. Sets truncation of the tree
+			at the element 'elmname'. If mode is 0, truncation is
+			turned on. If 1, it is turned off. If -1 (default),
+			it is toggled.
+		XUPDATE: update internal fields when
+			displayed widget is changed.
+		Xodus actions: handled normally, with the following
+			exceptions
+			1. In treemode 'tree', action B1DOUBLE toggles
+			the truncation of the the tree at the clicked item.
+			2. Drags and drops are checked against entries
+			in the msgarrow table to decide if the scriptfuncs
+			specified by ADDMSGARROW should be called. These
+			are only called for operations within the same tree.
+			3. B1DOWN, B2DOWN and B3DOWN are checked against
+			the hlmode. If it is "one", then one element is
+			highlit. If it is "multi" then the element is added
+			to the list of entries to be highlit. If it is "none"
+			or the default, then no permanent highlight flags are
+			set.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a coredraw widget subclass.
+		Not meant to be clocked.
+
+Examples:	Scripts/examples/XODUS/xtree_example
+
+See also:	xshape, xview
+

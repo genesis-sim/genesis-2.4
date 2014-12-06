@@ -1,0 +1,120 @@
+.\" $Id: convert.man,v 1.2 2005/10/16 21:35:04 svitak Exp $
+.TH CONVERT 1L "3 October 1994"
+.SH NAME
+convert \- convert GENESIS 1.x scripts to GENESIS 2.x syntax and command names
+.SH SYNOPSIS
+.B convert
+[
+.I oldscriptfile
+[
+.I newscriptfile
+]
+]
+[
+.B \-noX1compat
+]
+[
+.B \-constants
+.I scriptfile ...
+]
+.SH DESCRIPTION
+.LP
+.I Convert
+converts a GENESIS 1.x script file
+to GENESIS 2.x syntax replacing old command names and arguments
+with their GENESIS 2.x counterparts.
+Without arguments
+.I convert
+will read standard input and write to standard output.
+With arguments
+.I convert
+reads from and writes to the given file names.
+If the
+.I newscriptfile
+argument is not given,
+.I convert
+will output to a file with the same name as the input
+file less any directory path.
+If a directory path is not given for the input file
+output is written to standard output.
+.LP
+To convert entire script sets
+UNIX command shell loops may be used.
+Assuming that an old set of scripts
+lives in the directory ../oldscripts,
+then the following will convert the entire script set.
+.LP
+For csh:
+.nf
+.sp
+foreach file (../oldscripts/*.g)
+    convert $file
+end
+.LP
+For sh:
+.nf
+.sp
+for file in ../oldscripts/*.g
+do
+    convert $file
+done
+.SH OPTIONS
+.LP
+.B \-constants
+.LP
+To correctly translate a script
+.I Convert
+needs to know the names of globally defined variables
+in a script set.
+The
+.B \-constants
+option is used to identify the scripts
+in which these global script variables are defined.
+More than one script may be specified.
+.LP
+.B \-noX1compat
+.LP
+The automatic translation of create commands for Xodus objects
+to objects in the X1compat library may be suppressed using the
+.B \-noX1compat
+option.
+In this case, converted scripts will use the Xodus 2 objects
+directly.  This will work most of the time for the standard
+Xodus 1 interface objects, but will likely fail for the
+draw widgets and pixes.  xgraph widgets may also fail when
+not using X1compat but have a better chance of working than
+xdraw et al.
+.SH "SEE ALSO"
+The GENESIS 1.x to GENESIS 2.x conversion section
+of the GENESIS Reference Manual.
+.SH BUGS
+.LP
+.I Convert
+is not a complete conversion solution.
+See the Doc/convert.txt help file for a
+complete discussion of conversion issues
+including a list of problem areas.
+.LP
+.I Convert
+will delete the contents of the input file
+if the output filename is the same as the input file name.
+This can be done implicitly if the input filename path
+refers to a file in the current directory using a relative path
+(e.g. convert ./file.g).
+.LP
+.I Convert
+makes use of the X1compat script set
+for compatibility with GENESIS 1.x graphical interface elements.
+The X1compat script directory should be added to the SIMPATH
+and the X1compat script called from the .simrc
+or the main simulation script.
+.LP
+.I Convert
+translates network models using GENESIS 1.x connections
+to commands in the connection compatibility library.
+This library is not included by default in the GENESIS 2.x
+executable.
+See the GENESIS Reference Manual for details on compiling
+GENESIS 2.x with the connection compatibility library
+and for tips on rewriting network simulations using the
+new network modeling objects and commands.

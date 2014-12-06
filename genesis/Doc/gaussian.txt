@@ -1,0 +1,14 @@
+Routine Name:	gaussian
+
+Description:	Returns a random value from a Gaussian (Normal) distribution.
+
+Usage:		value = {gaussian mean standard-deviation}
+
+Example:	genesis  > echo {gaussian 0 1 }
+		0.5069125295
+		genesis > echo {gaussian 0 100 }
+		-63.29789352
+
+Notes:		
+
+See also:	randseed, rand

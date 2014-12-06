@@ -1,0 +1,25 @@
+Routine Name:	strncmp
+
+Description:	Compares two strings up to specified number of characters.
+
+Usage:		compare-flag = {strncmp s1 s2 n}
+
+		compare-flag	returned as 0 if strings are identical;
+				1 if s1 is "greater than" s2;
+				-1 if s1 is "less than" s2
+
+		n		number of characters up to which to make
+				comparison
+
+Example:	genesis >  echo { strncmp "hip" "hit" 2 }
+		0
+		genesis >  echo { strncmp "hip" "hit" 3 }
+		-1
+
+Notes:		The strncmp routine is like the strcmp routine, but restricted
+		to a certain number of characters for comparison.
+
+		"Greater than" means "later in the standard ASCII sequence".
+
+See also:	strcat, strcmp, strlen, substring, findchar
+

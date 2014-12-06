@@ -1,0 +1,145 @@
+  13.  Messages
+
+  Elements within a GENESIS simulation communicate by a system of links
+  called ``messages'', which allow one element to access the data fields
+  of another element.  Once the message link to or from an element have
+  been established, the element is able to receive or send information
+  each time its state is updated during the simulation.
+
+  Messages have no time delay and serve to unify a large number of
+  elements into a single computational unit.  They are used, for
+  example, in detailed compartmental models of cells to link together
+  membrane compartments and channels into a single electrical entity.
+  The section on ``Synaptic Connections'' (Connections.txt) describes
+  how messages are used for communication between neurons.
+
+  It is not feasible to summarize all of the GENESIS messages here,
+  because the message name and parameters are specific to the object
+  that receives the message.  An element can send any message, and will
+  not complain even if the message is not a valid GENESIS message.
+  However, the destination element will check to see that it is a valid
+  message name for that object and that it has the correct number of
+  parameters.  If the showobject command, or the documentation for an
+  object is inadequate to explain what a given message really does, look
+  at the MSGLOOP section of the source code for that object.
+
+  The GENESIS routines used for establishing and working with messages
+  include the following:
+
+  ______________________________________________________________________
+  Routine        Description
+  ______________________________________________________________________
+  addmsg         Establishes message links between two elements.
+  deletemsg      Deletes a message link between two elements.
+  dd3dmsg        Establishes message links between dendrodendritic synapses.
+  gen3dmsg       Establishes message links between elements (identified in two
+                 lists) that are within a certain range of each other.
+  getmsg         Returns information about a message into or out of element.
+  resetfastmsg   Variation of reset command for use with kinetics library.
+  showmsg        Displays list of incoming and outgoing messages of an element.
+  ______________________________________________________________________
+
+  For example, at each step of a simulation, one asymmetric compartment
+  connected to another asymmetric compartment needs to send both its
+  axial resistance ``Ra'' and its membrane potential as of the previous
+  simulation step (``previous_state'') to the second compartment.  This
+  allows the second compartment to calculate the current entering from
+  the first.
+
+  You establish such a message link using the addmsg command.  In the
+  following command the dendrite compartment is linked to the soma with
+  a message of the type RAXIAL, and a message link is established
+  whereby two value fields, ``Ra'' and ``previous_state'', will be sent
+  from the dendrite to the soma at each simulation step:
+
+    addmsg /cell/dend /cell/soma RAXIAL Ra previous_state
+
+  This establishes the information flow from the dendrite to the soma.
+  In the reverse direction, the dendrite needs to receive the value of
+  the soma's previous membrane potential in order to update its own
+  state (the dendrite already knows its own axial resistance to the
+  soma, and so the message need not include information regarding axial
+  resistance).  This link can be set up as follows:
+
+    addmsg /cell/soma /cell/dend AXIAL  previous_state
+
+  Messages do not have to be between computational elements only.  The
+  following example shows how the soma would plot the value of its
+  ``Vm'' field (the membrane potential) by sending a PLOT message to the
+  xgraph element /graphs/Vmgraph (the last two arguments give the label
+  and color to be used in plotting this field):
+
+    addmsg /cell/soma /graphs/Vmgraph PLOT Vm *voltage *red
+
+  To find out the allowed message types and and associated fields for an
+  element type, you use the showobject routine.  For example:
+
+    showobject compartment
+
+  This routine produces, along with other information, the following
+  list of valid messages for objects of the type compartment:
+
+    VALID MESSAGES
+          [6] EREST                : Em
+          [3] INJECT               : inject
+          [2] AXIAL                : Vm
+          [1] RAXIAL               : Ra Vm
+          [0] CHANNEL              : Gk Ek
+
+  In order to determine which messages have been established for a spe-
+  cific element, you can use the showmsg routine, which lists the incom-
+  ing and outgoing messages for an element.  For example, showmsg pro-
+  duces the following results when you run the Neuron tutorial in
+  ``Scripts/neuron'':
+
+    genesis > showmsg /cell/dend1
+    INCOMING MESSAGES
+    MSG 0 from '/cell/soma'  type [2] 'AXIAL' < Vm = 0 >
+    MSG 1 from '/cell/dend2'  type [1] 'RAXIAL' < Ra = 7960 > < Vm = 0 >
+    MSG 2 from '/cell/dend1/Ex_channel'  type [0] 'CHANNEL' < Gk = 0 >
+          < Ek = -10 >
+    MSG 3 from '/cell/dend1/Inh_channel'  type [0] 'CHANNEL' < Gk = 0 >
+          < Ek = -80 >
+    MSG 4 from '/input/injectpulse/dend1curr'  type [3] 'INJECT' < inject = 0 >
+
+    OUTGOING MESSAGES
+    MSG 0 to '/cell/soma' type [1] 'RAXIAL' < Ra = 7960 > < Vm = 0 >
+    MSG 1 to '/cell/dend2' type [2] 'AXIAL' < Vm = 0 >
+    MSG 2 to '/cell/dend1/Ex_channel' type [0] 'VOLTAGE' < Vm = -70 >
+    MSG 3 to '/cell/dend1/Inh_channel' type [0] 'VOLTAGE' < Vm = -70 >
+    MSG 4 to '/output/dend1graphs/dend1Vm_grf' type [0] 'PLOT' < data = -70 >
+          < name = dend1 > < color = black >
+
+  Although showmsg is useful for providing debugging information when
+  used interactively at the GENESIS prompt, its output is not in a
+  convenient form for use within a script.  In this case, you would use
+  the getmsg routine.  Here are some examples using getmsg:
+
+    genesis > echo { getmsg /cell/dend1 -outgoing -type 1 }
+    AXIAL
+
+    genesis > echo { getmsg /cell/dend1 -outgoing -source 1}
+    /cell/dend1
+
+    genesis > echo { getmsg /cell/dend1 -out -destination 1 }
+    /cell/dend2
+
+    genesis > echo { getmsg /cell/dend1 -out -count }
+    5
+
+  The deletemsg command removes message links.  For example, to remove
+  the input to the to the dend1 compartment from the channel
+  Inh_channel, you would remove incoming message 3 and outgoing message
+  3, of the messages listed above.  This would be done with the
+  statements:
+
+    deletemsg /cell/dend1 3 -incoming
+    deletemsg /cell/dend1 3 -outgoing
+
+  The PLOT message from a compartment /cell/soma to a graph
+  /data/voltage could be located and deleted with:
+
+    deletemsg /data/voltage -in 0 -find /cell/soma PLOT
+
+  The various options for addmsg, showmsg, getmsg, and deletemsg are
+  described in the Command Reference section.

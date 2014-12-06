@@ -1,0 +1,39 @@
+Routine Name:	getsyncount
+
+Description:	This function is used to count SPIKE messages coming from a
+		particular presynaptic element and/or synapses on a
+		particular postsynaptic element.  If both the presynaptic
+		and postsynaptic elements are specified this function
+		returns the number of connections between the two i.e. the
+		number of SPIKE messages from the presynaptic element which
+		are sent to the given postsynaptic element.  This function
+		is often used inside a loop to set fields in synapses
+		between specific elements to particular values.
+
+Usage:		getsyncount [presynaptic-element] [postsynaptic-element]
+
+		presynaptic-element  The element sending SPIKE messages to
+		        postsynaptic targets.
+
+                postsynaptic-element  The synchan or derived element which 
+		        receives SPIKE messages.
+
+Example:	// Set the weights of all synapses that receive SPIKE messages 
+		// from a given source to 10.0
+
+		int i
+		str dest
+		int nsyn = {getsyncount /input[0]/spike}
+		for (i = 0; i = {nsyn}; i = i + 1)
+		    dest  = {getsyndest /input[0]/spike {i}}
+		    index = {getsyndest /input[0]/spike {i} -index}
+		    setfield {dest} synapse[{index}].weight 10.0
+		end
+
+Notes:		Synchans have an "nsynapses" field which holds a count of the
+		number of synapses on a given element; this can be used instead
+		of getsyncount when getting synapse counts for postsynaptic 
+		elements.  
+
+See also:	getsynindex, getsynsrc, getsyndest, BoG chapter 17
+

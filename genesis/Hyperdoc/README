@@ -1,0 +1,9 @@
+Starting with version 2.0.2, GENESIS now comes with a hypertext version of
+the GENESIS Reference Manual and on-line help files.  These files are in the
+genesis/Hyperdoc directory, and the main file is Manual.html.  In order to
+properly view the hypertext documentation, you will need a web browser with
+support for HTML 3 tables, such as Mozilla or any recent browser.
+
+To bring up the documentation, just start the browser, specifying the
+URL as genesis/Hyperdoc/Manual.html.
+

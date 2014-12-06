@@ -1,0 +1,54 @@
+Object Type:	funcgen
+
+Description:
+
+This is a function generator which produces periodic output with a waveform
+set by the mode field.
+
+Author:		M. Wilson, Caltech (4/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	funcgen_type  [in src/device/dev_struct.h]
+
+Size:		96 bytes
+
+Fields:		mode		flag: 0=sine; 1=square; 2=triangle; 3=constant
+		amplitude	peak-to-peak amplitude
+		dc_offset	constant to be added to output
+		phase		phase in degrees
+		frequency	frequency
+		output		output waveform
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	FunctionGenerator  [in src/device/funcgen.c]
+
+Classes:	device
+
+Actions:	CHECK  PROCESS  RESET
+
+Messages:	AMPLITUDE amplitude
+		DC_OFFSET dc_offset
+		PHASE phase
+		FREQUENCY frequency
+
+------------------------------------------------------------------------------
+
+Notes:
+
+In a simulation, you would set up messages between the funcgen element
+(in our example it is called "funky") and other elements which are to
+receive its output.  For example:
+
+  addmsg funky funcplot PLOT output *function *red  // funcplot is an xgraph
+  addmsg funky Exc_channel ACTIVATION output  // Exc_channel is a synchan
+
+Example:	Scripts/examples/sigmoid
+
+See also:	
+

@@ -1,0 +1,64 @@
+Object Type:	Ca_concen
+
+Description:	Single pool model for Ca concentration.
+
+Author:		M. Wilson, Caltech (2/89)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	Ca_concen_type  [in src/segment/seg_struct.h]
+
+Size:		112 bytes
+
+Fields:		tau		time constant of decay
+		Ca_base		resting (base level) concentration
+		B		equals 1/(ion_charge * Faraday * volume)
+		Ca		Resulting concentraton of Ca++ ions
+		C		Intermediate result, Ca - Ca_base
+		thick		Holds thickness of shell (used by readcell)
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	CaConcen  [in src/segment/Ca_concen.c]
+
+Classes:	concentration segment
+
+Actions:	INIT
+		PROCESS
+		RESET
+		CHECK
+		SAVE2
+		RESTORE2
+
+Messages:       I_Ca  Ik              Receives ionic current Ik from a channel
+                BASE  Ca_base         Sets Ca_base with a message
+                fI_Ca Ik fraction     Receives fractional current Ik*fraction
+                INCREASE  delta_Ik    Add delta_Ik to incoming current
+                DECREASE  delta_Ik    Subtract delta_Ik from incoming current
+
+------------------------------------------------------------------------------
+
+Notes:		Single shell model for Ca concentration.
+		Solves  dC/dt = B*Ik - C/tau.
+		Ca = Ca_base + C.
+
+		In SI units, where concentration is moles/m^3
+		(milli-moles/liter) and current is in amperes, theory gives B
+		= 5.2e-6/(shell volume).  In practice, B is a parameter to be
+		fitted or estimated from experiment, as buffering, non-uniform
+		distribution of Ca, etc., will modify this value.  If thick =
+		0, the readcell routine calculates B by dividing the "density"
+		parameter in the cell parameter file by the volume of the
+		compartment.  Otherwise, it scales as a true shell, with the
+		volume of a shell having thickness thick.  A negative value of
+		the "density" parameter may be used to indicate that it should
+		be taken as an absolute value of B, without scaling.  
+
+Example:	see Scripts/burster
+
+See also:	readcell
+

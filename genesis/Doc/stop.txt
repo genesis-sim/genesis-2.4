@@ -1,0 +1,15 @@
+Routine Name:	stop
+
+Description:	Completes current simulation step, stopping simulation.
+
+Usage:		stop
+
+Example:	stop
+
+Notes:		After cleanly stopping the simulation, the routine returns you
+		to the GENESIS shell.  The stop routine is NOT equivalent to
+		interrupting with ^C, which leaves the simulation in an
+		unknown state -- stop completes the current step in progress.
+
+See also:	step, abort
+

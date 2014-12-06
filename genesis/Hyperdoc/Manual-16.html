@@ -1,0 +1,92 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Simulation Schedules</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-15.html">Previous</A>
+<A HREF="Manual-17.html">Next</A>
+<A HREF="Manual.html#toc16">Table of Contents</A>
+<HR>
+<H2><A NAME="Schedules"></A> <A NAME="s16">16. Simulation Schedules</A>   </H2>
+
+<P>When a request is made to execute a simulation with the step
+command, the simulator determines what to do by consulting the
+simulation ``schedule'' -- a list of operations which are to be
+performed in the specified order for each simulation step.  For
+example, the default schedule for GENESIS simulations is given in
+the script <EM>startup/schedule.g</EM>, which contains:</P>
+<P>
+<PRE>
+     deletetasks
+
+     addtask Simulate /##[CLASS=buffer]      -action INIT
+     addtask Simulate /##[CLASS=segment]     -action INIT
+     addtask Simulate /##[CLASS=device]      -action INIT
+     addtask Simulate /##[CLASS=buffer]      -action PROCESS
+     addtask Simulate /##[CLASS=projection]  -action PROCESS
+     addtask Simulate /##[CLASS=spiking]     -action PROCESS
+     addtask Simulate /##[CLASS=gate] -action PROCESS
+     addtask Simulate /##[CLASS=segment][CLASS!=membrane][CLASS!=gate] \
+        [CLASS!=concentration][CLASS!=concbuffer] -action PROCESS
+     addtask Simulate /##[CLASS=membrane]    -action PROCESS
+     addtask Simulate /##[CLASS=hsolver]     -action PROCESS
+     addtask Simulate /##[CLASS=concentration]       -action PROCESS
+     addtask Simulate /##[CLASS=concbuffer]  -action PROCESS
+     addtask Simulate /##[CLASS=device]      -action PROCESS
+     addtask Simulate /##[CLASS=output]      -action PROCESS
+
+     resched
+  
+</PRE>
+</P>
+<P>Each operation listed in the schedule is simply a compiled C function (listed
+by its C name) with optional arguments.  The C function used by default is
+named ``Simulate'', and it is called with two arguments: a wildcard path
+specification indicating the set of elements affected, and the element-type
+action to perform for that class of elements during the simulation step.</P>
+<P>Scheduling provides a way to specify the order of events within a given
+simulation step, in terms of which elements will be computed in what
+sequence.  For example, you may verify, using the showobject command to
+determine the class memberships, that using the default schedule listed
+above, the PROCESS action is carried out on a tabgate element before it is
+carried out on a vdep_channel to which it might be coupled.  The compartment
+containing this channel will execute the PROCESS action after the channel.
+This insures that all computations are performed in the proper order.</P>
+<P>If you need to have the computations for the elements in your simulation
+run in a specific order, you could define your own simulation schedule.
+Note that the simulation schedule gives no control over the order in which
+the RESET action is performed, however.  If the initial state of one
+element depends on the initial state of another element, you may need to
+call the RESET action for specific elements in the proper order.  Further
+details are given in the section on 
+<A HREF="Manual-8.html#Actions">Actions</A> and
+the documentation for 
+<A HREF="Manual-25.html#reset">reset </a>.  </P>
+<P>The following GENESIS routines are used for establishing and working
+with simulation schedules.  The documentation for 
+<A HREF="Manual-25.html#addtask">addtask </a>
+gives more information on constructing your own simulation schedules.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine </TD><TD>Description</TD></TR><TR><TD>
+<A HREF="Manual-25.html#addtask">addtask </a> </TD><TD>Adds a simulation event to the simulation schedule.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#deletetasks">deletetasks </a> </TD><TD>Removes all simulation events from the simulation schedule.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#resched">resched </a> </TD><TD>Assigns elements for simulation according to the</TD></TR><TR><TD>
+</TD><TD>current simulation schedule.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#showsched">showsched </a> </TD><TD>Displays current working simulation schedule.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>Whether you create a new schedule or not, you should also run the check
+routine, which analyzes the simulation schedule to check for conflicts or
+inconsistencies.  For example, you should always run check if you change the
+schedule or add or remove any simulation elements; you may need to just run
+resched, or revise the schedule itself.
+ </P>
+
+<HR>
+<A HREF="Manual-15.html">Previous</A>
+<A HREF="Manual-17.html">Next</A>
+<A HREF="Manual.html#toc16">Table of Contents</A>
+</BODY>
+</HTML>

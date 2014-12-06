@@ -1,0 +1,379 @@
+            A Tutorial Simulation of a CA3 Hippocampal Neuron
+			   (version 2.0)
+
+This documentation, which appears in the file "traub_tut.help", may be read
+while performing the simulation by clicking the left mouse button on the
+title bar 'help' button.  Move the cursor into the scroll bar at the left
+edge of the window, hold the left mouse button down, and drag the mouse
+downwards to scroll through the text.  When you have finished, click the
+left button on the "CANCEL" box.
+
+-----------------------------------------------------------------------------
+
+INTRODUCTION
+
+This tutorial is based upon a GENESIS simulation of the hippocampal CA3
+pyramidal cell model of Traub, et. al. [R.D.Traub, R. K. S. Wong, R. Miles,
+and H. Michelson, Journal of Neurophysiology, Vol. 66, p. 635 (1991)] It is
+recommended that this paper be consulted while using the tutorial.  In the
+tutorial, we will explore some of the properties of this model, as well as
+the properties of the various types of ionic channels used in the model.
+
+The simulation and the details of the model closely follow the description
+in the paper, except that: (a) Unless otherwise noted, MKS units are used
+throughout. (b) The membrane potential, Vm, is measured relative to an
+extracellular potential of zero; thus the nominal resting potential is
+-0.06 V. (c) The synaptically activated channels in compartments 3 and 15
+have not been implemented.
+
+This simplified model of the CA3 pyramidal cell has 19 compartments with a
+soma in the center and two linear chains of compartments to represent the
+apical dendrites and the basal dendrites.  The soma and its nearby
+compartments contain voltage activated Na and K_DR channels which are
+somewhat like the ones which Hodgkin and Huxley studied in the giant squid
+axon.  However, the interesting behavior of this cell arises from at least
+four other kinds of ion channels which are known to exist in pyramidal cells.
+Published data from voltage clamp experiments was used to model the dynamics
+of these channels and to make reasonable hypotheses about their distribution
+throughout the cell.  Once we have verified that the model can reproduce
+experimental results, we can use the simulation to understand the ways in
+which the various channels interact and produce distinctive bursting
+patterns of action potentials.
+
+Ca channels turn out to be particularly important.  These are spread
+throughout the cell, but are most concentrated in the distal dendrites.  Ca
+has a high equilibrium potential, so they can produce action potentials like
+Na.  However the Ca channels become activated at higher voltages than the Na
+channels, so their conductance needs to be triggered by Na action
+potentials.  They also have a much larger time constant for inactivation, on
+the order of 200 msec.  Not only do Ca channels have a direct effect on the
+membrane potential, but they have an indirect effect as well.  There are two
+types of K channels whose activation depends on the concentration of Ca in
+the cell.  K_C is fast and depends on both [Ca] and V.  K_AHP is slow and
+depends only on [Ca].  K_A depends only on V and has a minor role in this
+model.  It affects the interval and onset of action potentials.
+
+-----------------------------------------------------------------------------
+
+THE 'NEUROKIT' SIMULATION ENVIRONMENT
+
+Rather than writing a set of GENESIS scripts which are specific to this
+simulation, we have chosen to implement the simulation within 'Neurokit'.
+Neurokit is a very flexible and general GENESIS program which reads in the
+details of a single cell model and its channels from supplemental files.
+Various experiments may then be performed by clicking with the mouse or by
+entering values in 'dialog boxes'.  This tutorial then serves as an
+introduction to Neurokit, as well.
+
+In the tutorial, we will explain and use only a few of the basic features of
+Neurokit.  If you wish to learn more about the advanced features, you may
+run 'Neurokit' from the Scripts/neurokit directory and try some of the
+examples which are suggested in the on-line help.  (Alternatively, you may
+print out the Scripts/neurokit/README file.)
+
+-----------------------------------------------------------------------------
+
+RUNNING THE CA3 MODEL SIMULATION
+
+In order to allow room for the graphical display, move a terminal window
+into the lower left hand corner of your screen.  (This is normally done by
+using the left mouse button to click and drag on the title bar of the
+window.)  After changing into the directory in which the simulation resides
+usually "traub91"), type "genesis" to the unix prompt.  After the "genesis"
+prompt appears on the screen, type "Neurokit", in order to load the Neurokit
+simulation.  There will be a delay while the simulation is being set up, and
+eventually, a title bar with options
+
+    quit  help  file  run cell  edit cell  edit compt  edit channel
+
+will appear at the top of the screen.  Click on the 'help' button, and this
+file will be displayed.  (As usual, when we say "click on ..." we mean
+"click the left mouse button on ...", unless another button is specified.)
+When you feel that you are ready to begin, click on the "CANCEL" button at
+the bottom of the help window.  The next time that you call up 'help', you
+will return to the same place in the help file.
+
+Click on the "file" option on the title bar.  The "file" menu will appear,
+showing various 'dialog boxes' which indicate that we are running the CA3
+cell model simulation.  As the default values in the boxes are all correct,
+click the "Load from file" button on the "file" menu.  A few obscure
+messages will appear in your terminal window.  Then click "run cell" on the
+title bar.  You should see the "SIMULATION CONTROL PANEL", a "cell window"
+containing a representation of the cell, and a graph.
+
+Initially, the 'Recording' button under the "ELECTROPHYSIOLOGY" heading will
+be highlighted, indicating that you are ready to plant recording electrodes
+in the cell.
+
+-----------------------------------------------------------------------------
+
+SOME EXPERIMENTS WITH THE CA3 MODEL
+
+Let's begin by trying to reproduce the bursting behavior observed in this
+cell.  We would like to record from the soma and a compartment in the apical
+dendrite which is 0.5 length constants from the soma (compartment 14).
+These two compartments are of interest because of their very different
+concentrations of ion channels.  The soma contains the highest concentration
+of Na channels.  Compartment 14 and its adjacent compartments in the apical
+dendrite contain the highest concentration of Ca channels, but have no Na
+channels to produce sharp action potentials.
+
+Start by clicking the left button in the round soma.  A recording electrode
+should appear and the box labled "click_site1" should display
+"/CA3/soma".  To plant a recording electrode in compartment 14 of the
+apical dendrite, click the left mouse button about half way to the right
+along the "fat" dendrite extending from the soma.  If the 'click_site1'
+box then shows something other than "/CA3/apical_14", click the middle
+button in the same place to remove the electrode and try again.  With a
+little practice, you will find it easy to record from any desired part of
+the cell.
+
+Next, click on "Iclamp" under the "ELECTROPHYSIOLOGY" heading.  Underneath,
+a dialog box labeled "inject (nanoAmps)" should appear, with a value of "0"
+in the box.  To change the field of a dialog box, 
+
+use the mouse to move the cursor into the dialog box.  Then, use the
+keyboard right and left arrow keys to move the "^" symbol to the right of
+the place where you wish to make the changes.  Then use the "Delete" key to
+back up over anything you wish to change, and type in the changes.  To cause
+the changes to be entered, you must then hit "Return" while the cursor is in
+the field of the dialog box.  Set the injection value to 0.2 nA.  Then click
+on the soma to plant an injection electrode in the soma.  Finally, click on
+'run' in the SIMULATION CONTROL PANEL to start the simulation.  Note that
+most of the 'buttons' and 'dialog boxes' may be used while the simulation is
+running.  For example, you may call up the help window or change the
+injection current without stopping the simulation.  When running long
+simulations, you may pass the time by consulting the help window or by
+inspecting the model parameters with the 'edit cell' option (described
+below).
+
+While the simulation is running, you will see the compartments in the cell
+diagram change color to represent the value of the membrane potential, Vm.
+"Hot" colors represent higher voltages, and "cold" colors represent lower
+voltages.  With some practice, you may use this feature to observe the
+propagation of action potentials along the dendrites.  The 'runtime' dialog
+box shows that the simulation will run for 0.1 seconds of simulation time,
+and the 'current_time' box displays the current simulation time.  'clock'
+shows the default the integration time step (50 microseconds).  The 'refresh
+factor' of 10 indicates that the graph and the cell diagram will be updated
+every 10 simulation steps.  You may speed up the simulation by increasing
+this number, at the expense of losing resolution in the plot of action
+potentials.
+
+The plots below the cell diagram show the membrane potential in the two
+compartments.  The lower one shows a burst of action potentials in the soma
+which terminates after about 50 msec.  If we were to run the simulation
+longer, we would see another burst in about a second.  The curve above,
+which has been displaced by 100 mV for clarity, shows the membrane
+potential in the middle of the apical dendrite.  Here the spike is very
+broad and somewhat delayed.  There are no Na channels in this region,
+but the density of Ca channels is high, so we might suspect that we are
+seeing a Ca action potential on top of whatever soma potential that has
+propagated to this point.  [This is 0.5 L from soma - cable thory predicts
+an attenuation of exp(-0.5) = 0.6].
+
+We can understand the interaction between these two types of action
+potentials by paying close attention to the colors in the cell diagram as we
+step the simulation for short amounts of time.  To slow things down a bit,
+set the 'dt' dialog box value to 1e-5 seconds.  Then set the 'runtime'
+dialog value to 0.025, so that the simulation will stop near an interesting
+point in the burst.  Click on the 'reset' button in order to reset the
+simulation time to zero and clear the graph.  Then click on 'run' again to
+perform 25 msec of simulation.  Now change the 'runtime' to only 0.002
+seconds, and click on 'run' again WITHOUT clicking on 'reset'.  You may step
+through the simulation at 2 msec intervals in this manner, watching the
+propagation of action potentials along the apical dendrite.  You should be
+able to see how the Na action potentials which are generated in the soma
+propagate to the dendritic compartments where they trigger Ca action
+potentials.  These then propagate back to the soma where they cause the
+depolarization which maintains the burst and increases the spike frequency
+during the middle of the burst.
+
+It is also possible to plot other quantities such as channel current or
+channel conductance on a second graph.  Looking at these can help us to
+understand what mechanisms are responsible for terminating the burst.  Click
+on 'Show extra cell window' to bring up a second cell diagram and its
+associated graph.  If you click on the 'scale' button in the upper left
+corner of the second cell window, a menu will appear containing a number of
+dialog boxes.  The only two which are relevant at present are 'colfield'
+(containing "Gk") and 'fieldpath' (containing "Ca").  The first of these is
+the name of the quantity to be plotted on the graph and to be used to
+determine the color of the compartments.  In this case, it is the channel
+conductance, "Gk".  The 'fieldpath' specifies the location of the field to
+be plotted, i. e. the Ca channel.  The compartment is specified in the usual
+way by planting recording electrodes in the cell diagram.  Other channels
+which you can choose are the Na, K_DR, K_AHP, K_C, or K_A channels.  For
+'colfield' you may choose the channel current ("Ik"), activation variable
+("X"), or inactivation variable ("Y"), as well as the conductance.  In
+addition to the channels, each compartment has an element called "Ca_conc"
+which keeps track of the Ca concentration.  In order to plot the Ca
+concentration, you may set 'fieldpath' to "Ca_conc" and 'colfield' to "Ca".
+The scale button on the associated graph should be used to set the graph
+scales to a range consistent with the quantity to be plotted.
+
+For now, let's go with the default values and plot the Ca channel
+conductance.  Click on 'APPLY_AND_VANISH' to put the menu away.  Select
+'Recording' under the ELECTROPHYSIOLOGY heading and plant electrodes in the
+soma and apical_14 compartment of the second cell window.  (It is not
+necesary to apply injection in the second cell window, as the injection is
+being applied in the first.)  Set 'dt' back to 5e-5, 'runtime' to 0.1, then
+click on 'reset' and 'run'.  Note that multiple plots in this second graph
+window do not have a vertical offset, as is the case with the Vm plots in
+the first graph.  You should see a large broad peak in the Ca conductance in
+the dendrite corresponding to the voltage peak.
+
+We can make use of the 'overlay' feature of the graph in order to compare
+the timing of the Ca conductance with that of the K_C conductance.  Click
+on the 'scale' button of the second cell window, change the 'fieldpath' to
+K_C, and then click on 'APPLY_AND_VANISH'.  In order to overlay the
+results of a second run using new colors, click on 'new_colors' and 'do not
+overlay' at the top of the second (conductance) graph.  The label should
+then change to 'overlay', indicating that the graph will not be cleared on
+reset.  Finally, click on 'reset,' and then 'run' in the control panel.
+Notice the position of the peak in the K_C conductance in the apical_14
+compartment relative to that of the peak of the Ca conductance.  How do
+these peaks correlate with the shape of the action potential in this
+compartment?
+
+As these results indicate that Ca and Ca concentration dependent K
+conductances have a lot to do with the bursting behavior, it would be
+reasonable to repeat the experiment with the Ca channels blocked and to
+see if this destroys the bursting behavior.
+
+We can use the 'edit_cell' selection on the title bar to set the Ca
+conductance density to zero in every compartment.  After you click on this
+button, a cell window with a drawing of the cell should appear in the
+lower left corner of the screen.  Click on the left end of the diagram.
+The selected compartment will turn red and a labeled diagram of the
+compartment will appear in the 'compartment window' aat the upper right of
+the screen.  In this case, the compartment will be the basal_1
+compartment.  As it contains no channels, click on the next compartment in
+the cell window.  The basal_2 compartment should now appear in the
+compartment window, accompanied by icons representing the Ca, K_AHP, and
+K_C channels.  If you click on the Ca channel icon, the 'Selected channel'
+dialog box will show "/CA3/basal_2/Ca", and the 'Conductance' dialog box
+will show the default conductance density (50 Siemens per square meter).
+Set this value to zero.  (Don't forget to hit 'Return' after changing
+it!)  Now click on the next compartment in the cell window. You should now
+be inspecting the Ca channel of the basal_3 compartment.  (As the Ca
+channel is the currently selected channel, you will not need to repeat the
+channel selection.)  Set the conductance density to zero and go on to the
+next compartment.  When the Ca conductance density has been set to zero in
+all the compartments, select 'run cell' from the title bar.  [HINT: It is
+also possible to set various parameters by typing commands to the
+'genesis' prompt.  The command "set /CA3/##/Ca Gbar 0.0" uses a 'wildcard'
+symbol to set the maximum Ca conductance to zero in all the compartments.]
+
+Now click on 'reset' and repeat the sequence of steps for plotting the
+results of applying a 0.2 nA injection to the soma.  Can you qualitatively
+explain the different interval between action potentials in the absence of
+Ca currents?
+
+FIRING PATTERNS
+
+Experiments have shown that CA3 cells show different modes of firing with
+different amounts of current injection.  For small depolarizations, the
+pattern is one of short bursts separated by a fairly long interval which
+decreases as the depolarization increases.  At larger depolarizations,
+there is a transition to repetitive firing of single action potentials.
+This can be observed by performing 1.5 second runs with currents of 0.2,
+0.3 and 0.5 nA injected to the soma.
+
+After having performed the last experiment, the fastest way to restore the
+original conductances and simulation parameters is to quit the simulation
+and reload the CA3 cell model.  Proceed as in the first experiment, with a
+single cell window and graph.  Record from the soma and the apical_14
+compartment and inject a 0.2 nA current to the soma.  However, the
+'runtime' value should be increased to 1.5.  The default time scale for
+the graphs is only 0.1 second, but the scales may be changed while the
+simulation is running.
+
+Run the simulation and, once the simulation has run past 0.1 second, click
+on the 'scale' button associated with the graph.  Change the value in the
+'xmax' dialog to 1.5 and press the 'APPLY_AND_VANISH' button.  You may
+also adjust the value of 'xmin', in order to zoom in on a particular pattern
+of bursts or other feature.  Note that the existing data will be replotted
+whenever the scale is changed.  Use overlay mode and new colors to
+superimpose plots of runs with injections of 0.3 and 0.5 nA.  Note the
+transition between the two firing modes.  If you have the time, you might
+also try injections of 0.1 and 0.8 nA.  Compare the results with Figures
+8 and 10 of Traub, et al.
+
+If you get bored during these long runs, you may amuse yourself by looking
+at the various options and information available through the 'edit_cell',
+'edit_compt' and 'edit_channel' title bar selections.  The simulation will
+continue to run in the background.
+
+ADDITIONAL EXERCISES
+
+1)  In an earlier experiment, we studied the behavior of the Ca and K_C
+conductances during a burst.  In a similar manner, look at the K_AHP
+current or its conductance during the interval between bursts.  Explore
+the effect of this current on the interburst interval by increasing or
+decreasing its conductance density.  What happens when this current is
+completely blocked?
+
+The following experiments are discussed in more detail in the paper by
+Traub, et al.  After reading the paper, explain the results of each of
+these experiments.
+
+2) Figure 9 of the paper shows simultaneous recordings from the soma, a
+compartment in the apical dendrite 0.6 length constants from the soma
+(apical_15), and an apical dendrite compartment 0.3 length constants from the
+soma (apical_12) under three different conditions.  Runs were made with 0.3
+nA and 0.5 nA injected to the soma and with 1.5 nA injected to the apical_15
+compartment.  Perform current clamp experiments to duplicate these results
+and explain the basis for the three different modes of firing which you see.
+You may find it useful to examine some of the channel conductances or
+currents in these compartments, as well as the membrane potential.
+
+3) Figure 6 of the paper shows some experiments with pulsed current
+injection.  Reproduce these experiments and explain what you see.  In order
+to apply a 3 nA pulse for 3 msec after 25 msec, you may (a) inject the soma
+with 0.0 nA and run for 0.025 sec, (b) change injection to 3.0 nA and
+'runtime' to 0.003 sec, (c) click on 'run' WITHOUT clicking on 'reset', (d)
+change injection to 0.0 (or remove electrode), and (e) run for 0.075 sec
+without resetting.
+
+4) Select "Vclamp" and try some voltage clamp experiments.  (Before leaving
+"Iclamp" mode, be sure to use the middle mouse button to remove any current
+injection electrodes!)  For example, clamp the membrane potential to the
+nominal resting potential, -0.060 volts.  Look at the steady state values
+of each of the ion channel currents in the soma and other selected
+compartments.  What can one learn from this?
+
+5)  Select "edit channel" from the title bar to explore the voltage dependence
+of the channel rate functions.  Note that in our notation, the activation
+gates are called "X" and the inactivation gates are called "Y".  For most of
+the channels (those implemented as 'tabchannels'), you may scale the rate
+funtions or shift their voltage dependence and see what effect this has
+upon the model behavior.
+
+6) Try some cell editting, following the instructions in the
+"neurokit/README" file for "cut and paste" of channels from compartments,
+or try adding and removing compartments from the model.  (Of course, the
+easy but inefficient way to remove a channel is to set its conductance
+density to zero.)
+
+7)  Experiments with other cell models:
+
+This simulation may also be used to explore the properties of the acutely
+isolated cell (soma plus the two adjacent compartments) or the CA1 cell
+model.  To load the former model, select the "file" menu from the title bar
+after quitting and starting a new session with Neurokit.  Then enter
+"/acute" in the "Cell for IO" dialog box and "acute.p" in the "source file
+name" dialog box before clicking on "Load from file".
+
+Can you reproduce and explain the results shown in FIgure 4?
+
+For the CA1 model, the entries are "/CA1" and "CA1.p".  Note that the
+different distribution of channels yields different firing patterns than
+those observed in the CA3 model.
+
+As before, select "run cell" from the title bar.  When the cell diagram
+appears, click on "Recording" and plant some electrodes.  If the cell
+diagram is not properly centered, you may move it around by hitting the
+keyboard "arrow" keys while the cursor is in the cell window.  Switch to
+"Iclamp" mode and try some of the experiments described in the paper.
+
+-----------------------------------------------------------------------------

@@ -1,0 +1,30 @@
+#!/bin/csh -f
+
+# rallpack2 timestep and model size series
+
+set genesis = genesis
+set simrc = ~/.simrc
+
+# timestep series includes modelsize 10
+# modelsizes for rallpack2 specify depth of the branched structure;
+# number of compartments is 2^modelsize - 1
+
+set timesteps = "10000 5000 2000 1000 500 200 100 50 20 10"
+set modelsizes = "1 3 5 7 9"
+
+
+foreach timestep ($timesteps)
+    echo '*************************'
+    echo Timestep: $timestep Modelsize: depth 10
+    echo '*************************'
+
+    $genesis -nox -altsimrc $simrc -batch -notty scale_branch $timestep 10 branch
+end
+
+foreach depth ($modelsizes)
+    echo '*************************'
+    echo Timestep: 50 Modelsize: depth $depth
+    echo '*************************'
+
+    $genesis -nox -altsimrc $simrc -batch -notty scale_branch 50 $depth branch
+end

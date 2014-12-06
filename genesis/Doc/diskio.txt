@@ -1,0 +1,260 @@
+Object Type:	diskio
+
+Description:
+
+The diskio object can be used to open/create a binary format file on disk
+(specified with -fileformat option) that can be then used to read/write
+data or metadata from/to it with child objects, 'variable' or 'metadata'
+respectively in this same library.  Unlike disk_out/disk_in, the reading
+and writing actions are combined into this one new object. 
+
+For purposes of backwards compatibility (BC), diskio responds to the 
+set of messages that disk_out and disk_in respond to at a minimum, and 
+allows the user to read/write files directly from/to the disk at every
+time-step of the clock which is assigned. It also allows the "replay" of 
+the results of a simulation through the xview and xgraph widgets in XODUS
+by message passing as well as the "xsimplot" command added in genesis 2.2.
+
+As of GENESIS 2.2, diskio supports files in the FMT1 and Netcdf formats.
+Netcdf is a portable, network transparent, public domain binary format.
+Netcdf interfaces to various popular analysis/signal-processing tools
+including MATLAB are available in the public domain. Specifically,
+
+	* MEXCDF 
+		WEB: http://crusty.er.usgs.gov/mexcdf.html 
+		FTP: crusty.er.usgs.gov (128.128.19.19) or contact
+			 Rich Signell at rsignell@crusty.er.usgs.gov. 
+	
+	* MexEPS 
+		WEB: http://www.pmel.noaa.gov/epic/mexeps.html 
+		FTP: ftp.pmel.noaa.gov/epic/mexeps/
+
+	* fanmat 
+		WEB: http://www.unidata.ucar.edu/packages/netcdf/contrib.html
+		FTP: ftp.unidata.ucar.edu/pub/netcdf/contrib/fanmat.taz
+
+are freely available packages that allow MATLAB to read/write/visualize
+netcdf data.
+
+The implementation of the diskio library and the diskio, metadata, and
+variable objects makes use of netcdf, which is Copyright
+1993-1997 by University Corporation for Atmospheric Research/Unidata.  the
+netcdf library is provided as per the terms of the UCAR/Unidata license,
+described in the copyright notice found in the src/diskio/interface/netcdf
+directory tree.
+
+Author:		V.Jagadish, Caltech (9/96)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure: Gen_Diskio_Type	[in src/diskio/diskio_struct.h]
+
+Size:		172 bytes + allocation for arrays and interpols
+
+Fields:		accessmode	Mode with which the file is accessed
+				- 'r', 'w' or 'a' (Read/Write/Append)
+
+				- Read-only field specifiable on the
+                                  command line using the -accessmode option
+                                  but cannot be set/unset subsequently
+                                  using setfield
+
+				- Defaults to 'r' (Read mode) as this is the
+			 	  most non-destructive
+				- Append 'a' mode is not supported currently
+
+				- BC NOTE: Due to the default mode being
+                                  readonly 'r', it is not sufficient to
+                                  merely replace creation-lines of disk_out
+                                  with diskio but to add the option
+                                  "-accessmode w" as well.  cf. See Examples.
+
+		filename	Data file name to read from or write into
+				- Defaults to name of object if not specified
+				- Can be set/unset as required : The old file
+				  will have data and metadata written into it 
+				  till that point in time, if the accessmode 
+				  was 'w' (write). 
+
+		fileformat	Format of the data file
+				- Unlike disk_out it is a character string 
+				  field but allows numerical setting for BC. 
+				  ("1" => FMT1, "2" => netcdf)
+				- Defaults to FMT1 if not specified
+				- Subsequent setting/unsetting of this
+                                  field is allowed only to preserve BC with
+                                  disk_out/disk_in. This is effectively a
+                                  NOP as far as the physical file is
+                                  concerned. Only the the value of the
+                                  field changes to reflect the setting and
+                                  is not recommended.
+
+		append		Flag: 1 => data should be appended to file
+				after RESET. This has certain implications
+                                from the point of view of interpreting the
+                                'variable' object value[], input and output
+                                fields.  If the append flag is on, there
+                                could be more than 1 value associated with
+                                a single time instance. The output field
+                                will always reflect the first value for the
+                                time instant set for the input field. All
+                                values however can be retrieved from the
+                                value[] field and the size field of the
+                                variable will show the total number of
+                                values stored. The user needs to keep track
+                                of when the reset was done and the time
+                                step rate (dt) to interpret the values
+                                stored in the value[] field.
+
+
+		is_open		Read-only flag: is file currently open?
+
+		is_writable	Read-only flag:	is file writable?
+
+		val		2D array of input values	
+	
+		nx		x dimension of input val array 
+
+		ny		y dimension of input val array
+
+		xpts,ypts,zpts	Interpols used for storing coordinate
+				information when the binary file is read
+
+		flush	 	Same functionality as in disk_out	
+
+		leave_open	Same functionality as in disk_out	
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	Gen_Diskio  [in src/diskio/gen_diskio.c]
+
+Classes:	output
+
+Actions:	CREATE PROCESS SET ADDMSGIN DELETEMSGIN SHOW
+
+		RESET:
+			It is essential that the RESET action be called 
+			on the diskio object for allocating and filling the 
+			"xpts ypts zpts" interpol arrays before using 
+			them to render/replay data graphically on the 	
+			xview objects. 
+			cf. Example: Scripts/examples/diskiolib/diskio
+							/replayview.g
+
+		QUIT:
+		FLUSH:
+		UPDATE: when called on the diskio object, allows the user 
+			to commit any changes done interactively 
+			or in the process of running a simulation or script, 
+			to the file on disk. This allows another diskio 
+			object to simultaneously access updated data from the 
+			same file.
+
+
+		DELETE: also commits changes but with the usual effect of 
+			deleting the object and all its children. Please note 
+			that this action does not delete the physical file on 
+			disk. 
+
+		GENERAL NOTE: 	The process of committing changes to disk is 
+				time-consuming for netcdf files. This is
+                                inherent in the implementation of the
+                                netcdf library. So please expect high
+                                latency after you quit or do a delete or
+                                call one of the above 4 actions on the
+                                diskio object, when supporting the netcdf
+                                fileformat. In general, the netcdf library
+                                provides its portability across
+                                architectures at the cost of efficiency in
+                                speed. Therefore, performance-wise one will
+                                notice diskio is slower than
+                                disk_out/disk_in, in this situation. The
+                                same is however not true for FMT1 file
+                                support.
+
+Messages: 	SAVE data
+
+		IMPORTANT BACKWARDS COMPATIBILITY (BC) NOTES:
+		---------------------------------------------
+
+		As previously mentioned, diskio responds to the same set of 
+	messages that disk_out and disk_in respond to as a minimum, for
+	purposes of BC. 
+	
+	Since the actual data is encapsulated within the variable object
+        and the design eventually envisages the exclusive use of this child
+        object to manipulate data, any incoming SAVE messages to the diskio
+        object (thro the addmsg command) will result in the automatic
+        creation of child variables and the forwarding of the message to
+        them. So the data will be stored and manipulated via these child
+        variables, while letting the user transparently deal only with the
+        diskio object as was done previously with disk_out/disk_in.
+
+	For every SAVE message there will be a specially named child 
+	variable object - 'autoSAVE_diskio[i]', where i is the index of 
+	the element and that corresponds to the number of the message.   
+	The indices will be reused if any messages are deleted and added 
+	later. 
+
+	Also, for every SAVE message, the 3-D position coords of the source
+        element needs to be stored for possible future replay via graphical
+        objects like xview. This is done through the automatic creation of
+        specially named indexed metadata children -
+        'auto3-DPosSAVE_diskio[i]'.
+
+	So in applications where diskio is intended to be used as a
+        replacement for disk_out/disk_in, these variables & metadata will
+        be automatically created in the hierarchy for every SAVE message to
+        the object. Directly manipulating these child objects should be
+        avoided, since it would essentially change the contents of the
+        file, if committed.  
+
+	Example: 
+		* Run Scripts/examples/diskiolib/diskio/generate.g
+		* genesis> le /diskio
+
+------------------------------------------------------------------------------
+
+Notes:
+
+As a departure from the disk_out/disk_in objects, this object internally 
+just serves to interface (open/create/close) with a binary file on disk.  
+
+The actual data in the file can be more flexibly managed using the child
+'variable' objects in this library.  For purposes of backwards
+compatibility, however, the diskio object will respond to the same messages
+as the disk_out and disk_in objects at a minimum to actively write/read
+data to/from the file during a simulation run. 
+
+Some binary file formats notably netcdf (which this library supports) allow
+descripive data (metadata) to be stored in them along with the actual data.
+Child 'metadata' objects in this library allow the user to manipulate the 
+metadata content in these files.
+
+Use asc_file for writing data in ASCII format. 
+
+Examples:
+
+0. create diskio /dout -filename testfile.nc -fileformat netcdf -accessmode w
+
+	// Not specifiying a fileformat while creating a file defaults to FMT1 
+1. create diskio /dout_FMT1 -filename testfile.fmt1 -accessmode w
+
+2. call /dout UPDATE
+
+3. delete /dout 
+
+4. Also, please see Scripts/examples/diskiolib/diskio/
+					- generate.g
+					- generate_netcdf.g
+					- replayview.g
+					- replaygraph.g
+					- simplot.g
+______________________________________________________________________________
+
+
+See also:	variable, metadata, disk_out, disk_in, asc_file

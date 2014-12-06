@@ -1,0 +1,99 @@
+Contents :
+	README		: This file
+	rms.c		: Computes rms difference for smooth curves
+	srms.c		: Computes rms difference for spike waveforms
+	scaler.c	: Scales curves to match units
+	filesplit.c	: splits up and scales files from NEURON simulations
+	simplerms.c	: Older version of rms.c
+==================================================================
+
+Overview.
+
+The first two C programs in this directory compare voltage traces. They
+expect ascii data files with two fields per line :
+	t	v
+the time and the value for the data point. There are no assumptions
+about units. The results are normalized to be unit-independent.
+In order to get % error values one should multiply the normalized
+results by 100.
+The programs will deal with different sampling intervals by doing
+linear interpolation based on the interval for the first trace.
+The third program helps the user convert between files using different units.
+It uses the same data format.
+The fourth program is used to illustrate the basic algorithm used by
+the two rms routines.
+
+==================================================================
+
+The rms.c program gives the rms difference between the two traces. It
+is applicable to monotonically changing functions like charging curves.
+The function works fine on files using differing (and perhaps uneven)
+time sample points. It does linear interpolation on each file based on
+the number of samples and total simulation time for the first file.
+It has an option for writing out the interpolated values.
+
+When the two data files have different time intervals, then the slower
+one should be file1. If this is not done, then the linear interpolation
+will result in rms values being calculated for interpolated points on
+the straight line segments between sample points, which will inflate the
+error estimates.
+
+==================================================================
+
+The srms.c program gives rms difference between isi, ptp and shape for
+two spike traces. It also provides the sum of these three measures.
+The shape rms is calculated by scaling (in time) so that the ISI's
+match, and then interpolating the second file with respect to the first.
+The program is likely to have difficulties if the spike traces are
+radically different.
+This program has been tested with spike traces scaled with respect to each
+other by 1% on the time and voltage axes respectively. It generates approx
+0.01 as the rms error in each case.
+The srms program performs a very simplistic comparison which is
+sensitive to a number of uncontrolled factors such as sampling interval
+and jitter in the waveforms. The 'srms' values it generates are not
+easily related to intuitive ideas of waveform difference, being rather larger
+than one would expect. It is valuable to visually compare the spike traces
+in addition to using the srms values.
+
+==================================================================
+
+The scaler program performs the following operation on each data point : 
+	newx = (oldx + ox) * sx
+	newy = (oldy + oy) * sy
+allowing for offset and scaling operations to be performed on the data file.
+The output is also as x,y pairs.
+
+Example :
+To convert from SI (Seconds, Volts) to electrophysiological units (msec, mV)
+	scaler SIfile outfile 0.001 0.001 0 0
+
+==================================================================
+
+The filesplit program takes a file of the form
+	t	v1	v2
+and generates two files of the forms
+	t/1000 	v1/1000
+and 
+	t/1000	v2/1000
+respectively. The files have the original name with a '0' and a 'x' suffix.
+The program is a utility for changing the format of the files generated 
+by our NEURON simulations into the format used by the reference programs.
+
+=================================================================
+
+Compilation :
+cc rms.c -o rms -lm
+cc spikerms.c -o srms -lm
+cc scaler.c -o scaler
+cc filesplit.c -o filesplit
+
+==================================================================
+
+Usage :
+ rms file1 file2 [-out]
+ srms file1 file2 [-out]
+ scaler infile outfile sx sy ox oy
+ filesplit file
+
+==================================================================

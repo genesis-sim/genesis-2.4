@@ -1,0 +1,13 @@
+Routine Name:	sqrt
+
+Description:	Returns square root of positive number.
+
+Usage:		square-root = {sqrt positive-number}
+
+Example:	genesis > echo {sqrt 2}
+		1.414213538
+		genesis > echo {sqrt 0}
+		0
+		
+Notes:		
+

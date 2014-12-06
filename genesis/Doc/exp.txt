@@ -1,0 +1,13 @@
+Routine Name:	exp
+
+Description:	Returns "e" raised to specified power.
+
+Usage:		number = {exp power}
+
+Example:	genesis >  echo { exp 1 }
+		2.718281746
+
+Notes:		
+
+See also:	log, pow
+

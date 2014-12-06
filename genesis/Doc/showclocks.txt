@@ -1,0 +1,20 @@
+Routine Name:	showclocks
+
+Description:	Displays currently defined clocks and their assigned values.
+
+Usage:		showclocks
+
+Example:	genesis > showclocks
+
+		ACTIVE CLOCKS
+		-------------
+		[0] : 0.001
+		[1] : 0.005
+
+
+Notes:		Clock number 0 is the global simulation clock.  The default
+		step size is 1.0 in whatever units you are using.
+
+See also:	useclock, setclock, getclock
+
+

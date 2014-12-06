@@ -1,0 +1,53 @@
+Object Type:	sigmoid
+
+Description:	
+
+Computes the sigmoidal transformation of the input and places the result in
+'state'.  The equation being applied is
+
+        state = amplitude*(tanh(gain*(input - thresh)) + 1)/2.0
+
+This gives a ``squashing'' function which is commonly used in connectionist
+models as an approximation to the relation between the amount of synaptic
+input to a cell and its firing rate.
+
+Author:		M. Wilson, Caltech (6/88)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+Data Structure:	sigmoid_type  [in src/buffer/buf_struct.h]
+
+Size:		116 bytes
+
+Fields:		thresh
+		amplitude
+		input
+		state
+		gain
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	SigmoidEvent  [in src/buffer/sigmoid.c]
+
+Classes:	buffer
+		segment
+
+Actions:	PROCESS RESET COPY CREATE
+
+Messages:	INPUT	input
+		THRESH	threshold
+		GAIN	gain 
+		AMP	amplitude 
+
+------------------------------------------------------------------------------
+
+Notes:		
+
+Example:	Scripts/examples/sigmoid.
+
+See also:	
+

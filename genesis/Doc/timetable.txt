@@ -1,0 +1,127 @@
+Object Type:	timetable
+
+Description:	A table of time values at which an activation variable 
+		is set to different value for one timestep.
+		Designed to allow timestep independent synaptic activation
+		with controlled sequences of input.
+
+Author:		D. Jaeger, Caltech (3/95)
+	        revised and extended for GENESIS 2.2 4/00
+
+------------------------------------------------------------------------
+
+ELEMENT PARAMTERS
+
+DataStructure:	timetable_type [in genesis/src/device/spike_struct.h]
+
+Size:		176 bytes
+
+Fields:		method		1 = exponential inter-time interval
+				2 = gamma iti
+				3 = regular iti
+                                4 = read times from ascii file
+		meth_desc1	method parameter
+		meth_desc2	method parameter
+		meth_dexc3	method parameter
+		seed		random number generator seed
+		act_val		value of activation when set to on
+		maxtime		max. time up to which table is filled
+		maxpos		table size
+		tabpos		current table index
+		fname		name of file if times are read from file
+		
+		------- fields below should not be touched by user ----
+
+		*timetable	floating point array
+		allocated	allocation flag
+
+------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	TimetableFunc [in genesis/src/device/timetable.c]
+
+Classes:	device
+
+Actions:	SET
+		RESET
+		PROCESS
+		TABCREATE
+		TABFILL
+		TUPDATE
+
+Messages:	[none]
+
+-------------------------------------------------------------------------
+
+Notes:	The timetable consists of a floating point array of values
+	at which an activation variable is set to on.
+
+	The table can be filled with various distributions of inter-
+	time intervals. This procedure is controlled by the
+	TABCREATE, TABFILL, and TUPDATE actions. The fields
+	method, meth_desc1, meth_desc2, and meth_desc3 control
+	the process. Here is how it works:
+
+	TABCREATE: a table of size maxpos is allocated and filled with zeros.
+	TABFILL: a table is created and filled according to the following
+		rules: 
+		method=1: exponential iti distribution.
+			-> meth_desc1 = mean iti.
+		method=2: gamma iti distribution with added refractory period
+			-> meth_desc1 = mean iti.
+			-> meth_desc2 = absolute refractory period.
+			-> meth_desc3 = order of gamma distribution
+				(integer between 1 and 6)
+		method=3: regular iti distribution
+			-> meth_desc1 = iti
+		method=4: read times from ascii file
+			-> filename = filename
+
+		maxtime: table is filled up to maximal value of maxtime
+			and appropriate table is allocated and maxpos is
+			set automatically.
+		seed:	if seed != 0 then random number generator is
+			seeded before filling table with methods 1 or 2.
+
+	TUPDATE: the table is changed in the following way.
+	example: call timetable TUPDATE mode mintime maxtime new_iti [new_iti2]
+		i.e. the TUPDATE is done with a call statement and
+			4 variables need to be supplied.
+		mode=1: The time values are randomly jitterd for
+			+- 0.5 new_iti
+		mode=2: A new distribution following the current
+			method field is inserted between mintime and
+			maxtime. The old values in this time range
+			are thrown out, but surrounding values stay
+			intact.	 The new_iti field determines the new
+			mean iti. If a new_iti2 is given, the new iti is
+			changed linearly from new_iti to new_iti2 during
+			the period between mintime and maxtime.
+                mode=3: A specified number of spikes can be inserted
+                        into a given time window. Usage:
+                        call <tt> TUPDATE 3 starttime endtime n jitval
+                        The first spike is inserted at starttime. If more
+                        than one spike is to be inserted, subsequent spikes
+                        are inserted at regular intervals until the nth
+                        spike is inserted at endtime. If jitval <> 0 then
+                        each inserted spike is randomly jittered by a value
+                        of max. +-jitval.
+
+Example:
+
+create timetable tt
+setfield tt maxtime 1 act_val 1.0 method 1 meth_desc1 0.02
+/* create table with exponential distribution of mean 0.02 */
+call tt TABFILL
+/* connect table to synaptic events */
+create synchan c3
+addmsg tt c3 ACTIVATION activation
+
+/* put burst with faster itis  (iti 0.001)  at time 0.1 to 0.2 */
+call tt TUPDATE 2 0.1 0.2 0.001
+
+/* put burst of diminishing itis (iti 0.001 to 0.01)  at time 0.5 to 0.7 */
+call tt TUPDATE 2 0.5 0.7 0.001 0.01
+
+See also:	event_tofile, Scripts/examples/spike/spikes.g

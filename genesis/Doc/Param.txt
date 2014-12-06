@@ -1,0 +1,179 @@
+  18.  The GENESIS Parameter Search Library
+
+  18.1.  What is automated parameter searching?
+
+  Most GENESIS simulations, especially highly realistic simulations of
+  single neurons, have large numbers of parameters which are not
+  strongly constrained by existing experimental data.  In such cases,
+  the modeler has to choose the parameters that cause the model to
+  produce outputs which are as close as possible to the outputs of the
+  real system.  Doing this manually is a very tedious process: typically
+  one parameter at a time is adjusted and the modeler sees if the
+  simulation outputs are any closer to the desired behavior than before.
+  Although a lot of insight can be obtained this way, the nonlinear
+  behavior of neurons and the strong interactions between many
+  parameters in creating neural behaviors make this unnecessarily
+  difficult.  In order to make parameter searching easier, we have
+  developed a library of parameter search objects and functions which
+  automate the search process.  Manual parameter searches that might
+  take months of boring work can often be done in a few days of
+  automated searches with no user intervention whatsoever, and the
+  results will typically be better as well.
+
+  18.2.  The parameter searching process
+
+  First, the simulation whose parameters will be varied must be created
+  and debugged.  The modeler must then determine a way to compare the
+  output of the simulation with a desired output so that a numerical
+  match value is computed after each simulation.  Typically, the smaller
+  the match value the closer the simulation matches the data, with zero
+  representing a perfect match.  The modeler can create his or her own
+  match function (in GENESIS script language or in C code) or use one of
+  the predefined match functions.  Typical match functions for neuron
+  outputs compare the times of spikes, the shape of interspike interval
+  waveforms, or both.
+
+  Then the modeler must create and initialize a ``paramtableXX'' object
+  (see below for what XX means).  This object contains tables of
+  parameters and can update these to give the next parameter set to try.
+  The initial parameter values are set using the ``initparamXX''
+  functions.  Then the modeler writes a function in the GENESIS script
+  language to run the search.  This process is as follows:
+
+  1. Run a new simulation.
+
+  2. Calculate a match value.
+
+  3. Notify the paramtableXX object of the match value.
+
+  4. Tell the paramtableXX object to calculate the next set of
+     parameters.
+
+  5. Adjust the parameters of your model based on the new set of
+     parameters.
+
+  Once this is done, the function is called and the search begins.  Full
+  examples of this process for all the parameter search objects are
+  included in the parameter search demos in the Scripts/param directory.
+  We ``strongly'' advise you to use these scripts as prototypes for your
+  own parameter searches, as this will make the process much simpler.
+
+  18.3.  The GENESIS parameter search library
+
+  All of the GENESIS functions and objects pertaining to parameter
+  searching are in the ``param'' library.  There are two broad classes
+  of entities in this library:
+
+  1. Objects that hold information about parameter searches and select
+     new parameter sets based on the results of previous simulations.
+     These objects are all called ``paramtableXX'' where XX is an
+     abbreviation for the parameter search method.
+
+  2. Functions that are used to calculate how close a simulation is to
+     some desired behavior.
+
+  3. Various helper functions.
+
+  The paramtable objects currently include:
+
+  paramtableBF   Implements brute-force parametersearch
+  paramtableCG   Implements conjugate-gradient descent parameter search
+  paramtableGA   Implements genetic algorithm parameter search
+  paramtableSA   Implements simulated annealing parameter search
+  paramtableSS   Implements stochastic parameter search
+
+  The matching functions include:
+
+   shapematch   Returns goodness of match between two waveform files
+   spkcmp       Returns goodness of match between two spike time files
+
+  The helper functions include:
+
+   gen2spk       Creates file with spike times from file of Vm vs. time
+   getparamGA    Gets parameters from the paramtableGA object
+   initparamBF   Initializes parameters for the paramtableBF object
+   initparamCG   Initializes parameters for the paramtableCG object
+   initparamGA   Initializes parameters for the paramtableGA object
+   initparamSA   Initializes parameters for the paramtableSA object
+   initparamSS   Initializes parameters for the paramtableSS object
+   setparamGA    Sets parameters for the paramtableGA object
+   setsearch     Specifies which parameters will be varied in a search
+
+  18.4.  Recommendations
+
+  We recommend the SA method for simulations with small numbers of
+  parameters (less than 10), and either the SA or the GA method for
+  larger numbers of parameters.  The CG method can be used for very
+  simple or highly linear models, but experience shows that the SA
+  method can be as good or better than the CG method even in these
+  cases.  The SS method is mostly a historical artifact and is usually
+  not the best method to use.  The BF method is useful for an initial
+  mapping of parameter space, but not for the searching process per se.
+  See the documentation for the individual paramtable objects for more
+  detailed recommendations.
+
+  Your searches will be much more likely to succeed if the starting
+  model at least qualitatively matches the main features of the real
+  system's behavior.  To give an extreme example, you wouldn't use a
+  one-compartment model with simple Na and K Hodgkin-Huxley channels and
+  try to match the outputs of a Purkinje cell in a bursting mode.  The
+  model should at least be able to show some kind of bursting behavior
+  in this case before you began the search.  Similarly, if the cell
+  shows strong spike frequency adaptation the model must have channels
+  that can do this too (e.g. M-current or AHP potassium channels).
+  Automated searching can't make a bad model good.
+
+  If possible, the matching function should be tailored to the data to
+  be matched.  For instance, in a rapidly adapting cell, matching the
+  first few spikes may be more critical than matching the last spike,
+  which may have a wide variation in timings in the real system.
+  Ideally a new matching function should be written in C for each cell
+  type, although this is not always practical.  This can reduce the
+  length of the search by heavily penalizing models which are obviously
+  incorrect and thus removing them from consideration.
+
+  Note that the paramtable objects have many parameters of their own
+  that can affect the success or failure of a search.  Advice on these
+  can be found in the documentation for the individual objects.
+
+  It is very important to save the state of the search regularly, in
+  case of a computer crash.  All the routines have SAVE actions that
+  should be invoked regularly.
+
+  Searches that involve a lot of deleting of old elements will usually
+  cause some memory leaks, since GENESIS is not completely free of such
+  leaks yet.  It is vital to call ``reclaim'' after deleting a lot of
+  elements or the memory allocated to such elements will not be freed.
+  If this happens you may run out of memory on your computer very fast!
+  Even with this precaution, long searches can cause appreciable memory
+  leaks, so that a simulation which starts off at (say) five megabytes
+  may grow to 10 or 15 megabytes or more.  This is especially true for
+  large searches which take days to run.  The best solution is to
+  periodically save the state of the paramtable object to disk, get out
+  of GENESIS, and restore the state of the object.  This can all be done
+  from a shell script; examples are shown in the demo directories.
+
+  Parallel GENESIS (PGENESIS) is very useful for parameter searching if
+  you have access to a parallel supercomputer (don't we all?  I have
+  three in my bedroom right now...).
+
+  18.5.  Bug reports.
+
+  Send all bug reports to Mike Vanier at mvanier@cs.caltech.edu.
+  Before you report a bug, read the bug reporting procedure, ``Reporting
+  Bugs'' (Bugs.txt).
+
+  18.6.  Caveats
+
+  Wonderful though parameter searching is, modelers must always remember
+  that a parameter search can't find a good model if none exists in the
+  parameter space.  However, the failure of a parameter search to find a
+  good match often can be a clue that some important component is
+  missing from the model, which can be very useful information.
+
+  Becoming adept at parameter searching takes intelligence, practice and
+  experience.  In particular, understanding the different options in the
+  parameter search objects and knowing which methods work best under
+  which circumstance is non-trivial.  This is an ongoing area of
+  research, and no doubt more and spiffier methods will be developed in
+  the future (maybe even by you, the disgruntled GENESIS programmer!).

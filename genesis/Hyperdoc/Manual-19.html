@@ -1,0 +1,261 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: The XODUS Graphical Interface</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-18.html">Previous</A>
+<A HREF="Manual-20.html">Next</A>
+<A HREF="Manual.html#toc19">Table of Contents</A>
+<HR>
+<H2><A NAME="XODUS"></A> <A NAME="s19">19. The XODUS Graphical Interface</A> </H2>
+
+
+
+<H2><A NAME="ss19.1">19.1 Introduction and Overview of XODUS</A> </H2>
+
+
+<P>The graphical interface to GENESIS is provided by XODUS, the X-windows
+Output and Display Utility for Simulations.  This interface is provided by
+graphical objects (called ``widgets'') which can be used to create elements
+that are treated like other GENESIS elements.  These are discussed in detail
+in ``The Book of GENESIS'' and in the documentation for the individual XODUS
+objects and commands, so we will give only a brief overview here.</P>
+
+
+
+<H2><A NAME="ss19.2">19.2 Basic Widgets</A> </H2>
+
+
+<P>The table below lists the basic XODUS widgets used to create labels, buttons,
+toggles, dialog boxes, and for the display of bitmapped images and text.</P>
+
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object </TD><TD> Description</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xbutton">xbutton </a> </TD><TD> A button which executes script actions from mouse clicks.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xdialog">xdialog </a> </TD><TD> A dialog box containing a text string.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xform">xform </a> </TD><TD> The window containing other graphical elements.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#ximage">ximage </a> </TD><TD> Displays a GIF format bitmapped image inside a form.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xlabel">xlabel </a> </TD><TD> A rectangular label containing a text string.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xtext">xtext </a> </TD><TD> A widget for the display and editing of text.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xtoggle">xtoggle </a> </TD><TD> Maintains toggle state and executes actions from mouse clicks.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>The form, created from the xform object, is the container for all other
+graphical elements.   Although the position of an element in the element
+hierarchy is arbitrary for other GENESIS elements, widgets which are to be
+displayed in a form must be children of the parent form.  The following
+example creates a graph and three buttons within a form:</P>
+<P>
+<PRE>
+     create xform /data
+     create xgraph /data/voltage
+     create xbutton /data/RESET -script reset
+     create xbutton /data/RUN -script &quot;step 100&quot;
+     create xbutton /data/QUIT -script quit
+ 
+</PRE>
+</P>
+<P>As described in 
+<A HREF="Manual-13.html#Messages">Messages</A>, a message from another
+element would be used to send values to the graph for plotting.</P>
+<P>Note the use of the ``<CODE>-script</CODE>'' option to set the
+<EM>script</EM> field of the xbutton to the string representing the
+statement to be executed when the button is clicked upon.  Most of the
+XODUS widgets (except for xform) also execute script actions in
+response to mouse clicks.  These are described under 
+<A HREF="Manual-20.html#Clicks">XODUS Mouse Clicks</A>.</P>
+<P>Other fields (described in the documentation for the particular widget or
+listed with the showobject command) are used for setting background and
+foreground colors, label strings, fonts, and other properties of the
+widget.  In addition, there are fields for specifying the geometry of the
+widget, i.e. its location and size.  In the example above, the default
+values were used.</P>
+
+
+<H2><A NAME="ss19.3">19.3 Specifying Widget Geometries</A> </H2>
+
+
+<P>The horizontal and vertical positions and the width and height of an
+XODUS widget are specified by the four geometry fields <EM>xgeom</EM>,
+<EM>ygeom</EM>, <EM>wgeom</EM> and <EM>hgeom</EM>.  These fields may
+be set at any time with the setfield command.  You may also set them
+when the widget is created, by using the options ``<CODE>-xgeom</CODE>'',
+``<CODE>-ygeom</CODE>'', ``<CODE>-wgeom</CODE>'' and ``<CODE>-hgeom</CODE>''.  As
+a shorthand notation, and for backwards compatibility with previous
+versions of GENESIS, these four geometry values may be given in square
+brackets as ``[xgeom,ygeom,wgeom,hgeom]'' at the time the widget is
+created.  For example,</P>
+<P>
+<PRE>
+ 
+   create xform /form [10,10,400,100]
+   create xbutton /form/QUIT [0,20,,50] -script quit // use default wgeom
+ 
+</PRE>
+</P>
+<P>When given as numbers, these values represent the (x,y) coordinates
+and the width and height of the widget, measured in pixels.  For
+forms, the coordinates are measured relative to the upper left-hand
+corner of the screen.  For other widgets, they are measured relative
+to the interior upper left-hand corner of the form which contains
+them.  The <EM>ygeom</EM> coordinate is measured downwards.  A percent
+sign may be used after a number to indicate that it represents a
+percentage of the screen or form dimension, instead of a pixel value.</P>
+<P>These conventions are used for the basic widgets described above, as well as
+for the draw widget varieties described below.</P>
+
+
+<H3>Reference Edges </H3>
+
+<P>It is also possible to specify the geometry of a widget with respect to that
+of the parent form or another sibling widget using a notation of the form
+``offset:reference.edge''.  Here, ``offset'' is a pixel value or percentage,
+as before.  ``reference'' may be ``parent'' (meaning the parent element --
+usually the form), ``last'' (the most recently created widget), or the name
+of a sibling widget.  The ``edge'' may be ``left'', ``right'', ``top'',
+``bottom'', ``width'', or ``height''.</P>
+<P>When used with <EM>xgeom</EM> or <EM>ygeom</EM> and a parent
+reference, left, right, top and bottom will place the child's
+corresponding edge a given distance in from the given edge of the
+parent.  For a sibling, the child's opposite edge is placed a given
+distance away from the given edge of the sibling.</P>
+<P>When specifying a <EM>wgeom</EM> or <EM>hgeom</EM>, and giving a
+parent reference, left, right, top and bottom will set the dimension
+of the child such that the widget right or bottom edge will be the
+given distance from the given edge of the parent.  A width edge sets
+the dimension to the value given while a height edge sets it to the
+parent height less the given value.  For a sibling, left, right, top
+and bottom will set the dimension of the child such that the opposite
+edge of the widget will be a given distance from the given edge of the
+sibling.  For width and height edges the dimension is set to the sum
+of the siblings width/height and the given value.</P>
+<P>Note that some combinations of references and edges result in nonsensical
+geometry specifications which may cause errors.</P>
+<P>In cases where a complete geometry value is not given, default values are
+assumed.  When no geometry is present the defaults are:</P>
+<P>
+<TABLE BORDER><TR><TD>
+xgeom </TD><TD> 0:parent.left</TD></TR><TR><TD>
+ygeom </TD><TD> 0:last.bottom</TD></TR><TR><TD>
+wgeom </TD><TD> 100%:parent.width</TD></TR><TR><TD>
+hgeom </TD><TD> &lt;default height for widget&gt; </TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+<P>When a value is given, then the reference widget defaults to parent and the
+reference edge defaults to:</P>
+<P>
+<TABLE BORDER><TR><TD>
+xgeom </TD><TD> left for a parent ref, right for a sibling ref</TD></TR><TR><TD>
+ygeom </TD><TD> top for a parent ref, bottom for a sibling ref</TD></TR><TR><TD>
+wgeom </TD><TD> width</TD></TR><TR><TD>
+hgeom </TD><TD> height</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+<P>These combinations are best explained with some examples:</P>
+<P>
+<PRE>
+   create xform /form [10,10,400,200]
+   xshow /form   // make it visible
+
+   // make a 100 x 50 pixel label, 100 pixels from the form left edge
+   create xlabel /form/label -xgeom 100:parent.left -wgeom 100 -hgeom 50
+
+   create xbutton /form/button // full width button below the label (default)
+   // put button's right edge 10 pixels left of the label and reduce width
+   setfield /form/button xgeom 10:label.left wgeom 70
+   // increase the height of the button to 80% of the label height
+   setfield /form/button hgeom 80%:label  // &quot;.height&quot; is assumed
+   // change the button height to 30% of the label width
+   setfield /form/button hgeom 30%:label.width
+   // put bottom of button 50 pixels below top of label
+   setfield /form/button ygeom -50:label.top 
+
+   // add a toggle 5 pixels to the right of the button
+   create xtoggle /form/toggle -xgeom 5:last.right -wgeom 100
+ 
+</PRE>
+</P>
+
+
+<H2><A NAME="ss19.4">19.4 The Draw Widget Family</A> </H2>
+
+<P>In addition to the basic widgets described above, XODUS provides a set of
+more advanced graphical objects based upon the draw widget.  A draw widget
+may be thought of as a window into a three dimensional space for the display
+of graphical objects called pixes.  Draw widgets are displayed inside of
+forms, and pixes are displayed inside of draws, using the element hierarchy
+``form/draw/pix''.  The draw widget provides for coordinate transformations
+of the pixes, including pan, zoom, two dimensional projections into a given
+plane, orthographic and perspective projections.  These transformations may
+be controlled by keyboard commands as well as by setting fields of the draw
+widget.  Further details are given in the documentation for 
+<A HREF="Manual-26.html#xdraw">xdraw </a>.</P>
+<P>The graph widget (described in the documentation for 
+<A HREF="Manual-26.html#xgraph">xgraph </a>)
+is a specialized form of draw widget for the display of plots and axes.
+In addition to the transformations provided for draw widgets, it allows
+additional transformations for rescaling axes and the displayed plots.</P>
+<P>The table below summarizes the varieties of draws and pixes that are
+currently available.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Object</TD><TD> Description</TD></TR><TR><TD>
+xaxis</TD><TD>Makes axis for plots -- automatically created by xgraph.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xcell">xcell </a></TD><TD>Similar to xview, but specialized for compartmental cell display.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xcoredraw">xcoredraw </a></TD><TD>The core class from which other draw widgets are subclassed.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xdraw">xdraw </a></TD><TD>Main object class for the display of pixes, with transforms.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xdumbdraw">xdumbdraw </a></TD><TD>Simple example window for the display of pixes.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xfastplot">xfastplot </a></TD><TD>High-speed graphic display similar to an oscilloscope</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xgif">xgif </a></TD><TD>Draws GIF format images as a pix inside a draw.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xgraph">xgraph </a></TD><TD>Specialized draw widget for the display of plots.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xpix">xpix </a></TD><TD>Basic object for drawing graphical objects (pixes) in 3-D space.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xplot">xplot </a></TD><TD>Displays plots within a graph -- created by messages to xgraph.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xshape">xshape </a></TD><TD>Pix used for drawing shapes -- often used for icons.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xsphere">xsphere </a></TD><TD>Example pix which draws a filled circle.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xtree">xtree </a></TD><TD>Displays and manipulates elements and their messages.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xvar">xvar </a></TD><TD>Uses shapes to display numerical values with color, size, etc.</TD></TR><TR><TD>
+<A HREF="Manual-26.html#xview">xview </a></TD><TD>Like an array of xvars, displaying multiple points in 3-D space.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<H2><A NAME="ss19.5">19.5 XODUS Commands</A>  </H2>
+
+<P>When a form is first created, it is not visible.  GENESIS has several
+commands affecting the display of forms.  Other commands are specific to
+certain XODUS widgets.  The table below lists the commands used with XODUS.</P>
+<P>
+<TABLE BORDER><TR><TD>
+</TD><TD> </TD></TR><TR><TD>
+Routine</TD><TD>Description</TD></TR><TR><TD>
+pixflags</TD><TD>Alias for xpixflags.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#setpostscript">setpostscript </a></TD><TD>Alias for xps.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#xcolorscale">xcolorscale </a></TD><TD>Sets the color scale for mapping numerical values to color.</TD></TR><TR><TD>
+xflushevents</TD><TD>Forces XODUS to go through the queue of pending events.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#xgetstat">xgetstat </a></TD><TD>Returns 0 if XODUS has not been initialized.</TD></TR><TR><TD>
+xhide</TD><TD>Hides a form and its contents.</TD></TR><TR><TD>
+xinit</TD><TD>No longer necessary in GENESIS 2 (does nothing).</TD></TR><TR><TD>
+xlower</TD><TD>Moves a form below any other forms or windows.</TD></TR><TR><TD>
+xmap</TD><TD>Like xshow, but does not put form on top if it is not hidden.</TD></TR><TR><TD>
+xpixflags</TD><TD>Describes set of flags which determine properties of pixes.</TD></TR><TR><TD>
+<A HREF="Manual-25.html#xps">xps </a></TD><TD>Sets parameters for postscript output of widgets.</TD></TR><TR><TD>
+xraise</TD><TD>Moves a form on top of any other forms or windows.</TD></TR><TR><TD>
+xshow</TD><TD>Shows (displays) a form and its contents.</TD></TR><TR><TD>
+xshowontop</TD><TD>Alias for xshow (for backwards compatibility).</TD></TR><TR><TD>
+<A HREF="Manual-25.html#xsimplot">xsimplot </a></TD><TD>Plots data from a file to a graph.</TD></TR><TR><TD>
+xtextload</TD><TD>Loads muliple lines of text into a text widget.</TD></TR><TR><TD>
+xupdate</TD><TD>Forces an update of the display of pixes within a draw.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+</P>
+
+
+<HR>
+<A HREF="Manual-18.html">Previous</A>
+<A HREF="Manual-20.html">Next</A>
+<A HREF="Manual.html#toc19">Table of Contents</A>
+</BODY>
+</HTML>

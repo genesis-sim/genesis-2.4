@@ -1,0 +1,326 @@
+<HTML>
+<HEAD>
+<TITLE>GENESIS Reference ManualMay 5, 2001: Converting GENESIS 1.4 Scripts to GENESIS 2.0</TITLE>
+</HEAD>
+<BODY>
+<A HREF="Manual-21.html">Previous</A>
+<A HREF="Manual-23.html">Next</A>
+<A HREF="Manual.html#toc22">Table of Contents</A>
+<HR>
+<H2><A NAME="Convert"></A> <A NAME="s22">22. Converting GENESIS 1.4 Scripts to GENESIS 2.0</A>  </H2>
+
+
+<P>GENESIS 2.0 includes a major revision of command format and command
+option naming, script language syntax changes, and changes in various
+GENESIS features.  The convert program converts GENESIS 1.4 compatible
+scripts to use GENESIS 2.0 syntax, commands and features.  Some
+features have changed dramatically enough that an automatic conversion
+to the new features is not feasible.  In these cases, convert generates
+script code for compatibility libraries which support the GENESIS 1.4
+features.</P>
+<P>Some scripts can be converted and run successfully without any manual
+changes to the converted scripts.  In most cases, however, some changes
+to the converted scripts will be necessary.</P>
+
+
+<H2><A NAME="ss22.1">22.1 The Conversion Process</A>  </H2>
+
+<P>Below is the process through which a GENESIS 1.4 script is converted
+to run under GENESIS 2.0.
+<OL>
+<LI> Use the convert program to convert scripts from 1.4 to
+2.0 syntax.
+</LI>
+<LI> Fix any known problem areas (See 
+<A HREF="#Convert_prob">Convert Problem Areas</A>).
+
+</LI>
+<LI> Try the script out and fix any remaining problems.</LI>
+</OL>
+</P>
+
+
+<H2><A NAME="ss22.2">22.2 Using the Convert Program</A>  </H2>
+
+<P>The easiest way to use convert is to create a new directory for the
+new scripts, cd to the new directory and convert the files from the
+old directory.  A simple shell procedure may be used to convert an
+entire directory.  For example, if your 1.4 script files are in the
+directory <EM>../oldscript</EM>, then the following shell commands
+will convert the entire directory placing the converted scripts in
+the current working directory:
+<PRE>
+    csh:
+          foreach script (../oldscript/*.g)
+              convert $script
+          end
+
+    sh:
+          for script in (../oldscript/*.g)
+              convert $script
+          end
+  
+</PRE>
+</P>
+
+
+<H2><A NAME="ss22.3">22.3 Global Script Variables</A>  </H2>
+
+<P>In order for convert to handle certain script expressions involving
+global script variables, it must know what globals exist for a given
+set of scripts.  (This is not a problem for a self contained script
+where global variables are defined and used within the script.)
+Often a single script file is devoted to defining and initializing
+global variables and constants for a given set of scripts.</P>
+<P>The <CODE>-constants</CODE> option of the convert program gives a list of script
+files which define the global variables for the script set.  For
+example, if the file constants.g contains global variable definitions
+which are used throughout a set of scripts in the <EM>../oldscripts</EM>
+directory then the following csh code would convert the scripts:
+<PRE>
+          foreach script (../oldscripts/*.g)
+              convert $script -constants ../oldscripts/constants,g
+          end
+  
+</PRE>
+
+The ``<CODE>-constants</CODE>'' option will allow one or more scripts to be given.</P>
+
+
+
+<H2><A NAME="ss22.4">22.4 Compatibility Libraries</A>  </H2>
+
+<P>Two areas of major change in GENESIS 2.0 are the XODUS GUI and support
+for network modeling (e.g. GENESIS 1.4 connections).  Support for use
+of these facilities in GENESIS 2.0 is provided by compatibility
+libraries.</P>
+<P>While the compatibility libraries allow faster conversion of GENESIS
+1.4 scripts for use under GENESIS 2.0, these libraries will not be
+aggresively supported and should be viewed as a transitional step in
+converting scripts to GENESIS 2.0 facilities.  Those areas of your
+scripts which use these libraries should eventually be recoded to use
+the new GENESIS 2.0 features.</P>
+
+
+<H2><A NAME="ss22.5">22.5 The X1compat Library</A>  </H2>
+
+<P>Compatibility for GENESIS 1.4 features of XODUS is provided as a set of
+scripts using GENESIS 2.0 extended objects to implement the old XODUS
+objects and script functions to implement old XODUS commands.  To load
+the X1compat library, include Scripts/X1compat in your SIMPATH and
+include X1compat from your .simrc or your main simulation script.
+Convert will not add an include statement for X1compat to your
+scripts.</P>
+<P>X1compat defines a set of old XODUS compatible objects which are
+named using the prefix ``x1'' in place of the normal ``x'' prefix for
+XODUS objects (e.g. xform becomes x1form, etc.).  Convert will
+automatically transform create statements from XODUS objects in 1.4
+scripts to use the X1compat objects.  Some support for field naming
+of old XODUS objects is included in the new XODUS objects, which may
+allow direct use of the new XODUS objects.  The
+``<CODE>-noX1compat</CODE>'' convert option causes convert not to perform
+the translation to X1compat objects.  This is likely to be useful for
+only those scripts which use the basic XODUS widgets (i.e. xform,
+xlabel, xbutton, xtoggle, xdialog, and most uses of xgraph).  Uses of
+the xdraw widget family are likely to require use of X1compat.</P>
+<P>Convert and the X1compat library cannot address various issues of
+layout of widgets on a form.  See 
+<A HREF="#Convert_prob">Convert   Problem Areas</A> for more information.</P>
+
+
+<H2><A NAME="ss22.6">22.6 The Connection Compatibility Library</A>  </H2>
+
+<P>While GENESIS 1.4 connections are not a standard part of GENESIS 2.0,
+a compatibility library may be compiled into GENESIS 2.0 which
+supports the old connection feature.  (See <EM>src/Makefile</EM> or
+<EM>Usermake</EM> for instructions on including the library.) The
+library defines the connection related objects (e.g. axon, synapses,
+etc.) and the connection related commands (e.g. region_connect,
+expweight, radialdelay, etc.) as well as connection specific commands
+which support set/get/show of connections (e.g. setconn, getconn and
+showconn).  Access to connection fields is not supported by the
+GENESIS 2.0 setfield, getfield and showfield commands.</P>
+<P>Convert will change connection related script statements as needed to
+use the Connection Compatibility Library.  In particular, it will
+convert uses of set, get and show on connections to use setconn, et
+al.  In some cases, convert will be unable to convert these statements
+(See 
+<A HREF="#Convert_prob">Convert Problem Areas</A>).</P>
+
+
+
+<H2><A NAME="ss22.7">22.7 Converting User Libraries</A>  </H2>
+
+<P>Objects and commands defined in user libraries (for the most part) will
+not need to change to run under GENESIS 2.0.  To compile your libraries
+and create a new GENESIS you will need to replace and update your
+Usermake, Libmake(s), liblist and perhaps the library startup script.</P>
+<P>Copy the Usermake and liblist files from the GENESIS 2.0 installation
+directory to your local GENESIS directory renaming Usermake to
+Makefile.  Add your user libraries to the Makefile and liblist files.
+In each user library you must copy the Libmake from the GENESIS 2.0
+installation directory into the library directory, renaming it
+Makefile.  Add your library specific information and files to the
+Makefile.  This procedure is described in detail in the section on
+<A HREF="Manual-21.html#Customizing">Customizing GENESIS</A>.</P>
+<P>The convert program cannot be used to convert startup scripts.  The
+only changes you should need to make are to modify any GENESIS 1.4
+script language features which change in 2.0 and to remove any
+non-startup commands from the script.  (Startup commands are object,
+addfunc, hashfunc, newclass and addaction.) Since a startup script is
+usually straight line code and the typical commands in a 1.4 startup
+script are the above named commands, there are normally no changes
+required.  There are, however, some GENESIS 2.0 features you may want
+to take advantage of in your startup scripts.  See the section
+on library startup scripts in 
+<A HREF="Manual-21.html#NewObjects">Defining New Objects and Commands</A> for details.</P>
+
+
+
+<H2><A NAME="Convert_prob"></A> <A NAME="ss22.8">22.8 Convert Problem Areas</A>  </H2>
+
+<P>There are a number of areas in which convert will be unable to
+transform script statements or where the converted code will perform in
+a less than optimal manner.  Each problem area described below must be
+found and fixed manually.</P>
+
+
+
+<H2><A NAME="ss22.9">22.9 Script Callbacks</A>  </H2>
+
+<P>Commands used as callbacks to script commands or functions are not
+translated by convert.  As such, script callbacks like the following
+would fail:
+<PRE>
+          create xbutton echoButton -script &quot;echo -n this is a test&quot;
+          create xdialog vmDialog -script &quot;set /mycompt Vm &lt;v&gt;&quot;
+  
+</PRE>
+
+The echoButton will result in a usage error when pressed and the
+vmDialog will fail because the set command has been replaced by setfield.</P>
+
+
+
+<H2><A NAME="ss22.10">22.10 Command Options in Script Variables</A>  </H2>
+
+<P>A command option which is passed to a command through a script variable
+or as the result of a command or script function will not be
+translated.  For example, if <EM>leoptions</EM> is a script string variable
+holding the value ``-R'' (a recursive listing), then the following code
+will not be converted:
+<PRE>
+          le {leoptions}
+  
+</PRE>
+
+The code which sets <EM>leoptions</EM> must be found and changed.</P>
+
+
+
+<H2><A NAME="ss22.11">22.11 Command Arguments That Look Like Options</A>  </H2>
+
+<P>All GENESIS 2.0 commands check for valid command options and complain
+when an unkown option is given.  As a result, code like
+<PRE>
+          echo -notAnOption
+  
+</PRE>
+
+will result in a usage error.  This will also be the case if a script
+variable value looks like an option, e.g.
+<PRE>
+          str echoOption = &quot;-notAnOption&quot;
+          echo {echoOption} // Usage error!
+  
+</PRE>
+
+The usage statement can be avoided by placing whitespace before the
+value, e.g.
+<PRE>
+          echo &quot; -notAnOption&quot;
+          echo &quot; &quot;{echoOption}
+  
+</PRE>
+</P>
+<P>Set/Get/Show Connections in Script Variables</P>
+<P>Commands like
+<PRE>
+          set anElm:0 weight 10
+  
+</PRE>
+
+will be correctly translated to use the setconn command.  However, code
+like
+<PRE>
+          str connelm = &quot;anElm:0&quot;
+          set {connelm} weight 10
+  
+</PRE>
+
+will be translated to a setfield command.  Convert behaves similarly
+with translating the get and show commands.</P>
+
+
+
+<H2><A NAME="ss22.12">22.12 Script Variable/Command Name Conflicts</A>  </H2>
+
+<P>With all the command name changes in GENESIS 2.0, it is possible that a
+script variable in a GENESIS 1.4 script may coincide with a new GENESIS
+2.0 command name.  In this case, you may receive a syntax error or
+unexpected result as the script variable will take precedence over the
+command name.  This may be particularly likely with the el command.</P>
+<P>(The convert program may be updated at some future point to rename
+script variables which clash with GENESIS 2.0 command names.)</P>
+
+
+<H2><A NAME="ss22.13">22.13 Setting Integration Methods</A>  </H2>
+
+<P>GENESIS 2.0 removes some of the previously existing integration
+methods and renumbers some of the remaining methods.  Convert will
+handle the renumbering as long as a number is given directly to the
+setmethod command.  If this is not the case, convert will issue a
+warning and the command will be left unaltered.  You must change the
+integration numbering manually.  See 
+<A HREF="Manual-25.html#setmethod">setmethod</A> (or type ``<CODE>help setmethod</CODE>'' in GENESIS)
+for the new numbering.</P>
+
+
+<H2><A NAME="Convert_sizing"></A> <A NAME="ss22.14">22.14 Sizing of XODUS Forms</A>  </H2>
+
+<P>XODUS 1 made use of an unsupported feature of MIT X11 which allowed
+forms to automatically adjust their height to accomodate all the
+widgets which they contain, even if the form was made too short.
+Although this did not work under Openwindows, it allowed users of MIT
+X11 to be somewhat sloppy in the sizing of forms when writing
+scripts.  This feature no longer exists in XODUS, so forms which are
+incorrectly sized may not show all the widgets which they contain.
+The most convenient way to detemine the proper geometry specification
+for the form is to properly resize it with the mouse and then inspect
+the <EM>hgeom</EM> field for the value to use in your script.</P>
+<P>Apart from the preceding issue, forms previously large enough to
+encompass a given set of widgets may not be large enough under GENESIS
+2.0, as the border widths of XODUS object have increased.</P>
+
+
+<H2><A NAME="ss22.15">22.15 Positioning and Sizing of Widgets</A>  </H2>
+
+<P>Scripts which explicitly set the dimensions of a widget based on the
+expected dimensional requirements of a 1.4 widget may cause text or
+graphics within the widget to be clipped under 2.0.  This is due to the
+additional requirements of the Motif style borders.</P>
+<P>Likewise, widgets which are positioned using absolute coordinates on
+the form based on expected default dimensions of other widgets on the
+form may overlap other widgets on the form.</P>
+<P>The only widget layouts used under GENESIS 1.4 which are likely to
+work well under 2.0 are those using relative positioning.  Even if
+this is the case, the form size may need to be changed.</P>
+
+
+
+<HR>
+<A HREF="Manual-21.html">Previous</A>
+<A HREF="Manual-23.html">Next</A>
+<A HREF="Manual.html#toc22">Table of Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,118 @@
+Object Type:	xpix
+
+Description:	Foundation object class for pixes. All other
+		pix classes are subclassed from pix. Therefore
+		these subclasses perform a superset of the operations
+		described here.
+		Pix and its subclasses can be thought of as being
+		graphical objects in a 3-d space, which can be viewed
+		using the coredraw widget and its subclasses. In the same
+		way that other widgets can only be created in a form,
+		pixes can only be created in a coredraw or a subclass
+		thereof. However, a pix need not be the direct child element
+		of a draw widget as long as the draw widget is somewhere
+		there among its ancestors.
+
+		The functions provided by pix, which are inherited or
+		overridden by its subclasses, include:
+			Specifying a set of coordinates.
+			Calling the transformation routines (which
+				are specified by the draws).
+			Drawing an image based on the transformed coordinates.
+			Providing information to the draw for determining
+				which pix should respond to a mouse click
+			Executing script functions in response to mouse or 
+				keyboard events.
+
+		Coredraw and subclassses do not display anything on their own.
+		The pixes provide the actual images and drawing routines
+		displayed in a coredraw widget/subclasses. It is important
+		to note that since the pix display, transformation and event
+		handling functions are present in the coredraw class, any pix
+		can be displayed in any draw subclass.
+
+		The exact transformation used to display the pix is defined
+		by the draw widget it lives in. Note that the coordinates of
+		the pix are not changed by any of the transformations.
+
+		In a future revision the z coordinate will be used to determine
+		the order of redrawing pixes to enable pixes to obscure
+		each other according to depth.
+
+		All pixes have a special field 'pixflags' which contains
+		a large number of options for drawing, projecting and so
+		on. The 'pixflags' utility function allows one to see the
+		options for this field. While pixflags can be set directly
+		to the appropriate hexadecimal number, there is a special
+		parser which will interpret options as set out by the 
+		pixflags utility funciton.
+
+Author:		Upi Bhalla Caltech April 93
+
+-----------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	xpix_type [in src/Xodus/draw/xpix_struct.h
+
+Size:		?
+
+Fields:		fg	Foreground color of pix.
+		script	Script operation(s) to perform on a mouse
+			click. The script calls of the pix are only made
+			if the draw determines that the pix is the nearest
+			to the event and if the event occurred within the
+			bounding region of the pix. 
+		tx	Transposition distance in the x dimension. The
+			pix is transposed (ie, displaced, offset) by this
+			amount.
+		ty	Transposition in y.
+		tz	Transposition in z.
+		pixflags	Set of flags specifying visibility,
+			refreshes, mouse sensitivity and many other options.
+			Use the 'pixflags' utility function to find out more.
+
+----------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:	XPix [in src/Xodus/widg/xpix.c]
+
+Classes:	gadget
+
+Actions:	XUPDATE: update internal fields when
+			displayed widget is changed.
+		B1DOWN:	Invoked when mouse Button 1 is pressed.
+		B2DOWN:	Invoked when mouse Button 2 is pressed.
+		B3DOWN:	Invoked when mouse Button 3 is pressed.
+		ANYBDOWN:	Invoked when any mouse button is pressed.
+		B1DOUBLE: Invoked on a double click on mouse button 1.
+		B2DOUBLE: Invoked on a double click on mouse button 2.
+		B3DOUBLE: Invoked on a double click on mouse button 3.
+		XOCOMMAND: an action that can invoke the functions
+			in the 'script' field
+		XODROP: Called when a another pix is dropped onto this one.
+		XODRAG: Called when the mouse is clicked on this pix, and
+			the mouse moves while the mouse button is held down.
+		XOWASDROPPED: Called after this pix has been dropped onto
+			another one.
+
+	Example: If pix A is moved onto pix B, the following sequence of
+		 events is issued:
+			B1DOWN on A
+			XODRAG on A
+			XODROP on B
+			XOWASDROPPED on A.
+
+Messages:	none.
+			
+----------------------------------------------------------------------------
+
+Notes:		Can only be displayed in a coredraw widget subclass.
+		The xpix does not perform any computational operations
+		driven by the simulation clock.
+
+Example:	Scripts/examples/XODUS/clicks.g
+
+See also:	xcoredraw, Clicks
+
