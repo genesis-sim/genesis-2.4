@@ -5,6 +5,8 @@
 # Copyright (c) 2005 Pittsburgh Supercomputing Center
 # Released under the GNU Library General Public License.
 #
+# Mon, 17 Nov 2014 Jan Pieczkowski
+# Removed improper 'CC= $(CC)' line which caused problem with install
 
 SHELL           =       /bin/sh
 CC              =       $(CC)
