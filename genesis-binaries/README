@@ -1,0 +1,15 @@
+GENESIS 2.4 Binary Distribution README
+--------------------------------------
+
+Binary distributions of GENESIS are typically released shortly after
+the public release of the source distribution. These instructions
+refer to the installation of Cygwin, Linux, and OSX binaries in
+the form of 'genesis-2.4-<os>-bin.tar.gz' files.
+
+For further details, see the file 'genesis/README.bindist'.
+
+Presently this directory contains:
+
+* genesis-2.4-Cygwin-bin.tar.gz - for Cygwin under MS Windows.
+  Installation instructions can be found in genesis/src/README.cygwin
+
