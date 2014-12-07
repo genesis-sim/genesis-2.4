@@ -9,18 +9,21 @@ and is recommended over the less stable setup-x86_64.exe.
 
 Running this will let you choose what to install and then download it.
 
-When using Cygwin Setup for the first time, the default is to install
-a minimal subset of all available packages. If you want anything
-beyond that, you will have to select it explicitly.  See
-http://cygwin.com/packages/ for a searchable list of available
+When using Cygwin Setup for the first time, the default is to install a
+minimal subset of all available packages. If you want anything beyond that,
+you will have to select it explicitly.  For more information about selecting
+packages, see the General installation notes on the "Install Cygwin" page
+(from the sidebar link), as well as the "Choosing Packages" section of
+Chapter 2 of the User's Guide at http://cygwin.com/cygwin-ug-net.html .
+
+See http://cygwin.com/packages/ for a searchable list of available
 packages, or use cygcheck -p as described in the Cygwin User's Guide
 at http://cygwin.com/cygwin-ug-net/using-utils.html#cygcheck.
 
-If you need to build GENESIS from source, you will need gcc, binutils,
-make and probably other packages from the ``Devel'' category. Text
-editors can be found under ``Editors''. For more information about
-selecting packages to install, and using Cygwin, consult the
-docmentation links at http://cygwin.com.
+If you need to build GENESIS from source, you will need gcc-core, binutils,
+bison, flex and make from the "Devel" category. Text editors can be found
+under "Editors". For more information about selecting packages to install,
+and using Cygwin, consult the docmentation links at http://cygwin.com.
 
 More information on installing and using X windows with Cygwin can be found
 at http://x.cygwin.com/.
@@ -43,13 +46,17 @@ Graphical GENESIS requires the following packages (and all their dependencies):
     -------             ---------------
     coreutils           Base*
     sed                 Base
-    X-startup-scripts   X11
-    xorg-x11-base       X11
+    xinit               X11**
+    xorg-server         X11
     xterm               X11
 
 *Recent versions of Cygwin roll textutils and fileutils into coreutils.
 If you have an older Cygwin, you may need to install these packages; they are
 in the Base category.
+**Installing xinit and xorg-server should be sufficient to load in all the
+packages needed for running X11 clients like the genesis GUI. Older versions
+of Cygwin/X included an xorg-X11-base package to do this, but that isn't in
+current versions.
 
 You will probably want to install a text editor for editing GENESIS simulation
 scripts or modifying configuration files.  These are found in the Editors
@@ -70,32 +77,39 @@ all their dependencies):
     -------             ---------------
     gawk                Base
     grep                Base
-    binutils            Development (probably selected with gcc-core)
-    bison               Development
-    flex                Development
-    gcc-core            Development (this is just the C compiler)
-    libncurses-devel    Development
-    make                Development
-    xorg-x11-devel      X11
+    binutils            Devel (probably selected with gcc-core)
+    bison               Devel
+    flex                Devel
+    gcc-core            Devel (this is just the C compiler)
+    make                Devel
+    libncurses-devel    Libs
+    libX11-devel        Libs
+    libXt-devel         Libs
 
 
 1.1) Starting Cygwin with X windows
 
 GENESIS must be started from an xterm window, not the Cygwin window.
 
-Once you are done installing Cygwin, you can start Cygwin with X windows by
-using Windows Explorer to go to C:\cygwin\usr\X11R6\bin and double click on
-startxwin (startxwin.bat).  This will start an X server, plus a terminal
-window (xterm) with a UNIX-like bash shell.
+Once you are done installing Cygwin, you can start Cygwin with X windows
+by using Start->All Programs->Cygwin-X->XWin Server.  This will start an
+X server, plus a terminal window (xterm) with a UNIX-like bash shell. The
+first time you run the server this way, on systems with the Windows firewall
+enabled, a dialog box will pop up asking whether you wish to allow XWin.exe
+to communicate on your networks. Click on "Allow access" to unblock it.
 
-If a terminal window doesn't appear, try bringing up Cygwin without X windows
-by double clicking on the desktop Cygwin icon.  Then, start Xwindows by typing
-"startxwin.sh" in the Cygwin window.  This will print a lot of diagnostics, but
-should start an X server and a terminal window (xterm). If you still don't get
-an xterm, examine the diagnostics which were printed to the Cygwin terminal
-to determine the cause of the failure. Some versions of Cygwin may not set
-the DISPLAY variable. You can check by typing "echo $DISPLAY". If it is not set,
-type "export DISPLAY=127.0.0.1:0.0". Then try running "startxwin.sh" again.
+If a terminal window doesn't appear, as seems to happen occasionally when
+starting the XWin server on some systems, look for the X icon in the taskbar.
+If it's there, right-click on it to bring up its context menu, then select
+Applications->xterm.  If the server did not start up at all, try bringing up
+Cygwin without X windows, either from the Start menu or by double clicking on
+the desktop Cygwin icon.  Then, start the X Window server by typing "startx"
+in the Cygwin window.  This will print a lot of diagnostics, but should
+start an X server and a terminal window (xterm). If you still don't get an
+xterm, examine the diagnostics which were printed to the Cygwin terminal to
+determine the cause of the failure. Some versions of Cygwin may not set the
+DISPLAY variable. You can check by typing "echo $DISPLAY". If it is not set,
+type "export DISPLAY=127.0.0.1:0.0". Then try running "startx" again.
 
 1.2)  Directory (folder) names and paths in Cygwin
 
@@ -120,27 +134,27 @@ For many commands, you can refer it to it as C:\, but for some
 commands, such as the tar archiving command, you have to use the UNIX
 notation, as in the command to extract files from a compressed tar archive:
 
-    tar xvzf /cygdrive/c/genesis-2.3-cygwin-bin.tar.gz
+    tar xvzf /cygdrive/c/genesis-2.4-cygwin-bin.tar.gz
 
 2) If you want to use the precompiled cygwin GENESIS distribution, download
-genesis-2.3-cygwin-bin.tar.gz
+genesis-2.4-cygwin-bin.tar.gz
 
 Once you have started Cygwin, pick the place where you want to install the
 "genesis" directory tree.  /usr/local is a good choice.  Change to this
 directory and extract the genesis directory from the archive file
-genesis2.3-cygwin-bin.tar.g.  For example,
+genesis2.4-cygwin-bin.tar.gz.  For example,
 
         cd /usr/local
-        tar xvzf /cygdrive/c/genesis2.3-cygwin-bin.tar.gz
+        tar xvzf /cygdrive/c/genesis2.4-cygwin-bin.tar.gz
 
-or from wherever you have it, (e.g.~/downloads/genesis2.3-cygwin-bin.tar.gz).
+or from wherever you have it, (e.g.~/downloads/genesis2.4-cygwin-bin.tar.gz).
 
 Then change to the genesis directory (/usr/local/genesis) and follow the
 directions given in the README.cygwin-bin file.
 
 3) If you want to compile it yourself, you can use the sources from the
-normal GENESIS 2.3 distribution file.  First, unpack the file
-genesis2.3.tar.gz, and follow the usual procedure for building genesis,
+normal GENESIS 2.4 distribution file.  First, unpack the file
+genesis2.4.tar.gz, and follow the usual procedure for building genesis,
 described in src/README.
 
 Finally, add the genesis directory to your search path, so that "genesis"
@@ -153,12 +167,8 @@ add the line
 at the end of the file.  Alternatively, you can set the PATH
 environment in the "System Properties" Control Panel applet.
 
-(4)Running GENESIS under Cygwin
+4)Running GENESIS under Cygwin
 
-You can start the Cygwin X server by running
-
-    <cygwindir>\usr\X11R6\bin\startxwin.bat
-
-where "<cygwindir>" is the place where you installed Cygwin, e.g.
-"C:\cygwin".  This will start an X server, plus a terminal window (xterm)
+You can start the Cygwin X server by running Cygwin-X->XWin Server from the
+Windows Start menu. This will start an X server, plus a terminal window (xterm)
 with a UNIX-like bash shell.  From there you can run genesis as usual.
