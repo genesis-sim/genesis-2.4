@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <title>Parallel I/O Issues</title>
+  <meta name="generator" content="txt2html v1.25">
+</head>
+<body>
+<h1><a name="section-1">Parallel I/O Issues</a></h1>
+<hr style="width: 100%; height: 2px;">
+<p>This file describes some extensions to GENESIS objects (xview) and
+modified objects (par_asc_file and par_disk_out) that are used for
+output of data in parallel GENESIS.
+</p>
+<h2><a name="section-1.1">xview extensions</a></h2>
+<p>
+Parallel simulations can often benefit from visualizations with XODUS
+during development, and often will require large input and/or output
+files in full scale production runs. However, modelers should be aware
+that
+the way these I/O issues are dealt with can have a considerable
+impact on performance.
+</p>
+<p>PGENESIS includes a capability to allow multiple nodes to display on
+the same
+XODUS widget so that, for example, a single xview element can be used
+to show
+activation of all the cells in a distributed V1 layer. In serial
+GENESIS
+there are several ways to set up input to an xview element, described
+in "The
+Book of GENESIS" chapter on Advanced XODUS Techniques and in the
+documentation
+for xview in the GENESIS Reference Manual. However, the one we must use
+for
+internode communication in PGENESIS is to set up remote messages from a
+source
+element to a destination xview element. This is done by using the
+PGENESIS
+raddmsg command. (See Doc/refman.txt.)
+</p>
+<p>If every node were to set up COORDS and VAL n messages
+independently, the VAL
+messages could easily get associated with the wrong COORDS messages,
+depending
+on the order in which the particular add message requests were handled.
+To
+deal with this difficulty, the GENESIS xview object has been extended
+to allow
+IVAL n messages to be associated with a particular ICOORDS message. The
+user
+does this by choosing an integral index with each message that is set
+up, and
+passing it as the first parameter of the ICOORDS and IVALn messages.
+IVAL1
+through IVAL5 messages will be associated with ICOORDS messages having
+the
+same index. For an example of this, see the example script
+Scripts/orient2/V1.g in the PGENESIS distribution and the serial
+GENESIS
+documentation for xview.
+</p>
+<h2><a name="section-1.2">Output to files</a></h2>
+<p>
+PGENESIS also includes a capability for writing a single disk file
+from multiple nodes. For disk output in serial GENESIS, it is typical
+to create an asc_file element and then set up a SAVE message that will
+cause a value to be written to a file on every time step. In PGENESIS
+it is possible to add such messages from elements on various nodes.
+However, there is no guarantee of order for the normal asc_file
+object, so in PGENESIS the par_asc_file object is provided. When SAVE
+messages are set up, the first parameter is an integral index that is
+used to maintain a fixed ordering among all of the various incoming
+messages to the par_asc_file element. This integral index should be
+unique and in the range from 0 to the number of incoming messages
+minus 1, inclusive.
+</p>
+<p>Serial GENESIS uses the disk_out object for writing array data to a
+file in
+an efficient binary format. We have similarly provided a corresponding
+par_disk_out object that takes an added integral index parameter. The
+scripts output.g and V1.g in the Scripts/orient2 directory of the
+PGENESIS
+distribution illustrate the use of this object.
+</p>
+<p>This example shows how raddmsg is used to send a "SAVE index data"
+message
+from the source element to the destination par_asc_file or par_disk_out
+element. The index is an added field of the source object that can be
+any
+variable with a unique integer value. The integral index simply
+provides
+an ordering for the messages, so that if many messages are being sent
+in
+parallel, there will be a deterministic order to them when they written
+to
+a file (in the case of par_asc_file or par_disk_out) or displayed (in
+the
+case of an xview object). Also see the serial GENESIS documentation for
+asc_file and disk_out.
+</p>
+<p>Both of these extensions for I/O support require that information
+flow
+in the form of PGENESIS messages from the source node to the
+destination node (which holds the xview, par_asc_file, or par_disk_out
+element). If you are doing very large amounts of I/O from many nodes,
+the destination node would likely become a simulation bottleneck. In
+those situations, it would likely be advantageous to consider a
+solution where each node was doing its I/O to and from files on the
+local disk, rather than using the above mechanisms.
+</p>
+</body>
+</html>

@@ -1,0 +1,20 @@
+#!/bin/csh
+#PBS -q debug
+#PBS -l walltime=0:01:00
+#PBS -l rmsnodes=2:8
+#PBS -j oe
+#PBS -k oe
+
+set echo
+
+# copy the scripts to your own scratch directory
+cd /usr/local/packages/genesis/pgenesis/Scripts/orient2
+cp *.g rainbow2 $SCRATCH
+
+# move to the scratch directory and execute PGENESIS
+cd $SCRATCH
+/usr/local/packages/genesis/pgenesis/bin/pgenesis -v -nodes 7 -nox -notty -batch demo.g
+
+# copy results back to your home directory
+cp horiz $HOME/orient2.$PBS_JOBID.horiz
+cp vert  $HOME/orient2.$PBS_JOBID.vert

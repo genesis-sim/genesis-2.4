@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Zones</font></b> </p>
+<hr>
+<p>The two canonical simulation paradigms in PGENESIS are
+</p>
+<ol>
+  <li>parallel - all nodes are synchronized by PGENESIS automatically
+and </li>
+  <li>farm - no nodes are synchronized by PGENESIS. </li>
+</ol>
+The former is useful for network simulations in which different parts
+of the model running on different nodes must simulate in lockstep, or
+close to lockstep. The latter is useful for parameter searching
+applications in which the synchronization is explicitly performed by
+scripts running on the nodes (e.g., all nodes execute a barrier).
+<p>A third, hybrid, paradigm is embodied in the concept of
+<b>zones</b>. Within a zone, nodes run in the parallel mode, with
+PGENESIS performing automatic synchronization. The collection of zones
+runs in farm mode - synchronization is controlled from the
+scripts. This hybrid mode is useful for parameter searching on large
+models in which each instance of the model can be parallelized across
+a number of nodes. It may also be useful for a model of a system in
+which individual components, simulated in a zone, need only loose
+synchronization.
+</p>
+<p>Zones can be thought of as a partition of the parallel platform in
+which no GENESIS messages can cross zone boundaries. Zones are
+established by the <a href="ref/paron.txt">paron</a> command, and are
+specified in other commands using the <a href="ref/atsign.txt">@</a>
+construct.
+</p>
+<p></p>
+</body>
+</html>

@@ -1,0 +1,10 @@
+Here are the two examples described in the Book of Genesis (2nd Edition)
+
+The first, in directory "network", illustrates creation of a network
+model.  A simpler example of this appears in the online exercises available
+at the PSC Web site (http://www.psc.edu/Packages/PGENESIS).
+
+The second, in directory param, illustrates parameter search using
+a genetic algorithm.  Much better examples of this are available at
+the PSC Web site (URL above).
+

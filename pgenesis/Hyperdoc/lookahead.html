@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML VERSION="2.0">
+<HEAD>
+<!-- WEBMAGIC VERSION NUMBER="2.0" -->
+<!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" -->
+<!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+<TITLE>The Lookahead Optimization</TITLE>
+</HEAD>
+<BODY>
+<P><B><FONT SIZE="6">The Lookahead Optimization</B></FONT>
+<HR>
+
+<p>In network models typically axonal delays are one or two orders of
+magnitude greater than the simulation step for prcesses within a single
+cell.  A spike generated at simulation time <em> T </em> need not
+be delivered to a destination cell until time <em> T + LT </em> where
+LT is the axonal delay.  This allows simulation nodes to operate
+in a loosely synchronized fashion, some being ahead of others, and
+it allows nodes to continue updating their cells while incoming spikes
+are in transit over the physical medium (e.g., Ethernet) which connects
+the CPUs.  The amount of simulation time by which node A can get ahead
+of node B and still be sure it has not missed any spikes is known as
+the <b> lookahead </b> of A with respect to B.
+
+<p>In PGENESIS lookahead is controlled with three commands <a
+href="ref/setlookahead.txt">setlookahead</a>, <a
+href="ref/getlookahead.txt">getlookahead</a>, and <a
+href="ref/showlookahead.txt">showlookahead</a>.  The lookahead of node
+A with respect to node B is the minimum delay on all data paths from B
+to A i.e., the minimum axonal delay over all the connections from B to
+A.  If there are no axonal paths from B to A, the lookahead is
+infinite because A's activity does not depend on B's.  If there are
+non-spike messages, lookahead is <b>dt</b> because those messages
+deliver data on the next timestep.  Additionally PGENESIS must be
+instructed to execute steps <a href="asyncstep.html">asynchronously</a>.
+
+<p>It is wise to partition a model in such a way as to maximize
+lookahead between every pair of nodes.
+
+
+</body>
+</html>

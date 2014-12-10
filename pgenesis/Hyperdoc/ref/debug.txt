@@ -1,0 +1,24 @@
+Routine Name:	debug
+
+Description:	Sets (or displays) the debug level used by some routines.
+
+Usage:		debug [level]
+
+		level		integer indicating debug level to use:
+				 0 = disable debug (nothing printed)
+				 1 = intermediate debug
+				 2 = intermediate debug
+				 3 = full Debug (print everything)
+
+Example:	genesis >  debug
+		debug level 0
+		genesis >  debug 2
+		debug level 2
+
+Notes:		Sets the debug level used by some routines to report status
+		information.  Increasing the level typically increases the
+		amount of information produced. If no argument is given the
+		current debug level is displayed.
+
+See also:	silent
+

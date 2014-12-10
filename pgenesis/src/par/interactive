@@ -1,0 +1,20 @@
+#!/bin/csh -f
+#
+#	debugger.csh
+#
+#	this script is invoked by the pvmd when a task is spawned with
+#	the PvmTaskDebug flag set.  it execs an xterm with the task
+#	running inside.
+#
+#	06 Apr 1993  Manchek
+#
+
+if ($#argv < 1) then
+	echo "usage: debugger command [args]"
+	exit 1
+endif
+
+set noglob
+set hn=`hostname`
+xterm -e $HOME/$argv
+

@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Decomposing Large Networks</font></b> </p>
+<hr>
+<p>The goal in decomposing a large network for parallel simulation is
+to divide it into loosely-coupled subnetworks that take an equal amount
+of time to simulate. That way, all processors are kept busy for a large
+fraction of the time and the communication overhead is reduced. The
+best way to partition a network is highly problem-dependent, but we can
+give some general guidelines: </p>
+<ol>
+  <li>Determine which elements are responsible for the majority of the
+simulation time consumed, then find a partition that spreads these
+across the available processors. </li>
+  <li>Try to find <i>n</i>-way partitions instead of fixed partitions.
+An <i>n</i>-way partition is scalable so that one can choose an <i>n</i>
+that results in the best speedup without incurring excessive
+communication overhead. One can also select <i>n </i>to match the
+size of the network model being simulated. For example, we might want
+to partition a 500 element network across 5 processors (<span
+ style="font-style: italic;">i.e.</span>, n=5) and a 2000 element
+network across 20 processors (<span style="font-style: italic;">i.e.</span>,
+n=20). </li>
+  <li>If possible, try to have the inter-processor messages be ones on
+which a delay has been placed using the rvolumedelay command. A delay
+allows communication to be overlapped with the computation, resulting
+in less apparent communication overhead. </li>
+</ol>
+<p>Once you have determined how you are going to partition your network
+model, you are ready to write a parallel script to set up and perform
+the simulation. Usually, the script will have several phases, with all
+the nodes waiting at a <a href="ref/barrier.txt">barrier</a> at the
+end of each phase until the others catch up. Typical phases in a script
+would be: </p>
+<ol>
+  <li>Each node creates the elements that will reside on that node. </li>
+  <li>Each node creates messages from its own elements to elements
+residing on other nodes (as well as to elements residing locally). </li>
+  <li>For non-interactive simulations, each node steps through the
+desired number of simulation timesteps. </li>
+  <li>For interactive simulations, one node acts as a master and sends
+commands to the other nodes (e.g. step<a href="ref/atsign.txt">@all</a>),
+while the other nodes wait at a barrier for commands from the master. </li>
+</ol>
+<p>To illustrate some of the above points, we have developed a couple
+of <a href="examples.html">example network decompositions and
+associated scripts</a> for the Orient_tut example discussed in the Book
+of Genesis. </p>
+</body>
+</html>

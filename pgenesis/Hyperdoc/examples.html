@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Example Parallel GENESIS Scripts</font></b> </p>
+<hr>
+<p><b><font size="4"><a href="orient1.html">Orient_tut (na&iuml;ve
+3-way
+decomposition)</a> </font></b>- This is based on the Orient_tut
+example discussed in Chapter 18 of the <a
+ href="http://www.genesis-sim.org/GENESIS/bog/bog.html">Book of Genesis</a>.
+In this decomposition we assign each neural population to a different
+processor. Since there are just 3 populations in the Orient_tut
+example,we are limited to 3 processors. </p>
+<p><b><font size="4"><a href="orient2.html">Orient_tut (<i>n</i>-way
+decomposition)</a> </font></b>- In this decomposition of the
+Orient_tut example, we slice up each population into <i>n</i> slices
+and distribute these across <i>n</i> processors.. Corresponding slices
+in each population are assigned to the same processor, thus reducing
+the inter-processor communication requirements. </p>
+<p><b><font size="4"><a href="skeleton_search.html">Skeleton Parameter
+Search</a> </font></b>- In this example, we show how a parameter
+search could be structured. The actual simulation and evaluation code
+is modelled as a very simple formula for demonstration purposes. In
+practice, this would be replaced by much more time-consuming neural
+simulations. </p>
+<p><b><font size="4"><a href="bog.tar">Book of GENESIS Examples </a></font></b>- a tar file
+containing the two examples referenced
+in the <a href="http://www.genesis-sim.org/GENESIS/bog/bog.html">Book
+of GENESIS</a> (Free Internet Edition).
+</p>
+</body>
+</html>

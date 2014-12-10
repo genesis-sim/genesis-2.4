@@ -1,0 +1,16 @@
+Routine Name:	showlookahead
+
+Description:	prints lookahead values for the current node.
+
+Usage:		showlookahead
+
+Example:	showlookahead
+
+			shows the lookahead of this node with respect
+			to all other nodes
+
+See also:	setlookahead, getlookahead
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Mar 2, 1997
+URL file://www.psc.edu/general/software/packages/genesis/setlookahead.txt

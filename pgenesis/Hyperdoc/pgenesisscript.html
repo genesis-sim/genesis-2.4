@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+<h1>The <span style="font-family: monospace;">pgenesis</span> shell
+script </h1>
+<p>The <big><span style="font-family: monospace; font-weight: bold;">pgenesis</span></big>
+shell script is used to invoke parallel
+genesis. It performs many checks and may set up necessary files and
+links in your directories. In addition to the usual flags available to
+the genesis executable, it takes the following additional flags:
+</p>
+<menu><li><big><b><span style="font-family: monospace;">-browse</span> </b></big>
+  <p>Attempt to browse the PGENESIS documentation using netscape,
+which needs to be on the PATH for this to work.</p>
+  <p></p>
+</li>
+<li><big><b style="font-family: monospace;">-config filename</b></big>
+  <p>The specified file should contain a list of hosts to use
+to run the scripts (e.g., "axp0 axp1 axp2"). Names should be separated
+by blanks or newlines.</p>
+  <p></p>
+</li>
+<li><big><b style="font-family: monospace;">-debug mode</b></big>
+  <p>Run the workers and in some cases the master nodes in their own
+windows
+and in some cases under the control of a C code source level debugger.
+Valid modes are: </p>
+  <menu><li> <big><b style="font-family: monospace;">tty</b></big> -
+run the in individual windows but not under
+any C debugger. </li>
+  <li> <big><b style="font-family: monospace;">dbx</b></big> - run the
+in individual windows under the control of
+dbx. </li>
+  <li> <big><b style="font-family: monospace;">gdb</b></big> - run the
+in individual windows under the control of
+gdb running inside emacs. </li>
+  </menu>
+Not all modes are supported on all platforms. If you specify an
+unsupported mode the pgenesis shell script will select an alternative.<br>
+  <br>
+  <br>
+</li>
+<li><big><span style="font-weight: bold; font-family: monospace;">-nodes
+number</span></big><br>
+  <br>
+Specify the number of PGENESIS nodes (i.e., processes) to use.&nbsp;
+For MPI-based PGENESIS this option is required to used more than one
+node.&nbsp; For PVM-based PGENESIS it is not required since this number
+can be specified as an argument to the paron command within the script
+file.<br>
+  <br>
+</li>
+<li><big><b style="font-family: monospace;">-nohalt</b></big>
+  <p>Don't halt the PVM daemon after running the pgenesis executable.
+This
+allows you to use the -skip flag (below) on subsequent runs.</p>
+  <p></p>
+</li>
+<li><b style="font-family: monospace;">-<big>skip</big></b>
+  <p>Do the minimal processing to start the pgenesis executable. Skip
+all checks and assume the PVM daemon is already running.</p>
+  <p></p>
+</li>
+<li><big><b style="font-family: monospace;">-nox</b></big>
+  <p>Run a version of the pgenesis executable which does not have the
+X libraries loaded - this is smaller and starts up faster and does
+not require you to be running X windows.</p>
+  <p></p>
+</li>
+<li><big><b style="font-family: monospace;">-v</b></big>
+  <p>Run in verbose mode</p>
+  <p></p>
+</li>
+<li><big><b style="font-family: monospace;">-help</b></big>
+  <p>Show and describe these flags.</p>
+</li>
+</menu>
+<br>
+<h3>Notes on script file command line parameters and the <span
+ style="font-family: monospace;">paron</span> statement:</h3>
+<hr style="width: 100%; height: 2px;">
+<p>The invocation of PGENESIS and the spawning of PGENESIS nodes varies
+slightly
+depending on whether PGENESIS is using the PVM library or the MPI
+library for communication. With PVM, PGENESIS is first started on a
+single
+node, the master node, which in turn spawns a a number of child
+nodes when the <a href="ref/paron.txt">paron
+</a>statement is executed in its script. When
+spawning these child nodes, the master takes into account all
+parameters listed in the paron statement. </p>
+<p>With MPI-based PGENESIS, however, no such spawning is done. Instead,
+the pgenesis script internally uses the <span
+ style="font-family: monospace;">mpirun</span> command (or its local
+equivalent) to start the PGENESIS
+executable simultaneously on all processing elements
+requested. (The number of PEs to be used is typically defined by the <span
+ style="font-family: monospace;">-np</span> argument to the <span
+ style="font-family: monospace;">mpirun</span> command.)&nbsp;
+There is logically still a master node (the first node) and worker
+nodes. However, this master
+node does <b>not</b> spawn the worker nodes. Since the master node
+does not spawn, it has no direct control over the execution parameters
+of the worker nodes. </p>
+<p>Because of this difference, many of the parameters of the <a
+ href="ref/paron.txt">paron
+</a>statement are ignored in MPI-based PGENESIS. Instead, equivalent
+parameters must be specified as command-line arguments
+to the <big><span style="font-family: monospace;">pgenesis</span></big>
+script command.<br>
+</p>
+These <span style="font-family: monospace;">paron</span> parameters
+should be replaced with the following command
+line equivalents for MPI-based PGENESIS:
+<pre>  paron argument         MPI-based pgenesis command line equivalent<br>  --------------         ---------------------------------<br>  -simrc filename         -altsimrc filename<br>  -silent level           -silent level<br>  -nice level             -nice level<br>  -execdir directory      -execdir directory<br></pre>
+<p>These <span style="font-family: monospace;">paron</span> parameters
+are ignored by the MPI-based PGENESIS since they are
+already determined by the time the <span
+ style="font-family: monospace;">paron</span> statement is interpreted:
+</p>
+<pre>  -executable filename<br>  -startup script</pre>
+<p>These <span style="font-family: monospace;">paron</span> parameters
+are read <span style="font-family: monospace;"></span>and interpreted
+by
+each node: </p>
+<pre>  -debug level<br> &nbsp;-output filename<br><br></pre>
+<h3>Troubleshooting PGENESIS Startup</h3>
+<hr style="width: 100%; height: 2px;">The rest of this document
+discusses some issues to check through if you are having problems
+getting PGENESIS to run.. <br>
+<h3><b><font size="5"><small><small>When PGENESIS was installed using
+the MPI
+message-passing library:</small></small><br>
+</font></b></h3>
+<ul>
+  <li>Make sure that the <span style="font-family: monospace;">pgenesis</span>
+script is invoking the proper command to start a set of MPI
+processes.&nbsp; This defaults to "<span style="font-family: monospace;">mpirun</span>"
+but can be set at
+installation time by modifying <span style="font-family: monospace;">MPI_CMD</span>
+in the top-level Makefile.&nbsp; After modifying the Makefile, it is
+always safest to do a "<span style="font-family: monospace;">make clean</span>"
+and then a complete rebuild.<br>
+  </li>
+</ul>
+<h3><small><b><font size="5"><small><small>When PGENESIS was installed
+using the PVM message-passing
+library:</small></small></font></b></small></h3>
+<p><small></small></p>
+<ul>
+  <li>Make sure your .cshrc (on each machine that you will use) sets
+the <span style="font-family: monospace;">PVM_ROOT</span> and <span
+ style="font-family: monospace;">PVM_ARCH</span> environment variables
+correctly.&nbsp; See the "Setup to Use PVM" section in the <a
+ href="http://www.netlib.org/pvm3/book/pvm-book.html">PVM
+book</a> for a description.
+    <p>In your .cshrc file, your path should include the
+    <span style="font-family: monospace;">$PVM_ROOT/bin/$PVM_ARCH</span>,
+    <span style="font-family: monospace;">$PVM_ROOT/lib/$PVM_ARCH</span>
+and <span style="font-family: monospace;">$PVM_ROOT/lib</span>
+directories. </p>
+  </li>
+  <li>Ensure that your <span style="font-family: monospace;">.cshrc</span>
+file(s) do not do any I/O. If you wish to
+have I/O, see the section in the <a
+ href="http://www.netlib.org/pvm3/book/pvm-book.html">PVM book</a>&nbsp;
+entitled "Common Startup Problems"
+for the ways you can do it.<br>
+    <br>
+  </li>
+  <li>Ensure your .cshrc sets the <span style="font-family: monospace;">PVM_EXPORT</span>
+environment variable
+appropriately (see the section in the <a
+ href="http://www.netlib.org/pvm3/book/pvm-book.html">PVM book</a>
+entitled "Environment Variables"). For debugging the
+    <span style="font-family: monospace;">DISPLAY</span> variable
+should be included:
+    <pre>   setenv PVM_EXPORT :DISPLAY<br></pre>
+    <p> </p>
+  </li>
+  <li>Make sure there is a soft link called <span
+ style="font-family: monospace;">pgenesis </span>(or <span
+ style="font-family: monospace;">nxpgenesis</span> for non-graphical
+PGENESIS) in the
+    <span style="font-family: monospace;">$PVM_ROOT/bin/$PVM_ARCH</span>
+directory, which should point to the executable <span
+ style="font-family: monospace;">pgenesis </span>(or <span
+ style="font-family: monospace;">nxpgenesis</span>) in the <span
+ style="font-family: monospace;">pgenesis/bin/$PVM_ARCH</span>
+directory. This must be true for each
+machine that you will use.&nbsp; Normally the pgenesis script will
+create these links, but this may not happen for heterogeneous
+architectures and/or non-shared filesystems.<br>
+    <br>
+  </li>
+  <li>If you wish to use PGENESIS in interactive or debugging
+style (each GENESIS node has its own command interpreter running in its
+own window, into which you can type commands), set up the file
+    <span style="font-family: monospace;">$PVM_ROOT/lib/debugger</span>
+as described in the "Debugging" section of the <a
+ href="http://www.netlib.org/pvm3/book/pvm-book.html">PVM book</a>.<br>
+    <br>
+  </li>
+  <li>Test that the pvm daemon starts when manually executing <span
+ style="font-family: monospace;">pvm</span>. The daemon should be
+found on your path in <span style="font-family: monospace;">$PVM_ROOT/lib/$PVM_ARCH</span>.
+Make sure you can configure the PVM
+virtual machine you wish to use by adding other hosts with the "<span
+ style="font-family: monospace;">add</span>" command.&nbsp; See the
+"Starting PVM" section of the <a
+ href="http://www.netlib.org/pvm3/book/pvm-book.html">PVM
+book</a>. You do not necessarily need to add any machines to the
+virtual
+machine; you can run on a single workstation. </li>
+</ul>
+<p>
+<br>
+</p>
+<p>
+</p>
+</body>
+</html>

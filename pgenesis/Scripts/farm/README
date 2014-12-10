@@ -1,0 +1,25 @@
+This directory contains examples of how to run parallel genesis in
+embarassingly-parallel or task-farm mode.  This is the mode in which
+each zone does an independent simulation controlled by parameters that
+are distributed by the master at the beginning of each iteration.  At
+the end of each iteration the master accumulates results and computes
+whether termination has occured and if not then also a new parameter
+set for each node for the next iteration.
+
+Files have a number prepended to indicate which example they belong to.
+So all files *1.g are in example 1.  Current examples are:
+
+#1 Using barriers and synchronous rpc to coordinate masters and workers
+   Each zone has one node.
+
+#2 Master executes all actions on workers via asynchronous rpc.
+   All nodes in a single zone.
+
+#3 Master executes all actions on workers via asynchronous rpc.
+   Each zone has one node.
+
+#4 Master executes all actions on workers via asynchronous rpc.
+   3 zones have 3 nodes, one has one node.
+
+
+

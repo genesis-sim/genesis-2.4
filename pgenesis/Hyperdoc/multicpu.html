@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Interactive Multi-CPU</font></b> </p>
+<hr>
+<p>The next step in scaling up your program is to increase the number
+of processors that are devoted to the simulation. This is particularly
+simple if you are working with an <i>n</i>-way decomposition. Because
+there will be multiple PGENESIS nodes (i.e., processes) running
+simultaneously, errors related to
+timing or insufficient "barrier" commands will frequently be
+encountered at this stage. Also, some speedup estimates can be made by
+comparing the performance on <i>n</i> nodes with that on 1 node. </p>
+<p>As an example, you can try the <a href="orient2.html">orient2
+example</a>, which is an <i>n</i>-way decomposition of the serial
+Genesis Orient_tut example.&nbsp; Here we will be running the demo.g
+script, which sets <span style="font-family: monospace;">n_slices</span>
+to 5, meaning that each of the neural populations is divided into 5
+similarly-sized slices.&nbsp; There will be one PGENESIS node for each
+slice, one PGENESIS node for controlling the simulation, and one
+PGENESIS node for displaying the results, making for a total of 7 nodes.
+</p>
+<ol>
+  <li> Let us assume that you want to run this PGENESIS simulation on 4
+processors.&nbsp; (We assume here
+that PGENESIS has already been installed on the systems you plan to
+use.)&nbsp; Since we have 7 nodes, 3 processors will be responsible for
+running 2 nodes each, and 1 processor will be responsible for running
+the remaining node. Login to the host from which you can start parallel
+jobs.&nbsp; In some cases this will be one of the 4 processors to be
+used for computation, but on other systems, there is a distinct
+front-end host.<span style="font-family: monospace;"></span><br>
+    <br>
+  </li>
+  <li>Make sure you have given rights to each of the processors to use
+your X-Windows screen, (e.g. type "xhost +host", etc., on your local
+console) and that the $DISPLAY environment variable is set correctly in
+your&nbsp; shell to the host name of your X-Windows screen. (On some
+platforms this may not be necessary.) If there is an Internet firewall
+between you and the machines on which you are running PGENESIS, you may
+need to talk to
+your system administrator to enable you to use X-Windows remotely.<br>
+    <br>
+  </li>
+  <li><tt>cd </tt>into the&nbsp; <tt>~pgenesis/Scripts/orient2 </tt>directory.<br>
+    <br>
+  </li>
+  <li>For MPI-based PGENESIS, run "pgenesis -nodes 7 demo.g".&nbsp;
+This will start up 7 PGENESIS processes and each will run the demo.g
+script.<br>
+    <br>
+For PVM-based PGENESIS, first create a file in your home directory
+called
+"hosts" and put the
+names of the other hosts which you wish to use in it, <span
+ style="font-style: italic;">e.g.</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <tt>host1</tt><br>
+&nbsp;&nbsp;&nbsp;&nbsp; <tt>host2</tt><br>
+&nbsp;&nbsp;&nbsp;&nbsp; <tt>host3<br>
+    </tt>These names tell PVM where it may spawn other nodes. Let us
+assume that we are running on host0. Since the
+demo.g script spawns 6 nodes, and we have 4 total machines (host0,
+host1, host2, and host3) for running 7 processes, each CPU will be
+assigned 1 or 2 nodes. For production runs, it is a good idea to have
+the number of CPUs equal the number of nodes so that each node has its
+own CPU, but for testing this is not necessary. To start the run, enter
+"<span style="font-family: monospace;">pgenesis -config ~/hosts demo.g</span>".<br>
+  </li>
+  <li>PGENESIS should display all 3 neural populations in a
+single window (the chart graphs of Orient_tut are omitted for
+simplicity). Use the control panel to run the simulation, by clicking
+on either the "sweep_horiz" or "sweep_vert" buttons.<br>
+    <br>
+  </li>
+  <li>When you are finished, click on the "quit" button and all
+processes should exit.
+    <p></p>
+  </li>
+</ol>
+<p>
+</p>
+</body>
+</html>

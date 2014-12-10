@@ -1,0 +1,60 @@
+Command:	waiton
+
+Description:	This command is used in conjunction with
+		the "async" command.  If async is given the
+		-complete or -scalar flag, it returns an
+		integer (a "future") which can be used as an
+		argument to the "waiton" command.  The effect is
+		for the script to suspend until the command that
+		was started asynchronously has completed.  If the
+		-scalar flag was given, "waiton" returns the result
+		of the command as a character string.  This
+		implements a form of "future": the value returned
+		by "async" is a promise of a future value which is
+		retrieved with "waiton".  If the -complete flag was
+		given, then a form of split-phase computation is
+		possible.  The "async" command is used to initiate
+		a computation and the "waiton" command used to wait
+		for it to complete, with the script able to perform
+		useful work that does not depend on completion between
+		the two.  Instead of a specific "future", one may also
+		give waiton an argument of "all", which will cause it
+		to wait until all outstanding futures have completed.
+
+Usage:		waiton <future>
+		waiton all
+
+Examples:	// using a future to get a result
+		int future, result
+		// run command asynchronously putting the result in a future
+		future = {async command@node args... -scalar}
+		// do some useful work
+		...
+		// get the result from the future
+		result = {waiton future}		
+	
+
+		// using a future for split-phase computation
+		int future
+		// run command asynchronously returning a future
+		future = {async command@node args... -complete}
+		// do some useful work
+		...
+		// synchronize with the asynchronous command's completion
+		waiton future
+
+
+		// using waiton to wait until all outstanding commands
+		//    have completed
+		async command1@node1
+		async command2@node2
+		// do some useful work
+		...
+		// wait for both command1 and command2 to complete
+		waiton all
+
+See also:	async, atsign
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: May 22, 1997
+URL file://www.psc.edu/general/software/packages/genesis/waiton.txt

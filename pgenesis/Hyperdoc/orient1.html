@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="5"> Orient_tut: 3-way decomposition</font></b> </p>
+<p>This example is based on the Orient_tut example which is discussed
+in the Book of Genesis. Please read that section of the book for
+background information. This is not intented to be a realistic model of
+visual cortex processing but rather a demonstation of how parallel
+Genesis can be used. </p>
+<p>In this decomposition we simply assign the retinal cells to one
+node, the horizontally-selective V1 cells to a second node, and the
+vertically-selective V1 cells to a third node. The following diagram
+illustrates this division: </p>
+<p><img src="3way.gif" width="584" height="497">
+</p>
+<p>Each retinal cell makes connections onto a small subset of neurons
+in the horizontally-selective V1 population and the
+vertically-selective V1 population. To set up this network we first
+create the neurons on each of the nodes, then do a barrier to make sure
+each node has finished creating its elements, then connect up the
+neurons using the rvolumeconnect command. After doing another barrier,
+we display the neurons and run the simulation. </p>
+<p>The limitation on parallelism in this decomposition is that no
+matter what size we make the retinal and V1 populations, we can still
+only run using 3 nodes. </p>
+<p>The top level pGenesis script file for this example is partially
+included here: </p>
+<pre>// START UP<br><a href="ref/paron.txt">paron</a> -parallel -silent 0 -nodes 3 -output o.out \<br>       -executable pgenesis<br>i_am_retina = {mynode} == 0<br>i_am_V1 = {mynode} == 1 || {mynode} == 2<br>if ({mynode} == 1)<br>       dir = "horiz"<br>elif ({mynode} == 2)<br>       dir = "vert"<br>end<br><br>// CREATE ELEMENTS ON EACH NODE<br>if (i_am_retina)<br>       create_retina<br>       setup_retinal_input<br>elif (i_am_V1)<br>       create_V1<br>end<br><br>// CONNECT UP ELEMENTS<br><a
+ href="ref/barrier.txt">barrier</a>        // wait for all elements to be created<br>               //   on every node before trying to<br>               //   connect them up<br>if (i_am_retina)<br>       connect_retina<br>end<br><br>// SET UP NETWORK DISPLAY<br>if (display)<br>       if (i_am_retina)<br>               display_retina<br>       elif (i_am_V1)<br>               display_V1<br>       end<br>end<br><br>// SET UP NETWORK OUTPUT<br>if (output)<br>       if (i_am_V1)<br>               output_V1<br>       end<br>end<br><br>// START SIMULATION<br>reset<br>if (i_am_retina)<br>       if (batch)<br>               echo Simulation started at {getdate}<br>               autosweep horizontal<br>               echo Simulation finished at {getdate}<br>               exit<a
+ href="ref/atsign.txt">@</a>all<br>       end<br>else<br>       // wait for commands from the retinal node's<br>       //   control panel<br>       <a
+ href="ref/barrier.txt">barrier</a> 7 100000<br>end
+<br><br></pre>
+&nbsp; <b><font size="4">To run this example on your workstation:</font></b>
+<p></p>
+<ol>
+  <li>Ensure that your PGENESIS environment is set up. </li>
+  <li>"<tt>cd</tt>" to the <tt>Scripts/orient1</tt> subdirectory of
+the directory in which PGENESIS is installed on your machine.
+  </li>
+  <li>Run this example by typing "<tt>pgenesis demo.g</tt>". This will
+display each neural population in a different window. Use the control
+panel to run the simulation, by clicking on either the "sweep_horiz" or
+"sweep_vert" buttons. </li>
+  <li>When you are finished, click on the "quit" button and all
+processes should exit. </li>
+</ol>
+<p>
+</p>
+</body>
+</html>

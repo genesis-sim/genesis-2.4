@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+  <title>Parallel GENESIS Routines</title>
+</head>
+<body>
+<p><b><font size="6">PGENESIS Reference Manual</font></b> </p>
+<hr>
+<ul>
+  <li>Latest serial GENESIS <a
+ href="http://www.genesis-sim.org/GENESIS/Hyperdoc/Manual.html">Reference
+Manual</a> </li>
+  <li><a href="pgenesisscript.html">pgenesis</a> shell script used
+to run PGENESIS </li>
+  <li>parallel routines jump: <a href="ref/paron.txt">paron</a>, <a
+ href="ref/raddmsg.txt">raddmsg</a>, <a href="ref/rshowmsg.txt">rshowmsg</a>, <a
+ href="ref/rvolumeconnect.txt">rvolumeconnect</a>, <a
+ href="ref/rvolumedelay.txt">rvolumedelay</a>, <a href="ref/rvolumeweight.txt">rvolumeweight</a>,
+    <a href="ref/atsign.txt">@</a>, <a href="ref/async.txt">async</a>, <a
+ href="ref/waiton.txt">waiton</a>, <a href="ref/barrier.txt">barrier</a>, <a
+ href="ref/barrierall.txt">barrierall</a> </li>
+  <li><a href="par_out.html">Parallel I/O Issues</a></li>
+  <li><a href="#scheduler">Scheduler considerations</a><br>
+  </li>
+  <li><a href="#gotchas">pitfalls</a> and <a href="#holes">holes</a> </li>
+</ul>
+<p>
+</p>
+<hr>
+<p><b><font size="4">Startup</font></b> </p>
+<p>To use any of the capabilities of the parallel library, one must
+first start it up. This will also spawn the requested number of worker
+nodes on architectures that support process-spawning. </p>
+<pre><a name="paron">  </a><a href="ref/paron.txt" name="paron">paron</a>                Starts up the parallel library.<br></pre>
+<p>There are several commands for obtaining configuration information: </p>
+<pre>  mynode               number of this node in this <a
+ href="zones.html">zone</a> <br>  nnodes               number of nodes in this zone <br>  myzone               number of this node's zone <br>  nzones               number of zones <br>  ntotalnodes          number of nodes in all zones <br>  mytotalnode          unique number over all zones for this node <br>  mypvmid              task identifier used by PVM for this node <br>  npvmcpu              number of cpus used by PVM in the parallel machine <br></pre>
+<p>The ability to run parallel threads can be turned on or off (default
+is on). </p>
+<pre>  threadson            Re-enables parallelism. <br>  threadsoff           Disables parallelism.<br>  clearthreads         Clears all pending parallel setup commands or<br>                         remote procedure calls<br>  clearthread          Clears at most one pending parallel setup command<br>                         or remote procedure call<br></pre>
+<hr>
+<p><b><font size="4"><a name="rmsg">Adding Messages</a></font></b> </p>
+<p>It is possible to create arbitrary messages between elements on
+different nodes using the raddmsg command: </p>
+<pre>  <a href="ref/raddmsg.txt">raddmsg</a>              Adds message between the listed sources elements and<br>                       the listed destination elements (which may be designated<br>                       to be on other nodes by means of the '@' notation).<br></pre>
+<p>The following routine displays inter-node messages correctly (and
+suppresses the display of the postmaster messages used to implement the
+inter-node messages). </p>
+<pre>  <a href="ref/rshowmsg.txt">rshowmsg</a>             Connects one group of elements in a volume to another,<br>                       using source and destination element lists and masks.<br><br></pre>
+<hr>
+<p><b><a name="connect">Synaptic Connections</a></b> </p>
+<p>There are several routines which allow one to set up multiple
+synaptic connections across nodes. They are analogues of the regular
+GENESIS routines for setting up synapses. </p>
+<pre>  <a href="ref/rvolumeconnect.txt">rvolumeconnect</a>       Connects one group of elements in a volume to another,<br>                       using source and destination element lists and masks.<br>  <a
+ href="ref/rvolumedelay.txt">rvolumedelay</a>         Sets delays of a group of synapses receiving input<br>                       from a list of presynaptic elements in a volume.<br>  <a
+ href="ref/rvolumeweight.txt">rvolumeweight</a>        Sets weights of a group of synapses receiving input<br>                       from a list of presynaptic elements in a volume.<br><br></pre>
+<hr>
+<p><b><a name="remote">Remote</a> Command Execution and Synchronization</b>
+</p>
+<p></p>
+<pre>  <i>command</i><a href="ref/atsign.txt">@</a><i>nodelist</i>     Executes command on specified nodes synchronously<br>                       (i.e., does not return until remote commands have<br>                        completed and returned result)<br>  <a
+ href="ref/async.txt">async</a> <i>command</i>@<i>nodelist</i><br>                       Executes command on specified nodes asynchronously<br>                       (i.e., returns without waiting for result)<br>  <a
+ href="ref/waiton.txt">waiton</a>               Wait for completion of a specified async command,<br>                        or wait for completion of all async commands.<br>  <a
+ href="ref/barrier.txt">barrier</a>              Wait for all nodes in my zone to reach this point.<br>  <a
+ href="ref/barrierall.txt">barrierall</a>           Wait for all nodes in alls zones to reach this point.<br><br></pre>
+<hr style="width: 100%; height: 2px;"><span style="font-weight: bold;"><a
+ name="scheduler"></a>Scheduler Considerations</span><br>
+<br>
+If you use a custom .psimrc file, it should include a <span
+ style="font-family: monospace;">pschedule </span>command so that the
+PGENESIS-specific scheduling policy is used.&nbsp; If you intend to use
+a custom scheduling policy, then it should contain the line:<br>
+<br>
+<span style="font-family: monospace;"> addtask Simulate
+/##[CLASS=postmaster] -action PROCESS</span><br>
+<br>
+before any other PROCESS actions.&nbsp; This is needed so that the
+postmaster objects can perform their message transfers before any other
+process actions modify the simulation state for that simulation step.<br>
+<br>
+<hr>
+<p><b><a name="gotchas">Unsupported and Dangerous Operations</a> </b>
+</p>
+<p>It is extremely easy to reach deadlock in parallel programs, one way
+to reduce the chances of this is frequent use of <a href="ref/barrier.txt">barriers</a>
+and sparse use of <a href="ref/async.txt">asynchronous</a> commands.
+However, barriers are expensive to execute and can reduce parallelism,
+so they should be placed judiciously in scripts. </p>
+<p>The serial GENESIS <a
+ href="http://www.genesis-sim.org/GENESIS/Hyperdoc/Manual-25.html#ss25.179">stop</a>
+command should be
+used only with extreme care in zones containing more than one node.
+PGENESIS executes an implicit <a href="ref/barrier.txt">barrier</a> before
+performing a simulation step. If any nodes enter the barrier then all
+nodes must, otherwise deadlock will result. It is very difficult to
+satisfy this requirment when the stop command is issued. </p>
+<p>Issuing <a
+ href="http://www.genesis-sim.org/GENESIS/Hyperdoc/Manual-25.html#ss25.178">step</a>
+commands must be done with
+care. Since the step command executes an implicit barrier, failure to
+follow the following rule can result in deadlock. The two safe methods
+to issue step commands are: </p>
+<ol>
+  <li>step commands are issued exclusively locally (i.e., no use of the
+    <a href="ref/atsign.txt">@</a> operator with step) </li>
+  <li>remote simulation <a
+ href="http://www.genesis-sim.org/GENESIS/Hyperdoc/Manual-25.html#ss25.178">step</a>
+commands (e.g.,
+step<a href="ref/atsign.txt">@all</a>) be issued by at most one node in a
+zone.</li>
+</ol>
+<br>
+<hr style="width: 100%; height: 2px;"><span style="font-weight: bold;"></span>
+<p><b><a name="holes">Holes in the documentation</a></b> </p>
+<menu>
+<li>Description of the user-accessible fields of the postmaster,
+including sync_before_step </li>
+</menu>
+<p><!-- STANDARD PSC FOOTER OPENING -->
+</p>
+<hr>
+<p><a href="http://www.psc.edu/general/software/software.html"><img
+ src="http://www.psc.edu/general/images/icons/software_button.gif"
+ alt="[Software]"></a> <a href="http://www.psc.edu/"><img
+ src="http://www.psc.edu/general/images/icons/psc_home.gif"
+ alt="[PSC Home Page]"></a> <a
+ href="http://www.psc.edu/search/search.html"><img
+ src="http://www.psc.edu/general/images/icons/search.gif" alt="[Search]"></a><a
+ href="http://www.psc.edu/general/help/assistance.html"><img
+ src="http://www.psc.edu/general/images/icons/help.gif" alt="[Help]"></a><a
+ href="http://www.psc.edu/general/feedback.html"><img
+ src="http://www.psc.edu/general/images/icons/feedback.gif"
+ alt="[Feedback]"></a> </p>
+<hr>
+<p><i><font size="-1">Revised: October 1996 </font></i><br>
+<i><font size="-2">URL:
+http://www.psc.edu/general/software/packages/pgenesis/ref/Parallel.html</font></i><font
+ size="-2"> </font><!-- STANDARD PSC FOOTER CLOSING --> </p>
+</body>
+</html>

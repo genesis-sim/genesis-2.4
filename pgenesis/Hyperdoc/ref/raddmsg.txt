@@ -1,0 +1,22 @@
+Routine Name:	raddmsg
+
+Description:	Establishes message links between two elements.  The second
+		element may be on a different node; the node would be specified
+		using the '@' notation.
+
+Usage:		raddmsg source-element dest-delement@dest-node-list msg-type [msg-fields]
+
+Example:	raddmsg  /cell/dend /cell/soma      RAXIAL Ra previous_state
+		raddmsg  /cell/soma /cell/dend@2    AXIAL  previous_state
+		raddmsg  /cell/soma /graphs/Vmgraph@4,5 PLOT   Vm *voltage *red
+
+Notes:		raddmsg sets up communication links to pass information
+		between elements, possibly on different nodes.  Messages flow
+		along message links created by the raddmsg routine each time
+		a simulation timestep is executed.
+
+See also:	addmsg, rshowmsg
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Sep 3, 1996
+URL file://www.psc.edu/general/software/packages/genesis/raddmsg.txt

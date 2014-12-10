@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html version="2.0">
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>PGENESIS 2.0 Reference Manual</title>
+</head>
+<body>
+<p><b><font size="6">PGENESIS 2.0 Manual</font></b> </p>
+<hr>
+<pre>###<br>### WARNING: This document describes the obsolete PGENESIS 2.0, which<br>###          dates from around 1995-1996; users should refer to the<br>###          top-level README, the PGENESIS homepage<br>###          (http://www.psc.edu/Packages/PGENESIS), and the online<br>###          Book of GENESIS (http://www.genesis-sim.org/GENESIS/bog/bog.html<br>###          for current information.<br>###<br>###          This is included here for its historical relevance as a<br>###          design document, and as a supplementary source of information<br>###          for users seeking additional information about various PGENESIS<br>###          features. <br>###<br>
+<hr><br>	Script Language Extensions for Parallel Genesis<br><br>			Reference Manual<br>			 Nigel Goddard<br>			ngoddard@psc.edu<br><br>===================================================================<br>1. Introduction<br><br>Parallel Genesis allows a modeler to distribute a simulation across a<br>compuational platform that supports the PVM message passing library.<br>This includes most supercomputers and workstation networks.  There is<br>a natural mapping from network-level models to a parallel computer,<br>but Parallel Genesis is also capable of executing a single-cell model<br>on a parallel platform.<br><br>This document describes the language extensions for parallel programming<br>in the Genesis script language.  The first section introduces the<br>programming model and the second section specifies the syntax and<br>semantics of each new script language extension.<br><br>1.1 PVM and Parallel Genesis<br><br>The Parallel Virtual Machine (PVM) system provides the illusion of a<br>parallel platform.  The PVM system may run on a single CPU or multiple<br>CPUs, possibly of different type.  In the rest of this document when<br>we refer to the "parallel platform" we mean the illusion provided by<br>PVM.  When we refer to the "parallel machine", we mean the physical<br>set of CPUs and network connecting them that PVM is running on.  An<br>executing PVM program consists of user processes, typically one per<br>CPU, which communicate via the PVM daemon which runs on each<br>participating CPU.  In parallel Genesis, each user process is an<br>independent Genesis simulation, which we call a "node" of the parallel<br>simulation.  Nodes are uniquely identified by a node number<br>(consecutive integers starting at zero).<br><br>1.2 Zones<br><br>Nodes can be grouped in "zones" when the simulation is started.  Each<br>node is in exactly one zone (by default, every node is in zone 0).<br>The zones form a fixed partition of the parallel platform.  The<br>motivation for zones is to allow different parts of the simulation to<br>run asynchronously (uncoordinated).  For example, in a parameter<br>search application one might wish to run many instances of a four-node<br>model in parallel.  Each instance uses four nodes which must run<br>synchronously, but the instances need not be coordinated (except at<br>start and finish).  Thus we can run each instance in a separate zone,<br>each zone containing four nodes.  Zones are uniquely identified by<br>consecutive integers starting at zero.  The nodes within a zone are<br>uniquely identified with a znode number (consecutive integers starting<br>at zero).  The mapping from node numbers to (zone, znode) pairs is<br>discussed in section ???.<br><br>1.3 Programming model<br><br>1.3.1 Namespace (memory)<br><br>The Parallel library currently provides a private-namespace<br>programming model.  This means that each node has no knowledge of the<br>elements that reside on other nodes.  This implies that every<br>reference to an element on another node must specify the node<br>explicitly.  It is envisioned that a shared-namespace programming<br>model will be implemented eventually.  This will allow nodes within a<br>zone to reference elements on other nodes in the zone without<br>specifying the node number.  To ease upgrade of parallel models to the<br>shared-namespace paradigm, it is recommended that element names within<br>a zone be unique.  If this recommendation is not adhered to, there<br>will be naming conflicts if a model wishes to take advantage of the<br>shared-namespace cabability when it becomes available.<br><br>1.3.2 Execution (threads and synchronization)<br><br>The main thread of control on each node is that which reads commands<br>from the script file (or keyboard if the session is interactive).  The<br>parallel library provides limited capabilities for this thread to<br>create new threads on any node.  On each node the threads are pushed<br>onto a stack with the main thread at the bottom of the stack.  Only<br>the topmost thread may execute and when it completes it is popped off<br>the stack so that the next thread down can continue.  Threads ready to<br>execute are NOT guaranteed to execute: if the topmost thread is<br>blocked or looping, no ready thread lower on the stack can continue.<br><br>An executing thread is guaranteed to run to completion (assuming it<br>does not contain an infinite loop or block on I/O) so long as it<br>executes only local operations, i.e. no operations that explicitly or<br>implicitly involve communication with other nodes.  The commands<br>descriptions below include specification of local or non-local status.<br>In addition, simulation steps and reset are by definition non-local<br>operations if there is more than one node in the zone.  Users are<br>strongly encouraged to use only local operations in child threads<br>whenever possible.  Users need to be very careful about thread<br>creation to ensure that deadlock (no thread can continue) does not<br>occur.<br><br>The parallel library provides facilites for blocking and non-blocking<br>thread creation, usually used to execute commands on nodes different<br>from the one the script is being executed on ("remote" nodes).  When a<br>thread (including the main script) initiates a blocking remote thread<br>(also known as remote procedure call or remote function call), it<br>waits until the thread completes before continuing.  When a thread<br>initiates a non-blocking remote thread (an asynchronous thread), it<br>continues immediately without waiting for termination of the thread.<br>While a thread is waiting, the node can accept a request for thread<br>creation arriving from any node (including itself).  This new thread<br>is pushed on the thread stack and executed, so that the original<br>waiting thread does not continue until the new thread has completed.<br><br>Scripts running on different nodes can synchronize via several<br>different synchronization primitives.  There are two types of barrier<br>(each script waits at a barrier until all have reached it), one which<br>involves all nodes in a zone, the other involving all nodes in the<br>parallel platform.  By default there is an implicit zone-wide barrier<br>before a simulation step is executed, although this can be disabled.<br>Pairwise synchronization of nodes is also possible.<br><br>When a script requests that a command be run asynchronously on another<br>node it initiates a child thread of control on the other node.  The<br>child thread runs asynchronously with its parent.  The parent can<br>request notification or the child's result when the child completes,<br>and can wait on that notification or result (a "future").  By default<br>all threads block for child completion before each simulation step<br>although this feature is modifiable by the user.  It is easy to reach<br>deadlock (no thread able to continue) if the creation and execution of<br>threads is handled carelessly.<br><br>If a node initiates several child threads on a particular remote node,<br>these are guaranteed to commence (but not necessarily complete)<br>execution in the order in which they were initiated.  A thread is<br>guaranteed to execute eventually so long as no preceding thread 1)<br>enters a loop which only executes local operations, or 2) blocks<br>indefinitely because of deadlock.  Once execution of a thread begins,<br>it runs to completion without interruption so long as it only executes<br>local operations.<br><br>1.4 Simulation and scheduling<br><br>The parallel library provides the ability to set up a Genesis message<br>between to objects on different nodes (a remote message), provided the<br>nodes are in the same zone.  Data is physically transferred from one<br>node to the next at the beginning of a simulation step (see section<br>??? for user control of this process).  This means that there is no<br>transfer of data between objects within a single timestep, which has<br>ramifications for the schedule.  The parallel library guarantees that<br>execution on a parallel platform will be identical to that on a single<br>processor if and only if there are no remote messages for which the<br>source object precedes the destination object in the schedule (we<br>assume that every node in a zone has the same schedule).<br><br>1.5 Deferred features<br><br>[Mail ngoddard@psc.edu if you would like to see any of these features<br>implemented.]<br><br>Features which the parallel library will eventually include but which<br>are not currently implemented:<br><br>	remote execution on arbitrary sets of nodes<br><br>	remote messages deletion<br><br>	copy or deletion of elements sending or receiving remote messages<br><br>	inspection of remote messages (e.g., showmsg, getmsg)<br><br>	active messages which have slot data<br><br>	rget (get value of remote script variable)<br><br>	rpoll (wait until remote script variable is non-zero)<br><br>	rvolumeconnect (like volumeconnect)<br><br>=============================================================================<br>2.0 Commands<br><br>2.1 Syntax.<br><br>In the interests of backwards compatibility, the syntax of most<br>commands is an extension of existing command forms.  The general idea<br>is to precede the existing command name with an "r" (for "remote") and<br>to add the specification of the remote node with an @.<br><br><br>	Local syntax (existing) :<br>	command args ....<br>	element_path<br><br>	Remote syntax<br>	command@<node-list> args ...<br>	element_path@node<br><br><br>	<node-list> &lt;- <node-spec>,<node-spec>,...<br><br>	<node-spec> &lt;- <node>[.<zone>]<br><br>where <node> is the znode number for the node, that is its number<br>within its zone.  If .<zone> is omitted, the zone of the caller is<br>assumed.  Any command or element without the @ extension is assumed to<br>be on the local node. If the node and zone are the same as the<br>caller's, the command is executed locally.  <br><br>Nodes and zones are identified at present as an integer (znode number<br>or zone number) or one of two keywords:<br><br>other	 :	All except the caller's ("others" also accepted).<br>all	 :	All including the caller's.<br><br>Thus "@other" means all nodes in the caller's zone except the caller's<br>node.  "@other.all" means every node in the parallel platform except<br>the caller's.  "other.other" means every node in every other zone<br>except the nodes whose znode number is the same as the callers znode<br>number.  "@all.all" means every node in the parallel platform.  "@all.other"<br>means every node in every other zone.  If "other" is given for node then<br>there must be a node whose znode number corresponds to the caller's<br>znode number in every zone that is specified.  There must exist at<br>least one node in each node-spec.<br><br>[Deferred: appending "only" to the @ means that the reference is<br>exclusively to those nodes specified in the node-list - all other<br>nodes do nothing. Thus "command@only-2,4,6" results in the command<br>being executed on nodes 2,4 and 6 only.  Mail ngoddard@psc.edu if<br>you would like this implemented.]<br><br>=============================================================================<br>2.2 Startup<br><br>	paron<br>	syntax : paron [option [arguments]]+<br><br>	This command initializes the parallel simulation It performs the<br>	following tasks :<br><br>	* Creates the postmaster /post<br>	* If global node zero then spawn all the other nodes<br>	* Partitions the parallel platform into zones <br>	* Adds the parallel event loop ParEventLoop as a job at priority 1<br>		(which is high but not top)<br><br>	The command should be issued before starting any parallel functions.<br><br>	2.2.1 paron syntax options.<br><br>	Several paron options control how the nodes are spawned by the master.<br>	Worker nodes ignore these options in the paron command, except the<br>	-debug option.<br><br>	-executable filename	(default: "parnxgenesis")<br>		the file in $HOME/pvm4/bin/ARCH to execute<br><br>	-nodes number		(default: $NNODES if it is defined, otherwise<br>					  the size of the parallel machine)<br>		the number of nodes to use in the parallel platform<br><br>	-execdir directory-name	(master's working directory at paron time)<br>		the name of the directory which will become "." for the workers<br><br>	-altsimrc filename		(default: ".parnxsimrc")<br>		the Genesis configuration file to use, located in $HOME or "."<br><br>	-startup filename	(default: same name as master's startup file)<br>		the name of the .g file on the SIMPATH to read on startup<br><br>	-silent level		(default: 3)<br>		the Genesis level of error/feedback reporting<br><br>	-debug flags		(default: 0)<br>		the PVM debug options for spawning tasks.  See the PVM<br>		manual and section ??? for details.  4 means debug.<br><br>	-output filename	(no default)<br>		the name of the file (relative to the master's working<br>		directory if not an absolute pathname) to which<br>		stdout/err from workers is directed<br><br>	-nice level		(master's nice level)<br>		the nice level to run the workers at.  Positive values only,<br>		a higher level means a lower priority.<br><br>	-dbgout filename	(stdout, for implementors only)<br>		the name of the file which workers will print debug messages<br>		to, an extension is added (the worker's PID).<br>		[NOT IMPLEMENTED]<br>	-batch<br>		if present, the worker will be run in batch mode<br>		so any interaction with the user will be suppressed<br><br>	The remaining options for paron relate to specification of zones.<br>	It is an error, currently NOT detected, if the nodes do not all<br>	have the same specification of zones.<br><br>        -farm<br>	        each node is in a separate zone (default).<br><br>        -parallel <br>		all nodes in the same zone.<br><br>	-mixed nnodes nzones [nnodes nzones] ...<br>		This is the most general option. It sets up 'nzones' zones<br>		with 'nnodes' nodes in each. Out of the remainder, a similar<br>		specification can be used, and so on. The nodes left over<br>		are placed in single-node zones.  If<br>                nnodes or nzones is &lt;1 it means divide the remaining<br>                number of nodes by the non-negative value to obtain<br>                the other value. Remainders go on as before.<br>			There is a special case when the first zone is of<br>		size 1 (e.g. paron mixed 1 1	 10 10 ....). This case<br>		usually occurs when one wants a master node to coordinate<br>		the operation of all the rest, as in a parameter search<br>		simulation. In this situation the zero zone is placed<br>		at the real zero node of the parallel machine, which is<br>		usually the processor with a TTY interface if any exiss.<br>		<br>	2.2.2	Examples<br>	paron<br>		By default this just sets up a simulation where each node is<br>		in a separate zone.<br><br>	paron -parallel<br>		Sets up a simulation where each node is in the same zone, and<br>		can send messages to each other.<br><br>	paron -mixed 10 5     3 others<br>		If this were starting with 64 nodes, the simulation would look<br>		like this :<br>		Zone 0,1,2,3,4   : 10 nodes each  = 50 nodes<br>		Zone 5,6,7,8     : 3 nodes each   = 12 nodes<br>		Zone 9,10        : 1 nodes each  =  2 nodes<br><br><br>-----------------------------------------------------------------------------<br>2.3 Local commands<br>-----------------------------------------------------------------------------<br><br>	mynode,nnodes,myzone,nzones,ntotalnodes,mytotalnode<br><br>	mynode - number of this node in this zone<br>	nnodes - number of nodes in this zone<br>	myzone - number of this node's zone<br>	nzones - number of zones<br>	ntotalnodes - number of nodes in all zones<br>	mytotalnode - unique number over all zones for this node<br><br>	These are utility functions for finding out about<br>	configuration of the parallel platform.<br><br>	Syntax : They return an int, and do not take any<br>	arguments.<br><br>	Examples :<br>		echo {mynode} {nnodes} {myzone} {nzones}<br><br>-----------------------------------------------------------------------------<br>2.4 PVM access<br>-----------------------------------------------------------------------------<br><br>		mypvmid, npvmcpu<br><br>		mypvmid - task identifier used by PVM for this node<br>		npvmcpu - number of cpus used by PVM in the parallel machine<br><br>		These functions take no arguments and return an integer.<br>		They give access to some of the underlying PVM information.<br>		<br>-----------------------------------------------------------------------------<br>3.4	threadson, threadsoff, clearthreads<br><br>This set of functions is used for controlling execution of threads.<br>The paron command leaves the parallel library in a state in which<br>suspended threads ready to resume and threads launched by a remote node<br>can be executed when the current thread suspends itself.  The threadsoff<br>command disables the (re)commencement of any other thread.  The threadson<br>command enables the (re)commencement of other threads.  The clearthreads<br>command executes all ready threads until completion or until they suspend<br>themselves (and even these may complete if they become ready again before<br>the queue of ready threads becomes empty).<br><br>Syntax : No arguments, no function values returned.<br><br>3.4.1	threadson : This operation re-enables parallelism.<br><br>3.4.2	threadsoff : This operation disables parallelism. Useful<br>	if one is performing a function (eg, simulation steps)<br>	which should not be interrupted to perform script functions.<br>	Also useful if one wishes prevent access (via rpc calls) to script<br>	variables till they have been evaluated.<br><br>3.4.3	clearthreads : This operation clears all pending parallel setup<br>	commands. It is meant to be used after threadsoff has been<br>	called, to complete execution of any remaining threads.<br><br>-----------------------------------------------------------------------------<br>Non-local commands<br>-----------------------------------------------------------------------------<br><br>3.3	remote procedure call<br><br>3.3.1	Syntax:<br>		command@node-list args [-reduce type]<br>		node-list &lt;- node-spec[,node-spec]...<br>		node-spec &lt;- node[.zone]<br><br>NOTE: until a parser bug is fixed, use this variant if any node-specs<br>      are enclosed in {} for evaluation by the parser, e.g. func@{i}.<br>      The resulting warning message that can be ignored:<br><br>		rcommand command@node-list args [-reduce type]<br><br><br><br>This causes a command to be executed on one or more nodes.  It<br>suspends the script, creates a new thread on the nodes (usually remote<br>nodes), executes the command, and resumes the script when the command<br>has completed on all nodes.  While the script is suspended other<br>threads may execute (other suspended threads which resume, or threads<br>created by remote calls from other nodes).  The result of the command<br>is returned as a character string - note that this result is undefined<br>if the function is executed on more than one node.  <br><br>[Deferred: If the the optional -reduce flag is given, the appropriate<br>reduction operation is performed on the results from all the nodes on<br>which the command is executed.  The result after reduction is returned<br>as a character string.  Mail ngoddard@psc.edu if you would like this<br>implemented.]<br><br>A heuristic to use to avoid deadlock in a remote procedure call is to<br>be sure that the function that is executed only performs local<br>operations.  That is, it should not issue any of the remote operations<br>listed in this document, nor execute any simulation steps for a zone<br>containing multiple nodes.  Local operations are guaranteed to execute<br>without suspending the thread, so that the remote thread which<br>implements the rpc call is guaranteed to execute to completion once it<br>begins execution.  Violating this heuristic can easly lead to<br>livelock, deadlock, or infinite loops.<br><br><br>Example :<br>	On node 0 we set up the function<br>		function foo(x)<br>			int x<br>			return({x*10})<br>		end<br><br>	On node 1 we issue the command<br><br>		int myfoo<br>		myfoo = {foo@0 2}<br>		echo {myfoo}<br><br>	and the reply is :<br><br>		20<br><br>-----------------------------------------------------------------------------<br><br>3.3.1	async<br>	Syntax:<br>		async function[@node-list] args... [[-complete]|[-scalar]]<br><br>		node-list &lt;- node-spec[,node-spec]...<br>		node-spec &lt;- node[.zone]<br>		<br>The async command causes one or more new threads to be created to<br>execute the function on the node or nodes specified in the nodelist.<br>These threads execute asynchronously with the script.  The function<br>can be a Genesis shell command (including Unix shell commands) or a<br>script function.  The async command returns as soon as the request for<br>new threads has been sent.  If the [-complete] or [-scalar] flag is<br>given, the script can synchronize with the completion of the<br>asynchronous thread(s), and obtain a result in the case of -scalar,<br>using the "waiton" command.  If no node is specified, the current node<br>is assumed.  The async command has special meaning when applied to the<br>raddmsg command, see the documentation on raddmsg.<br><br>A heuristic to use to ensure that the remote thread completes is the<br>same as that for rpc callse, namely to be sure that the function that<br>is executed only performs local operations.  That is, it should not<br>issue any of the remote operations listed in this document, nor<br>execute any simulation steps for a zone containing multiple nodes.<br>Local operations are guaranteed to execute without suspending the<br>thread, so that the remote thread which implements the rpc call is<br>guaranteed to execute to completion once it begins execution.<br>Violating this heuristic can easly lead to livelock, deadlock, or<br>infinite loops.<br><br>		Examples : <br><br>		async echo@2 foo<br>			will cause node 2 in the caller's zone to echo 'foo'.<br><br>		async echo@all foo<br>			will cause all nodes in the caller's zone, including<br>			the current one, to echo "foo".<br><br>		async echo@all.others {mynode}<br>			will cause all nodes in all zones except the zone of<br>			the caller to echo the node number of the caller.<br>			Note that the curly braces are evaluated on the<br>			issuing node, not at the destinations !<br><br>		async@1 echo@2 foo<br>			will tell node 1 to asynchronously tell node 2 to<br>			echo foo. This is an example of a remote thread<br>			call that violates the heuristic for ensuring the<br>			thread completes. <br><br>-----------------------------------------------------------------------------<br>3.3.2	waiton<br><br>	Syntax:<br>		waiton <future>
+
+This command is used in conjunction with the "async" command.  If async is
+given the -complete or -scalar flag, it returns an integer (a "future")
+which can be used as an argument to the "waiton" command.  The effect is
+for the script to suspend until the command that was started asynchronously
+has completed.  If the -scalar flag was given, "waiton" returns the result
+of the command as a character string.  This implements a form of "future":
+the value returned by "async" is a promise of a future value which is retrieved
+with "waiton".  If the -complete flag was given, then a form of split-phase
+computation is possible.  The "async" command is used to initiate a computation
+and the "waiton" command used to wait for it to complete, with the script able
+to perform useful work that does not depend on completion between the two.
+
+	Examples:
+
+		// using a future to get a result
+		int future, result
+		// run command asynchronously putting the result in a future
+		future = {async command@node args... -scalar}
+		// do some useful work
+		...
+		// get the result from the future
+		result = {waiton future}		
+	
+
+		// using a future for split-phase computation
+		int future
+		// run command asynchronously returning a future
+		future = {async command@node args... -complete}
+		// do some useful work
+		...
+		// synchronize with the asynchronous command's completion
+		waiton future
+
+	
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+3.5	barrier, barrierall
+
+These functions synchronize nodes.  A node waits at a barrier until
+all the other nodes have reached it.  The command must be
+issued for all nodes, and when encountered by any node it
+blocks till all other nodes have also encountered it.
+
+		Syntax :
+		barrier [barrier_id [timeout_seconds]]
+		barrierall [barrier_id [timeout_seconds]]
+
+Every barrier has an id number, if no number is given the default is
+specified.  Barriers only match if the barrier id matches.  Valid id
+numbers are from 1 to 24.  Providing barrier ids in a parallel script
+helps to verify program correctness (by causing deadlock for incorrect
+programs).  If no barrier ids are provided, then any barrier will
+match any other barrier in the script.  A timeout in seconds can be
+provided to barrier commands, otherwise the default timeout value is
+used.
+
+3.5.1	barrier : This applies to all nodes within a zone. The call
+	blocks till all nodes in the zone have called barrier with the
+	given barrier id.
+
+3.5.2	barrierall : This applies to all nodes in all zones in the
+	simulation. The call blocks till all nodes in all zones
+	have called barrierall with the given barrierall id.
+		
+-----------------------------------------------------------------------------
+3.7	raddmsg
+	This function sets up a message between elements on different nodes
+	but in the same zone.
+
+	Syntax :
+	raddmsg src dest[@node] MSGTYPE var1 var2..
+
+	(Note that this is the same as for addmsg.)
+
+As with addmsg, the simulation must be reset before the messages take
+effect properly.  Only the variable fields will be transmitted
+on every time step. The constants will be set up by the command
+and then stay fixed.
+
+EFFICIENCY NOTE: The raddmsg command requires some communication
+between the source and destination nodes before it can complete, and
+the command blocks while this is occurring.  If raddmsg is executed
+asynchronously using the "async" command, then two efficiencies result
+which can greatly speedup setup phase of a script.  First, the script
+need not wait for a remote message to be completed before starting on
+the next remote message.  Secondly, raddmsg recognizes that it is
+being called asynchronously and optimizes the communication of message
+specfication between nodes.  In this case, remote message
+specifications are buffered on the source node until there are a large
+number for a given destination node.  These specifications are shipped
+off in one large communication to the destination node, which sends
+back one large response.  Buffers are flushed (i.e., remote messages
+completed) whenever a barrier or step command is issued or whenever
+required by a "waiton" command.  Remote messages from the source node
+to a given destination node are guaranteed to be completed in the
+order they are issued in the script.
+
+Examples:
+
+	// connect vector of elements to corresponding elements on other nodes
+	// do it asynchronously
+	for (i = 1; i &lt; n; i = i+1)
+	  async raddmsg elt[i] elt[i]@others ...
+	// guarantee all have completed with a synchronous call
+	raddmsg elt[0] elt[0]@others ....
+
+Bugs:	Messages created in this way cannot be deleted yet.
+	These messages are not reported properly by showmsg or
+	getmsg yet.
+	Active messages cannot have slots yet.
+	Constant fields are not yet implemented.
+
+-----------------------------------------------------------------------------
+3.8	rvolumeconnect [DEFERRED]
+
+	Just like volumeconnect except the destination element specification
+	can include a node-list (e.g., "@all").  When implemented this will
+	be a much more efficient way to make multiple, spatially defined
+	connections.
+
+-----------------------------------------------------------------------------
+
+3.10	rget [DEFERRED]
+
+	This function returns the value of a global script variable
+	on a remote node. It can only be called for a single remote
+	node. It returns a string. It is a blocking call, which
+	will not mean much unless the remote node has its threads handler
+	turned off.
+
+	Syntax : 
+	rget global[@node[.zone]]
+
+Example :
+	(on node 1.1) :
+		str foo="hello there"
+
+	(on another node)
+		echo {rget(foo@1.1)}
+			hello there
+	
+-----------------------------------------------------------------------------
+
+3.11	waitset  [DEFERRED]
+
+	This function polls the value of a global script variable
+	on a remote node, and blocks until that value is nonzero. It 
+	returns the value of the remote global when it finally comes
+	through.  The function returns a string. However, for remote
+	string variables it will not return unless the string is a
+	nonzero number.
+
+	Syntax : 
+	waitset global[@node[.zone]] [time [hang_time]]
+
+	The time option allows one to set the polling interval.
+	It defaults to 1 sec.
+
+	The hang_time option allows one to tell the function when
+	to give up. It defaults to the postmaster hang_time.
+
+	Example :
+	(on node 1.1) :
+		int foo=0
+
+	(on node 0.0)
+		echo {waitset(foo@1.1)}
+	(the command blocks...)
+
+	(on node 1.1) :
+		foo=123
+
+	(on node 0.0, the poll command finally returns)
+			123
+-----------------------------------------------------------------------------
+
+
+</future></zone></node></zone></node></node-spec></node-spec></node-spec></node-list></node-list></pre>
+<br>
+<br>
+</body>
+</html>

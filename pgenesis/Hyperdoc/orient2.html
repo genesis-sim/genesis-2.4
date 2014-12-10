@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="5">Orient_tut: <i>n</i>-way decomposition</font></b>
+</p>
+<p>In order to utilize a larger number of processors, we can subdivide
+each neural population up into a number of slices. Corresponding slices
+in each population are assigned to the same node, thus reducing the
+amount of interprocessor communication required. </p>
+<p>For example, suppose we have a 60x60 retinal array , a 30x30
+horizontally-selective V1 array, and a 30x30 vertically selective V1
+array. Assume that we want to split this simulation up over 6 nodes.
+Then each node would get a 10x60 slice of retinal cells, a 5x30 slice
+of the horizontally-selective V1, and a 5x30 slice of the
+vertically-selective V1 array. Since in the Orient_tut model,
+information flow is strictly one-way from the retinal to V1 cells and
+each retinal cell projects onto a small region of
+spatially-corresponding V1 cells, we can illustrate the communication
+pattern for the retina to each V1 population as follows: </p>
+<p><img src="stripe-decomp.gif" width="604" height="326">
+</p>
+<p>The only inter-node communication required is for the diagonal
+arrows that crossover between adjacent nodes. </p>
+<p>In addition to the nodes dedicated to simulating the network, we
+employ an additional node for control purposes to generate input to the
+retina, We also employ another node to gather output directed either to
+a display or to a file. Thus the total number of nodes needed wil be 2
+more than the number of slices. Let us assume that nodes <tt>0 </tt>through
+<tt>n_slices-1</tt> will handle the <i>n </i>slices and that node <tt>n_slices</tt>
+will handle control, and node <tt>n_slices+1 </tt>will handle display
+and output. </p>
+<p>The top level PGENESIS script file for this example is partially
+included here: </p>
+<pre>// START UP<br>if (display || output)<br>       n_nodes = n_slices + 2<br>else<br>       n_nodes = n_slices + 1<br>end<br>output_node = n_slices + 1<br>workers = "0"<br>for (i = 1; i &lt; n_slices; i = i + 1)<br>       workers = workers @ "," @ {i}<br>end<br><a
+ href="ref/paron.txt">paron</a> -parallel -silent 0 -nodes {n_nodes} -output o.out \<br>       -executable pgenesis<br>i_am_control_node = {mynode} == n_slices<br>i_am_worker_node =  {mynode} &lt;  n_slices<br>i_am_output_node =  (display || output) &amp;&amp; ({mynode} == (n_slices + 1))<br>i_am_spare_node =   !i_am_control_node &amp;&amp; !i_am_worker_node &amp;&amp; !i_am_output_node<br><br>// CREATE ELEMENTS ON EACH NODE<br>if (i_am_control_node)<br>       setup_control<br>elif (i_am_worker_node)<br>       slice = {mynode}<br>       create_retinal_slice<br>       create_V1_horiz_slice<br>       create_V1_vert_slice<br>end<br><br>// CONNECT UP ELEMENTS<br><a
+ href="ref/barrier.txt">barrier</a>        // wait for all elements to be created<br>               //   on every node before trying to<br>               //   connect them up<br>if (i_am_worker_node)<br>       connect_retinal_slice<br>else<br>       <a
+ href="ref/barrier.txt">barrier</a> // we need to do 2 barriers here to correspond<br>       <a
+ href="ref/barrier.txt">barrier</a> // with the 2 barriers that are internal to<br>               // connect_retinal_slice<br>end<br><br>// SET UP NETWORK DISPLAY<br>if (display)<br>       if (i_am_output_node)<br>               create_display<br>       end<br>end<br><br>// SET UP NETWORK OUTPUT<br>if (output)<br>       if (i_am_output_node)<br>               create_output<br>       end<br>end<br><br>// SET UP MESSAGES FROM SLICE NODES TO DISPLAY NODE<br>if (display)<br>       if (i_am_control_node)<br>               setup_control_display<br>       elif (i_am_worker_node)<br>               setup_retinal_slice_display<br>               setup_V1_horiz_slice_display<br>               setup_V1_vert_slice_display<br>       end<br>end<br><br>// SET UP MESSAGES FROM SLICE NODES TO OUTPUT NODE<br>if (output)<br>       if (i_am_worker_node)<br>               setup_V1_horiz_slice_output<br>               setup_V1_vert_slice_output<br>       end<br>end<br>               <br>// START SIMULATION<br>reset       // this does an implicit "barrier" so we are guaranteed to<br>            //    to have all messages set up before proceeding with<br>            //    the simulation<br>if (i_am_control_node)<br>       if (batch)<br>               echo Simulation started at {getdate}<br>               autosweep horizontal<br>               echo Simulation finished at {getdate}<br>               exit<a
+ href="ref/atsign.txt">@</a>all<br>       end<br>       // handle user input from the control panel<br>       <a
+ href="ref/barrier.txt">barrier</a> 8 100000<br>else   <br>       // wait for commands from the control node<br>       <a
+ href="ref/barrier.txt">barrier</a> 7 100000<br>end<br><br></pre>
+<b><font size="4">To run this example on your workstation:</font></b>
+<p> </p>
+<ol>
+  <li>Ensure that your PGENESIS environment is set up. </li>
+  <li>"<tt>cd</tt>" to the <tt>Scripts/orient2</tt> subdirectory of
+the directory in which PGENESIS is installed on your machine. </li>
+  <li>Run this example by typing "<tt>pgenesis demo.g</tt>". This will
+display all 3 neural populations in a single window (the chart graphs
+of Orient_tut are omitted for simplicity). Use the control panel to run
+the simulation, by clicking on either the "sweep_horiz" or "sweep_vert"
+buttons. </li>
+  <li>When you are finished, click on the "quit" button and all
+processes should exit. </li>
+</ol>
+<pre>
+</pre>
+</body>
+</html>

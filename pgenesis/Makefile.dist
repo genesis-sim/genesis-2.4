@@ -1,0 +1,1929 @@
+#				P G E N E S I S
+#                              Parallel GENESIS
+#				 Version 2.4
+#
+# SYNOPSIS: This is the top-level Makefile for PGENESIS.  
+#           YOU MUST EDIT THIS FILE BEFORE RUNNING "make".
+#           Please follow the procedure given below.
+#
+# TABLE OF CONTENTS
+# A. Procedure for building and installing PGENESIS
+# B. Installation configuration settings
+# C. Optional libraries
+# D. Definitions for specific operating system and compiler in use
+# E. Custom settings
+# F. Beginning of non-configurable definitions
+# G. Revision history
+#
+# ----------------------------------------------------------------------
+# A. PROCEDURE FOR BUILDING AND INSTALLING PGENESIS
+# ----------------------------------------------------------------------
+#
+# 1) Make sure that you have already installed regular GENESIS and
+#    have either a working MPI or PVM library
+#
+# 2) Examine the small block of definitions in section B which may need
+#    to be modified for your architecture.
+#
+# 3) Look through the rest of this file for a block of definitions for
+#    your particular computer operating system and compiler combination.
+#    For example, the definitions suggested for Solaris 2.x when using
+#    the Sun Workshop C compiler begins with lines that look like this:
+#
+#		# System:	Solaris 2.x (A.K.A. SunOS 5.x)
+#		# Compiler:	Sun Workshop "cc"
+#
+#    Note that some system/compiler combinations have several variations
+#    below, so look carefully at all of them before chosing one.
+#
+# 4) Uncomment the definitions for your operating system/compiler
+#    combination.  NOTE: MAKE SURE THAT NO OTHER SYSTEM/COMPILER SECTION
+#    IS UNCOMMENTED.
+#
+# 5) Execute the command "make nxinstall", or "make install" if you
+#    need the XODUS graphics libraries linked in.
+# 
+# 6) Execute the command "make clean".
+#
+# 
+# ADDITIONAL INFORMATION:
+# If you run into problems compiling this package, consult the "CUSTOM
+# SETTINGS" section below, where you may override the default settings.
+# If one of the optional libraries fails to compile, comment out the
+# library's macros in the "Optional libraries" section.
+#
+# GENESIS can also be built without the XODUS graphics libraries by
+# replacing the commands in steps 2 and 3 with "make nxall" and
+# "make nxinstall".  A GENESIS without any libraries can be built
+# with the commands "make minall" and "make mininstall".
+#
+
+# ----------------------------------------------------------------------
+# B. INSTALLATION AND MISC CONFIGURATION SETTINGS
+# ----------------------------------------------------------------------
+
+# the current working directory
+CWD = $(PWD)
+
+# the location where serial genesis is installed.
+GENESIS = $(CWD)/../genesis
+
+# the directory to install pgenesis into
+INST_DIR = $(CWD)
+
+# directory where pgenesis source tree root is
+PARSRC_DIR = $(CWD)
+
+# No targets will be made until the EDITED macro is set to "yes".
+#
+# This makefile compiles and installs PGENESIS.  It can also be used to
+# create PGENESIS with added user libraries, once vanilla PGENESIS has
+# been installed.  In this case merely set the USERDIR, USERLIB and
+# USERINST environment variables below and execute 'make extended'.  The
+# extended PGENESIS then can be run using the shell script
+# $USERINST/bin/pgenesis.
+#
+# This Makefile creates libraries and executables for just the type of
+# platform on which PGENESIS is compiled.  To run on a
+# heterogenous network, these libraries and executables must be compiled
+# individually for each type of platform.  If the PGENESIS directory is
+# located on a shared filesystem, these compilations must be done
+# sequentially and not simultaneously.
+#
+# 1) ensure that the GENESIS libraries have been compiled and installed
+#    for this platform type.  Set GENESIS (below) to the installation root.
+#
+# 2) ensure that PVM_ROOT and PVM_ARCH are set in your environment as
+#    described in the PVM manual.  Or they can be explicitly set below,
+#    using SET_PVM_ARCH instead of PVM_ARCH.
+#
+# 3) set PVM3LIB, PVM_DEFS, XLIB if needed below.
+#
+# 4) set INST_DIR and PARSRC_DIR below.
+#
+# 5) uncomment one set of compilation flags for the machine type.
+#
+# 6) when the Makefile has been configured as far as the EDITED variable,
+#    uncomment its definition so it is defined to be "yes".
+#
+# 7) if you are using an SGI Origin, you may need to change your environment
+#    configuration slightly, as described by Greg Hood, Jul. 1999:
+#
+# 	The other change that was necessary for running on the Origin had to
+# 	do with pvm.  It was important to force pvm to use sockets rather
+# 	than shared memory on the Origin because of bugs in the pvm
+# 	implementation.  I don't know whether this has recently been fixed,
+# 	but it hadn't as of a few months ago.  So, people using Origins
+# 	should do the following:
+#
+# 	i. Add to their .cshrc:
+# 		setenv SGIMP ON
+# 		setenv PVM_SHMEM ON
+#
+#      ii. Remove -DSHMEM from $PVM_ROOT/conf/SGIMP64.def and rebuild pvm 
+#          from scratch before linking PGENESIS.
+#
+# 8) type one or more of the following:
+#	  'make install'	- to make and install pgenesis with Xodus
+#	  'make nxinstall'	- to make and install pgenesis without Xodus
+#	  'make extended'	- to install extended pgenesis with Xodus 
+#	  'make nxextended'	- to install extended pgenesis without Xodus 
+#	  'make env'		- to show some of the configuration settings
+#	  'make clean'		- to remove this machine type's object files
+#	  'make spotless'	- to remove all machine types' object files
+#
+# 9) if there are compilation problems you may need to adjust compilation
+#    flags elsewhere in this file, but not after the EDITED variable except
+#    in exceptional circumstances.
+# 
+
+# USER-MODIFIABLE MAKEFILE CONFIGURATION DEFINITIONS
+
+#
+# MPI OPTIONS
+#
+# If you want to use MPI, uncomment and modify the following lines
+#
+# USE_MPI = 1
+# MPI_LIB =
+#    set MPI_CMD to the command for starting an MPI job
+#         you may use the following variables:
+#            $$num_nodes  - number of nodes (processes) to start up
+#            $$config     - configuration string given as "-config" parameter
+#                              to pgenesis script
+#            $$
+#            $$exec       - name of the pgenesis executable
+#            $$nargv      - arguments to the pgenesis executable
+#         (remember to use $$ instead of $ or else "make" will treat
+#          it as a variable to be immediately expanded)
+# MPI_CMD = 'mpirun -np $$num_nodes $$exec $$nargv'
+# MPI_DEBUG_CMD = 'mpirun -gdb -np $$num_nodes $$exec $$nargv'
+# # these last three are needed even with MPI to keep the scripts happy
+# PVM_ROOT = $(PWD)
+# PVM_ARCH = $(MACHINE)
+# SET_PVM_ARCH = $(PVM_ARCH)
+# # remember also for MPI that you may need to change the compiler (CC) to
+# #   mpicc (or something equivalent) in the machine-specific section of
+# #   this Makefile
+
+
+#
+# PVM OPTIONS
+#
+# If you want to use PVM, uncomment and modify the following lines;
+# the PVM libraries must be in $(PVM_ROOT)/lib/$(SET_PVM_ARCH) and
+# the PVM include files must be in $(PVM_ROOT)/include.
+# If necessary set PVM_ROOT and/or SET_PVM_ARCH explicitly here.
+# Some suggested PVM3LIB values:
+#  on Solaris single processor:  -lpvm3 -lelf -lsocket -lnsl -ldl -lw
+#   on Solaris multiprocessors:  -lpvm3 -lelf -lsocket -lnsl -ldl -lw -lthread
+#     on shared memory systems:  replace -lpvm3 with -lpvm3s
+#
+#         on all systems when
+#         -DALL_SPAWN is used,
+#             (e.g., for xpvm):  replace -lpvm3 with -lgpvm3
+#        
+
+# USE_PVM = 1
+# PVM_ROOT = /usr/share/pvm3
+# SET_PVM_ARCH = `$(PVM_ROOT)/lib/pvmgetarch 2> /dev/null`
+# PVM3LIB = -lpvm3
+
+
+# if you compiled serial GENESIS with the diskio FMT1 netCDF support, you
+# must also define it here, otherwise compilation of PGENESIS will fail
+# in the link phase.
+
+FMT1OBJ      = $(GENESIS)/lib/FMT1lib.o
+NETCDFOBJ    = $(GENESIS)/lib/netcdflib.o \
+               $(GENESIS)/lib/libnetcdf.a
+
+# If you compiled serial GENESIS with SPRNG support, you must also define
+# it here.
+#
+SPRNG_LIB = lfg
+SPRNGLIB   = $(GENESIS)/lib/lib$(SPRNG_LIB).a
+
+# the common c flags included for all machines
+# ALL_SPAWN says to use a group name to start up
+# this is required to run with xpvm.
+COMMON_CFLAGS = -DUSE_MPI=0$(USE_MPI) -DUSE_PVM=0$(USE_PVM) -I$(PVM_ROOT)/include -DALL_SPAWN=0 -DLOOKAHEAD_DEBUG=0
+
+# ----------------------------------------------------------------------
+# D. DEFINITIONS FOR SPECIFIC OPERATING SYSTEM AND COMPILER IN USE
+# ----------------------------------------------------------------------
+#
+# Below are some compiler dependent settings for various system/compiler
+# combinations. Uncomment the appropriate macro settings for your system
+# and compiler combination.  You MUST uncomment one of these sections.
+#
+# For extra compile-time checking, if your compiler can handle function
+# prototypes, add -DFUNC_PROT to CFLAGS.
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Linux 1.2.x and up on Intel x86-based, Xeon,
+#           and AMD 64-bit systems.
+# Compiler:	GCC
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## 2000-05-23
+## Termcap/ncurses issues: The shell library makes reference to the
+## termcap library.  Some Linux distributions have an ncurses library
+## which is includes termcap emulation.  GENESIS appears to work
+## properly with the ncurses supplied with Red Hat Linux 5.1 and higher
+## and Debian Linux (glibc2.1, egcs-2.91.66).  However, linking with
+## ncurses is known to have resulted in core dumps in GENESIS in older
+## Linux versions.
+##
+## If you encounter problems linking with the TERMCAP flags listed below
+## or the GENESIS command line interface does not work, try the
+## following alternatives:
+##
+## 1) TERMCAP = -ltermcap
+##
+## 2) (If you are using SuSE Linux)
+##    TERMCAP = /usr/lib/termcap/libtermcap.a
+##
+## 3) (If you are using Red Hat Linux prior to version 6.0)
+##    TERMCAP = /usr/lib/libtermcap.a
+##
+
+# MACHINE=Linux
+# OS=BSD
+
+# XINCLUDE=-I/usr/include/X11
+
+## 64-bit machines probably need /usr/lib64 here.
+# XLIB=/usr/lib
+
+# CC=mpicc
+
+## Old (and probably broken) gcc installations may need the full
+## path to cpp (preferably NOT one in /lib). If there isn't a 
+## [link to] cpp in the same directory as 'cc', you should consider
+## [re]installing a newer gcc.
+# CPP=cpp -P
+# CFLAGS=-O2 -D__NO_MATH_INLINES -DLinux
+
+## For 64-bit architectures
+# CFLAGS=-O2 -D__NO_MATH_INLINES -DLONGWORDS -DLinux
+
+# LD=ld
+
+## !!!
+## Don't uncomment the next line unless you get errors about
+## libraries not being found. Setting this path may interfere with
+## the default (probably correct) operation of the loader, but some
+## 64-bit architectures may need /usr/lib64 here.
+## LDFLAGS=-L/usr/lib
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-lfl
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-lncurses
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	Linux 1.2.x and up on Intel x86-based systems
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Linux 2.x and up on PPC-based systems (LinuxPPC)
+# Compiler:	GCC
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## This configuration was provided by a GENESIS user, Alfonso
+## Delgado-Reyes.  Please make sure that you have up-to-date and
+## complete installations of flex and bison if you are using this
+## configuration.
+
+## If you encounter problems linking with the TERMCAP flags listed below
+## or the GENESIS command line interface does not work, try the
+## following alternatives:
+##
+## 1) TERMCAP = -ltermcap
+##
+## 2) TERMCAP = /usr/lib/termcap/libtermcap.a
+##
+## 3) TERMCAP = /usr/lib/libtermcap.a
+
+# MACHINE=LinuxPPC
+# OS=BSD
+
+# XINCLUDE=-I/usr/X11R6/include
+# XLIB=/usr/X11R6/lib
+
+# CC=cc
+# CPP=/lib/cpp -P
+# CFLAGS=-O2 -D__NO_MATH_INLINES
+
+# LD=ld
+# LDFLAGS=-L/usr/lib
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-lfl
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-lncurses
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	Linux 2.x and up on PPC-based systems (LinuxPPC)
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:       MacOS X and Darwin (PPC-based systems)
+# Compiler:     Apple Computer, Inc. v.gcc-932.1, based on gcc v.2.95.2
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## This configuration was originally provided by a GENESIS user, Alfonso
+## Delgado-Reyes, with updates from Boris Marin and Jan Pieczkowski.
+
+# MACHINE=Darwin
+# OS=BSD
+## Older versions may use /usr/X11R6
+# XINCLUDE=-I/usr/X11/include
+# XLIB=/usr/X11/lib
+
+# CC=cc
+# CPP=cpp -P 
+# CFLAGS=-O2 -D__NO_MATH_INLINES -DBIGENDIAN
+
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp -p
+
+## Use 'yacc' or 'bison -y' here.
+# YACC=yacc
+
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB)
+ 
+# TERMCAP=-lcurses
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end  MacOS X and Darwin (PPC-based systems)
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:      SunOS 4.1.x
+# Compiler:    SunOS 4.1.x "cc"
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# MACHINE=sun4
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc
+# CPP=/lib/cpp -P
+# CFLAGS=-O -temp=$(TMPDIR)
+# LD=ld
+
+## NOTE: If you get unresolved references for X11 library symbols in the
+## final link step during compilation, add
+##
+##    -Bstatic
+##
+## to the LDFLAGS definition here.  This is a documented problem with
+## X11 and SunOS shared libraries.  If you want information on fixes for
+## this problem look for faq #112 in:
+##
+##    http://www.x.org/ftp/contrib/faqs/x-faq-multipart/x-faq-5
+##
+
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO
+
+## end SunOS 4.1.x
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Solaris 2.x (A.K.A. SunOS 5.x)
+# Compiler:	Sun Workshop "cc"
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=Solaris
+# OS=SYSV
+
+# XINCLUDE=-I/usr/openwin/include
+# XLIB=/usr/openwin/lib
+
+## Note: Do not increase the optimization level higher than -xO1, at least
+## for version "WorkShop Compilers 5.0 98/12/15 C 5.0".  Higher levels cause
+## at least one of the XODUS widgets to fail to work properly, even though no
+## compilation errors are reported.  GCC at higher optimization levels does
+## not exhibit this problem.
+
+## probably in /opt/SUNWspro/bin, but there may be a symbolic link from
+## /usr/ccs/bin.
+# CC=cc
+# CFLAGS=-Xt -xO1 -xlibmil -xprefetch -DBIGENDIAN
+# CPP = /usr/ccs/lib/cpp -P
+
+## ld is probably in /usr/ccs/bin.
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+## You may choose to use bison and/or flex here instead of the
+## Sun-supplied yacc and/or lex.  If so, uncomment the following lines,
+## and comment out the default yacc/lex definitions further below.
+##
+## YACC = bison -y
+##
+## LEX = flex -l
+## LEXLIB = -L<flex-lib-path> -lfl
+## LIBS= $(LEXLIB) -lm
+
+## NOTE: In Solaris 2.4 through Solaris 2.6, the Sun-issued "yacc"
+## appears to produce code that interacts badly with the Sun Workshop
+## "cc" compiler when compiling the GENESIS yacc files.  If you are
+## running a version of Solaris prior to Solaris 2.7, you will need to
+## obtain the GNU bison distribution (see ftp://ftp.gnu.org), compile
+## it, install it on your system, then uncomment the following lines
+## (the ones with "bison" in them) and also comment out the use of
+## "yacc" further below.  (We have successfully compiled GENESIS on
+## Solaris 2.7 using the Sun-supplied yacc, so we don't believe you need
+## to use bison for Solaris 2.7.)
+##
+## If you have a version of Solaris before 2.7, you will also need to
+## obtain the GNU "flex" distribution (see ftp://ftp.gnu.org), compile
+## it, install it, then uncomment the following lines and comment out
+## the use of "lex" below.  Substitute the location of the flex library
+## on your system for <flex-lib-path> (or remove -L<flex-lib-path> if
+## the library is installed in a standard library path).
+##
+## YACC = bison -y
+##
+## LEX = flex -l
+## LEXLIB = -L<flex-lib-path> -lfl
+## LIBS= $(LEXLIB) -lm
+##
+## If you are using Solaris 2.7 or later, leave the YACC and LEX lines above
+## commented out, and uncomment the following lines instead:
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	Solaris 2.x (aka SunOS 5.x) using Sun Workshop C compiler
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Solaris 2.x, 9 (A.K.A. SunOS 5.x)
+# Compiler:	GCC 2.8.1, 3.3.2
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## NOTE:  There have been reports that GCC versions 3.x produce
+## errors when the code_g program is compiled using optimization
+## level O2.  If you encounter this problem, change the CFLAGS line
+## below to read 'CFLAGS=-O -DBIGENDIAN'.
+
+# MACHINE=Solaris
+# OS=SYSV
+
+# XINCLUDE=-I/usr/openwin/include
+# XLIB=/usr/openwin/lib
+
+# CC=gcc
+# CFLAGS=-O2 -DBIGENDIAN
+
+## Avoid using a full path to cpp if possible. If you can't find it
+## in a bin directory, as a last resort try /usr/ccs/lib/cpp
+# CPP=cpp -P
+
+## ld is probably in /usr/ccs/bin.
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+## You may choose to use bison and/or flex here instead of the
+## Sun-supplied yacc and/or lex.  If so, uncomment the following lines,
+## and comment out the default yacc/lex definitions further below.
+##
+## YACC = bison -y
+##
+## LEX = flex -l
+## LEXLIB = -L<flex-lib-path> -lfl
+## LIBS= $(LEXLIB) -lm
+
+## lex and yacc are probably in /usr/ccs/bin.
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	Solaris 2.x (aka SunOS 5.x) using GCC 2.8.1 compiler
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	SGI Irix 6.5
+# Compiler:	SGI C compiler (producing new-style 32 bit executables)
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## The settings in this section are for N32 mode, the SGI "new" style
+## 32-bit executables with N64 calling conventions and optimizations.
+## They are current as of IRIX 6.5.3 and 6.5.8, tested on R10000-based
+## Octane and O2 systems using the MIPSPro compiler version 7.30.
+## There is a separate section below for 64-bit executables.
+
+# MACHINE = irix
+# OS = SYSV
+
+# XINCLUDE = -I/usr/include
+# XLIB = .
+
+# CC = cc
+# CPP = /lib/cpp -P
+
+# CFLAGS = -n32 -xansi -signed -O2 -DBIGENDIAN -OPT:Olimit=6000 $(IRIX_WARN)
+
+# IRIX_HACK = -w
+# LDFLAGS = -n32 -L/usr/lib32 -LD_MSG:off=85,134
+# LD = ld
+
+## There is typically no ranlib on Irix systems. 'ar -s' creates the symbol
+## table used by ld.
+# RANLIB = ranlib
+# AR = ar
+# CPLIB=cp
+
+# YACC = yacc
+# LEX = lex
+# LEXLIB = -ll
+# LIBS = $(LEXLIB) -lm
+
+# TERMCAP = -lcurses
+# TERMOPT = -DTERMIO -DDONT_USE_SIGIO
+
+## UNCOMMENT ONLY ONE OF THE FOLLOWING.
+##
+## If you are using IRIX >= 6.5.8, uncomment the next IRIX_WARN line:
+##
+# IRIX_WARN = -woff 1116,1552,1174,3434
+##
+## If you are using IRIX above 6.5.3 but less than 6.5.8, use the following:
+##
+# IRIX_WARN = -woff 1048,1116,1155,3170
+##
+## Explanation of the above: the CFLAGS and LDFLAGS settings
+## purposefully disable reporting of certain kinds of warnings via the
+## -woff option, because they are either silly warnings, or else things
+## we cannot fix because they are in code imported from elsewhere (e.g.,
+## netCDF), or else things that could be fixed but are not worth it at
+## this time.  Yes, we know this is poor practice, but given limited
+## resources, it's the best we can do.
+
+## end SGI IRIX 6.5.x new-style 32-bit
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	SGI Irix 6.5
+# Compiler:	SGI C compiler (producing old-style 32-bit executables)
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## The settings in this section are for O32 mode, the SGI "old" style
+## 32-bit executables.  They are current as of IRIX 6.5.3 and 6.5.8,
+## tested on R10000-based Octane and O2 systems.
+
+# MACHINE = irix
+# OS = SYSV
+
+# XINCLUDE = -I/usr/include
+# XLIB = .
+
+# CC = cc
+# CPP = /lib/cpp -P
+
+# CFLAGS = -o32 -xansi -signed -O2 -DBIGENDIAN -Olimit 6000 -Wl,-woff,85 -Wl,-woff,134
+# IRIX_HACK = -w
+# LDFLAGS = -o32 -cckr
+# LD = ld
+
+# RANLIB = ranlib
+# AR = ar
+# CPLIB=cp
+
+# YACC = yacc
+# LEX = lex
+# LEXLIB = -ll
+# LIBS = $(LEXLIB) -lm
+
+# TERMCAP = -lcurses
+# TERMOPT = -DTERMIO -DDONT_USE_SIGIO
+
+## end SGI IRIX 6.5.x old-style 32-bit
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	SGI Irix 6.4
+# Compiler:	SGI C compiler (producing old-style 32-bit executables)
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## This configuration has not been tested by the Caltech GENESIS group since
+## the introduction of IRIX 6.5.  If you have a 6.4 system and encounter
+## trouble here, please mail genesis@genesis-sim.org.
+
+# MACHINE=irix
+# OS=SYSV
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc -32
+# CPP=/lib/cpp -P
+# CFLAGS=-cckr -O -G 0 -DBIGENDIAN
+# IRIX_HACK = -w
+
+# LD=ld -32
+# LDFLAGS= -O
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=
+# TERMOPT=-DPLAINTERM
+
+## end SGI IRIX 6.4 32-bit
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	SGI Irix 6.5
+# Compiler:	SGI C compiler (producing 64-bit executables)
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## This configuration is known to work for (and has only been tested on)
+## SGI Origin 2000 running IRIX 6.5.10 with MIPSPro compiler 7.3.1.1m (or .3m), 
+## gcc 2.95, or gcc 3.0.4. It may work for other architectures and OS versions, but the
+## GENESIS maintainers do not have experience with other combinations.
+## If using the MIPSPro compiler, you might need to change "-xansi" to "-cckr"
+## in the CFLAGS line below.  Please mail genesis@genesis-sim.org if you use
+## these settings and tell us about it. If these settings do not work for you,
+## the "new-style 32-bit binary" settings above should still work (but more
+## slowly).
+##
+
+# MACHINE=irix
+# OS=SYSV
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib64
+
+# CC=cc 
+# CPP=/lib/cpp -P
+# CFLAGS=-xansi -mips4 -64 -LNO -G 0 -r10000 -O2 -Ddecalpha -DBIGENDIAN -DLONGWORDS -OPT:Olimit=6000 $(IRIX_WARN)
+# IRIX_HACK =-w
+# LD=ld 
+# LDFLAGS=-mips4 -64 -G 0
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+## It appears safest to use bison and flex instead of yacc and lex.
+## See the README file for information on obtaining bison and flex.
+## However, many IRIX 6.5 systems have flex, but do not have the library file
+## libfl.a.  The line 'LEXLIB=-ll' below tells the the compiler to look for
+## the file libl.a, instead.  If it should turn out that you have libfl.a, but
+## not libl.a, change the line to read  'LEXLIB=-lfl'.
+## If you want to try yacc and lex, change these defines to be like
+## those in the 32 bit section.
+
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=
+# TERMOPT=-DPLAINTERM
+
+# IRIX_WARN = -woff 1116,1168,1174,1177,1552
+##
+## Explanation of the above: the CFLAGS and LDFLAGS settings
+## purposefully disable reporting of certain kinds of warnings via the
+## -woff option, because they are either silly warnings, or else things
+## we cannot fix because they are in code imported from elsewhere (e.g.,
+## netCDF), or else things that could be fixed but are not worth it at
+## this time.  Yes, we know this is poor practice, but given limited
+## resources, it's the best we can do.
+
+## end SGI IRIX 6.x 64-bit
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	SGI IRIX 4.x
+# Compiler:	SGI C compiler
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=irix
+# OS=SYSV
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc -cckr -G 5
+# CPP=/lib/cpp -P
+# CFLAGS=-O -DBIGENDIAN
+# IRIX_HACK = -w
+# LD=ld
+# LDFLAGS=-G 5
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=
+# TERMOPT=-DPLAINTERM
+
+## end SGI IRIX 4.x
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	DECStation running Ultrix 4.x or 3.x
+# Compiler:	DEC C compiler
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=mips
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+## You might have to play with the value of the -G option to get
+## GENESIS to compile/link properly.
+
+# CC=cc -G 5
+# CPP=/lib/cpp -P
+# CFLAGS=-O
+# LD=ld
+# LDFLAGS=-G 5
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO
+
+## end DECStation running Ultrix 4.x or 3.x
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	DEC Alpha running Digital UNIX version 4
+# Compiler:	DEC cc compiler
+#
+# This combination is known to FAIL.  Support is presently unavailable.
+# If you succeed in getting this to work yourself, please send your
+# changes back to the GENESIS developers.
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=decalpha
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc -std
+# CPP=/lib/cpp -P
+# CFLAGS=-O2 -DLONGWORDS
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= -ldnet_stub $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	DEC Alpha running OSF/1 release 2 or higher
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	DEC Alpha running Digital UNIX version 3.2
+# Compiler:	DEC cc compiler
+#
+# This combination is known to FAIL.  Support is presently unavailable.
+# If you succeed in getting this to work yourself, please send your
+# changes back to the GENESIS developers.
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=decalpha
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc
+# CPP=/lib/cpp -P
+# CFLAGS=-g -std0 -taso -DLONGWORDS # -Olimit 5000
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= -ldnet_stub $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	DEC Alpha running OSF/1 release 2 or higher
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	DEC Alpha OSF1/Digital UNIX version 3.2
+# Compiler:	GNU GCC (egcs-2.91.66, egcs-1.1.2 release)
+#
+# This combination is known to FAIL.  Support is presently unavailable.
+# If you succeed in getting this to work yourself, please send your
+# changes back to the GENESIS developers.
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=decalpha
+# OS=BSD
+
+# XINCLUDE=-I/usr/X11R6/include
+# XLIB=/usr/lib
+
+# CC=gcc
+# CPP=/lib/cpp -P
+# CFLAGS=-g -DLONGWORDS
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= -ldnet_stub $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	DEC Alpha running OSF/1 release 2 or higher
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	DEC Alpha running OSF/1 release 2 or higher
+# Compiler:	DEC cc compiler
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=decalpha
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+## The c89 compiler doesn't compile cleanly across alpha OS releases.
+## Under OSF/1 v2  the -O option results in runtime problems in Xodus.
+## The -O problem may also exist for OSF/1 v3 systems.
+
+# CC=cc -std0
+# CPP=/lib/cpp -P
+# CFLAGS=-O -DLONGWORDS
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= -ldnet_stub $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	DEC Alpha running OSF/1 release 2 or higher
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Cray XT3 (as installed at Pittsburgh Supercomputing Center)
+# Compiler:	Portland Group cc
+#
+#	see Makefile.xt3 for other important settings
+#
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=xt3
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc
+# CPP=cpp -P  # NOTE: we really should be using "cc -E" here, but the PGI cc
+              #   compiler does not recognize files with extension .h as being
+              #   source files, so we use the gcc preprocessor.  We can get
+              #   away with this because the files to which CPP is applied
+              #   do not include any OS-specific .h files
+# CFLAGS=-O3 -D__NO_MATH_INLINES -DXT3
+# LD=ld
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-lfl
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=
+# TERMOPT=-DPLAINTERM -DDONT_USE_SIGIO
+
+# end	Cray XT3 (as installed at Pittsburgh Supercomputing Center)
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Blue Gene/L (as installed at hebb.pdc.kth.se)
+# Compiler:	mpicc (gcc-based)
+#
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=BGL
+# OS=BSD
+
+# XINCLUDE=-I/usr/X11R6/include
+# XLIB=/usr/X11R6/lib
+
+# CC=mpicc
+# CPP=mpicc -E
+# CFLAGS=-O3 -DBGL -Dlinux -DLinux -D__NO_MATH_INLINES
+# LD=ld
+
+# RANLIB=echo
+# AR=ar
+# CPLIB=cp
+
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-L/afs/pdc.kth.se/home/g/ghood/flex-2.5.4 -lfl
+# LIBS= $(LEXLIB) -lm
+
+# TEARMCAP=
+# TERMOPT=-DPLAINTERM -DDONT_USE_SIGIO
+
+# end	BlueGene/L (as installed at hebb.pdc.kth.se)
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	FreeBSD 4.1
+# Compiler:	GCC C compiler
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## FreeBSD comes with Berkeley yacc and is used here.  A fix in the yacc
+## specs allows this version of yacc to work where it failed under Linux
+## systems with Berkeley yacc.  The default settings for yacc and lex
+## should work.
+
+# MACHINE=FreeBSD
+# OS=BSD
+
+# XINCLUDE=-I/usr/X11R6/include
+# XLIB=/usr/X11R6/lib
+
+# CC=cc
+# CPP=/usr/libexec/cpp -P
+# CFLAGS=-O2 -D__NO_MATH_INLINES
+
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-ltermcap
+# TERMOPT=-DTERMIO
+
+## end	FreeBSD
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	HP running HPUX (versions unknown)
+# Compiler:	HP C compiler
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## The GENESIS maintainers have very little experience with HPUX and the
+## status of this configuration is unknown.  There have been reports of
+## display problems under HPUX. 
+
+# MACHINE=hpux
+# OS=SYSV
+
+# XINCLUDE=-I/usr/include/X11R5
+# XLIB=/usr/lib/X11R5
+
+# CC=cc
+# CPP=/lib/cpp -P
+# CFLAGS=-O
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP =
+# TERMOPT =	-DPLAINTERM
+
+# end	HP running HPUX (versions unknown)
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	IBM AIX 4.x
+# Compiler:	IBM 'xlc' C compiler version 5
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+#
+# This combination of flags has been tested on IBM RS/6000 computers
+# running AIX 4.2 and 4.3, as well as the teraflop-scale Blue Horizon
+# Power3 system at SDSC.  We thank Chuck Charman and Giri Chukkpalli
+# for their help.
+
+# MACHINE = aix
+# OS = SYSV
+
+# XINCLUDE = -I/usr/include
+# XLIB = /usr/lib
+
+# CC = xlc
+# CPP = /lib/cpp -P
+##
+## If you are using an IBM Power3 system, such as the Teraflops, add the
+## following to CFLAGS for better optimization:   -qarch=pwr3 -qtune=pwr3
+##
+# CFLAGS = -DBIGENDIAN -U__STR__ -ma -O2 -qchars=signed -qmaxmem=8192
+# LD = ld
+# LDFLAGS =
+
+# RANLIB = ranlib
+# AR = ar
+# CPLIB=cp
+
+# YACC = yacc
+# LEX = lex
+# LEXLIB = -ll -lcurses -lcur
+# LIBS = $(LEXLIB)  -lm -lrs2 -lbsd -lc
+
+# TERMCAP = -lcurses -lcur
+# TERMOPT = -DDONT_USE_SIGIO
+
+# end	IBM RS6000 running AIX
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Cygwin
+# Compiler:	gcc
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+#MACHINE=Cygwin
+
+#OS=SYSV
+
+#XINCLUDE=-I/usr/include
+#XLIB=/usr/X11R6/lib
+
+#CC=gcc
+#CPP=/bin/cpp -P
+#CFLAGS=-O2
+#LD=ld
+#LDFLAGS=
+
+#RANLIB=ranlib
+#AR=ar
+#CPLIB=cp
+
+#YACC=bison -y
+#LEX=flex -l
+#LEXLIB=-lfl
+#LIBS= $(LEXLIB) -lm
+
+#TERMCAP=-lncurses
+#TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+#export CODE_G_LFLAGS=-Wl,--stack,0x400000
+#export EXE_EXT=.exe
+
+# end	CygWin
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Other UNIX system
+# Compiler:	Other compiler
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# Other UNIX systems
+#
+# Settings are general and the underlying makefile tries to set certain
+# system dependent macros to something which will work everywhere.
+#
+# Note: you'll have to at least set the OS macro to either SYSV or
+#       BSD to indicate either a System V or a Berkeley variant OS
+#       respectively.  Also probably need to set RANLIB to echo if
+#       there is no ranlib command on your system.
+#
+
+# MACHINE=other
+
+# !!! OS must be set properly !!!  Uncomment *one* of the following.
+
+# OS=SYSV
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc
+# CPP=/lib/cpp -P
+# CFLAGS=-O
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+# CPLIB=cp
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP =
+# TERMOPT =	-DDONT_USE_SIGIO
+
+# end	System specific suggested settings
+
+
+# ----------------------------------------------------------------------
+# E. CUSTOM SETTINGS
+#
+# Here is the place to overide macro settings from above selectively.
+# You should uncomment one of the above sections and uncomment items in
+# this section to override the standard settings.
+# ----------------------------------------------------------------------
+
+## This is one of SYSV for System V UNIX varients and BSD for Berkeley
+## vartients.
+
+# OS =		BSD
+
+
+##
+## X11 settings
+##
+
+## Typical settings:
+
+# XLIB	=	/usr/lib
+# XINCLUDE =	-I.
+
+## For some versions of XFree86 (PC's with Linux) XLIB will need to be
+## set as follows
+
+# XLIB	=	/usr/X11/lib
+
+
+## For SUN OpenWindows:
+#
+# XLIB	=	/usr/openwin/lib
+# XINCLUDE =	-I/usr/openwin/include
+#
+
+## Typically /tmp but can be changed if there's not enough space there.
+# TMPDIR = /tmp
+
+##
+## C compiler
+##
+
+## Typical settings:
+#
+# CC=cc
+# CPP=/lib/cpp -P
+# CFLAGS=-O
+# LD=ld
+
+## GCC C compiler:
+##
+## For gcc, usually there will be a link from /lib/cpp to wherever cpp
+## is installed.  If not, try to find the gcc-lib installation, perhaps
+## under /usr/lib/gcc-lib and either create a symlink from /lib/cpp or
+## change the CPP define below to use the full path to where cpp lives.
+##
+## Later versions of gcc compile GENESIS (with many warnings) without
+## using the -traditional option.  If the compile fails you might try
+## adding -traditional to CFLAGS or updating your compiler.
+
+# CC=gcc
+# CPP=/lib/cpp -P
+# CFLAGS=-O
+# LD=ld
+
+
+##
+## LDFLAGS are the final link options
+##
+
+# LDFLAGS=
+
+
+##
+## RANLIB
+##
+
+## Set the RANLIB macro to "RANLIB = echo" on systems without ranlib.
+## (Only important to set for MACHINE=other and perhaps Linux; all other
+##  MACHINEs will ignore the value set here.)
+##
+## AR is the library archive program used to build the Xodus widget
+## libraries
+
+# RANLIB=ranlib
+# AR=ar
+
+
+##
+## YACC and LEX options.
+##
+
+# YACC=yacc
+# LEX=lex
+# LEXLIB=-ll
+
+## If you have GNU bison and flex uncomment the following lines.
+##
+## YACC=bison -y
+## LEX=flex -l
+## LEXLIB=-lfl
+##
+## Solaris 2.4 users note: the yacc for Solaris 2.4 produces an
+## bad parse table which causes the parser to fail.  Please use
+## bison/flex.
+##
+## Linux users note: use flex and bison rather than yacc and lex.
+## lex and yacc are scripts which use bison and flex on some systems
+## while others have an independent yacc in addition to bison.
+## The independent yacc output will fail to compile.
+##
+## SGI user note: the SGI lex defines a relatively small token text
+## buffer of 200 characters.  Lex will exit if a token's text exceeds
+## this limit (e.g. a very long command argument like shape coords
+## lists).  Changes have been made to avoid this problem.  If you
+## encounter it anyway then using flex will fix it.
+##
+## Other users: if you don't have bison, flex, yacc or lex, see the
+## section in src/README about getting bison and flex or using the
+## preprocessed yacc and lex output.
+
+
+##
+## LIBS the link libraries (not including X11)
+##
+
+# LIBS 	= 	$(LEXLIB) -lm
+
+
+# ONLY needed for extended PGENESIS
+# the user should place the directories of any user library
+# modules in the USERDIR variable
+# e.g. USERDIR = newlib1 newlib2
+#
+USERDIR	=
+
+# ONLY needed for extended PGENESIS
+# The user should place the pathnames of any library object modules other
+# than the basic system libraries in the USERLIB variable.  These should be
+# the same as those used for the TARGET_OBJ variable in the 'Libmake' file.
+# e.g. USERLIB = newlib1/newlib1.o newlib2/newlib2.o
+#
+USERLIB	=
+
+# ONLY needed for extended PGENESIS
+# where extended PGENESIS should be installed.
+# executables will end up in $USERINST/bin/$PVM_ROOT
+# libraries will end up in $USERINST/lib/$PVM_ROOT
+# the invoking shell script will be $USERINST/bin/pgenesis
+USERINST = 
+
+# when the Makefile has been configured, uncomment this variable definition
+# EDITED = yes
+
+# END OF MAKEFILE CONFIGURATION DEFINITIONS
+
+# ----------------------------------------------------------------------
+# F. BEGINNING OF NON-CONFIGURABLE DEFINITIONS
+#
+# This ends the user configurable part of the Makefile.  You shouldn't
+# have to change things below this point.
+# ----------------------------------------------------------------------
+
+SHELL = /bin/sh
+
+
+#
+# note that now parlib is an archive and NOT an object file
+#
+PARLIBS = parlib.a
+LIBEXT = o
+
+REPORT = $(PARSRC_DIR)/parbeta.$(PVM_ARCH)
+
+BASELIBS = 	simlib.$(LIBEXT) \
+		utillib.$(LIBEXT) \
+		ss.$(LIBEXT) \
+		shelllib.$(LIBEXT) \
+		toollib.$(LIBEXT) \
+		olflib.$(LIBEXT) \
+		hineslib.$(LIBEXT) \
+		lib$(SPRNG_LIB).a \
+		newconnlib.$(LIBEXT) \
+		chemlib.$(LIBEXT)
+
+XLIBS	=	-L$(XLIB) \
+		-lXt \
+		-lX11 
+
+COBJLIBS	=	buflib.$(LIBEXT) \
+			seglib.$(LIBEXT) \
+			hhlib.$(LIBEXT) \
+			devlib.$(LIBEXT) \
+			outlib.$(LIBEXT) \
+			conclib.$(LIBEXT) \
+			userlib.$(LIBEXT) \
+			porelib.$(LIBEXT) \
+			paramlib.$(LIBEXT)
+
+XODUS 	=	xolib.o \
+		widglib.o \
+		drawlib.o \
+		libDraw.a \
+		libWidg.a \
+		libXo.a
+
+CODE_EXECS = code_g code_sym code_func code_lib
+
+EXT_LIBS = $(LEXLIB) -lm -L$(PVM_ROOT)/lib/$(SET_PVM_ARCH) $(PVM3LIB) $(MPI_LIB) $(SYSLIBS) $(FMT1OBJ) $(NETCDFOBJ) $(TERMCAP)
+
+DEFINES = CC="$(CC)" TOPFLAGS="$(CFLAGS) $(COMMON_CFLAGS)" PARLIBS="$(PARLIBS)" BASELIBS="$(BASELIBS)" EXT_LIBS="$(EXT_LIBS)" USE_MPI=$(USE_MPI) MPI_DEFS="$(MPI_DEFS)" USE_PVM=$(USE_PVM) PVM_ROOT=$(PVM_ROOT) PVM_ARCH=$(SET_PVM_ARCH) PVM_DEFS="$(PVM_DEFS)" SHELL=$(SHELL) CPP="$(CPP)" GEN_ROOT=$(GENESIS) XLIBS="$(XLIBS)" OBJLIBS="`cat $(PARSRC_DIR)/objliblist`" XODUS="$(XODUS)" INST_DIR=$(INST_DIR) CODE_EXECS="$(CODE_EXECS)" AR=$(AR) LD=$(LD) RANLIB="$(RANLIB)" CPLIB="$(CPLIB)" PARSRC_DIR=$(PARSRC_DIR) MACHINE="$(MACHINE)" OS="$(OS)"
+
+default: check pardefault nxinstall
+
+.c.o:
+	$(CC) $(CFLAGS) $(COMMON_CFLAGS) -c $<
+
+objliblistfile:
+	make -f $(GENESIS)/src/Makefile -p -q code_g | grep "kinlib.o" | awk -F= '{ for (i = 2; i <= NF; i++) printf $$i "\n"}' | awk '{ for (i = 1; i <= NF; i++) printf $$i "\n"}' | sed -e 's/\.o/\.$(LIBEXT)/' | awk -F/ '{printf $$NF " "}'  > ./optliblist
+	make -f $(GENESIS)/src/Makefile -p -q code_g | grep "diskiolib.o" | awk -F= '{ for (i = 2; i <= NF; i++) printf $$i "\n"}' | awk '{ for (i = 1; i <= NF; i++) printf $$i "\n"}' | sed -e 's/\.o/\.$(LIBEXT)/' | awk -F/ '{printf $$NF " "}' >> ./optliblist
+	rm -f objliblist
+	for i in $(COBJLIBS) `cat optliblist`; do echo $$i | awk '{printf $$1 " "}' >> objliblist; done
+
+check: 
+	@if [ x$(EDITED) != "xyes" ] ; \
+	 then \
+		echo "You need to configure the Makefile!"; \
+		exit 1; \
+	 fi
+	@if [ `(cd $(PARSRC_DIR); csh -f -c pwd)` != `csh -f -c pwd` ] ; \
+	 then \
+		echo "This Makefile must be run in the PGENESIS source directory!"; \
+		echo "which is set to: "; \
+		(cd $(PARSRC_DIR); csh -f -c pwd); \
+		echo "while the current directory is: " ;\
+		csh -f -c pwd; \
+		exit 1; \
+	fi
+
+env:
+	cat /dev/null > objliblist
+	$(MAKE) $(DEFINES) penv
+	rm -f objliblist
+
+penv: 
+	@echo PVM_ROOT = $(PVM_ROOT)
+	@echo PVM_ARCH = $(PVM_ARCH)
+	@echo XLIB = $(XLIB)
+	@echo XINCLUDE = $(XINCLUDE)
+	@echo CC = $(CC)
+	@echo CFLAGS = $(CFLAGS)
+	@echo CPP = $(CPP)
+	@echo SYSLIBS = $(SYSLIBS)
+	@echo EXT_LIBS = $(EXT_LIBS)
+	@make check
+
+install: check
+	echo $(MPI_CMD) > src/startup/mpicmd
+	echo $(MPI_DEBUG_CMD) > src/startup/mpidebugcmd
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) pinstall
+	rm -f optliblist objliblist
+
+nxinstall: check
+	echo $(MPI_CMD) > src/startup/mpicmd
+	echo $(MPI_DEBUG_CMD) > src/startup/mpidebugcmd
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) pnxinstall
+	rm -f optliblist objliblist
+
+mininstall: check
+	echo $(MPI_CMD) > src/startup/mpicmd
+	echo $(MPI_DEBUG_CMD) > src/startup/mpidebugcmd
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) pmininstall
+	rm -f optliblist objliblist
+
+compile-genesis: check
+	$(MAKE) objliblistfile pardefault parnxdefault
+	rm -f optliblist objliblist
+
+pmakefiles:
+	-mkdir -p $(INST_DIR)/lib
+	cp Makefile $(INST_DIR)/lib/Usermake
+	-mkdir -p $(INST_DIR)/bin
+	cp src/ipclean $(INST_DIR)/bin/ipclean
+	chmod +x $(INST_DIR)/bin/ipclean
+
+pinstall: check pardefault pmakefiles
+	$(MAKE) $(DEFINES) instdirs
+	(cd src; $(MAKE) $(DEFINES) install)
+
+pnxinstall: check parnxdefault pmakefiles
+	$(MAKE) $(DEFINES) instdirs
+	(cd src; $(MAKE) $(DEFINES) nxinstall)
+
+pmininstall: check parmindefault pmakefiles
+	$(MAKE) $(DEFINES) instdirs
+	(cd src; $(MAKE) $(DEFINES) mininstall)
+
+instdirs: check instscripts instdoc
+	-mkdir -p $(INST_DIR)/bin/$(PVM_ARCH)
+	-mkdir -p $(INST_DIR)/lib/$(PVM_ARCH)
+	-mkdir -p $(INST_DIR)/startup
+
+instscripts:
+	-mkdir -p $(INST_DIR)
+	@if [ `(cd $(INST_DIR); csh -f -c pwd)` != `csh -f -c pwd` ] ; \
+	then \
+	  echo "cp -rf Scripts $(INST_DIR)" ; \
+	  cp -rf Scripts $(INST_DIR); \
+	fi
+
+instdoc:
+	-mkdir -p $(INST_DIR)
+	@if [ `(cd $(INST_DIR); csh -f -c pwd)` != `csh -f -c pwd` ] ; \
+	then \
+	  echo "cp -rf Hyperdoc $(INST_DIR)" ; \
+	  cp -rf Hyperdoc $(INST_DIR); \
+	fi
+
+parlibs: check 
+	$(MAKE) objliblistfile 
+	$(MAKE) $(DEFINES) pparlibs
+	rm -f objliblist optliblist
+
+pparlibs: check 
+	echo "Compiling..." >> $(REPORT)
+	$(MAKE) REPORT=$(REPORT) config
+	(cd src; $(MAKE) install-libs)
+
+cshrc_save: check
+	-echo "Three lines prepended to your .cshrc, will restore ..."
+	-echo "setenv PVM_ROOT $(PVM_ROOT)" > cshrc.minimal
+	-echo "setenv PATH $(PVM_ROOT)/lib:$$PATH" >> cshrc.minimal
+	-echo "exit" >> cshrc.minimal
+	mv $(HOME)/.cshrc $(HOME)/cshrc.parbeta
+	cat cshrc.minimal $(HOME)/cshrc.parbeta >> $(HOME)/.cshrc
+	cat cshrc.minimal >> $(REPORT)
+	-rm -f cshrc.minimal
+
+cshrc_restore: check
+	if test -f $(HOME)/cshrc.parbeta; \
+	 then \
+		mv $(HOME)/.cshrc $(HOME)/cshrc.parbeta2; \
+		tail +4 $(HOME)/cshrc.parbeta2 >> $(HOME)/cshrc.parbeta3; \
+		if diff $(HOME)/cshrc.parbeta $(HOME)/cshrc.parbeta3; \
+		 then \
+			mv $(HOME)/cshrc.parbeta $(HOME)/.cshrc; \
+			rm -f $(HOME)/cshrc.parbeta*; \
+		   	echo "Your .cshrc has been restored"; \
+		 else \
+			echo "WARNING: unexpected event restoring your .cshrc"; \
+			echo "check cshrc.parbeta* in your home directory"; \
+		 fi; \
+	 else \
+			echo "WARNING: unexpected event restoring your .cshrc"; \
+			echo "check cshrc.parbeta* in your home directory"; \
+	 fi
+
+config: check
+	@echo "configuration is:" >> $(REPORT)
+	@echo "PVM_ROOT = $(PVM_ROOT)" >> $(REPORT)
+	@echo "PVM_ARCH = $(PVM_ARCH)" >> $(REPORT)
+	@echo "PVM_DEFS = $(PVM_DEFS)" >> $(REPORT)
+	@echo "CC = $(CC)" >> $(REPORT)
+	@echo "CFLAGS = $(CFLAGS)" >> $(REPORT)
+	@echo "SYSLIBS = $(SYSLIBS)" >> $(REPORT)
+	@echo "REPORT = $(REPORT)" >> $(REPORT)
+	@echo "SHELL = $(SHELL)" >> $(REPORT)
+	@echo "GEN_ROOT = $(GEN_ROOT)" >> $(REPORT)
+	@echo "CPP = $(CPP)" >> $(REPORT)
+
+pardefault: check
+	$(MAKE) $(DEFINES) EX=pardefault ppardefault
+
+parnxdefault: check
+	$(MAKE) $(DEFINES) EX=parnxdefault ppardefault
+
+parmindefault: check
+	$(MAKE) $(DEFINES) EX=parmindefault ppardefault
+
+ppardefault: check
+	(cd src; $(MAKE) $(DEFINES) $(EX))
+
+clean:
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) pclean
+	rm -f objliblist optliblist
+
+pclean: check
+	-rm -f $(REPORT)
+	(for i in src; do cd $$i; $(MAKE) clean; cd ..; done)
+
+spotless: check
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) pspotless
+	rm -f objliblist optliblist
+
+pspotless: check
+	-rm -fr lib
+	-rm -fr bin
+	-rm -fr startup
+	-rm -f *.log *pmax* *sgi* *axp* testpar.out parbeta.*
+	-rm -f *~ #*
+	(for i in src; do cd $$i; $(MAKE) spotless; cd ..; done)
+
+#----- following is for user extensions
+
+EXT_DEFINES = USERLIB="$(USERLIB)" USERDIR="$(USERDIR)" USERINST="$(USERINST)"
+PARLIB=$(INST_DIR)/lib/$(PVM_ARCH)
+USERINSTBINDIR=$(USERINST)/bin/$(PVM_ARCH)
+USERINSTLIBDIR=$(USERINST)/lib/$(PVM_ARCH)
+
+extended:
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) $(EXT_DEFINES) user_extended
+	rm -f objliblist optliblist
+
+nxextended:
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) $(EXT_DEFINES) user_nxextended
+	rm -f objliblist optliblist
+
+user_extended: user_pdefault
+	$(MAKE) user_install
+	$(MAKE) CWD=`pwd` user_gdbdebuginstall	
+
+user_nxextended: user_nxpdefault
+	$(MAKE) user_nxinstall
+	$(MAKE) CWD=`pwd` user_gdbdebuginstall	
+
+user_install: user_instdirs user_pgeninstall
+	cp pgenesis $(USERINSTBINDIR)/pgenesis
+
+user_nxinstall: user_instdirs user_pgeninstall
+	cp nxpgenesis $(USERINSTBINDIR)/nxpgenesis
+
+user_pgeninstall:
+	cat $(INST_DIR)/lib/pgenesis.ext | \
+		$(INST_DIR)/lib/configdir _extpgenesis-src_ `pwd` | \
+		$(INST_DIR)/lib/configdir _extpgenesis-inst_ $(USERINST) | \
+		sed s+_extpgenesis-libs_+'"$(USERDIR)"'+ \
+		> $(USERINSTBINDIR)/pgenesis
+
+user_gdbdebuginstall:
+	cat $(INST_DIR)/lib/gdbdebugger.ext | \
+		$(INST_DIR)/lib/configdir _extsrc_ \
+	  `echo $(USERDIR) | awk '{ for (i = 1; i <= NF; i++) printf "$(CWD)/"$$i ":" }'` \
+		> $(USERINSTLIBDIR)/gdbdebugger
+	chmod +x $(USERINSTLIBDIR)/gdbdebugger
+
+user_instdirs:
+	-mkdir -p $(USERINSTBINDIR)
+	-mkdir -p $(USERINSTLIBDIR)
+
+user_pdefault: user_checkpvm 
+	@$(MAKE) USELIBS="$(BASELIBS) $(OBJLIBS) $(PARLIBS) $(XODUS)" \
+		 EXECNAME=pgenesis LOADLIB=loadlib.o user_somegenesis
+
+user_nxpdefault: user_checkpvm 
+	@$(MAKE) USELIBS="$(BASELIBS) $(OBJLIBS) $(PARLIBS)" XLIBS="" \
+		 EXECNAME=nxpgenesis LOADLIB=nxloadlib.o user_somegenesis
+
+user_checkpvm:
+	@if [ x$(PVM_ARCH) = x ]; then \
+	  echo "You must set PVM_ROOT and PVM_ARCH in your environment first!"; \
+          exit 2; \
+        fi
+	@if [ x$(PVM_ROOT) = x ]; then \
+	  echo "You must set PVM_ROOT in your environment first!"; \
+          exit 2; \
+	fi
+
+user_somegenesis: user_userlibs $(LOADLIB)
+#	rm -f $(EXECNAME)
+	$(CC) -o $(EXECNAME) $(LOADLIB) \
+	  `echo $(USELIBS) | awk '{ for (i = 1; i <= NF; i++) printf "$(PARLIB)/"$$i " " }'` \
+	  $(USERLIB) $(XLIBS) $(EXT_LIBS)
+	rm -f $(LOADLIB) `echo "$(LOADLIB) " | sed -e 's/.o /.c /'`
+
+user_userlibs:
+	@if [ x$(USERLIB) != x ]; then \
+	  $(MAKE) $(DEFINES) user_puserlibs; \
+	fi
+
+user_puserlibs:
+	@(for i in $(USERDIR); do echo cd $$i; cd $$i; $(MAKE) ; cd ..; done)
+
+
+loadlib.c: liblist
+	$(PARLIB)/libsh < liblist > loadlib.c
+	rm -f liblist
+
+nxloadlib.c: nxliblist
+	$(PARLIB)/libsh < nxliblist > nxloadlib.c
+	rm -f nxliblist
+
+liblist: $(PARLIB)/liblist
+	cat $(PARLIB)/liblist > liblist
+	if [ x$(USERLIB) != x ]; then \
+	  $(MAKE) LIBLIST=$@ addliblist ; \
+	fi
+
+nxliblist: $(PARLIB)/nxliblist
+	cat $(PARLIB)/nxliblist > nxliblist
+	if [ x$(USERLIB) != x ]; then \
+	  $(MAKE) LIBLIST=$@ addliblist ; \
+	fi
+
+addliblist:
+	(for i in $(USERDIR); do $(MAKE) -f $$i/Makefile -p -q clean | grep "LIBRARY_NAME *=" | sed s/"LIBRARY_NAME *= *"// >> $(LIBLIST); done)
+
+
+# $Log: Makefile.dist,v $
+# Revision 1.3  2006/02/03 14:33:39  ghood
+# Removed references to Doc subdirectory
+#
+# Revision 1.2  2005/09/29 22:38:29  ghood
+# various changes to make PGENESIS 2.3 consistent with GENESIS 2.3
+#
+# Revision 1.1.1.1  2005/06/14 04:38:38  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.53  2002/01/17 18:44:56  dbeeman
+# Bug fixes from Greg Hood for pgenesis 2.2a, entered by dbeeman
+#
+# Revision 1.52  2001/01/01 02:09:49  mhucka
+# Changes from Dave Beeman for final GENESIS 2.2 release.
+#
+# Revision 1.51  2000/10/12 23:01:58  mhucka
+# 1) Removed some of the beta test changes
+# 2) Added AIX support
+# 3) Added fixes for some of the other platforms
+# 4) Improvements to comments
+# 5) Removed TestSuite for now
+# 6) Misc other cleanups
+#
+# Revision 1.50  2000/06/30 21:19:32  mhucka
+# Now distributing Makefile.dist instead of Makefile.
+#
+# Revision 1.49  2000/06/21 23:54:09  mhucka
+# 1) I'm wrong, this Makefile IS needed.
+# 2) Added inclusion of definitions for SPRNG library as a standard item.
+# 3) Added use of TERMCAP variable, which is now needed because of changes
+#    to serial GENESIS.
+# 4) Added paramlib as a standard item.
+# 5) Made it use cp -rf instead of cp -r to copy things like Scripts.
+#
+# Revision 1.49  2000/06/19 05:25:45  mhucka
+# 1) New approach: tell people to start from Makefile.dist.
+# 2) Added SPRNG library support.
+#
+# Revision 1.48  1999/12/19 04:27:12  mhucka
+# Added comments from Greg Hood for SGI Origin.
+#
+# Revision 1.47  1999/12/19 04:05:10  mhucka
+# Added netcdf, FMT1 support needed for GENESIS 2.2.
+#
+# Revision 1.46  1999/12/18 03:01:42  mhucka
+# Added PGENESIS from GENESIS 2.1 CDROM distribution.
+#
+# Revision 1.45  1997/08/12 18:18:31  ngoddard
+# ipclean must be installed executable
+#
+# Revision 1.44  1997/08/12 14:55:06  ngoddard
+# install html docs with everything else
+#
+# Revision 1.43  1997/08/12 08:20:45  ghood
+# Revised entry for IRIX 6.4 on Origin
+#
+# Revision 1.42  1997/08/12 05:23:42  ngoddard
+# on some platforms sed requires newlines
+#
+# Revision 1.41  1997/08/12 04:49:26  ngoddard
+# cleaned up optional object accounting
+#
+# Revision 1.40  1997/08/12 03:19:18  ngoddard
+# install ipclean in bin for SMPs
+#
+# Revision 1.39  1997/08/12 02:39:37  ngoddard
+# check directories are identical using C shells pwd
+#
+# Revision 1.38  1997/08/12 01:10:13  ngoddard
+# anywhere DEFINES is used, objliblistfile must exist
+#
+# Revision 1.37  1997/08/11 22:40:19  ghood
+# made rule for objliblistfile use LIBEXT (to handle T3E)
+#
+# Revision 1.36  1997/08/11 17:45:03  ngoddard
+# SUNOS settings, general debugging
+#
+# Revision 1.35  1997/08/11 16:02:03  ngoddard
+# settings for HPUX A and HPUX B are different; remove temporary files after installation
+#
+# Revision 1.34  1997/08/11 04:34:29  ngoddard
+# non-standard X library directory for hpux
+#
+# Revision 1.33  1997/08/10 04:18:27  ngoddard
+# echo \c not known to usr/ucb/echo; replaced with call to awk
+#
+# Revision 1.32  1997/08/08 04:42:33  ghood
+# made objliblistfile rule less sensitive to platform-type
+#
+# Revision 1.31  1997/08/01 16:14:33  ghood
+# reverted to original way of constructing objliblist
+#
+# Revision 1.30  1997/08/01 03:37:33  ghood
+# Added objliblist rule
+#
+# Revision 1.29  1997/07/28 16:49:44  ghood
+# Added initial entry for Origin 2000
+#
+# Revision 1.28  1997/07/24 13:18:08  ghood
+# fixed bugs in user-defined extensions
+#
+# Revision 1.27  1997/07/24 03:45:53  ngoddard
+# Installation directory needs to exist before a copy to it is done
+#
+# Revision 1.26  1997/07/23 22:56:19  ghood
+# merged Makefile and Makefile.ext
+#
+# Revision 1.25  1997/07/22 21:28:01  ngoddard
+# support for user-defined extensions
+#
+# Revision 1.24  1997/07/21 18:22:44  ngoddard
+# -DGETOPT_PROBLEM is history with serial 2.1
+#
+# Revision 1.23  1997/07/18 17:51:56  ghood
+# Made -DGETOPT_PROBLEM part of DEF_CFLAGS
+#
+# Revision 1.22  1997/07/18 17:20:51  ngoddard
+# Merged in Paragon changes for 2.1
+#
+# Revision 1.21  1997/07/18 02:57:41  ngoddard
+# hineslib needs olflib and toollib
+#
+# Revision 1.20  1997/07/16 20:35:35  ghood
+# Added hineslib to BASELIBS
+#
+# Revision 1.19  1997/07/16 20:15:49  ngoddard
+# PVM group server not needed for default installation
+#
+# Revision 1.18  1997/07/16 20:08:58  ghood
+# Added -DGETOPT_PROBLEM for T3E
+#
+# Revision 1.17  1997/07/14 05:31:32  ngoddard
+# LINUX settings
+#
+# Revision 1.16  1997/07/10 06:23:51  ngoddard
+# removed -DGETOPT_PROBLEM as serial 2.1 doesn't use it (?)
+#
+# Revision 1.15  1997/07/08 05:18:34  ngoddard
+# flags for hpux
+#
+# Revision 1.14  1997/07/05 06:29:45  ngoddard
+# removed paramlib, made nxpgenesis the default, added installation of Scripts
+#
+# Revision 1.13  1997/07/03  16:26:30  ngoddard
+# group server NOT used for startup by default (so node 0 goes on cpu 0)
+#
+# Revision 1.12  1997/06/24 16:34:38  ghood
+# Updated T3D/T3E entries; added param lib
+#
+# Revision 1.11  1997/05/20 16:43:09  ghood
+# Added support for T3E.
+#
+# Revision 1.10  1997/03/27 06:25:41  ngoddard
+# mods to scale up to larger networks
+#
+# Revision 1.9  1997/02/28 20:48:46  ngoddard
+# recovered Paragon mods, lost in 1.8
+#
+# Revision 1.8  1997/02/28 05:17:59  ngoddard
+# support for xpvm, lookahead, faster message lookup
+#
+# Revision 1.7  1997/01/31 05:12:34  ngoddard
+# barriers don't complete asyncs now, minor bug fixes
+#
+# Revision 1.6  1996/08/20 02:22:51  ngoddard
+# make report and cleaning use the right PVM_ARCH settings
+#
+# Revision 1.5  1996/08/16 19:38:38  ngoddard
+# SGI doesn't have GETOPT problem
+#
+# Revision 1.4  1996/08/16 19:29:24  ngoddard
+# convert all pargenesis, etc to pgenesis, etc
+#
+# Revision 1.3  1996/08/16  18:22:22  ngoddard
+# *** empty log message ***
+#
+# Revision 1.2  1996/08/16 18:18:57  ngoddard
+# -lpvm3 not needed for T3D
+#
+# Revision 1.1  1996/08/14 18:50:55  ngoddard
+# Initial revision
+#

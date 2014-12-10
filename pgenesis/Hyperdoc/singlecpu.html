@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Interactive Single-CPU</font></b> </p>
+<hr>
+<p>We strongly recommend that you try your code first on a single CPU
+with a minimum number of processes. For instance, if your decomposition
+is <i>n</i>-way scalable, then perform your initial debugging with <i>n</i>
+= 1. This will flush out many problems without the added complication
+of parallelism. At this stage, small test cases are appropriate so that
+running time is kept short to allow for interactive debugging. If you
+have installed the Xodus-enabled PGENESIS executable (using "make
+install"), then using graphical output can also be useful in ensuring
+that your scripts are functioning correctly.</p>
+<p>To try an example script: </p>
+<ol>
+  <li>Login to the host on which you will run PGENESIS (we assume here
+that PGENESIS has already been installed). </li>
+  <li>If you are working remotely using "ssh -X", sometimes you will
+still need to give rights to the PGENESIS host to use your X-Windows
+screen, (e.g. type "xhost +hostname" on your local console) and will
+need to set the $DISPLAY environment variable on the remote host to the
+"hostname:display_number" of your X-Windows display. If there is an
+Internet firewall between you and the machines on which you are running
+PGENESIS, you may need to talk to
+your system administrator to enable you to use X-Windows remotely. </li>
+  <li><tt>cd </tt>into the&nbsp; <tt>~pgenesis/Scripts/orient2 </tt>directory.
+  </li>
+  <li>For MPI-based PGENESIS, run "<tt><a href="pgenesisscript.html">pgenesis</a>
+-nodes 3 1slice.g</tt>"; for PVM-based PGENESIS, run "<span
+ style="font-family: monospace;"><a href="pgenesisscript.html">pgenesis</a>
+1slice.g</span>".&nbsp; This will display all 3 neural populations in a
+single window (the
+chart graphs of Orient_tut are omitted for simplicity). Use the control
+panel to run the simulation, by clicking on either the "sweep_horiz" or
+"sweep_vert" buttons. </li>
+  <li>When you are finished, click on the "quit" button and all
+processes should exit. </li>
+</ol>
+<p>In our single slice case, there are actually 3 nodes, since 1 is
+used for control and 1 for display in addition to the 1 handling the
+single slice. Here we are running all 3 of these node processes on a
+single CPU.&nbsp; See the web
+page on <a href="orient2.html">orient2</a>
+for additional details.
+</p>
+<p></p>
+</body>
+</html>

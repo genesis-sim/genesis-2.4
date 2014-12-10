@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+  <title>Developing PGENESIS Scripts</title>
+</head>
+<body>
+<p><b><font size="6">Developing Parallel Scripts</font></b> </p>
+<hr>
+<p>PGENESIS augments the script language used in serial GENESIS with a
+handful of commands that are largely extensions of serial GENESIS
+commands. These allow the modeler to specify networks that span a set
+of processors, and control these multi-processor simulations. We
+describe how one can do this task in two common situations: </p>
+<menu><li><font size="4"><a href="decomposition.html">Decomposing Large
+Networks</a></font> </li>
+<li><font size="4"><a href="parameter.html">Parameter Searching</a></font>
+</li>
+</menu>
+<p>Development and <a href="debugging.html">debugging</a> of parallel
+scripts is best done in a workstation environment, rather than on a
+supercomputer (often with a batch environment). The workstation
+debugging facilities are superior, interactive access is usually
+better, and production runs are a more efficient use of
+supercomputer-class resources. </p>
+<p>Our suggested development path for large-scale simulations is: </p>
+<menu><li><font size="4"><a href="singlecpu.html">Interactive single-CPU</a></font>
+</li>
+<li><font size="4"><a href="multicpu.html">Interactive multi-CPU</a></font>
+</li>
+<li><font size="4"><a href="psc/lemieux.html">Supercomputer batch job</a></font><a
+ href="t3ebatch.html"> </a>
+</li>
+</menu>
+<p>For the interactive runs we recommend that you <a
+ href="installation.html">install PGENESIS on your own machine(s)</a>
+and do your script development locally.&nbsp; Once you have your
+parallel script
+running correctly (even on a much reduced problem size), then you are
+better prepared to transfer your scripts to a supercomputer and perform
+production runs.<br>
+<br>
+</p>
+<p></p>
+</body>
+</html>

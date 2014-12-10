@@ -1,0 +1,21 @@
+// .simrc file to go in the home directory of all GENESIS users
+// .nxsimrc version to run GENESIS without XODUS
+//===========================================================================
+//                         environment variables
+//===========================================================================
+//      SIMPATH - path to search for scripts (includes the startup path)
+//      SIMNOTES - default file for simulator notes
+//===========================================================================
+setenv SIMPATH	. {getenv PGENESIS_ROOT}/startup \
+		{getenv GENESIS_ROOT}/startup 
+setenv SIMNOTES {getenv HOME}/.notes
+setenv GENESIS_HELP {getenv GENESIS_ROOT}/Doc
+
+//===========================================================================
+//                             set up tables 
+//===========================================================================
+pschedule			// default simulation schedule
+
+include          escapelist      // setup macro keys for DEC and SUN keyboards
+// See escapelist.g for macro definitions.  These allow
+// you to use cursor keys for the recall and editting of previous commands

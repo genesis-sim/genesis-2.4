@@ -1,0 +1,363 @@
+Warning: no access to tty; thus no job control in this shell...
+Not a terminal
+Cannot find terminal.
+
+RMS RESOURCE ID:       612401            DATE:       Thu Dec 11 09:58:01 2003
+PBS JOB ID:           194159           $SCRATCH:        /usr/scratch/0/nigra
+
+cd /usr/local/packages/genesis/pgenesis/Scripts/orient2
+cp V1.g constants.g control.g demo.g display.g o.g output.g params.g protodefs.g retina.g schedule.g rainbow2 /usr/scratch/0/nigra
+cd /usr/scratch/0/nigra
+/usr/local/packages/genesis/pgenesis/bin/pgenesis -v -nodes 7 -nox -notty -batch demo.g
+number of args: 5
+which are: -altsimrc .psimrc -notty -batch demo.g
+simrc is: .psimrc
+remote cpus:
+checking for simrc ...
+found simrc
+starting pgenesis executable
+Going to execute /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis -altsimrc .psimrc -notty -batch demo.g
+Starting Genesis
+Starting Genesis
+Starting Genesis
+Starting Genesis
+Executable:         /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis
+Executable:         /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis
+Executable:         /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis
+Executable:         /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis
+Starting Genesis
+Starting Genesis
+Starting Genesis
+Executable:         /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis
+Executable:         /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis
+Executable:         /usr/local/packages/genesis/pgenesis2.2.1/bin/ALPHA/nxpgenesis
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+Startup script:     .psimrc
+Startup script:     .psimrc
+Startup script:     .psimrc
+Startup script:     .psimrc
+SIMPATH=. /usr/local/packages/genesis/pgenesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit/prototypes
+SIMNOTES=/usr/users/0/nigra/.notes
+GENESIS_HELP=/usr/local/packages/genesis/genesis2.2.1/Doc
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+SIMPATH=. /usr/local/packages/genesis/pgenesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit/prototypes
+SIMNOTES=/usr/users/0/nigra/.notes
+GENESIS_HELP=/usr/local/packages/genesis/genesis2.2.1/Doc
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+SIMPATH=. /usr/local/packages/genesis/pgenesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit/prototypes
+SIMNOTES=/usr/users/0/nigra/.notes
+GENESIS_HELP=/usr/local/packages/genesis/genesis2.2.1/Doc
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+SIMPATH=. /usr/local/packages/genesis/pgenesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit/prototypes
+SIMNOTES=/usr/users/0/nigra/.notes
+GENESIS_HELP=/usr/local/packages/genesis/genesis2.2.1/Doc
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+Startup script:     .psimrc
+Startup script:     .psimrc
+Startup script:     .psimrc
+SIMPATH=. /usr/local/packages/genesis/pgenesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit/prototypes
+SIMPATH=. /usr/local/packages/genesis/pgenesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit/prototypes
+SIMNOTES=/usr/users/0/nigra/.notes
+GENESIS_HELP=/usr/local/packages/genesis/genesis2.2.1/Doc
+SIMPATH=. /usr/local/packages/genesis/pgenesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/startup /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit /usr/local/packages/genesis/genesis2.2.1/Scripts/neurokit/prototypes
+SIMNOTES=/usr/users/0/nigra/.notes
+GENESIS_HELP=/usr/local/packages/genesis/genesis2.2.1/Doc
+SIMNOTES=/usr/users/0/nigra/.notes
+GENESIS_HELP=/usr/local/packages/genesis/genesis2.2.1/Doc
+Simulation Script:  demo.g
+Simulation Script:  demo.g
+Simulation Script:  demo.g
+Simulation Script:  demo.g
+Genesis started at Thu Dec 11 09:58:05 2003
+n_slices =  5
+display =  0
+output =  1
+retina_nx =  10
+retina_ny =  10
+v1_nx =  5
+v1_ny =  5
+sim_steps =  1000
+batch =  1
+
+Genesis started at Thu Dec 11 09:58:05 2003
+n_slices =  5
+display =  0
+output =  1
+retina_nx =  10
+retina_ny =  10
+v1_nx =  5
+v1_ny =  5
+sim_steps =  1000
+batch =  1
+
+Genesis started at Thu Dec 11 09:58:05 2003
+n_slices =  5
+display =  0
+output =  1
+retina_nx =  10
+retina_ny =  10
+v1_nx =  5
+v1_ny =  5
+sim_steps =  1000
+batch =  1
+
+Genesis started at Thu Dec 11 09:58:05 2003
+n_slices =  5
+display =  0
+output =  1
+retina_nx =  10
+retina_ny =  10
+v1_nx =  5
+v1_ny =  5
+sim_steps =  1000
+batch =  1
+
+Simulation Script:  demo.g
+Simulation Script:  demo.g
+Simulation Script:  demo.g
+Genesis started at Thu Dec 11 09:58:05 2003
+n_slices =  5
+display =  0
+output =  1
+retina_nx =  10
+retina_ny =  10
+v1_nx =  5
+v1_ny =  5
+sim_steps =  1000
+batch =  1
+
+Genesis started at Thu Dec 11 09:58:05 2003
+n_slices =  5
+display =  0
+output =  1
+retina_nx =  10
+retina_ny =  10
+v1_nx =  5
+v1_ny =  5
+sim_steps =  1000
+batch =  1
+
+Genesis started at Thu Dec 11 09:58:05 2003
+n_slices =  5
+display =  0
+output =  1
+retina_nx =  10
+retina_ny =  10
+v1_nx =  5
+v1_ny =  5
+sim_steps =  1000
+batch =  1
+
+changing clock [0] from 1 to 0.0001
+changing clock [0] from 1 to 0.0001
+changing clock [0] from 1 to 0.0001
+changing clock [0] from 1 to 0.0001
+changing clock [0] from 1 to 0.0001
+changing clock [0] from 1 to 0.0001
+changing clock [0] from 1 to 0.0001
+MPI has been initialized in parinit routine 
+Initializing parallel library version 1.1
+MPI has been initialized in parinit routine 
+Initializing parallel library version 1.1
+MPI has been initialized in parinit routine 
+Initializing parallel library version 1.1
+nodes from MPI Size 7 
+MPI has been initialized in parinit routine 
+Initializing parallel library version 1.1
+Time at the start of the run 0.003003
+mynode = 1, totalnodes = 7, nnodes = 7
+MPI has been initialized in parinit routine 
+Initializing parallel library version 1.1
+MPI has been initialized in parinit routine 
+Initializing parallel library version 1.1
+MPI has been initialized in parinit routine 
+Initializing parallel library version 1.1
+WARNING from init_rng: changing global seed value! Independence of streams is not guaranteed
+WARNING from init_rng: changing global seed value! Independence of streams is not guaranteed
+Time at the start of the run 0.005894
+mynode = 2, totalnodes = 7, nnodes = 7
+n_nodes =  7
+I am node 2
+Workers are 0,1,2,3,4
+Completed startup at Thu Dec 11 09:58:06 2003
+n_nodes =  7
+I am node 1
+Workers are 0,1,2,3,4
+Completed startup at Thu Dec 11 09:58:06 2003
+Time at the start of the run 0.013628
+mynode = 4, totalnodes = 7, nnodes = 7
+WARNING from init_rng: changing global seed value! Independence of streams is not guaranteed
+WARNING from init_rng: changing global seed value! Independence of streams is not guaranteed
+Time at the start of the run 0.009638
+mynode = 3, totalnodes = 7, nnodes = 7
+n_nodes =  7
+I am node 3
+Workers are 0,1,2,3,4
+Completed startup at Thu Dec 11 09:58:06 2003
+n_nodes =  7
+Time at the start of the run 0.016584
+mynode = 0, totalnodes = 7, nnodes = 7
+I am node 4
+Workers are 0,1,2,3,4
+Completed startup at Thu Dec 11 09:58:06 2003
+WARNING from init_rng: changing global seed value! Independence of streams is not guaranteed
+WARNING from init_rng: changing global seed value! Independence of streams is not guaranteed
+n_nodes =  7
+I am node 0
+Workers are 0,1,2,3,4
+Completed startup at Thu Dec 11 09:58:06 2003
+Time at the start of the run 0.017651
+mynode = 5, totalnodes = 7, nnodes = 7
+n_nodes =  7
+I am node 5
+Workers are 0,1,2,3,4
+Completed startup at Thu Dec 11 09:58:06 2003
+Completed element creation at Thu Dec 11 09:58:06 2003
+WARNING from init_rng: changing global seed value! Independence of streams is not guaranteed
+Time at the start of the run 0.023482
+mynode = 6, totalnodes = 7, nnodes = 7
+n_nodes =  7
+I am node 6
+Workers are 0,1,2,3,4
+Completed startup at Thu Dec 11 09:58:06 2003
+Completed element creation at Thu Dec 11 09:58:06 2003
+Completed element creation at Thu Dec 11 09:58:06 2003
+Completed element creation at Thu Dec 11 09:58:06 2003
+Completed element creation at Thu Dec 11 09:58:06 2003
+Completed element creation at Thu Dec 11 09:58:06 2003
+Completed element creation at Thu Dec 11 09:58:06 2003
+Connecting up all slices
+Making connections from the retina to the V1 horiz cells
+workers 0,1,2,3,4
+Connecting up all slices
+Connecting up all slices
+Making connections from the retina to the V1 horiz cells
+workers 0,1,2,3,4
+Making connections from the retina to the V1 horiz cells
+workers 0,1,2,3,4
+Connecting up all slices
+Making connections from the retina to the V1 horiz cells
+workers 0,1,2,3,4
+Connecting up all slices
+Connecting up all slices
+Making connections from the retina to the V1 horiz cells
+workers 0,1,2,3,4
+....................
+Connecting up all slices
+....................
+....................
+....................
+....................
+Making connections from the retina to the V1 vert cells
+Making connections from the retina to the V1 vert cells
+....................
+....................
+Making connections from the retina to the V1 vert cells
+....................
+Making connections from the retina to the V1 vert cells
+....................
+Setting weights and delays for ret->V1 connections.
+Setting weights and delays for ret->V1 connections.
+Making connections from the retina to the V1 vert cells
+....................
+Setting weights and delays for ret->V1 connections.
+Setting weights and delays for ret->V1 connections.
+Completed connections at Thu Dec 11 09:58:06 2003
+Completed output setup at Thu Dec 11 09:58:06 2003
+time = 0.000000 ; step = 0          
+Completed connections at Thu Dec 11 09:58:06 2003
+Completed output setup at Thu Dec 11 09:58:06 2003
+time = 0.000000 ; step = 0          
+Completed connections at Thu Dec 11 09:58:06 2003
+Completed output setup at Thu Dec 11 09:58:06 2003
+time = 0.000000 ; step = 0          
+Setting weights and delays for ret->V1 connections.
+Completed connections at Thu Dec 11 09:58:06 2003
+Completed output setup at Thu Dec 11 09:58:06 2003
+time = 0.000000 ; step = 0          
+Completed connections at Thu Dec 11 09:58:06 2003
+Completed output setup at Thu Dec 11 09:58:06 2003
+time = 0.000000 ; step = 0          
+Simulation started at Thu Dec 11 09:58:06 2003
+sweeping horizontal bar for 1000 timesteps
+Completed connections at Thu Dec 11 09:58:06 2003
+Completed output setup at Thu Dec 11 09:58:06 2003
+time = 0.000000 ; step = 0          
+Completed connections at Thu Dec 11 09:58:06 2003
+Completed output setup at Thu Dec 11 09:58:06 2003
+time = 0.000000 ; step = 0          
+time = 0.100000 ; step = 1000          
+completed 1000 steps in 1.786080 cpu seconds
+time = 0.100000 ; step = 1000          
+completed 1000 steps in 1.771440 cpu seconds
+time = 0.100000 ; step = 1000          
+completed 1000 steps in 1.775344 cpu seconds
+time = 0.100000 ; step = 1000          
+completed 1000 steps in 0.736880 cpu seconds
+time = 0.100000 ; step = 1000          
+completed 1000 steps in 1.400560 cpu seconds
+time = 0.100000 ; step = 1000          
+completed 1000 steps in 1.802672 cpu seconds
+finished 1000 steps
+Simulation finished at Thu Dec 11 09:58:08 2003
+We are terminating the parallel code region
+Processor 0, required 2.123976 seconds and received 9822 messages
+We are terminating the parallel code region
+Processor 4, required 2.127898 seconds and received 4978 messages
+We are terminating the parallel code region
+Processor 5, required 2.123854 seconds and received 11013 messages
+We are terminating the parallel code region
+Processor 6, required 2.118037 seconds and received 6023 messages
+We are terminating the parallel code region
+Processor 1, required 2.137556 seconds and received 5670 messages
+We are terminating the parallel code region
+Processor 2, required 2.134682 seconds and received 6838 messages
+We are terminating the parallel code region
+Processor 3, required 2.131009 seconds and received 5689 messages
+cp horiz /usr/users/0/nigra/orient2.194159.iam763.horiz
+cp vert /usr/users/0/nigra/orient2.194159.iam763.vert
+logout

@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Parallel GENESIS on PCs - Part 1</TITLE>
+<META NAME="generator" CONTENT="txt2html v1.28">
+</HEAD>
+<BODY>
+<P>
+
+<H1><A NAME="section-1.">Using Parallel GENESIS on PCs with Multicore Processors</A></H1>
+
+<P>
+<H2>Introduction</H2>
+
+<P>
+As computers are reaching the practical limit of CPU speed, it is becoming
+more common to use multicore processors that effectively turn a PC into a
+parallel computer.  As of mid-2008, it was possible to buy a PC with a quad
+core CPU for under $1000, and eight core processors will be available in a
+year or two.  This offers the prospect of harnessing this power by using
+PGENESIS under Linux to turn an inexpensive PC into a fast parallel
+computer for running large GENESIS simulations.
+
+<P>
+Parameter search and large network models are the most fruitful
+applications of PGENESIS. (It is difficult to parallelize a
+large hsolved single cell model, and a serial GENESIS is fast enough
+on a modern PC to model single cells with thousands of compartments.)
+
+<P>
+For parameter searching, PGENESIS may not even be necessary.  Some degree
+of parallelization is provided by the Linux kernel.  When there are four
+CPU-intensive processes running on a four core PC (e.g. four GENESIS
+simulations running at the same time), Linux will split the four processes
+between the four cores and they will run in about the same time as one
+process.  A parameter searching script that runs four separate GENESIS
+simulations with different parameter sets at the same time will achieve
+this efficiency.  The PGENESIS documentation also describes ways of
+performing parameter searches with PGENESIS. 
+
+<P>
+There is nothing special that needs to be done in order to use PGENESIS
+with multicore processors.  The intructions provided in the PGENESIS
+documentation apply as well to these as parallel supercomputers and
+clusters of ethernet-connected workstations.  This tutorial is intended
+as supplementary material to guide you through this documentation and
+to address specific issues encountered when using PGENESIS and MPI
+on PCs with Linux.
+
+<P>
+The example described in Part 2 demonstrates how to convert a large
+cortical network simulation (RSnet.g from the GENESIS Modeling Tutorial) to
+a parallel version (par-RSnet.g) using PGENESIS.
+
+<P>
+<H2>Installation</H2>
+
+
+<P>
+These are the steps to install and test PGENESIS on a PC running Linux.
+It is possible that they will apply to multicore Macs running OS/X,
+but this has not been tested.
+
+<OL>
+ <LI>Obtain the latest PGENESIS
+
+
+<P>
+Download pgenesis-2.3.1-src.tar.gz from the GENESIS website
+http://genesis-sim.org), or obtain them from a CDROM distribution of
+GENESIS.  If GENESIS has not been installed, get genesis-2.3-src.tar.gz as
+well.  If you do not plan to use MPI or XODUS graphics, you can use the
+older pgenesis-2.3 version.  (This new version contains a replacement
+version of pgenesis/src/par/pvm-emulation.c that is needed for it to
+properly display XODUS graphics when it is run under MPI.)
+
+<P>
+Extract the pgenesis package with
+
+<PRE>
+    tar xvzf pgenesis-2.3-src.tar.gz
+</PRE>
+<P>
+in the same place where you installed GENESIS.  For more details of the
+installation process, or if you also need to install GENESIS, see
+the instructions for installing GENESIS in the GENESIS distribution.
+
+<P>
+Extracting this, as described above, produces a genesis-2.3/pgenesis
+directory; hence it should be extracted in the same place that you
+extracted your genesis-2.3-src.tar.gz file. It will not affect your
+existing genesis subdirectory, it will just add a pgenesis subdirectory
+next to it. If you have already untarred it into a different place, you can
+just use "mv" to move the pgenesis subdirectory (containing this README)
+into the genesis-2.3 directory. 
+
+<P>
+<LI> Read the documentation provided with PGENESIS
+
+<P>
+The pgenesis/README file and the hypertext equivalent
+pgenesis/Hyperdoc/index.html provide detailed instructions for installing
+PGENESIS.  The following steps in this tutorial should be considered as
+additional notes to supplement them.
+
+<P>
+<LI>Install LAM MPI 
+
+
+<P>
+PGENESIS adds a library (parlib) to an installed version of GENESIS,
+creating an executable "pgenesis" that has the usual GENESIS objects and
+commands, plus a "postmaster" object (post) and some other new objects and
+commands.  The "postmaster" objects communicate with each other through a
+standard interprocess communication library such as MPI or PVM that alllows
+applications to be parallelized on any platform that can run MPI or PVM.
+Before using PGENESIS, one of these must first be installed.  PVM is the
+older protocol, and is gradually being replaced by MPI, which is somewhat
+more efficient.  Therefore, this tutorial will emphasize the use of MPI.
+
+<P>
+There are several implementations of MPI available for Linux.
+Unfortunately openmpi (http://www.open-mpi.org) does not work well with
+curses, ncurses, readline, or other sophisticated I/O packages that
+generally require direct control of the terminal.  This includes GENESIS,
+and means that openmpi cannot be used with PGENESIS.  LAM is the most
+widely available MPI application for Linux, and is the one used in this
+tutorial.  It is possible (but unlikely) that LAM will already be
+installed on your system.
+
+<P>
+You can test for the presence of LAM with "which lamboot" to see if
+the program to start LAM (lamboot) is on your search path.  If LAM
+was properly installed "recon", which is a test for LAM functionality
+should tell you that all is well.
+
+<P>
+If LAM is not present, you may go to http://www.lam-mpi.org/ and download
+the latest version of LAM, and then compile and install it according to the
+instructions.  Alternatively, you can use a Linux package manager (e.g. yum
+for Fedora, or apt for Debian and Ubuntu) to install the binary packages.
+
+<P>
+For Fedora, give the commands (as root user):
+
+<PRE>
+    yum install lam
+</PRE>
+
+<P>
+This will also install lam-libs and some other dependencies.  Then
+install the LAM development libraries with:
+
+<PRE>
+    yum install lam-devel
+</PRE>
+
+<P>
+<LI>Edit pgenesis/Makefile
+<P>
+
+<P>
+Following the intructions in README, copy Makefile.dist to Makefile
+and make the required edits for your system.  In the case of Linux
+and MPI, you will want to edit this section that starts with
+
+<P>
+# If you want to use MPI, uncomment and modify the following lines
+
+<P>
+After uncommenting them, you will have:
+
+<P>
+
+<PRE>
+USE_MPI = 1
+MPI_LIB =
+#    set MPI_CMD to the command for starting an MPI job
+#         you may use the following variables:
+#            $$num_nodes  - number of nodes (processes) to start up
+# $$config - configuration string given as "-config" parameter
+#                              to pgenesis script
+#            $$
+#            $$exec       - name of the pgenesis executable
+#            $$nargv      - arguments to the pgenesis executable
+#         (remember to use $$ instead of $ or else "make" will treat
+#          it as a variable to be immediately expanded)
+<P>
+MPI_CMD = 'mpirun -np $$num_nodes $$exec $$nargv'
+MPI_DEBUG_CMD = 'mpirun -debugger gdb -np $$num_nodes $$exec $$nargv'
+# # these last three are needed even with MPI to keep the scripts happy
+PVM_ROOT = $(PWD)
+PVM_ARCH = $(MACHINE)
+SET_PVM_ARCH = $(PVM_ARCH)
+# # remember also for MPI that you may need to change the compiler (CC) to
+# #   mpicc (or something equivalent) in the machine-specific section of
+# #   this Makefile
+</PRE>
+<P>
+Note: The MPI_DEBUG_CMD above does not work with PGENESIS and LAM.
+
+<P>
+Further below, uncomment the Linux section, but using
+
+<PRE>
+    CC=mpicc
+</PRE>
+<P>
+instead of
+
+<P>
+<PRE>
+    CC=cc
+</PRE>
+
+<P>
+Also add -DLInux to the line
+
+<P>
+<PRE>
+    CFLAGS=-O2 -D__NO_MATH_INLINES
+</PRE>
+<P>
+or  For 64-bit architectures, the line
+<P>
+<PRE>
+    CFLAGS=-O2 -D__NO_MATH_INLINES -DLONGWORDS
+</PRE>
+<P>
+Don't forget to uncomment the line
+<P>
+<PRE>
+    # EDITED = yes
+</PRE>
+<P>
+just before
+<P>
+<PRE>
+    # END OF MAKEFILE CONFIGURATION DEFINITIONS
+</PRE>
+
+<P>
+<LI> Make pgenesis or nxpgenesis
+
+<P>
+Be sure that GENESIS has been properly installed.  If in doubt,
+repeat the procedure of "make" and "make install" in genesis/src, after
+editing genesis/src/Makefile.  Then, in pgenesis/, do
+
+<PRE>
+    make install
+</PRE>
+
+<P>
+Note that this performs both the compilation and installation step.  This
+will compile PGENESIS linked with the Xodus libraries.  If you do not
+intend to use graphics, you may still use genesis and pgenesis without any
+significant performance penalty.  If you prefer to use pgenesis compiled
+with nxgenesis, there is pitfall of which you should be aware.  In
+principle, the libraries created in genesis/lib when installing GENESIS
+without Xodus are just a subset of those created with Xodus.  However, one
+file kinlib.o is different.  Also note that the PGENESIS nxinstall expects
+to find ../genesis/src/nxliblist, which is produced by an install of
+nxgenesis.  Therefore, you should first make the the non-Xodus version of
+GENESIS with "make nxall" and "make nxinstall" (in genesis/src).  Then, in
+the pgenesis directory perform
+
+<P>
+<PRE>
+     make nxinstall
+</PRE>
+
+<P>
+in order to compile and install pgenesis without Xodus.
+
+<P>
+<LI>Copy startup/.psimrc to your home directory, and be sure that .simrc and
+.nxsimrc (if you use nxgenesis and nxpgenesis) are there also.
+
+<P>
+<LI> Set your search path to include /usr/local/genesis-2.3/pgenesis/bin, or
+wherever you installed genesis and pgenesis.  (See genesis/src/README
+or pgenesis/README for instructions on setting the path.j)
+
+<P>
+<LI> Start LAM
+
+<P>
+To see if LAM can be started, give the command
+
+<P>
+<PRE>
+    recon
+</PRE>
+
+<P>
+If lam was installed successfully, it will give an encouraging message.
+Then you can start LAM with:
+
+<P>
+<PRE>
+    lamboot
+</PRE>
+
+<P>
+If LAM was just installed, you may need to open a new console window
+so that the shell will find the newly insgalled files.
+
+<P>
+<LI> Test PGENESIS
+
+<P>
+Change to the pgenesis/Scripts directory and type:
+<P>
+<PRE>
+    pgenesis -nodes 3 hello.g
+</PRE>
+
+<P>
+Note that unlike the examples in Chapter 21 of the BoG, which were
+based on using PGENESIS with PVM, you need to specify the number of
+nodes to be used when using MPI.  The number of nodes does not
+need to match the number of CPU cores.  MPI will allocate as many
+nodes as specified, even on a single core CPU, although any nodes
+in excess of the number of cores will have to share resources with
+other nodes.
+
+<P>
+A successful run will produce the output:
+
+<P>
+<PRE>
+Simulation Script:  hello.g
+Simulation Script:  hello.g
+Simulation Script:  hello.g
+Initializing parallel library version 1.1.1.1
+Initializing parallel library version 1.1.1.1
+Initializing parallel library version 1.1.1.1
+mynode = 0, totalnodes = 3, nnodes = 3
+mynode = 2, totalnodes = 3, nnodes = 3
+mynode = 1, totalnodes = 3, nnodes = 3
+hello from node 0
+hello from node 1
+hello from node 2
+</PRE>
+</OL>
+
+<P>
+When you reach this stage, you are ready to begin Part 2 of this tutorial,
+"How to convert large network simulations to use PGENESIS".  Look for this
+soon on the GENESIS web site.
+
+<HR>
+<P>
+<I>Last updated on:</I> Thu Nov 13 16:57:10 MST 2008
+<P>
+</BODY>
+</HTML>

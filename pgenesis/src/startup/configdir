@@ -1,0 +1,25 @@
+#!/bin/csh -f
+# argv[1] is a string to replace with argv[2]
+
+set orig=$argv[1]
+set repl=$argv[2]
+
+# remove any . or .. pathname components
+if ( -r $repl ) then
+  pushd $repl >& /dev/null
+    set repl=$cwd
+  popd >& /dev/null
+endif
+
+sed s+$orig\+$repl\+g 
+
+# $Log: configdir,v $
+# Revision 1.1.1.1  2005/06/14 04:38:39  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.1  1999/12/19 03:59:43  mhucka
+# Adding PGENESIS from GENESIS 2.1 CDROM release.
+#
+# Revision 1.1  1997/07/22 05:36:40  ngoddard
+# Initial revision
+# #

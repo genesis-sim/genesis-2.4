@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Debugging Parallel GENESIS Scripts</font></b> </p>
+<hr>
+<p></p>
+<h3><a href="refman.html#gotchas">Common errors</a></h3>
+<h3>Source Level Debugging</h3>
+There is no source level debugging of Genesis scripts; instead, one can
+set the <a href="ref/debug.txt">debug</a> level to provide more or
+less detailed information about what is being executed in a Genesis
+script. PGENESIS follows this model - a debug level can be specified in
+the <a href="ref/paron.txt">paron</a> statement to control what level
+of debugging information is printed out during a run.
+<p>Currently it is possible to run the worker nodes inside their own
+xterm window. This is achieved by providing the "<span
+ style="font-family: monospace;">-debug tty</span>" flag to
+the <a href="pgenesisscript.html">pgenesis</a> shell script which
+controls how PGENESIS is run. In this case it is important that the
+<a href="ref/paron.txt">paron</a> command in the GENESIS script
+<b>not</b> be given the -output flag, which redirects worker output to
+a file instead of stdout.</p>
+<p>For those who need to debug C code (either GENESIS/PGENESIS source
+code, or custom user-written libraries), it is also possible on some
+platforms to run the workers and the
+master under a C code source level debugger such as gdb or dbx. For
+dbx the master and each worker run inside their own window, as for
+the "<span style="font-family: monospace;">-debug tty</span>" option,
+but each runs inside dbx. For gdb, the
+master and each worker run inside their own window which is running
+emacs, with gdb running inside emacs. These options are specified to
+the <a href="pgenesisscript.html">pgenesis</a> shell script using
+"<span style="font-family: monospace;">-debug dbx</span>" and "<span
+ style="font-family: monospace;">-debug gdb</span>" respectively.
+</p>
+<h3>Script modifications for debugging</h3>
+In additon to adding more echo statements to the scripts, the following
+ideas may be helpful.
+<menu><li> <b>Timeout</b>
+  <p>The timeout period is set by default to 120 seconds. You can
+modify this with the command </p>
+  <pre>       setfield /post msg_hang_time n<br></pre>
+where n is the number of seconds to wait before timing out on
+barriers, responses to remote commands, etc.
+  <p></p>
+</li>
+<li><b>Barriers</b>
+  <p>Many errors in parallel programming are due to incorrect
+synchronization of the executing processes. Insertion of extra <a
+ href="ref/barrier.txt">barrier</a> and <a href="ref/barrierall.txt">barrierall</a>
+commands can help in
+ensuring
+that the synchronization you expect is in fact occuring. </p>
+  <p></p>
+</li>
+<li><b>Asynchronous remote function calls</b>
+  <p>Asynchronous function calls increase the potential degree of
+parallelism in a parallel script, and therefore increase the risk of
+deadlock (no process can continue because each is waiting for a
+message from another) or other program error. If your scripts use the <a
+ href="ref/async.txt">async</a> command, you can turn all these calls
+into synchronous calls by globally replacing the string "async" with
+"//async \<cr>", effectively commenting out the "async". </cr></p>
+</li>
+</menu>
+</body>
+</html>

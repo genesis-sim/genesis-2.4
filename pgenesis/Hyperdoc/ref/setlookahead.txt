@@ -1,0 +1,26 @@
+Routine Name:	setlookahead
+
+Description:	sets lookahead values for the current node.
+
+Usage:		1. setlookahead <value>		use <value> for all nodes
+		2. setlookahead <node> <value>  use <value> for <node>
+		3. setlookahead			PGENESIS computes lookahead
+
+Example:	setlookahead 0.01
+
+			sets the lookahead for this node with respect to
+			all other nodes to 10 msec.
+
+		setlookahead 3 0.01
+
+			sets the lookahead for this node with respect to
+			node 3 to 10 msec.
+
+Notes:		The third option (PGENESIS computes lookahead) is not
+		yet implementd.
+
+See also:	getlookahead, showlookahead
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Mar 2, 1997
+URL file://www.psc.edu/general/software/packages/genesis/setlookahead.txt

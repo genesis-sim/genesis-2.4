@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+  <title>CDROM Guide to PGENESIS 2.1</title>
+</head>
+<body>
+<h1><b><font size="7">CDROM Guide to PGENESIS 2.1</font></b></h1>
+<hr>
+<pre>Nigel Goddard &amp; Greg Hood<br>Pittsburgh Supercomputing Center<br>ngoddard@psc.edu<br>ghood@psc.edu <br></pre>
+<p>NOTE: Before installing this software, please check that you have
+the latest version by checking the PGENESIS home page: <tt>http://www.psc.edu/Packages/PGENESIS</tt>
+We *strongly* advise you to download the latest version if you don't
+already have it.&nbsp; The following text applies to the old CDROM
+version of PGENESIS, which has become quite outdated, and may not even
+run without modification on modern machines and OS versions. </p>
+<hr>
+<h2>Introduction </h2>
+<p>PGENESIS (Parallel GENESIS) can be run on a single workstation; the
+PVM software system is used to provide the illusion of a parallel
+computer. It is much easier to run on a network of workstations if they
+have a shared file system so that any workstation can access any file.
+If this is not the case, you will need to install PGENESIS
+independently on each workstation and you will need a copy of the files
+needed for your simulation (data files, script files, etc), preferably
+in an identically named directory path. </p>
+<hr>
+<h2>Running PGENESIS </h2>
+<p>PGENESIS can be run directly off the CDROM with the command: </p>
+<p><tt>/cdrom/pgenesis/bin/pgenesis</tt> </p>
+<p>You may wish to put <tt>/cdrom/pgenesis/bin</tt> in your path so
+that <tt>pgenesis</tt> is all that is required. For example, <tt>cd</tt>
+to <tt>/cdrom/pgenesis/Scripts/orient2</tt> and execute <tt>pgenesis
+demo.g</tt>. To see the documentation invoke <tt>pgenesis -browse</tt>.
+You can cd to your own script directory and run PGENESIS on those
+scripts. But beware: if you have a customized <tt>.simrc</tt> in the
+directory, PGENESIS will ignore it. The simple thing to do is invoke <tt>pgenesis</tt>
+without any script, quit at the prompt, then edit the file <tt>.psimrc</tt>
+to include whatever customizations you have. </p>
+<p>There are several available options, which may be listed by typing <tt>pgenesis
+-help</tt>. The most commonly used of these are: </p>
+<pre><tt>    -config &lt;file&gt; - where &lt;file&gt; is a file containing a list of</tt>
+<tt>                   machines to be used (1 per line)</tt>
+<tt>    -nox - run without Xodus</tt>
+<tt>    -debug tty - create a window for each pgenesis node</tt>
+<tt>    -browse - browse the pgenesis documentation using netscape </tt>
+</pre>
+<p>Read the Web pages (rooted at <tt>/cdrom/pgenesis/Hyperdoc/welcome.html</tt>)
+to take advantage of the new functionality provided by PGENESIS. </p>
+<hr>
+<h2>Installing PGENESIS </h2>
+<p>PGENESIS can also be installed onto your disk by first installing
+serial GENESIS (see the regular GENESIS documentation for instructions)
+and then issuing the command: </p>
+<p><tt>/cdrom/Install/PGENESIS_Install install_dir genesis_pathname</tt>
+</p>
+<p>where <tt>install_dir</tt> is the name of the directory in which <tt>pgenesis</tt>
+and <tt>pvm3</tt> subdirectories will be created, and <tt>genesis_pathname</tt>
+is the directory where the serial GENESIS directory is located. For
+example, "<tt>/cdrom/Install/PGENESIS_Install /usr/local /usr/genesis</tt>"
+will make subdirectories <tt>/usr/local/pgenesis</tt> and <tt>/usr/local/pvm3</tt>
+and reference the serial GENESIS located in <tt>/usr/genesis</tt>. </p>
+<p>Each user should make sure that their PATH is set to include <tt>install_dir/pgenesis/bin</tt>.
+If the script files you wish to use are not in your home directory, the
+examples directory, or the directory you run parallel Genesis in, you
+will need to add their directory path to the SIMPATH variable in the
+.simrc file you use. By default this is .psimrc for PGENESIS worker
+nodes. </p>
+<hr>
+<h2>Debugging PGENESIS Scripts </h2>
+<p>Normally the master node sends its output to your screen and the
+worker nodes send their output to the file <tt>/tmp/pvml.????</tt> on
+the machine they are running on, where <tt>????</tt> is your uid on
+that machine. Many script bugs can be tracked down by examining those
+/tmp/pvml.<tt>????</tt> files. Note that PVM appends to these files on
+every run, until PVM is halted and restarted. Also note that if a
+worker node exits without executing "paroff", some of its output to
+stdout/stderr which is buffered may not appear in the <tt>/tmp/pvml.????</tt>
+file. </p>
+<p>Output from the workers can be redirected to a file by giving the
+paron command the <tt>-output &lt;filename&gt;</tt> option. <tt>&lt;filename&gt;</tt>
+can be <tt>/dev/tty</tt>, in which case the worker output appears on
+your screen mixed with the master's output. </p>
+<p>If you are running X-Windows, you can have each worker create its
+own window and send its output there by using the <tt>-debug tty</tt>
+flag when invoking PGENESIS. This requires that your DISPLAY
+environment variable is set to "<tt>hostname:0</tt>" when you invoke
+the pgenesis script. </p>
+<p>By default PGENESIS starts the workers using <tt>-silent 3</tt>
+which minimizes the messages printed by the workers (e.g., the banner).
+To see more worker status messages, give the <tt>paron</tt> command
+the <tt>-silent 0</tt> option. </p>
+<p>Common errors include: </p>
+<ol>
+  <li> User impatience leads to interruption of PGENESIS before it has
+completed the initialization of the workers. The timeout is set to 120
+seconds, for maximum information about the problem, let PGENESIS
+timeout if it fails to initialize workers properly (i.e., wait!). </li>
+  <li> PVM can't find the worker executable. This is specified with the
+    <tt>-executable &lt;filename&gt;</tt> option of the paron command,
+the default is "pnxgenesis". This executable, or a link to it, should
+be in <tt>~/pvm3/bin/$PVM_ARCH</tt>. A symptom of this problem is that
+PGENESIS reports it failed to spawn workers and the <tt>/tmp/pvml.???</tt>
+files are empty apart from the header. </li>
+  <li> PVM aborts worker startup due to I/O in your .cshrc Symptoms of
+this are that PGENESIS reports workers failed to spawn and the <tt>/tmp/pvml.???</tt>
+files contain error messages about TTY or other strange things, and no
+Genesis startup banner. Modify your .cshrc as described in
+pvm-cshrc.stub. </li>
+  <li> The workers can't find the script containing the paron command.
+Symptoms of this are that PGENESIS reports workers failed to spawn and
+the <tt>/tmp/pvml.???</tt> files show the GENESIS prompt with no
+attempt to execute <tt>paron</tt>, or the startup banners show that
+the script file could not be found. Edit your <tt>~/.psimrc</tt> and <tt>~/.pnxsimrc</tt>
+so that SIMPATH lists the directories containing the scripts. </li>
+  <li> Incorrect use of barriers. Symptoms are that the master or some
+worker(s) hang and eventually timeout. Examine your use of barriers.
+Note that some commands contain implicit barriers, it is possible there
+is a bug in the source - if you suspect this mail ngoddard@psc.edu. </li>
+</ol>
+<p>For more information on the finer points of using PVM, refer to the
+PVM user guide. </p>
+<p>NOTE: For instructions on how to run the parallel Genesis beta test
+see the <tt>README.beta</tt> file. The file you are now reading tells
+you how to install parallel Genesis and run it with your scripts. </p>
+<hr>
+<h2>User-Extended PGENESIS </h2>
+<p>Libraries are constructed just as for serial GENESIS, each in its
+own subdirectory in a canonical form. See the GENESIS documentation for
+descriptions of this form. In this section we describe how to link
+these libraries with PGENESIS components to create an extended
+PGENESIS. </p>
+<p>Assuming your libraries are subdirectories of a root directory I'll
+call <tt>MYPGEN</tt>, these are the steps you follow to create and run
+extended PGENESIS. </p>
+<ol>
+  <li> Copy <tt>install_dir/pgenesis/lib/Usermake</tt> to <tt>MYPGEN/Makefile</tt>.
+Modify the <tt>Makefile</tt> for your platform type as described in
+the <tt>Makefile</tt>. You must set <tt>PVM_ROOT</tt> and <tt>PVM_ARCH</tt>
+in the <tt>Makefile</tt>, unless you have set them in your <tt>.cshrc</tt>
+as described in section 3.3 of the PVM manual. The default setting for <tt>PVM_ARCH</tt>
+should be correct in almost all cases. You will have to uncomment one
+of the machine/compiler dependent options for CC, CPP, CFLAGS, LIBS,
+SYSLIBS, etc. The <tt>GENESIS</tt> and <tt>INST_DIR</tt> macros
+should be set to, respectively, the full pathnames of the serial
+Genesis installation and the directory in which parallel Genesis should
+be installed (usually the PGENESIS root directory). </li>
+  <li> Now add the names of your libraries and their subdirectories to <tt>USERLIB</tt>
+and <tt>USERDIR</tt> and set the installation root for your extended
+PGENESIS in <tt>USERINST</tt>. Execute '<tt>make nxextended</tt>' to
+make extended PGENESIS without Xodus, '<tt>make extended</tt>' to make
+extended PGENESIS with Xodus. </li>
+  <li> This should create <tt>USERINST/bin</tt> and <tt>USERINST/lib</tt>
+containing various files. The only one you need to be aware of is <tt>USERINST/bin/pgenesis</tt>.
+To run your extended PGENESIS, set your path to include <tt>USERINST/bin</tt>
+early. Then invoke extended PGENESIS with '<tt>pgenesis</tt>' just as
+you would for vanilla PGENESIS. </li>
+</ol>
+<p>
+</p>
+</body>
+</html>

@@ -1,0 +1,17 @@
+#!/bin/csh -f
+
+set rcfile=$argv[1]
+set inst_dir=$argv[2]
+set gen_dir=$argv[3]
+set pvm_dir=$argv[4]
+
+# remove any . or .. pathname components
+pushd $inst_dir >& /dev/null
+    set inst_dir=$cwd
+popd >& /dev/null
+pushd $gen_dir >& /dev/null
+    set gen_dir=$cwd
+popd >& /dev/null
+
+sed s:/usr/genesis:$gen_dir\: < $rcfile | sed s:/usr/pgenesis:$inst_dir\: | sed s:/usr/pvm:$pvm_dir\:
+

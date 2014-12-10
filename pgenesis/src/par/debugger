@@ -1,0 +1,29 @@
+#!/bin/csh -f
+#
+#	debugger.csh
+#
+#	this script is invoked by the pvmd when a task is spawned with
+#	the PvmTaskDebug flag set.  it execs an emacs with gdb
+#	running inside.
+#
+#	06 Apr 1993  Manchek
+#
+
+if ($#argv < 1) then
+	echo "usage: debugger command [args]"
+	exit 1
+endif
+
+set exe=/tmp/$argv[1]:t.$$
+echo "creating $exe ..."
+cp $HOME/$argv[1] $exe
+
+set noglob
+set hn=`hostname`
+set TEMPCMD=/tmp/debugger.$$
+echo "(defun rungdb ()" > $TEMPCMD
+echo "  (gdb "'"'$exe'"'"))" >> $TEMPCMD
+echo "(setq pvmexecargs "'"'$argv'"'")" >> $TEMPCMD
+/usr/local/bin/emacs -geometry 80x45 -wn "GDB@${hn}:$argv[1]" -ms white -cr white -l $TEMPCMD -f rungdb
+rm -f $TEMPCMD
+rm -f $exe

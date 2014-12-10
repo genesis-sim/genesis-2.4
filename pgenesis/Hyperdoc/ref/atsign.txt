@@ -1,0 +1,54 @@
+Construct:	atsign ('@')
+
+Description:	In parallel GENESIS the '@' is used to specify
+		particular nodes on which an operation is to be
+		performed or on which an element resides.  Note
+		that this use of the '@' symbol	does not conflict
+		with the use of '@' as a string	concatenation
+		operator, which is still preserved.
+
+Usage:
+		The '@' is followed by a node list, defined as followed:
+
+			<node-list> <- <node-spec>,<node-spec>,...
+		
+			<node-spec> <- <node>[.<zone>]
+
+		where <node> is the znode number for the node, that is
+		its number within its zone.  If .<zone> is omitted,
+		the zone of the caller is assumed.  Any command or
+		element without the @ extension is assumed to
+		be on the local node. If the node and zone are the
+		same as the caller's, the command is executed locally.  
+
+		Nodes and zones are identified at present as an integer
+		(znode number or zone number) or one of two keywords:
+
+			other  :  All except the caller's ("others"
+				  also accepted).
+			all    :  All including the caller's.
+
+		Thus "@other" means all nodes in the caller's zone
+		except the caller's node.  "@other.all" means every
+		node in the parallel platform except the caller's.
+		"other.other" means every node in every other zone
+		except the nodes whose znode number is the same as
+		the caller's znodenumber.  "@all.all" means every node
+		in the parallel platform.  "@all.other" means every node
+		in every other zone.  If "other" is given for node then
+		there must be a node whose znode number corresponds
+		to the caller's znode number in every zone that is specified.
+		There must exist at least one node in each node-spec.
+
+Examples:	createmap@1,2 /neutral /array 10 10
+		createmap@other /neutral /array 10 10
+		addmsg /cell1 /cell2@2 SPIKE
+
+See also:	raddmsg, async, rvolumeconnect, rvolumeweight, rvolumedelay
+		
+
+
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Sep 3, 1996
+URL file://www.psc.edu/general/software/packages/genesis/atsign.txt

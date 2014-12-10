@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+  <title>Performance Monitoring in PGENESIS</title>
+</head>
+<body>
+<p><b><font size="6">Performance Monitoring in PGENESIS</font></b>
+</p>
+<hr>
+<p>In PGENESIS 2.0 we provide a rudimentary performance monitoring
+capability, which users can easily enable by including a couple of
+accounting commands in their scripts.&nbsp; The monitoring package
+tracks the amount of time spent in these
+operations:
+</p>
+<menu><li>PGENESIS_PROCESS_SNDREC_SND - the time spent sending data to
+other nodes
+</li>
+<li>PGENESIS_PROCESS_SNDREC_REC - the time spent receiving data from
+other
+nodes
+</li>
+<li>PGENESIS_PROCESS_SNDREC_GETFIELD - the time spent gathering local
+data for
+transmission to other nodes
+</li>
+<li>PGENESIS_PROCESS_SNDREC - the time spent in sending and receiving
+data not
+accounted for by the three preceding categories
+</li>
+<li>PGENESIS_PROCESS_SYNC - the time spent explicitly synchronizing
+nodes prior to each step
+</li>
+<li>PGENESIS_PROCESS - the time spent in parallel overhead of
+exchanging data
+with other nodes which is not accounted for by the preceding categories
+</li>
+<li>PGENESIS_EVENT - the time spent handling incoming events i.e.,
+spikes
+</li>
+<li>PGENESIS - the time spent in PGENESIS not accounted for by the
+precding overhead categories. In other words the time spent doing
+useful work.
+[NB, this category currently includes time spent executing remote
+commands,
+including establishing remote messages, as well as all other work
+associated
+with constructing the model]
+</li>
+</menu>
+<p> A script turns on this accounting with </p>
+<blockquote><b>setfield
+/post perfmon 1</b></blockquote>
+and turns it off with
+<blockquote><b>setfield /post perfmon 0</b></blockquote>
+Whenever
+performance monitoring is active, the categories listed above
+accumulate time. So, to ignore the time involved in construction of a
+model, do not activate performance monitoring until just prior to the
+first simulation step.
+<p> The accumulated time values can be dumped to file with the
+command<br>
+</p>
+<blockquote><b>perfstats</b></blockquote>
+This writes a
+file to /tmp (usually a local disk) called
+<b>pgenesis.ppp.nnn.acct</b> where ppp is the process id and nnn is
+the node number. Each time <span style="font-weight: bold;">perfstats</span>
+is called it dumps the
+accumulated values, but it does not reset the accumulation bins.<br>
+<br>
+Advanced users can extend and customize this accounting by modifying
+the
+source C code of GENESIS, PGENESIS, and/or any custom user
+libraries.&nbsp; See <span style="font-family: monospace;">src/par/acct.h</span>,
+<span style="font-family: monospace;">src/par/libacct.c</span>, and the
+<span style="font-family: monospace;">Acct()</span> calls in
+<span style="font-family: monospace;">src/par/post.c</span> and <span
+ style="font-family: monospace;">src/par/par_msg.c</span>.
+<br>
+<p>
+</p>
+</body>
+</html>

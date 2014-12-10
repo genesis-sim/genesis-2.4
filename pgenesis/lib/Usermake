@@ -1,0 +1,909 @@
+# PGENESIS compilation
+#
+# YOU MUST EDIT THIS FILE AS DEFINED BELOW.
+# No targets will be made until the EDITED macro is set to "yes".
+#
+# This makefile compiles and installs PGENESIS.  It can also be used to
+# compile and run the beta test, which is recommended if you run into
+# any problems.  See README.beta for instructions.
+#
+# This makefile can also be used to create PGENESIS with added user
+# libraries, once vanilla PGENESIS has been installed.  In this case
+# merely set the USERDIR, USERLIB and USERINST environment variables below
+# and execute 'make extended'.  The extended PGENESIS then can be run
+# using the shell script $USERINST/bin/pgenesis.
+#
+# This makefile creates
+# libraries and executables for one machine type, specified by the
+# environment variable PVM_ROOT.  To run on a heterogenous network,
+# these libraries and executables must be made on each type of platform.
+# These compilations cannot be run in parallel.
+#
+# 1) ensure that the GENESIS libraries have been compiled and installed
+#    for this platform type.  Set GENESIS (below) to the installation root.
+#
+# 2) ensure that PVM_ROOT and PVM_ARCH are set in your environment as
+#    described in the PVM manual.  Or they can be explicitly set below,
+#    using SET_PVM_ARCH instead of PVM_ARCH.
+#
+# 3) set PVM3LIB, PVM_DEFS, XLIB if needed below.
+#
+# 4) set INST_DIR and PARSRC_DIR below.
+#
+# 5) uncomment one set of compilation flags for the machine type.
+#
+# 6) when the Makefile has been configured as far as the EDITED variable,
+#    uncomment its definition so it is defined to be "yes".
+#
+# 7) if you are using an SGI Origin, you may need to change your environment
+#    configuration slightly, as described by Greg Hood, Jul. 1999:
+#
+# 	The other change that was necessary for running on the Origin had to
+# 	do with pvm.  It was important to force pvm to use sockets rather
+# 	than shared memory on the Origin because of bugs in the pvm
+# 	implementation.  I don't know whether this has recently been fixed,
+# 	but it hadn't as of a few months ago.  So, people using Origins
+# 	should do the following:
+#
+# 	i. Add to their .cshrc:
+# 		setenv SGIMP ON
+# 		setenv PVM_SHMEM ON
+#
+#      ii. Remove -DSHMEM from $PVM_ROOT/conf/SGIMP64.def and rebuild pvm 
+#          from scratch before linking PGENESIS.
+#
+# 8) type 'make'		- to make the beta test executable
+#	  'make nxinstall'	- to make and install pgenesis without Xodus
+#	  'make install'	- to make and install pgenesis with Xodus
+#	  'make extended'	- to install extended pgenesis with Xodus 
+#	  'make nxextended'	- to install extended pgenesis without Xodus 
+#	  'make env'		- to show some of the configuration settings
+#	  'make clean'		- to remove this machine type's object files
+#	  'make spotless'	- to remove all machine types' object files
+#
+# 9) if there are compilation problems you may need to adjust compilation
+#    flags elsewhere in this file, but not after the EDITED variable except
+#    in exceptional circumstances.
+# 
+# MAKEFILE CONFIGURATION DEFINITIONS
+#
+# if necessary set PVM_ROOT and/or SET_PVM_ARCH explicitly here.
+# Normally SET_PVM_ARCH is set as below by calling $PVM_ROOT/lib/pvmgetarch
+# the PVM libraries must be in $(PVM_ROOT)/lib/$(SET_PVM_ARCH) and
+# the PVM include files must be in $(PVM_ROOT)/include
+# 
+PVM_ROOT = /usr/share/pvm3
+
+# pipe stderr to /dev/null so we get the right thing in SET_PVM_ARCH
+# if this fails, set it explicitly for your architecture
+SET_PVM_ARCH = `$(PVM_ROOT)/lib/pvmgetarch 2> /dev/null`
+
+# if you have PVM 3.3.4 or later, use
+# to find out your pvm version, execute
+#
+#       echo version | pvm
+#       echo halt | pvm
+#
+PVM_DEFS = -DHAVE_PVM_3_3_4
+
+# probably can leave this as is.  On multiprocessor machines
+# like Ultrasparcs, you can use -lpvm3s to get the socket library
+# instead of the shared memory library.  Shared memory is faster
+# but we have had installation problems at some sites.
+# -lgpvm3 is needed when -DALL_SPAWN is used, e.g., for xpvm
+#
+# For 64 bit IRIX try
+# PVM3LIB = -lpvm3s
+
+PVM3LIB = -lpvm3
+
+# The root of the serial genesis tree (the parent of the src tree).
+GENESIS = /usr/local/genesis
+
+# directory to install into
+INST_DIR = /usr/local/pgenesis
+
+# directory where pgenesis source tree root is
+PARSRC_DIR = /usr/local/pgenesis
+
+# if you compiled serial GENESIS with the diskio FMT1 netCDF support, you
+# must also define it here, otherwise compilation of PGENESIS will fail
+# in the link phase.
+
+FMT1OBJ      = $(GENESIS)/lib/FMT1lib.o
+NETCDFOBJ    = $(GENESIS)/lib/netcdflib.o \
+               $(GENESIS)/lib/libnetcdf.a
+
+# If you compiled serial GENESIS with SPRNG support, you must also define
+# it here.
+#
+# For 64 bit IRIX try
+# SPRNG_LIB = lcg64
+
+SPRNG_LIB = lfg
+SPRNGLIB   = $(GENESIS)/lib/lib$(SPRNG_LIB).a
+
+# the default c flags included for all machines
+# ALL_SPAWN says to use a group name to start up
+# this is required to run with xpvm.
+DEF_CFLAGS = -I$(PVM_ROOT)/include $(PVM_DEFS) -DALL_SPAWN=0 -DLOOKAHEAD_DEBUG=0
+
+#
+# for the baselibs, will you be creating .o or .a files?  Default is
+# .o, .a is needed for T3D/T3E, as modified below in T3D/T3E-specific settings.
+# This can be left as is here.
+#
+LIBEXT = o
+
+# Default compilation/loading.
+# These settings then get modified below for specific platforms.
+CC=cc
+LD=ld
+AR=ar
+CPP=/lib/cpp
+CFLAGS=$(DEF_CFLAGS)
+SYSLIBS =
+LEXLIB = -ll
+TERMCAP=-ltermcap
+XLIB = /usr/X11R6/lib
+
+# Machine dependent customizations.  You MUST uncomment
+# one of these options
+#
+# For extra compile-time checking, if your compiler can handle function
+# prototypes, add -DFUNC_PROT to CFLAGS.
+#
+# 	SunOS 4.1
+#	You may need to add -Bstatic to the CFLAGS if you get undefined
+#	symbols in the final link phase.
+# CFLAGS=$(DEF_CFLAGS) -Bstatic
+#
+#	Solaris single processor using SUNPro C compiler
+# CFLAGS = -Xs $(DEF_CFLAGS) -DNDEBUG -DSVR4
+# CPP = /usr/ccs/lib/cpp
+# SYSLIBS = -lelf -lsocket -lnsl -ldl -lw
+# XLIB = /usr/openwin/lib
+# XINCLUDE = /usr/openwin/include
+#
+#	Solaris multiprocessor using SUNPro C compiler
+# CFLAGS = -Xs $(DEF_CFLAGS) -DNDEBUG -DSVR4
+# CPP = /usr/ccs/lib/cpp
+# SYSLIBS = -lelf -lsocket -lnsl -ldl -lw -lthread
+# XLIB = /usr/openwin/lib
+# XINCLUDE = /usr/openwin/include
+#
+#	Solaris single processor using GCC C compiler
+# CC = /usr/local/bin/gcc
+# CFLAGS = -traditional $(DEF_CFLAGS) -DSVR4
+# CPP = /usr/ccs/lib/cpp
+# SYSLIBS = -lelf -lsocket -lnsl -ldl -lw
+# XLIB = /usr/openwin/lib
+# XINCLUDE = /usr/openwin/include
+#
+#	Solaris multiprocessor using GCC C compiler
+# CFLAGS = -traditional $(DEF_CFLAGS) -DSVR4 
+# CPP = /usr/ccs/lib/cpp
+# SYSLIBS = -lelf -lsocket -lnsl -ldl -lw -lthread
+# XLIB = /usr/openwin/lib
+# XINCLUDE = /usr/openwin/include
+#
+#	SGI/IRIX 6.4 on Origin 2000 using SGI's C compiler
+# CC = cc -mips4 -64 -LNO -G 0 -r10000
+# CFLAGS = $(DEF_CFLAGS) -DFUNC_PROT -DORIGIN -O2 -Ddecalpha
+# CPP = /lib/cpp -P
+# SYSLIBS = -64 -lmalloc -lelf
+# XLIB = /usr/lib64
+# TERMCAP = -lcurses
+#
+#	SGI/IRIX 5.x using SGI's C compiler
+# CFLAGS = $(DEF_CFLAGS) -DFUNC_PROT
+# SYSLIBS = -lmalloc -lmld
+# TERMCAP = -lcurses
+#
+#	SGI/IRIX 4.x using SGI's C compiler
+# CFLAGS = -cckr $(DEF_CFLAGS)
+# SYSLIBS = -lsun -lmalloc
+# TERMCAP = -lcurses
+#
+#	Decstation using DEC C compiler
+# CFLAGS = -G 5 $(DEF_CFLAGS)
+#
+#	 Alpha use Dec c89 compiler
+# CFLAGS = -common $(DEF_CFLAGS)
+# CC = c89
+#
+#	MACHINE=alpha using DEC cc compiler
+# CFLAGS = -std0 $(DEF_CFLAGS)
+# SYSLIBS = -ldnet_stub 
+#
+# 	HPUX A.09.07
+# CFLAGS = -DNDEBUG $(DEF_CFLAGS)
+# XLIB = /usr/lib/X11R5
+#
+#	HPUX B.10.20
+#	On HPPAMP (multiprocessor HP) serial GENESIS must be compiled
+#	using bison/flex which requires the following library here:
+# CFLAGS = -DNDEBUG $(DEF_CFLAGS)
+# SYSLIBS = -lPW
+# XLIB = /usr/lib/X11R6
+#
+#	CRAY T3D
+# use the following definition of CFLAGS if you intend doing 
+# interactive degugging using totalview on the T3D
+# CFLAGS = -Gn -X4 -DT3D
+#
+# CC = env TARGET=cray-t3d cc
+# LD = mppld
+# CFLAGS = -DT3D -DLOOKAHEAD_DEBUG=0
+# LIBEXT = a
+# TESTS = t3d_tests
+# CPP=cpp
+# SYSLIBS =
+# PVM3LIB =
+#
+#     CRAY T3E
+# CC = cc
+# CFLAGS = -O -Xm -DCRAY -DT3D -DT3E -DLOOKAHEAD_DEBUG=0
+# CPP=cpp
+# LD = cld
+# LIBEXT = a
+# TESTS = t3e_tests
+# SYSLIBS =
+# PVM3LIB =
+# SET_PVM_ARCH = T3E
+#
+#     MACHINE=paragon
+# Intel Paragon (as installed at Caltech)
+# NOTE: has trouble cross compiling using the standard make as it
+#       insists on adding "-target sun4" in the default .c.o rule
+#       and some of the Xodus makefiles don't overide this.  I
+#     suggest using gnu make which doesn't have this problem.
+#
+#       Master has -lnx in syslibs; slave has -nx in Cflags
+#     Master uses -lpvm3; slave uses -lpvm3pe
+#
+# MAKE = gmake
+# CFLAGS = -O -DFUNC_PROTO $(DEF_CFLAGS) -DPGON $(XCFLAGS)
+# CC = icc
+# CPP = cpp860
+# LD = ld860
+# AR = ar860
+# SYSLIBS = -lrpc -ll -lm $(XSYSLIBS)
+# XLIB = .
+# PVM3LIB = $(XPVM3LIB)
+# SET_PVM_ARCH = PGON
+#
+#       MACHINE=Linux using GCC C compiler (RedHat 6.x)
+# CFLAGS = -O $(DEF_CFLAGS) -DFUNC_PROT -D__GLIBC -D__NO_MATH_INLINES
+# YACC = bison -y
+# PARSER = bison
+# LEX = flex -l
+# LEXLIB = -lfl
+# XLIB=/usr/X11R6/lib
+# TERMCAP=-lncurses
+# 
+#       IBM AIX 4.[23] with xlc compiler
+CC = xlc
+CFLAGS = -U__STR__ -ma -O3 $(DEF_CFLAGS) -qstrict -qchars=signed -DBIGENDIAN
+YACC = yacc
+PARSER = yacc
+LEX = lex
+LEXLIB = -ll -lcurses
+XLIB = /usr/lib
+CPP = /lib/cpp -P
+LD = ld
+AR = ar
+SYSLIBS = -lm -lessl -lrs2
+TERMCAP = -ltermcap
+#
+# End of machine dependent customizations.
+
+# ONLY needed for extended PGENESIS
+# the user should place the directories of any user library
+# modules in the USERDIR variable
+# e.g. USERDIR = newlib1 newlib2
+#
+USERDIR	=
+
+# ONLY needed for extended PGENESIS
+# The user should place the pathnames of any library object modules other
+# than the basic system libraries in the USERLIB variable.  These should be
+# the same as those used for the TARGET_OBJ variable in the 'Libmake' file.
+# e.g. USERLIB = newlib1/newlib1.o newlib2/newlib2.o
+#
+USERLIB	=
+
+# ONLY needed for extended PGENESIS
+# where extended PGENESIS should be installed.
+# executables will end up in $USERINST/bin/$PVM_ROOT
+# libraries will end up in $USERINST/lib/$PVM_ROOT
+# the invoking shell script will be $USERINST/bin/pgenesis
+USERINST = 
+
+# when the Makefile has been configured, uncomment this variable definition
+EDITED = yes
+
+# END OF MAKEFILE CONFIGURATION DEFINITIONS
+
+#########################################################################
+# nothing beyond this point should have to be modified by the installer #
+#########################################################################
+
+SHELL = /bin/sh
+
+#
+# note that now parlib is an archive and NOT an object file
+#
+PARLIBS = parlib.a
+
+REPORT = $(PARSRC_DIR)/parbeta.$(PVM_ARCH)
+
+BASELIBS = 	simlib.$(LIBEXT) \
+		utillib.$(LIBEXT) \
+		ss.$(LIBEXT) \
+		shelllib.$(LIBEXT) \
+		toollib.$(LIBEXT) \
+		olflib.$(LIBEXT) \
+		hineslib.$(LIBEXT) \
+		lib$(SPRNG_LIB).a \
+		newconnlib.$(LIBEXT)
+
+XLIBS	=	-L$(XLIB) \
+		-lXt \
+		-lXmu \
+		-lXext \
+		-lX11 
+
+COBJLIBS	=	buflib.$(LIBEXT) \
+			seglib.$(LIBEXT) \
+			hhlib.$(LIBEXT) \
+			devlib.$(LIBEXT) \
+			outlib.$(LIBEXT) \
+			conclib.$(LIBEXT) \
+			userlib.$(LIBEXT) \
+			porelib.$(LIBEXT) \
+			paramlib.$(LIBEXT)
+
+
+XODUS 	=	xolib.o \
+		widglib.o \
+		drawlib.o \
+		libDraw.a \
+		libWidg.a \
+		libXo.a
+
+CODE_EXECS = code_g code_sym code_func code_lib
+
+EXT_LIBS = $(LEXLIB) -lm -L$(PVM_ROOT)/lib/$(SET_PVM_ARCH) $(PVM3LIB) $(SYSLIBS) $(FMT1OBJ) $(NETCDFOBJ) $(TERMCAP)
+
+DEFINES = CC="$(CC)" TOPFLAGS="$(CFLAGS)" PARLIBS="$(PARLIBS)" BASELIBS="$(BASELIBS)" EXT_LIBS="$(EXT_LIBS)" PVM_ROOT=$(PVM_ROOT) PVM_ARCH=$(SET_PVM_ARCH) PVM_DEFS=$(PVM_DEFS) SHELL=$(SHELL) CPP=$(CPP) GEN_ROOT=$(GENESIS) XLIBS="$(XLIBS)" OBJLIBS="`cat $(PARSRC_DIR)/objliblist`" XODUS="$(XODUS)" INST_DIR=$(INST_DIR) CODE_EXECS="$(CODE_EXECS)" AR=$(AR) LD=$(LD) PARSRC_DIR=$(PARSRC_DIR) 
+
+default: check nxinstall
+
+objliblistfile:
+	make -f $(GENESIS)/src/Makefile -p -q code_g | grep "kinlib.o" | awk -F= '{ for (i = 2; i <= NF; i++) printf $$i "\n"}' | awk '{ for (i = 1; i <= NF; i++) printf $$i "\n"}' | sed -e 's/\.o/\.$(LIBEXT)/' | awk -F/ '{printf $$NF " "}'  > ./optliblist
+	make -f $(GENESIS)/src/Makefile -p -q code_g | grep "diskiolib.o" | awk -F= '{ for (i = 2; i <= NF; i++) printf $$i "\n"}' | awk '{ for (i = 1; i <= NF; i++) printf $$i "\n"}' | sed -e 's/\.o/\.$(LIBEXT)/' | awk -F/ '{printf $$NF " "}' >> ./optliblist
+	rm -f objliblist
+	for i in $(COBJLIBS) `cat optliblist`; do echo $$i | awk '{printf $$1 " "}' >> objliblist; done
+
+check: 
+	@if [ x$(EDITED) != "xyes" ] ; \
+	 then \
+		echo "You need to configure the Makefile!"; \
+		exit 1; \
+	 fi
+	@if [ `(cd $(PARSRC_DIR); csh -f -c pwd)` != `csh -f -c pwd` ] ; \
+	 then \
+		echo "This Makefile must be run in the PGENESIS source directory!"; \
+		echo "which is set to: "; \
+		(cd $(PARSRC_DIR); csh -f -c pwd); \
+		echo "while the current directory is: " ;\
+		csh -f -c pwd; \
+		exit 1; \
+	fi
+
+env:
+	cat /dev/null > objliblist
+	$(MAKE) $(DEFINES) penv
+	rm -f objliblist
+
+penv: 
+	@echo PVM_ROOT = $(PVM_ROOT)
+	@echo PVM_ARCH = $(PVM_ARCH)
+	@echo XLIB = $(XLIB)
+	@echo XINCLUDE = $(XINCLUDE)
+	@echo CC = $(CC)
+	@echo CFLAGS = $(CFLAGS)
+	@echo CPP = $(CPP)
+	@echo SYSLIBS = $(SYSLIBS)
+	@echo EXT_LIBS = $(EXT_LIBS)
+	@make check
+
+install: check
+	$(MAKE) objliblistfile
+	@if [ $(SET_PVM_ARCH) = PGON ];  then \
+	  $(MAKE) XPVM3LIB=-lpvm3pe XCFLAGS=-nx pinstall; \
+	  mv $(INST_DIR)/bin/PGON/pgenesis $(INST_DIR)/bin/PGON/pgenesis.node; \
+	  $(MAKE) XPVM3LIB=-lpvm3 XSYSLIBS=-lnx pinstall; \
+	  rm -f $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/pgenesis; \
+	  ln -s $(INST_DIR)/bin/$(SET_PVM_ARCH)/pgenesis.node $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/pgenesis; \
+	else \
+	  $(MAKE) $(DEFINES) pinstall ; \
+	fi
+	rm -f optliblist objliblist
+
+nxinstall: check
+	$(MAKE) objliblistfile
+	if [ $(SET_PVM_ARCH) = PGON ];  then \
+	  $(MAKE) XPVM3LIB=-lpvm3pe XCFLAGS=-nx pnxinstall; \
+	  mv $(INST_DIR)/bin/PGON/nxpgenesis $(INST_DIR)/bin/PGON/nxpgenesis.node; \
+	  $(MAKE) XPVM3LIB=-lpvm3 XSYSLIBS=-lnx pnxinstall; \
+	  rm -f $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/nxpgenesis; \
+	  ln -s `echo $(INST_DIR) | sed -e 's+/tmp_mnt/export+/home+'`/bin/$(SET_PVM_ARCH)/nxpgenesis.node $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/nxpgenesis; \
+	else \
+	  $(MAKE) $(DEFINES) pnxinstall ; \
+	fi
+	rm -f optliblist objliblist
+
+mininstall: check
+	$(MAKE) objliblistfile
+	@if [ $(SET_PVM_ARCH) = PGON ];  then \
+	  $(MAKE) XPVM3LIB=-lpvm3pe XCFLAGS=-nx pmininstall; \
+	  mv $(INST_DIR)/bin/PGON/minpgenesis $(INST_DIR)/bin/PGON/minpgenesis.node; \
+	  $(MAKE) XPVM3LIB=-lpvm3 XSYSLIBS=-lnx pmininstall; \
+	  rm -f $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/minpgenesis; \
+	  ln -s $(INST_DIR)/bin/$(SET_PVM_ARCH)/minpgenesis.node $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/minpgenesis; \
+	else \
+	  $(MAKE) $(DEFINES) pmininstall ; \
+	fi
+	rm -f optliblist objliblist
+
+compile: check compile-beta
+
+compile-beta: check clean parlibs testexec
+
+compile-genesis: check
+	$(MAKE) objliblistfiles pardefault parnxdefault
+	rm -f optliblist objliblist
+
+run: check runtest
+
+pmakefiles:
+	-mkdir -p $(INST_DIR)/lib
+	cp Makefile $(INST_DIR)/lib/Usermake
+	-mkdir -p $(INST_DIR)/bin
+	cp bin/ipclean $(INST_DIR)/bin/ipclean
+	chmod +x $(INST_DIR)/bin/ipclean
+
+pinstall: check pardefault pmakefiles
+	$(MAKE) $(DEFINES) instdirs
+	(cd src; $(MAKE) $(DEFINES) install)
+
+pnxinstall: check parnxdefault pmakefiles
+	$(MAKE) $(DEFINES) instdirs
+	(cd src; $(MAKE) $(DEFINES) nxinstall)
+
+pmininstall: check parmindefault pmakefiles
+	$(MAKE) $(DEFINES) instdirs
+	(cd src; $(MAKE) $(DEFINES) mininstall)
+
+instdirs: check instscripts instdoc
+	-mkdir -p $(INST_DIR)/bin/$(PVM_ARCH)
+	-mkdir -p $(INST_DIR)/lib/$(PVM_ARCH)
+	-mkdir -p $(INST_DIR)/startup
+
+instscripts:
+	-mkdir -p $(INST_DIR)
+	@if [ `(cd $(INST_DIR); csh -f -c pwd)` != `csh -f -c pwd` ] ; \
+	then \
+	  echo "cp -rf Scripts $(INST_DIR)" ; \
+	  cp -rf Scripts $(INST_DIR); \
+	fi
+
+instdoc:
+	-mkdir -p $(INST_DIR)
+	@if [ `(cd $(INST_DIR); csh -f -c pwd)` != `csh -f -c pwd` ] ; \
+	then \
+	  echo "cp -rf Hyperdoc $(INST_DIR)" ; \
+	  cp -rf Hyperdoc $(INST_DIR); \
+	fi
+
+parlibs: check 
+	$(MAKE) objliblistfile 
+	$(MAKE) $(DEFINES) pparlibs
+	rm -f objliblist optliblist
+
+pparlibs: check 
+	echo "Compiling..." >> $(REPORT)
+	$(MAKE) REPORT=$(REPORT) config
+	(cd src; $(MAKE) install-libs)
+
+
+
+testexec: check
+	$(MAKE) objliblistfile
+	if [ $(SET_PVM_ARCH) = PGON ];  then \
+	  $(MAKE) XPVM3LIB=-lpvm3pe XCFLAGS=-nx ptestexec; \
+	  mv TestSuite/bin/PGON/mingenesis TestSuite/bin/PGON/mingenesis.node; \
+	  $(MAKE) XPVM3LIB=-lpvm3 XSYSLIBS=-lnx ptestexec; \
+	  rm -f $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/pargenbeta; \
+	  ln -s $(PARSRC_DIR)/TestSuite/bin/$(SET_PVM_ARCH)/mingenesis.node $(HOME)/pvm3/bin/$(SET_PVM_ARCH)/pargenbeta; \
+	else \
+	  $(MAKE) $(DEFINES) ptestexec; \
+	fi
+	rm -f objliblist optliblist
+
+ptestexec: check
+#	$(MAKE) $(DEFINES) penv
+	(cd TestSuite; $(MAKE) $(DEFINES) default)
+
+runtest: check
+	@if test ! -f $(HOME)/cshrc.parbeta; \
+	 then \
+		$(MAKE) objliblistfile ; \
+		$(MAKE) -s -k $(DEFINES) REPORT=$(REPORT) pruntest; \
+		rm -f objliblist optliblist; \
+	 else \
+		echo "$(HOME)/cshrc.parbeta exists.... is the test running elsewhere?"; \
+	 fi	
+
+cshrc_save: check
+	-echo "Three lines prepended to your .cshrc, will restore ..."
+	-echo "setenv PVM_ROOT $(PVM_ROOT)" > cshrc.minimal
+	-echo "setenv PATH $(PVM_ROOT)/lib:$$PATH" >> cshrc.minimal
+	-echo "exit" >> cshrc.minimal
+	mv $(HOME)/.cshrc $(HOME)/cshrc.parbeta
+	cat cshrc.minimal $(HOME)/cshrc.parbeta >> $(HOME)/.cshrc
+	cat cshrc.minimal >> $(REPORT)
+	-rm -f cshrc.minimal
+
+cshrc_restore: check
+	if test -f $(HOME)/cshrc.parbeta; \
+	 then \
+		mv $(HOME)/.cshrc $(HOME)/cshrc.parbeta2; \
+		tail +4 $(HOME)/cshrc.parbeta2 >> $(HOME)/cshrc.parbeta3; \
+		if diff $(HOME)/cshrc.parbeta $(HOME)/cshrc.parbeta3; \
+		 then \
+			mv $(HOME)/cshrc.parbeta $(HOME)/.cshrc; \
+			rm -f $(HOME)/cshrc.parbeta*; \
+		   	echo "Your .cshrc has been restored"; \
+		 else \
+			echo "WARNING: unexpected event restoring your .cshrc"; \
+			echo "check cshrc.parbeta* in your home directory"; \
+		 fi; \
+	 else \
+			echo "WARNING: unexpected event restoring your .cshrc"; \
+			echo "check cshrc.parbeta* in your home directory"; \
+	 fi
+
+pruntest: check 
+	-echo "Running test suite, this can take some time..."
+	-echo "Running tests..." >> $(REPORT)
+	-$(MAKE) REPORT=$(REPORT) config
+	$(MAKE) REPORT=$(REPORT) cshrc_save
+	-(cd TestSuite; $(MAKE) TESTS=$(TESTS) tests)
+	$(MAKE) cshrc_restore
+	echo "Tests completed, results are in $(REPORT)"
+
+config: check
+	@echo "configuration is:" >> $(REPORT)
+	@echo "PVM_ROOT = $(PVM_ROOT)" >> $(REPORT)
+	@echo "PVM_ARCH = $(PVM_ARCH)" >> $(REPORT)
+	@echo "PVM_DEFS = $(PVM_DEFS)" >> $(REPORT)
+	@echo "CC = $(CC)" >> $(REPORT)
+	@echo "CFLAGS = $(CFLAGS)" >> $(REPORT)
+	@echo "SYSLIBS = $(SYSLIBS)" >> $(REPORT)
+	@echo "REPORT = $(REPORT)" >> $(REPORT)
+	@echo "SHELL = $(SHELL)" >> $(REPORT)
+	@echo "GEN_ROOT = $(GEN_ROOT)" >> $(REPORT)
+	@echo "CPP = $(CPP)" >> $(REPORT)
+
+pardefault: check
+	$(MAKE) $(DEFINES) EX=pardefault ppardefault
+
+parnxdefault: check
+	$(MAKE) $(DEFINES) EX=parnxdefault ppardefault
+
+parmindefault: check
+	$(MAKE) $(DEFINES) EX=parmindefault ppardefault
+
+ppardefault: check
+	(cd src; $(MAKE) $(DEFINES) $(EX))
+
+clean:
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) pclean
+	rm -f objliblist optliblist
+
+pclean: check
+	-rm -f TestSuite/bin/$(PVM_ARCH)/*
+	-rm -f $(REPORT)
+	(for i in src TestSuite Doc; do cd $$i; $(MAKE) clean; cd ..; done)
+
+spotless: check
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) pspotless
+	rm -f objliblist optliblist
+
+pspotless: check
+	-rm -fr lib
+	-rm -fr bin
+	-rm -fr startup
+	-rm -fr TestSuite/bin
+	-rm -f *.log *pmax* *sgi* *axp* testpar.out parbeta.*
+	-rm -f *~ #*
+	(for i in src TestSuite Doc; do cd $$i; $(MAKE) spotless; cd ..; done)
+
+#----- following is for user extensions
+
+EXT_DEFINES = USERLIB="$(USERLIB)" USERDIR="$(USERDIR)" USERINST="$(USERINST)"
+PARLIB=$(INST_DIR)/lib/$(PVM_ARCH)
+USERINSTBINDIR=$(USERINST)/bin/$(PVM_ARCH)
+USERINSTLIBDIR=$(USERINST)/lib/$(PVM_ARCH)
+
+extended:
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) $(EXT_DEFINES) user_extended
+	rm -f objliblist optliblist
+
+nxextended:
+	$(MAKE) objliblistfile
+	$(MAKE) $(DEFINES) $(EXT_DEFINES) user_nxextended
+	rm -f objliblist optliblist
+
+user_extended: user_pdefault
+	$(MAKE) user_install
+	$(MAKE) CWD=`pwd` user_gdbdebuginstall	
+
+user_nxextended: user_nxpdefault
+	$(MAKE) user_nxinstall
+	$(MAKE) CWD=`pwd` user_gdbdebuginstall	
+
+user_install: user_instdirs user_pgeninstall
+	cp pgenesis $(USERINSTBINDIR)/pgenesis
+
+user_nxinstall: user_instdirs user_pgeninstall
+	cp nxpgenesis $(USERINSTBINDIR)/nxpgenesis
+
+user_pgeninstall:
+	cat $(INST_DIR)/lib/pgenesis.ext | \
+		$(INST_DIR)/lib/configdir _extpgenesis-src_ `pwd` | \
+		$(INST_DIR)/lib/configdir _extpgenesis-inst_ $(USERINST) | \
+		sed s+_extpgenesis-libs_+'"$(USERDIR)"'+ \
+		> $(USERINSTBINDIR)/pgenesis
+
+user_gdbdebuginstall:
+	cat $(INST_DIR)/lib/gdbdebugger.ext | \
+		$(INST_DIR)/lib/configdir _extsrc_ \
+	  `echo $(USERDIR) | awk '{ for (i = 1; i <= NF; i++) printf "$(CWD)/"$$i ":" }'` \
+		> $(USERINSTLIBDIR)/gdbdebugger
+	chmod +x $(USERINSTLIBDIR)/gdbdebugger
+
+user_instdirs:
+	-mkdir -p $(USERINSTBINDIR)
+	-mkdir -p $(USERINSTLIBDIR)
+
+user_pdefault: user_checkpvm 
+	@$(MAKE) USELIBS="$(BASELIBS) $(OBJLIBS) $(PARLIBS) $(XODUS)" \
+		 EXECNAME=pgenesis LOADLIB=loadlib.o user_somegenesis
+
+user_nxpdefault: user_checkpvm 
+	@$(MAKE) USELIBS="$(BASELIBS) $(OBJLIBS) $(PARLIBS)" XLIBS="" \
+		 EXECNAME=nxpgenesis LOADLIB=nxloadlib.o user_somegenesis
+
+user_checkpvm:
+	@if [ x$(PVM_ARCH) = x ]; then \
+	  echo "You must set PVM_ROOT and PVM_ARCH in your environment first!"; \
+          exit 2; \
+        fi
+	@if [ x$(PVM_ROOT) = x ]; then \
+	  echo "You must set PVM_ROOT in your environment first!"; \
+          exit 2; \
+	fi
+
+user_somegenesis: user_userlibs $(LOADLIB)
+#	rm -f $(EXECNAME)
+	$(CC) -o $(EXECNAME) $(LOADLIB) \
+	  `echo $(USELIBS) | awk '{ for (i = 1; i <= NF; i++) printf "$(PARLIB)/"$$i " " }'` \
+	  $(USERLIB) $(XLIBS) $(EXT_LIBS)
+	rm -f $(LOADLIB) `echo "$(LOADLIB) " | sed -e 's/.o /.c /'`
+
+user_userlibs:
+	@if [ x$(USERLIB) != x ]; then \
+	  $(MAKE) $(DEFINES) user_puserlibs; \
+	fi
+
+user_puserlibs:
+	@(for i in $(USERDIR); do echo cd $$i; cd $$i; $(MAKE) ; cd ..; done)
+
+
+loadlib.c: liblist
+	$(PARLIB)/libsh < liblist > loadlib.c
+	rm -f liblist
+
+nxloadlib.c: nxliblist
+	$(PARLIB)/libsh < nxliblist > nxloadlib.c
+	rm -f nxliblist
+
+liblist: $(PARLIB)/liblist
+	cat $(PARLIB)/liblist > liblist
+	if [ x$(USERLIB) != x ]; then \
+	  $(MAKE) LIBLIST=$@ addliblist ; \
+	fi
+
+nxliblist: $(PARLIB)/nxliblist
+	cat $(PARLIB)/nxliblist > nxliblist
+	if [ x$(USERLIB) != x ]; then \
+	  $(MAKE) LIBLIST=$@ addliblist ; \
+	fi
+
+addliblist:
+	(for i in $(USERDIR); do $(MAKE) -f $$i/Makefile -p -q clean | grep "LIBRARY_NAME *=" | sed s/"LIBRARY_NAME *= *"// >> $(LIBLIST); done)
+
+
+# $Log: Usermake,v $
+# Revision 1.1.1.1  2005/06/14 04:38:39  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.4  2002/01/17 18:44:57  dbeeman
+# Bug fixes from Greg Hood for pgenesis 2.2a, entered by dbeeman
+#
+# Revision 1.3  2000/10/12 23:02:13  mhucka
+# 1) Removed some of the beta test changes
+# 2) Added AIX support
+# 3) Added fixes for some of the other platforms
+# 4) Improvements to comments
+# 5) Removed TestSuite for now
+# 6) Misc other cleanups
+#
+# Revision 1.2  2000/06/19 05:57:40  mhucka
+# Bunches of updates that were made to pgenesis/Makefile but never this file.
+#
+# Revision 1.49  2000/06/19 05:25:45  mhucka
+# 1) New approach: tell people to start from Makefile.dist.
+# 2) Added SPRNG library support.
+#
+# Revision 1.48  1999/12/19 04:27:12  mhucka
+# Added comments from Greg Hood for SGI Origin.
+#
+# Revision 1.47  1999/12/19 04:05:10  mhucka
+# Added netcdf, FMT1 support needed for GENESIS 2.2.
+#
+# Revision 1.46  1999/12/18 03:01:42  mhucka
+# Added PGENESIS from GENESIS 2.1 CDROM distribution.
+#
+# Revision 1.45  1997/08/12 18:18:31  ngoddard
+# ipclean must be installed executable
+#
+# Revision 1.44  1997/08/12 14:55:06  ngoddard
+# install html docs with everything else
+#
+# Revision 1.43  1997/08/12 08:20:45  ghood
+# Revised entry for IRIX 6.4 on Origin
+#
+# Revision 1.42  1997/08/12 05:23:42  ngoddard
+# on some platforms sed requires newlines
+#
+# Revision 1.41  1997/08/12 04:49:26  ngoddard
+# cleaned up optional object accounting
+#
+# Revision 1.40  1997/08/12 03:19:18  ngoddard
+# install ipclean in bin for SMPs
+#
+# Revision 1.39  1997/08/12 02:39:37  ngoddard
+# check directories are identical using C shells pwd
+#
+# Revision 1.38  1997/08/12 01:10:13  ngoddard
+# anywhere DEFINES is used, objliblistfile must exist
+#
+# Revision 1.37  1997/08/11 22:40:19  ghood
+# made rule for objliblistfile use LIBEXT (to handle T3E)
+#
+# Revision 1.36  1997/08/11 17:45:03  ngoddard
+# SUNOS settings, general debugging
+#
+# Revision 1.35  1997/08/11 16:02:03  ngoddard
+# settings for HPUX A and HPUX B are different; remove temporary files after installation
+#
+# Revision 1.34  1997/08/11 04:34:29  ngoddard
+# non-standard X library directory for hpux
+#
+# Revision 1.33  1997/08/10 04:18:27  ngoddard
+# echo \c not known to usr/ucb/echo; replaced with call to awk
+#
+# Revision 1.32  1997/08/08 04:42:33  ghood
+# made objliblistfile rule less sensitive to platform-type
+#
+# Revision 1.31  1997/08/01 16:14:33  ghood
+# reverted to original way of constructing objliblist
+#
+# Revision 1.30  1997/08/01 03:37:33  ghood
+# Added objliblist rule
+#
+# Revision 1.29  1997/07/28 16:49:44  ghood
+# Added initial entry for Origin 2000
+#
+# Revision 1.28  1997/07/24 13:18:08  ghood
+# fixed bugs in user-defined extensions
+#
+# Revision 1.27  1997/07/24 03:45:53  ngoddard
+# Installation directory needs to exist before a copy to it is done
+#
+# Revision 1.26  1997/07/23 22:56:19  ghood
+# merged Makefile and Makefile.ext
+#
+# Revision 1.25  1997/07/22 21:28:01  ngoddard
+# support for user-defined extensions
+#
+# Revision 1.24  1997/07/21 18:22:44  ngoddard
+# -DGETOPT_PROBLEM is history with serial 2.1
+#
+# Revision 1.23  1997/07/18 17:51:56  ghood
+# Made -DGETOPT_PROBLEM part of DEF_CFLAGS
+#
+# Revision 1.22  1997/07/18 17:20:51  ngoddard
+# Merged in Paragon changes for 2.1
+#
+# Revision 1.21  1997/07/18 02:57:41  ngoddard
+# hineslib needs olflib and toollib
+#
+# Revision 1.20  1997/07/16 20:35:35  ghood
+# Added hineslib to BASELIBS
+#
+# Revision 1.19  1997/07/16 20:15:49  ngoddard
+# PVM group server not needed for default installation
+#
+# Revision 1.18  1997/07/16 20:08:58  ghood
+# Added -DGETOPT_PROBLEM for T3E
+#
+# Revision 1.17  1997/07/14 05:31:32  ngoddard
+# LINUX settings
+#
+# Revision 1.16  1997/07/10 06:23:51  ngoddard
+# removed -DGETOPT_PROBLEM as serial 2.1 doesn't use it (?)
+#
+# Revision 1.15  1997/07/08 05:18:34  ngoddard
+# flags for hpux
+#
+# Revision 1.14  1997/07/05 06:29:45  ngoddard
+# removed paramlib, made nxpgenesis the default, added installation of Scripts
+#
+# Revision 1.13  1997/07/03  16:26:30  ngoddard
+# group server NOT used for startup by default (so node 0 goes on cpu 0)
+#
+# Revision 1.12  1997/06/24 16:34:38  ghood
+# Updated T3D/T3E entries; added param lib
+#
+# Revision 1.11  1997/05/20 16:43:09  ghood
+# Added support for T3E.
+#
+# Revision 1.10  1997/03/27 06:25:41  ngoddard
+# mods to scale up to larger networks
+#
+# Revision 1.9  1997/02/28 20:48:46  ngoddard
+# recovered Paragon mods, lost in 1.8
+#
+# Revision 1.8  1997/02/28 05:17:59  ngoddard
+# support for xpvm, lookahead, faster message lookup
+#
+# Revision 1.7  1997/01/31 05:12:34  ngoddard
+# barriers don't complete asyncs now, minor bug fixes
+#
+# Revision 1.6  1996/08/20 02:22:51  ngoddard
+# make report and cleaning use the right PVM_ARCH settings
+#
+# Revision 1.5  1996/08/16 19:38:38  ngoddard
+# SGI doesn't have GETOPT problem
+#
+# Revision 1.4  1996/08/16 19:29:24  ngoddard
+# convert all pargenesis, etc to pgenesis, etc
+#
+# Revision 1.3  1996/08/16  18:22:22  ngoddard
+# *** empty log message ***
+#
+# Revision 1.2  1996/08/16 18:18:57  ngoddard
+# -lpvm3 not needed for T3D
+#
+# Revision 1.1  1996/08/14 18:50:55  ngoddard
+# Initial revision
+#

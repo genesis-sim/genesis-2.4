@@ -1,0 +1,27 @@
+Routine:	barrier
+
+Description:	This function synchronizes all nodes within a zone.
+		A node waits at the barrier until all the other nodes
+		in the zone have called barrier with the same barrier
+		id.
+
+		Every barrier has an id number, if no number is given
+		the default is specified.  Barriers only match if
+		the barrier id matches.  Valid id numbers are from
+		1 to 24.  Providing barrier ids in a parallel script
+		helps to verify program correctness (by causing deadlock
+		for incorrect programs).  If no barrier ids are provided,
+		then any barrier will match any other barrier in the
+		script.  A timeout in seconds can be provided to barrier
+		commands, otherwise the default timeout value is used.
+
+Usage:		barrier [barrier_id [timeout_seconds]]
+
+Example:	// wait at barrier 7 for a maximum of one hour
+		barrier 7 3600
+
+See also:	barrierall, paron
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Sep 3, 1996
+URL file://www.psc.edu/general/software/packages/genesis/barrier.txt

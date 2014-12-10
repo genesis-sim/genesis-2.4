@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Parameter Searching</font></b> </p>
+<hr>
+<p>To do parameter searching one must first decide what parameters may
+be adjusted, how the resultant network will be evaluated, and what
+search method to employ to obtain the next set of parameters to try.
+All of these decisions are very model-dependent, and will also be
+influenced by the objectives of the researcher. It is beyond the scope
+of this document to discuss the issues involved in doing parameter
+searching, so we will concentrate on describing how one may use
+PGENESIS to implement parameter searches. </p>
+<p>Typically we will make one node a master node that directs the
+search. The other worker nodes will each carry out simulations as
+directed by the master. Each worker will also carry out an evaluation
+of the simulation results (and this could be done either while the
+simulation is running or immediately afterwards), The worker then
+communicates the result of this evaluation (which often is just a
+scalar "fitness" value, but not necessarily) back to the master. The
+master uses this value in some way to choose the future parameter
+values. Possible search techniques include genetic algorithm, simulated
+annealing, gradient-descent, and Monte-Carlo methods. </p>
+<p>Following this approach, the top-level script will look something
+like this: </p>
+<ol>
+  <li>Every node will wait at a <a href="ref/barrierall.txt">barrierall</a>
+for the entire set to start up. ("barrierall" is used instead of "<a
+ href="ref/barrier.txt">barrier</a>" because each node is in a separate
+zone<a href="ref/zone.txt">.</a>) </li>
+  <li>Node 0 will act as a master and will execute the appropriate
+search script. </li>
+  <li>The remaining nodes will act as workers and wait at a barrierall.
+While they are waiting at this barrierall, they will receive commands
+from the master node directing them to perform simulations. When they
+have finished a simulation and its evaluation, they will report the
+result back to the master node by doing a <a href="ref/atsign.txt">remote
+procedure call</a> on the master to record the evaluation result. </li>
+  <li>When the master has completed the search, it will satisfy the
+barrierall which the workers are waiting at, and all nodes will quit. </li>
+</ol>
+<p>To demonstrate a simple approach to doing a parameter search, we
+have developed a <a href="skeleton_search.html">skeleton parameter
+search example</a>. </p>
+<p></p>
+</body>
+</html>

@@ -1,0 +1,34 @@
+#!/bin/csh -f
+#
+#	ttydebugger.csh
+#
+#	this script is invoked by the pvmd when a task is spawned with
+#	the PvmTaskDebug flag set.  it execs an xterm with the
+#	executable running inside.
+#
+#	06 Apr 1993  Manchek
+#	21 Jul 1997  Goddard
+
+if ($#argv < 1) then
+	echo "usage: debugger command [args]"
+	exit 1
+endif
+
+set noglob
+if ($PVM_ARCH == "SUN4SOL2" || $PVM_ARCH == "SUNMP" || $PVM_ARCH == "X86SOL2") then
+	set hn=`uname -n`
+else
+	set hn=`hostname`
+endif
+exec xterm -sb -sl 200 -title "${hn}:$argv[1]" -e $argv
+
+# $Log: ttydebugger,v $
+# Revision 1.1.1.1  2005/06/14 04:38:39  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.1  2000/06/19 05:51:04  mhucka
+# Adding PGENESIS from GENESIS 2.1 CDROM release.
+#
+# Revision 1.1  1997/07/22 05:40:24  ngoddard
+# Initial revision
+#

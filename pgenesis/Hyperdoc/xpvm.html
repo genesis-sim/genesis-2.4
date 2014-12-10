@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+  <title>Running PGENESIS with XPVM</title>
+</head>
+<body>
+<p><b><font size="6">Running PGENESIS with XPVM</font></b>
+</p>
+<hr>
+<p><a href="http://www.netlib.org/utk/icl/xpvm/xpvm.html">XPVM</a> is
+a tool for monitoring the execution of a PVM application. To use XPVM
+with PGENESIS, the procedure to follow is:
+<l><li> Start XPVM (assuming it has been installed).
+</li>
+<li> Select the events to be traced (the default is ok)
+</li>
+<li> Spawn PGENESIS manually (i.e., not using the pgenesis script) from
+the XPVM console
+</li>
+</l></p>
+<p>PVM will look for the executable to be spawned in
+$HOME/$PVM_ROOT/bin/$PVM_ARCH. So you need to ensure that nxpgenesis
+and/or
+pgenesis exist there. They can be set correctly by running the <a
+ href="pgenesisscript.html">pgenesis script</a>. The full path to the
+directory in which PGENESIS should execute must be specified with the
+-execdir flag.
+</p>
+<p></p>
+</body>
+</html>

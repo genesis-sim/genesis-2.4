@@ -1,0 +1,79 @@
+Routine Name:	rvolumeconnect
+
+Description:	Establishes synaptic connections between groups of elements
+		based on the x-y-z positions of the elements.  This routine 
+		sets up the connections by adding SPIKE messages between the 
+		source and destination elements.  The destination elements
+		may reside on other nodes (with the nodes specified using
+		the '@' notation).
+
+Usage:		rvolumeconnect source_elements \
+			       destination_elements@destination-node-list \
+		-relative \
+		-sourcemask {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-sourcehole {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-destmask   {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-desthole   {box, ellipsoid} x1 y1 z1 x2 y2 z2 \
+		-probability p
+
+		source_elements  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages.  These must be of
+			class "spiking" and are usually spikegen or 
+			randomspike objects.
+
+		destination_elements  A wildcarded list of elements which are
+		        the destinations of the SPIKE messages.  These must  
+			be synchans or objects derived from synchan.  The '@'
+			notation may be used to designate nodes on which
+			to make connections.
+
+		-relative This option means that connections will be set up
+			based on the locations of destination objects
+			relative to source objects.  If this option is not
+			selected, the absolute locations of source and
+			destination elements will be used to determine
+			which connections are to be set up.
+
+		-sourcemask {box, ellipsoid} x1 y1 z1 x2 y2 z2 -- This
+			specifies a rectangular or ellipsoidal region from
+			which source elements are to be taken.  If the "box"
+			option is used, then x1, y1, and z1 are the minimum
+			x, y, and z values of the region while x2, y2, and
+			z2 are the maximum x, y, and z values of the
+			region.  If the "ellipsoid" option is used, then the
+			source region is an ellipsoid with x1, y1 and z1
+			representing the center of the ellipsoid while x2,
+			y2, and z2 represent the lengths of the principal
+			axes in the x, y, and z directions respectively.
+			Note that to choose a spherical region x2, y2, and
+			z2 must be equal.  Note also that one or the other
+			of {box, ellipsoid} MUST be chosen; leaving both of
+			them out will generate an error.  Finally, one can
+			choose multiple source regions by having multiple
+			-sourcemask options.  The same conventions are
+			followed for the next three options.  
+
+		-sourcehole {box, ellipsoid} x1 y1 z1 x2 y2 z2  -- This 
+			specifies a rectangular or elliptical region NOT to 
+			include in the source region(s).  You can exclude 
+			multiple regions by having multiple -sourcehole 
+			options.
+
+		-destmask {box, ellipsoid} x1 y1 z1 x2 y2 z2  -- This 
+			specifies a rectangular or elliptical region to which 
+			SPIKE messages will be sent.
+
+		-desthole {box, ellipsoid} x1 y1 z1 x2 y2 z2  -- This 
+			specifies a rectangular or elliptical region NOT to 
+			include in the destination region(s). 
+
+		-probability p  -- This option causes connections to be 
+			made with a probability p, which must be in the
+			range [0,1].  This allows probabilistically-connected
+			networks to be set up.
+
+See also:	volumeconnect, rvolumeweight, rvolumedelay
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Sep 3, 1996
+URL file://www.psc.edu/general/software/packages/genesis/rvolumeconnect.txt

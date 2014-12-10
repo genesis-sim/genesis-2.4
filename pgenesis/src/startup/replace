@@ -1,0 +1,7 @@
+#!/bin/csh -f
+# argv[1] is a string to replace with argv[2]
+
+set orig=$argv[1]
+set repl=$argv[2]
+
+sed s+$orig\+$repl\+g 

@@ -1,0 +1,24 @@
+Routine Name:	rshowmsg
+
+Description:	Displays list of incoming and outgoing messages of an element,
+		including messages that come from or go to other nodes.
+
+Usage:		rshowmsg  element
+
+Example:	genesis > rshowmsg /cell/soma
+
+		INCOMING MESSAGES
+
+		OUTGOING MESSAGES
+		MSG to '/target/synchan[4]@2' type [-1] 'SPIKE'
+
+
+Notes:		rshowmsg is usually used interactively, when debugging or
+		trying to understand a simulation, as it prints detailed
+		information to the screen.
+
+See also:	showmsg, raddmsg
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Sep 3, 1996
+URL file://www.psc.edu/general/software/packages/genesis/rshowmsg.txt

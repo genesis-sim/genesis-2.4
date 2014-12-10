@@ -1,0 +1,110 @@
+Routine Name:	paron
+
+Description:	This command initializes the parallel simulation. It performs
+		the following tasks :
+			* Creates the postmaster /post
+			* If global node zero then spawn all the other nodes
+			* Partitions the parallel platform into zones 
+			* Adds the parallel event loop ParEventLoop as a job
+				at priority 1 (which is high but not top)
+		The command should be issued before starting any parallel
+		functions.
+
+Usage:		paron [option [arguments]]+
+
+		Several paron options control how the nodes are spawned
+		by the master.  Worker nodes ignore these options in the
+		paron command, except the -debug option.
+
+		-executable filename	(default: "parnxgenesis")
+			the file in $HOME/pvm4/bin/ARCH to execute
+
+		-nodes number		(default: $NNODES if it is defined,
+					 otherwise the size of the parallel
+					 machine)
+			the number of nodes to use in the parallel platform
+
+		-execdir directory-name	(default: master's working directory
+					 at paron time)
+			the name of the directory which will become "." for
+			the workers
+
+		-altsimrc filename	(default: ".parnxsimrc")
+			the Genesis configuration file to use, located in $HOME
+			or "."
+
+		-startup filename	(default: same name as master's
+					 startup file)
+			the name of the .g file on the SIMPATH to read on
+			startup
+
+		-silent level		(default: 3)
+			the Genesis level of error/feedback reporting
+
+		-debug flags		(default: 0)
+			the PVM debug options for spawning tasks.  See the PVM
+			manual and section ??? for details.  4 means debug.
+
+		-output filename	(no default)
+			the name of the file (relative to the master's working
+			directory if not an absolute pathname) to which
+			stdout/err from workers is directed
+
+		-nice level		(master's nice level)
+			the nice level to run the workers at.  Positive values only,
+			a higher level means a lower priority.
+
+		-dbgout filename	(stdout, for implementors only)
+			the name of the file which workers will print debug messages
+			to, an extension is added (the worker's PID).
+			[NOT IMPLEMENTED]
+
+		-batch
+			if present, the worker will be run in batch mode
+			so any interaction with the user will be suppressed
+
+	The remaining options for paron relate to specification of zones.
+	It is an error, currently NOT detected, if the nodes do not all
+	have the same specification of zones.
+
+	        -farm
+		        each node is in a separate zone (default).
+
+	        -parallel 
+			all nodes in the same zone.
+
+		-mixed nnodes nzones [nnodes nzones] ...
+			This is the most general option. It sets up 'nzones'
+			zones with 'nnodes' nodes in each. Out of the remainder,
+			a similar specification can be used, and so on. The nodes
+			left over are placed in single-node zones.  If
+	                nnodes or nzones is <1 it means divide the remaining
+	                number of nodes by the non-negative value to obtain
+	                the other value. Remainders go on as before.
+			There is a special case when the first zone is of
+			size 1 (e.g. paron mixed 1 1	 10 10 ....). This case
+			usually occurs when one wants a master node to coordinate
+			the operation of all the rest, as in a parameter search
+			simulation. In this situation the zero zone is placed
+			at the real zero node of the parallel machine, which is
+			usually the processor with a TTY interface if any exiss.
+		
+Examples:
+		paron
+			By default this just sets up a simulation where each node is
+			in a separate zone.
+
+		paron -parallel
+			Sets up a simulation where each node is in the same zone, and
+			can send messages to each other.
+
+		paron -mixed 10 5     3 others
+			If this were starting with 64 nodes, the simulation would look
+			like this :
+			Zone 0,1,2,3,4   : 10 nodes each  = 50 nodes
+			Zone 5,6,7,8     : 3 nodes each   = 12 nodes
+			Zone 9,10        : 1 nodes each  =  2 nodes
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Sep 3, 1996
+URL file://www.psc.edu/general/software/packages/genesis/paron.txt

@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML VERSION="2.0">
+<HEAD>
+<!-- WEBMAGIC VERSION NUMBER="2.0" -->
+<!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" -->
+<!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+<TITLE>Asynchronous Simulation</title>
+</HEAD>
+<BODY>
+<P><B><FONT SIZE="6">Asynchronous Simulation</B></FONT>
+<HR>
+
+<p>By default PGENESIS synchronizes all nodes in a zone prior to
+executing each simulation step.  This safety measure introduces
+significant wait time while the nodes communicate that they are
+all ready to execute a step.  A script can instruct PGENESIS to
+skip this synchronization so that nodes execute asynchronously:
+
+<p><b>set /post sync_before_step 0</b>
+
+<p>or conversely, for synchronous execution:
+
+<p><b>set /post sync_before_step 1</b>
+
+<p>Under asynchronous simulation the only constraint limiting how
+far in simulation time a node can advance is the set of incoming
+messages.  If node A receives a non-spike message from node B, then
+A is constrained to wait at step T+dt for data from B from time T (i.e.,
+A cannot get ahead of B).  The constraint for spike messages is more
+relaxed, and is controlled by the <a href="lookahead.html">lookahead</a>
+settings.
+
+
+</body>
+</html>

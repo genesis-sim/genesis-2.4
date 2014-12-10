@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html version="2.0">
+<head>
+<!-- WEBMAGIC VERSION NUMBER="2.0" --><!-- WEBMAGIC TRANSLATION NAME="ServerRoot" SRC="/var/www/htdocs/" DST="/" --><!-- WEBMAGIC TRANSLATION NAME="ProjectRoot" SRC="./" DST="" -->
+</head>
+<body>
+<p><b><font size="6">Skeleton Parameter Search</font></b> </p>
+<hr>
+<p>To demonstrate the use of PGENESIS for doing parameter searching, we
+have constructed an example that performs a simple genetic search. </p>
+<p>In performing the genetic search, we keep a fixed-sized population
+of individuals "alive". We randomly pick an individual from this
+population and mutate its representation with a certain probability. We
+then evaluate the new individual and, if it is better than some other,
+we replace the worst-evaluated individual in the population with this
+new individual. To allow for parallelism, we evaluate multiple new
+individuals simultaneously, and only remove existing individuals in the
+population as new individuals with superior evaluations are found. </p>
+<p>In this example we represent each parameter (out of a total of 4
+parameters per individual) as a 16-bit string. The floating point value
+which this bit-string represents is determined by mapping a 16 bit
+integer (with Gray code representation) with range [0,65535] into the
+range [-32.768, 32.767]. When constructing a new individual from an old
+one, we mutate each of the bits with probability 0.02. We evaluate each
+individual by computing a trivial function over the parameters. In a
+real-world parameter search, this step would be the most time-consuming
+since it would involve running a neural simulation. Here, we have set
+our evaluation function to 1.0 / sqrt((a - 3)^2 + (b - 5)^2 + (c - 7)^2
++ (d - 11)^2).
+This directs the search toward values for parameters a, b, c, and d
+that equal 3, 5, 7, and 11, respectively. </p>
+<p>The main PGENESIS script follows. Note that because the individuals
+can run independently of each other, here PGENESIS is started in "farm"
+mode i.e., with each node running in its own <a href="zones.html">zone</a>.
+Also note that synchronizing zones is accomplished with the <a
+ href="ref/barrierall.txt%3E">barrierall</a> rather than <a
+ href="ref/barrier.txt">barrier</a> command. </p>
+<pre>// every node will run these script commands<br><a
+ href="ref/paron.txt">paron</a> -farm -silent 0 -nodes {n_nodes} -output o.out \<br>       -altsimrc ../.simrc -executable nxpgenesis<br>echo I am node {mytotalnode}<br><br>// first wait for every node to start up<br><a
+ href="ref/barrierall.txt">barrierall</a>
+
+if ({mytotalnode} == 0)
+       search          // the master (on node 0) runs the parameter search
+end
+<a href="ref/barrierall.txt">barrierall</a> 7 1000000   // workers will sit here waiting for task<br>                       // assignments from the master<br>quit<br><br></pre>
+<p>The major functions in the scripts are included in abbreviated form
+here: </p>
+<pre>// this is the function that directs the search<br>function search<br>    int   i, chosen, bs_a, bs_b, bs_c, bs_d<br>    float a, b, c, d<br><br>    init_search<br>    init_farm<br><br>     for (i = 0; i &lt; individuals; i = i + 1)<br>       // pick random individual from population<br>       chosen = {rand 0 population}<br>       if (chosen &gt;= actual_population)<br>           // pick a random bit string<br>           bs_a = {rand 0 65536}<br>           bs_b = {rand 0 65536}<br>           bs_c = {rand 0 65536}<br>           bs_d = {rand 0 65536}<br>       else<br>           // mutate an existing bit string<br>           bs_a = {mutate {getfield /population[{chosen}] a_value}}<br>           bs_b = {mutate {getfield /population[{chosen}] b_value}}<br>           bs_c = {mutate {getfield /population[{chosen}] c_value}}<br>           bs_d = {mutate {getfield /population[{chosen}] d_value}}<br>       end<br>       // assign this task to a worker<br>       //    (delegate_task is a routine in farm.g)<br>       delegate_task {i} {bs_a} {bs_b} {bs_c} {bs_d}<br>    end <br><br>    finish        // wait for all workers to finish<br>end<br><br>// worker_task performs the task that the master has doled out to this node<br>function worker_task (index, bs_a, bs_b, bs_c, bs_d)<br>       int index, bs_a, bs_b, bs_c, bs_d;<br>       float a, b, c, d;<br>       float fit<br><br>       // compute the real-valued parameters from the bit-strings (the<br>       //    "genes")<br>       a = ({gray_decode {bs_a}} - 32768.0) / 1000.0;<br>       b = ({gray_decode {bs_b}} - 32768.0) / 1000.0;<br>       c = ({gray_decode {bs_c}} - 32768.0) / 1000.0;<br>       d = ({gray_decode {bs_d}} - 32768.0) / 1000.0;<br><br>       // determine that fitness value for this individual<br>       fit = {evaluate {a} {b} {c} {d}}<br><br>       // return result to the master (node 0 in zone 0)<br>       return_result<a
+ href="ref/atsign.txt">@</a>0.0 {mytotalnode} {index} {bs_a} {bs_b} {bs_c} {bs_d} {fit}<br>end<br><br>// the workers call return_result on the master to provide the results<br>//     of their evaluation<br>function return_result (node, index, bs_a, bs_b, bs_c, bs_d, fit)<br>       int node, index, bs_a, bs_b, bs_c, bs_d<br>       float fit<br><br>       if (actual_population &lt; population)<br>           // if we are underpopulated, each new individual stays "alive"<br>           least_fit = actual_population<br>           min_fitness = -1e+10<br>           actual_population = actual_population + 1<br>       end<br>       if (fit &gt; min_fitness)<br>           // replace the least fit individual with the current individual<br>           setfield /population[{least_fit}] fitness {fit}<br>           setfield /population[{least_fit}] a_value {bs_a}<br>           setfield /population[{least_fit}] b_value {bs_b}<br>           setfield /population[{least_fit}] c_value {bs_c}<br>           setfield /population[{least_fit}] d_value {bs_d}<br>           recompute_fitness_extremes<br>       end<br><br>       // that node is now free, and can be assigned a new task<br>       setfield /free[{node}] value 1<br><br>       // print out the fitness value of the individual we just evaluated<br>       ...<br>end<br><br></pre>
+<p>
+</p>
+<b><font size="4">To run this example on your own workstation:</font></b>
+<p></p>
+<ol>
+  <li>"<tt>cd</tt>" to the <tt>Scripts/param</tt> subdirectory of the
+directory in which PGENESIS is installed on your machine. </li>
+  <li>For MPI-based PGENESIS, run this example by typing "<tt>pgenesis
+-nodes 4 demo.g</tt>"; for PVM-based PGENESIS, run this example by
+typing "<span style="font-family: monospace;">pgenesis demo.g</span>".&nbsp;
+This
+will print out the fitness value of each new individual upon completion
+of its evaluation. Note how the values improve over time.</li>
+</ol>
+<p>
+</p>
+</body>
+</html>

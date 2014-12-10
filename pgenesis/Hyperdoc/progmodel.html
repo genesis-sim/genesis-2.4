@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+<h1>Programming Model in Parallel Genesis</h1>
+<p>
+</p>
+<hr style="width: 100%; height: 2px;">
+<h2>Introduction</h2>
+<p>
+Parallel Genesis (PGENESIS) allows a modeler to distribute a simulation
+across a
+computational platform that supports either the MPI or the PVM message
+passing libraries.
+This includes most supercomputers and workstation networks. There is
+a natural mapping from most network-level models to a parallel
+computer,
+but PGENESIS is also capable of executing multiple single-cell
+simulations in parallel, for instance, to do parameter searching on a
+model. This document describes the programming
+model used in PGENESIS
+</p>
+<p></p>
+<h2>Nodes</h2>
+PGENESIS runs in parallel by having multiple processes running
+simultaneously.&nbsp; Depending on the particular hardware being used,
+these PGENESIS processes may be running on a single machine (e.g. a
+multiprocessor or multi-core CPU), or distributed over a set a machines
+(e.g. a cluster).&nbsp; The MPI or PVM libraries largely mask the
+differences between these configurations, and to the end user, the
+specific configuration makes little difference in the writing of
+parallel scripts.&nbsp; We refer to each PGENESIS process as a <span
+ style="font-style: italic;">node</span>, and a PGENESIS run may
+involve anywhere from one to several hundred nodes.&nbsp; (There is no
+fixed upper limit here; however, scaling issues typically limit the
+number of nodes which can be effectively employed on a given simulation
+run.)&nbsp; Nodes are uniquely identified by a node number
+(consecutive integers starting at zero).&nbsp; We will henceforth refer
+to the collection of all nodes as the <span style="font-style: italic;">parallel
+platform</span>, and thereby abstract away from the particular parallel
+hardware on which a user happens to be running PGENESIS.<br>
+<p></p>
+<h2>Zones</h2>
+<p>
+Nodes can be grouped in <a href="zones.html">zones</a> when the
+simulation is started. Each
+node is in exactly one zone (by default, every node is in zone 0).
+The zones form a fixed partition of the parallel platform. The
+motivation for zones is to allow different parts of the simulation to
+run asynchronously (uncoordinated). For example, in a parameter
+search application one might wish to run many instances of a four-node
+model in parallel. Each instance uses four nodes which must run
+synchronously, but the instances need not be coordinated (except at
+start and finish). Thus we can run each instance in a separate zone,
+each zone containing four nodes. Zones are uniquely identified by
+consecutive integers starting at zero. The nodes within a zone are
+uniquely identified with a znode number (consecutive integers starting
+at zero).
+</p>
+<p></p>
+<h2>Programming model</h2>
+<p>
+</p>
+<h3>Namespace (memory)</h3>
+<p>
+The Parallel library currently provides a private-namespace
+programming model. This means that each node has no knowledge of the
+elements that reside on other nodes. This implies that every
+reference to an element on another node must specify the node
+explicitly. It is envisioned that a shared-namespace programming
+model will be implemented eventually. This will allow nodes within a
+zone to reference elements on other nodes in the zone without
+specifying the node number. To ease upgrade of parallel models to the
+shared-namespace paradigm, it is recommended that element names within
+a zone be unique. If this recommendation is not adhered to, there
+will be naming conflicts if a model wishes to take advantage of the
+shared-namespace cabability when it becomes available.
+</p>
+<p></p>
+<h3>Execution (threads and synchronization)</h3>
+<p>
+The main thread of control on each node is that which reads commands
+from the script file (or keyboard if the session is interactive). The
+parallel library provides limited capabilities for this thread to
+create new threads on any node. On each node the threads are pushed
+onto a stack with the main thread at the bottom of the stack. Only
+the topmost thread may execute and when it completes it is popped off
+the stack so that the next thread down can continue. Threads ready to
+execute are NOT guaranteed to execute: if the topmost thread is
+blocked or looping, no ready thread lower on the stack can continue.
+</p>
+<p>An executing thread is guaranteed to run to completion (assuming it
+does not contain an infinite loop or block on I/O) so long as it
+executes only local operations, i.e. no operations that explicitly or
+implicitly involve communication with other nodes. The commands
+descriptions below include specification of local or non-local status.
+In addition, simulation steps and reset are by definition non-local
+operations if there is more than one node in the zone. Users are
+strongly encouraged to use only local operations in child threads
+whenever possible. Users need to be very careful about thread
+creation to ensure that deadlock (no thread can continue) does not
+occur.
+</p>
+<p>The parallel library provides facilites for blocking and
+non-blocking
+thread creation, usually used to execute commands on nodes different
+from the one the script is being executed on ("remote" nodes). When a
+thread (including the main script) initiates a blocking remote thread
+(also known as remote procedure call or remote function call), it
+waits until the thread completes before continuing. When a thread
+initiates a non-blocking remote thread (an asynchronous thread), it
+continues immediately without waiting for termination of the thread.
+While a thread is waiting, the node can accept a request for thread
+creation arriving from any node (including itself). This new thread
+is pushed on the thread stack and executed, so that the original
+waiting thread does not continue until the new thread has completed.
+</p>
+<p>Scripts running on different nodes can synchronize via several
+different synchronization primitives. There are two types of barrier
+(each script waits at a barrier until all have reached it), one which
+involves all nodes in a zone, the other involving all nodes in the
+parallel platform. By default there is an implicit zone-wide barrier
+before a simulation step is executed, although this can be disabled.
+Pairwise synchronization of nodes is also possible.
+</p>
+<p>When a script requests that a command be run asynchronously on
+another
+node it initiates a child thread of control on the other node. The
+child thread runs asynchronously with its parent. The parent can
+request notification or the child's result when the child completes,
+and can wait on that notification or result (a "future"), and this
+is the <i> only </i> way to ensure asynchronous child threads have
+completed. Threads do not block for child completion before each
+simulation step, nor at a barrier.
+It is easy to reach
+deadlock (no thread able to continue) if the creation and execution of
+threads is handled carelessly. </p>
+<p>If a node initiates several child threads on a particular remote
+node,
+these are guaranteed to commence (but not necessarily complete)
+execution in the order in which they were initiated. A thread is
+guaranteed to execute eventually so long as no preceding thread 1)
+enters a loop which only executes local operations, or 2) blocks
+indefinitely because of deadlock. Once execution of a thread begins,
+it runs to completion without interruption so long as it only executes
+local operations.
+</p>
+<p></p>
+<h2>Simulation and scheduling</h2>
+<p>
+The parallel library provides the ability to set up a Genesis message
+between to objects on different nodes (a remote message), provided the
+nodes are in the same zone. Data is physically transferred from one
+node to the next at the beginning of a simulation step. This means
+that there is no transfer of data between objects within a single
+timestep, which has ramifications for the schedule. The parallel
+library guarantees that execution on a parallel platform will be
+identical to that on a single processor if and only if there are no
+remote messages for which the source object precedes the destination
+object in the schedule (we assume that every node in a zone has the
+same schedule).
+</p>
+<p></p>
+<h2>Deferred features</h2>
+<p>Features which the parallel library may eventually include but which
+are not currently implemented:
+</p>
+<ol>
+  <li>remote messages deletion </li>
+  <li>deletion of elements sending or receiving remote messages </li>
+  <li>active messages which have slot data </li>
+</ol>
+<p>
+</p>
+</body>
+</html>

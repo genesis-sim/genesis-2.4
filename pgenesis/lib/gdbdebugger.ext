@@ -1,0 +1,45 @@
+#!/bin/csh -f
+#
+#	gdbdebugger.csh
+#
+#	this script is invoked by the pvmd when a task is spawned with
+#	the PvmTaskDebug flag set.  it execs an emacs with gdb
+#	running inside.
+#
+#	06 Apr 1993  Manchek
+#	21 Jul 1997  Goddard
+
+if ($#argv < 1) then
+	echo "usage: debugger command [args]"
+	exit 1
+endif
+
+set exe=$argv[1]
+
+set noglob
+set hn=`hostname`
+set TEMPCMD=/tmp/debugger.$$
+set INITCMD=/tmp/debuginit.$$
+echo break main > $INITCMD
+echo dir _extsrc_/home/book2/ngoddard/dr2.1.2/pgenesis/src/par:/home/book2/ngoddard/dr2.1.2/genesis/src/sys:/home/book2/ngoddard/dr2.1.2/genesis/src/ss:/home/book2/ngoddard/dr2.1.2/genesis/src/sim:/home/book2/ngoddard/dr2.1.2/genesis/src/shell:/home/book2/ngoddard/dr2.1.2/genesis/src/newconn  >> $INITCMD
+shift argv
+echo "run $argv" >> $INITCMD
+echo "(defun rungdb ()" > $TEMPCMD
+echo "  (gdb "'"'gdb --command=$INITCMD $exe'"'"))" >> $TEMPCMD
+exec emacs -fn 9x15 -geometry 80x40 -T PGENESIS-WORKER@`hostname` -l $TEMPCMD -f rungdb
+rm -f $TEMPCMD $INITCMD
+
+# $Log: gdbdebugger.ext,v $
+# Revision 1.1.1.1  2005/06/14 04:38:39  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.1  2000/06/19 05:51:04  mhucka
+# Adding PGENESIS from GENESIS 2.1 CDROM release.
+#
+# Revision 1.2  1997/07/22 17:42:27  ngoddard
+# user extensions in src path, name window PGENESIS-WORKER@hostname
+#
+# Revision 1.1  1997/07/22 05:38:35  ngoddard
+# Initial revision
+# 
+

@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Using PGENESIS on Lemieux</title>
+  <link rel="stylesheet" type="text/css"
+ href="/wwwmaintenance/style/head+navbar.css">
+  <style>
+CODE  { font-size:larger;}
+  </style>
+</head>
+<body>
+<!--#include virtual="/wwwmaintenance/footer/navbar.html"  -->
+<h2><big>Running PGENESIS on Lemieux</big></h2>
+<hr style="width: 100%; height: 2px;">
+<p>The version of PGENESIS installed on <a
+ href="http://www.psc.edu/machines/tcs/lemieux.html">Lemieux</a> is
+based on the GENESIS
+neural simulator developed at Caltech and the PGENESIS extensions
+developed at PSC, with modifications for MPI added at
+SDSC/Caltech.</p>
+<p>This installation has been tested on a few sample scripts, but
+because of the large code base of GENESIS, it is strongly recommended
+that users confirm that their simulation results agree with the
+simulation results using serial GENESIS on their workstations before
+doing large PGENESIS runs. Due to differences in compiler
+optimization, floating-point arithmetic, etc., it is very likely that
+small numeric differences (in the last two significant digits) may
+occur between simulations. Large differences or other difficulties
+should be reported to <a href="mailto:pgenesis@psc.edu">pgenesis@psc.edu</a>.</p>
+<p>To use PGENESIS, simply modify your .cshrc, .tcshrc, or .bashrc
+file to place <code>/usr/local/packages/genesis/pgenesis/bin</code> on
+your PATH. A sample job for running PGENESIS in batch mode can be
+found in
+<code>/usr/local/packages/genesis/pgenesis/Scripts/orient2/orient2.job</code>.
+You can run this example batch job (in the debug queue since it only
+takes a few seconds) by typing:</p>
+<p>&nbsp; &nbsp; &nbsp; <code>qsub orient2.job</code>
+</p>
+<p>Files for the sample job include:</p>
+<ul>
+  <li><a href="orient2.job">orient2.job</a>, the job script. </li>
+  <li><a href="orient2.out">orient2.out</a>, standard output and
+error. </li>
+  <li><a href="orient2.horiz">orient2.horiz</a> and <a
+ href="orient2.vert">orient2.vert</a>, output data. </li>
+</ul>
+<!--#include virtual="/wwwmaintenance/footer/software_footer.html"   -->
+</body>
+</html>

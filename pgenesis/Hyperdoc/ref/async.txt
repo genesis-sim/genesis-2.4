@@ -1,0 +1,67 @@
+Construct:	async
+
+Description:	Specifies that the following command may be executed
+		asynchronously, that is, without waiting for it to
+		complete if it is run on a remote node.  The async
+		construct returns an integer "future" value identifying
+		the operation.  The waiton command may then be used
+		to determine when the remote operation has completed,
+		and this is the only way to ensure the remote operation
+		has completed.
+
+		The async command causes one or more new threads
+		to be created to execute the function on the node or
+		nodes specified in the nodelist.  These threads execute
+		asynchronously with the script.  The function can be a
+		Genesis shell command (including Unix shell commands) or
+		a script function.  The async command returns as soon
+		as the request for new threads has been sent.  If the
+		[-complete] or [-scalar] flag is given, the script can
+		synchronize with the completion of the asynchronous
+		thread(s), and obtain a result in the case of -scalar,
+		using the "waiton" command.  If no node is specified,
+		the current node is assumed.  The async command has
+		special meaning when applied to the raddmsg command,
+		see the documentation on raddmsg.
+
+		A heuristic to use to ensure that the remote thread
+		completes is the same as that for rpc calls, namely
+		to be sure that the function that is executed only
+		performs local operations.  That is, it should not
+		issue any of the remote operations listed in this
+		document, nor execute any simulation steps for a zone
+		containing multiple nodes.  Local operations are
+		guaranteed to execute without suspending the thread,
+		so that the remote thread which implements the rpc call
+		is guaranteed to execute to completion once it begins
+		execution.  Violating this heuristic can easly lead
+		to livelock, deadlock, or infinite loops.
+
+Usage:		async function[@<node-list>] args... [[-complete]|[-scalar]]
+
+Examples:	async echo@2 foo
+			will cause node 2 in the caller's zone to echo 'foo'.
+
+		async echo@all foo
+			will cause all nodes in the caller's zone, including
+			the current one, to echo "foo".
+
+		async echo@all.others {mynode}
+			will cause all nodes in all zones except the zone of
+			the caller to echo the node number of the caller.
+			Note that the curly braces are evaluated on the
+			issuing node, not at the destinations !
+
+		async@1 echo@2 foo
+			will tell node 1 to asynchronously tell node 2 to
+			echo foo. This is an example of a remote thread
+			call that violates the heuristic for ensuring the
+			thread completes. 
+
+See also:	waiton, atsign
+
+
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Jan 31, 1997
+URL file://www.psc.edu/general/software/packages/genesis/async.txt

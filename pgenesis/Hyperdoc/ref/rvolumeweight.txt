@@ -1,0 +1,110 @@
+Routine Name:	rvolumeweight
+
+Description:	Sets the weight fields on groups of synapses from a
+		specified list of elements.  Most often used to set
+		weights on groups of synapses that have been set up
+		by calling the "rvolumeconnect" command.  This function
+		can assign groups of synapses to a fixed weight, can
+		assign weights in proportion to the distances between
+		pre- and postsynaptic elements, and can add various
+		types of randomness to weight values.  All synapses
+		are modified by this command, whether they are local
+		to the node of the source element, or remote synapses
+		onto elements residing on other nodes.
+
+Usage:		rvolumeweight sourcepath		   \
+		-fixed weight                              \
+		-decay decay_rate max_weight min_weight    \
+		-uniform scale                             \
+		-gaussian stdev maxdev                     \
+		-exponential mid max                       \
+		-absoluterandom
+
+		sourcepath  A wildcarded list of elements which are the 
+		        sources of the SPIKE messages connecting the
+			pre- and postsynaptic elements (i.e. the presynaptic
+			elements).  These must be of class "spiking" and are 
+			usually spikegen or randomspike objects.
+
+		-fixed weight  -- This option sets all the synaptic weights in
+		        question to be equal to "weight".
+
+		-decay decay_rate max_weight min_weight  -- This option sets
+		        the synaptic weights in question to be proportional to
+			the distance between the source and destination 
+			elements according to the equation:
+
+			weight = (max_weight - min_weight) * 
+			  exp(-decay_rate * distance) + min_weight
+
+			For volumeweight, the distance is measured as:
+
+			distance = 
+			  sqrt((x_src - x_dest)^2 + 
+			       (y_src - y_dest)^2 + 
+                               (z_src - z_dest)^2)
+
+			where x_src is the x component of the source element,
+			x_dest is the x component of the destination element,
+			and so on. 
+
+		The next four options are used to add random components to the
+		weights established using the -fixed or -decay options.  How
+		these random components are added to the weights is explained
+		below.
+
+		-uniform scale  -- This option gives a random number taken 
+			from a uniform distribution in the range 
+			{-scale, scale}.
+
+		-gaussian stdev maxdev  -- This option gives a random number
+			taken from a gaussian distribution centered on zero,
+			with a standard deviation equal to "stdev" and with
+			a maximum value of "maxdev".  The maximum value is
+			used to limit the random component to a given range.
+
+		-exponential mid max  -- This option gives a random number
+			taken from an exponential distribution with a 
+			minimum value of zero, a 1/e point of "mid" and a 
+			maximum value of "max".  This is mainly for backwards
+			compatibility with genesis 1.4.
+
+		-absoluterandom  This option alters the way the random number
+			is combined with the nominal weight to give the actual
+			weight, as described below.
+
+		Once a random component has been created for a given weight, 
+		it is used to set the weight as follows.  If the 
+		-absoluterandom option has not been selected the weight is set 
+		to be:
+
+		final_weight = weight + (weight * random_number)
+
+		Whereas if the -absoluterandom option has been selected then
+		we have
+
+		final_weight = weight + random_number
+
+		Thus the default is to have the amount of randomness as a 
+		constant proportion of the weight value.
+
+Notes:		This routine calculates distance using the x, y, and z
+		coordinates of the element positions and is thus more 
+		realistic than planarweight, which only uses the x and y
+		directions.  In general, we encourage users to use this
+		function instead of planarweight, which is mainly provided
+		for backwards compatibility with genesis 1.4.
+
+		The weights are never allowed to go negative even if a large
+		negative random component is added.  Negative weights are set
+		to zero.
+
+		The options -fixed and -decay are mutually exclusive.  The 
+		different random options -uniform, -gaussian, and -exponential
+		are also mutually exclusive.
+
+See also:	volumeweight, rvolumeconnect, rvolumedelay
+
+(C) Pittsburgh Supercomputing Center (PSC)
+Revised: Sep 3, 1996
+URL file://www.psc.edu/general/software/packages/genesis/rvolumeweight.txt

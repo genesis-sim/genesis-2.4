@@ -1,0 +1,21 @@
+#! /bin/csh -f
+# removes all shared memory segments and semaphores for this user
+# PVM fails to do this if not exited correctly
+# needed for: ALPHAMP HPPAMP SUNMP
+foreach id ( `ipcs -m | grep $USER | awk '{print $2'}` )
+  ipcrm -m $id
+end
+foreach id ( `ipcs -s | grep $USER | awk '{print $2'}` )
+  ipcrm -s $id
+end
+
+# $Log: ipclean,v $
+# Revision 1.1.1.1  2005/06/14 04:38:39  svitak
+# Import from snapshot of CalTech CVS tree of June 8, 2005
+#
+# Revision 1.1  2002/01/17 19:43:03  dbeeman
+# Missing file (originally in pgenesis 2.1 TestSuite) added to src
+#
+# Revision 1.2  1997/08/12 03:18:10  ngoddard
+# needed on most SMPs it seems
+#
