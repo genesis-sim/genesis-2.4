@@ -1412,8 +1412,8 @@ BASELIBS = 	simlib.$(LIBEXT) \
 		olflib.$(LIBEXT) \
 		hineslib.$(LIBEXT) \
 		lib$(SPRNG_LIB).a \
-		newconnlib.$(LIBEXT) \
-		chemlib.$(LIBEXT)
+		newconnlib.$(LIBEXT)
+
 
 XLIBS	=	-L$(XLIB) \
 		-lXt \
