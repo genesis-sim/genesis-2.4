@@ -19,6 +19,8 @@ and other new objects and commands.
 
 MISSING in this release:
 
+   The chemesis library (chemlib) has not been linked in.
+
    The new network commands volumeconnect3, volumedelay3, and
    volumeweight3 have not yet been implemented for the remote versions
    rvolumeconnect3, etc.
