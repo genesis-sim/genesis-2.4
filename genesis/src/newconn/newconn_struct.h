@@ -226,4 +226,6 @@ struct HebbSynchan_type
 
 #include "stdp_rules_struct.h"
 
+#include "facdep_rules_struct.h"
+
 #endif

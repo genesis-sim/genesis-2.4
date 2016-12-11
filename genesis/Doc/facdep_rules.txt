@@ -1,0 +1,152 @@
+Object Type:	facdep_rules
+
+Description:	Performs a weight modification of synchan connections,
+                according to a short term facilitation/depression model
+                that depends only on the arrival times of presynaptic spikes.
+                The algorithm is based on that of Varela et al. (1997),
+                in a way that allows the use of hsolve.
+
+Author:         Dave Beeman, University of Colorado, June 2016
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:	facdep_rules_type [in src/newconn/facdep_rules_struct.h]
+
+Size:		192 bytes
+
+Fields:
+
+             cellpath        full wildcard path to the postsynaptic cells
+             synpath         relative path to synchan to be modified
+             dF              increment for facilitating weight changes
+             dD1             increment for depression factor D1 weight changes
+             dD2             increment for depression factor D2 weight changes
+             tau_F           decay constant for facilitating weight changes
+             tau_D1          decay constant for depression factor D1
+             tau_D2          decay constant for depression factor D2
+             use_depdep      flag: 0 = use F and D1, otherwise use D1 and D2
+             change_weights  flag: 0 = plasticity off, otherwise on
+             debug_level     flag: 0 = no messages, 1 = some messages, 2 = more
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:   StdpRules [in src/newconn/stdp_rules.c]
+
+Class:	    output
+
+Actions:    CREATE	create facdep_rules element and set fields to defaults
+            RESET      	reset each synapse 'Aplus' and 'Aminus'	field to 1.0
+            PROCESS    	loop over all cells and	synapses; update fields
+            INIT	do nothing
+            CHECK      	do nothing
+
+Messages:   None
+
+------------------------------------------------------------------------------
+
+Notes:
+
+This is a GENESIS implementation of a simple, phenomenological model
+of short term synaptic facilitation and/or depression. Unlike the
+stdp_rules object, the weight changes depend only on the timing of
+presynaptic spikes, and not on the firing of postsynaptic cells.  Like
+'stdp_rules', it is a clocked "observer" object that checks for
+spiking and modifies synaptic weights accordingly, while allowing fast
+and efficient spike processing with GENESIS 'hsolve'.
+
+The synaptic weights to be modified are a specified wildcarded cell
+('cellpath') and synchan ('synpath'), e.g. '/layer4/pyr[]' and
+'apical3/AMPA'.
+
+The method is described in Varela et al. (1997) J. Neurosci.
+17:7926-7940. In the GENESIS implementation, the synaptic weight is
+scaled by either a factor F*D1 or D1*D2, where F is a facilitation
+variable >= 1, and D1 and D2 are depression variables <= 1. The flag
+'use_depdep' determines which of these two forms is used. (0 for F*D1;
+1 for D1*D2) The two of these variables that are used are stored in
+the synapse 'Aplus' and 'Aminus' fields. These and the
+'last_spike_time' field were introduced in GENESIS 2.4 for use with
+the stdp_rules object.
+
+Each plasticity factor has its own time constant for decay towards the
+original weight between presynaptic spikes (tau_F, tau_D1, tau_D2). F
+has an additive facilitation increment dF >= 0. D1 and D2 have
+multiplicative depression factors dD1 and dD2 <= 1. When dD1 or
+dD2 = 1, there is no depression by that depression variable.
+
+The clock for the facdep_rules element should be set to a smaller interval
+than the minimum interspike interval of incoming spikes, but no larger than
+necessary. A conservative choice is 0.001 sec.
+
+Example:
+
+    float Inh_dD1 = 0.5; float Inh_tau_D1 = 0.25 // fast, strong depression
+    float Inh_dD2 = 0.95; float Inh_tau_D2 =0.5  // slower, weak depression
+    float facdep_dt = 0.001
+    str facdep_applier = "depdep_Inh_ex"
+    if (!{exists {facdep_applier}})
+            create facdep_rules {facdep_applier}
+    end
+    setfield {facdep_applier} cellpath "/Inh_layer4/bask[]"
+    setfield {facdep_applier} synpath "dend/AMPA"
+    setfield {facdep_applier} change_weights 1
+    setfield {facdep_applier} use_depdep 1 // two depression factors
+    setfield {facdep_applier} debug_level 0 // minimal messages
+    setfield {facdep_applier} dF  0.0
+    setfield {facdep_applier} dD1 {Inh_dD1}
+    setfield {facdep_applier} dD2 {Inh_dD2}
+    setfield {facdep_applier} tau_D1 {Inh_tau_D1}
+    setfield {facdep_applier} tau_D2 {Inh_tau_D2}
+    setclock 3 {facdep_dt}
+    useclock  {facdep_applier} 3
+
+Limitations of the model:
+
+Ideally, when a spike is received, a synchan should apply the
+plasticity rule to change the weight, and then generate the
+conductance with this new weight. But, when a normal hsolvable GENESIS
+synchan is used with a weight update algorithm such as stdp_rules or
+facdep_rules, the spike has already been processed by the synchan. The
+channel conductance has changed in accordance to the current values of
+the synaptic weights of the synapses. The facdep_rules object can only
+change weights and the facilitation/depression variables in
+preparation for the next spike.  A consequence of this is that there
+will be a one spike delay in application of the rules.
+
+The facdep_rules (and stdp_rules) object allow the use of a synaptic
+delay to account for an axonal conduction delay from a distant connection.
+However, there are some restrictions on the use of large delays.
+
+This delay is held in the 'delay' field of the synchan synapse, and is
+added to the time that an input spike is generated, in order to set
+the 'last_spike_time' field to the time that the spike is to be
+received.  Neither the synchan object nor the facdep_rules object
+process this synaptic input until this future time is reached.  The
+hsolved synchan has a buffer to hold incoming spikes, and handles
+spike delivery in a very efficient manner, without using the
+'last_spike_time' field. However, facdep_rules has only the
+'last_spike_time' to observe.  If the interval between incoming spikes
+is large compared with this delay, the synaptic weight will get
+updated by facdep_rules when the time in 'last_spike_time' is
+reached. However, if the delay is greater than the interval between
+two incoming spikes, the value in 'last_spike_time' will be replaced
+by the arrival time of the new spike, before the update has been
+applied to the first.  The weight update from the first spike will
+have been missed.  With a sustained stream of spikes with an ISI less
+than the delay, the update time would always be in the future, and no
+updating would be performed.
+
+With normal cortical network activity and conduction velocities, this
+is unlikely to be a problem. For two connected cells at a distance of
+1 mm, the delay with a conduction velocity of 0.25 m/sec would
+correspond to 250 Hz.  Assuming a slowly conducting unmyelinated axon
+with a velocity of 0.08 m/sec, this would be a problem at 80 Hz.
+Excitatory cells rarely reach these firing rates, but this could
+be a concern when the model is applied to fast spiking inhibitiory
+inputs.
+
+See also: stdp_rules, NewPlasticityObjects, synchan

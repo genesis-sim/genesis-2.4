@@ -420,6 +420,28 @@ object	stdp_rules  stdp_rules_type StdpRules       output \
 		     "The spike timing dependent plasticity (STDP) rules " \
 		     "algorithm is from Song, Miller, and Abbott (2000)."
 
+object	facdep_rules  facdep_rules_type FacdepRules       output \
+	-author	     "Dave Beeman, June 2016" \
+	-actions     CREATE INIT PROCESS RESET CHECK \
+	-readwrite   cellpath	  "full wildcard path to the postsynaptic cells" \
+	-readwrite   synpath	  "relative path to synchan to be modified" \
+	-readwrite   dF		  "increment for facilitating weight changes" \
+	-readwrite   dD1	  "increment for depression factor D1 weight changes" \
+	-readwrite   dD2	  "increment for depression factor D2 weight changes" \
+	-readwrite   tau_F	  "decay constant for facilitating weight changes" \
+	-readwrite   tau_D1	  "decay constant for depression factor D1" \
+	-readwrite   tau_D2	  "decay constant for depression factor D2" \
+	-readwrite   use_depdep	  "flag: 0 = use F and D1, otherwise use D1 and D2" \
+	-readwrite   change_weights "flag: 0 = plasticity off, otherwise on" \
+	-readwrite   debug_level "flag: 0 = no messages, 1 = some messages, 2 = more" \
+  -readonly    celllist     "GENESIS ElementList of cells to modify" \
+	-description "A clocked object to modify synaptic weights for all " \
+		     "synapses of a specified (wildcarded) cell and synchan, " \
+         "e.g. '/layer4/pyr[]' and 'apical3/AMPA'. " \
+         "The short term facilitation/depression algorithm is based on that of " \
+         "Varela et al. (1997), in a way that allows the use of hsolve." \
+         "Text-only documentation is in Doc/facdep_rules.txt."
+
 addfunc planardelay         PlanarDelay
 addfunc volumedelay         VolumeDelay
 addfunc syndelay            SynDelay 
