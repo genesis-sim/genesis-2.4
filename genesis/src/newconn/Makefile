@@ -174,7 +174,8 @@ OBJECTS = 	\
 		weight2.o		\
 		weight3.o		\
 		stdp_rules.o		\
-		facdep_rules.o
+		facdep_rules.o		\
+		facdep_rules2.o
 
 HEADERS = 	\
 		fac_debug.h		\

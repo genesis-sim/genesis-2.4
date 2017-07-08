@@ -1,6 +1,10 @@
 static char rcsid[] = "$Id: system.c,v 1.7 2005/10/21 19:01:09 svitak Exp $";
 
 /*
+** 
+** Fixes added by dbeeman 2017/03/12 for recent gcc compiler glibc
+** The deprecated "union wait" has been removed from <sys/wait.h>
+**
 ** $Log: system.c,v $
 ** Revision 1.7  2005/10/21 19:01:09  svitak
 ** Oops! Left for loop starting at 1, sposed to be 0 in ExecFork.
@@ -152,11 +156,18 @@ int ExecFork(argc,argv)
 int	argc;
 char	**argv;
 {
-#ifdef CRAY
+ #ifdef CRAY
   return -1;
 #else
 int pid;
-#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__)
+
+/** Fixes added by dbeeman 2017/03/12 for recent Linux gcc compiler glibc
+ ** The deprecated "union wait" has been removed from <sys/wait.h>.
+ ** BSD has been added to the list of defined OS. If this breaks
+ ** compilation on some systems, try removing it.
+*/
+
+#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__) || defined (BSD)
 int status;
 #else
 union wait status;
@@ -215,7 +226,7 @@ int	i;
     ** pid > 0 indicates successful child has been forked
     ** so wait for it to complete execution and return the status
     */
-#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__)
+#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__) || defined(BSD)
     while(wait(&status) != pid);
 #else
     while(wait(&status.w_status) != pid);
@@ -223,13 +234,13 @@ int	i;
     if(debug){
 	printf("child process %d done. Status = %d\n",
 	pid,
-#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__)
+#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__) || defined(BSD)
 	status);
 #else
 	status.w_status);
 #endif
     }
-#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__)
+#if defined(SYSV) || defined(__FreeBSD__) || defined(__APPLE__) || defined(BSD)
     return(status);
 #else
     return(status.w_status);

@@ -41,7 +41,7 @@
    performs the RESET action for a facdep_rules element.
 */
 
-void facdep_rules_reset(facdepelement)
+void facdep_rules_reset2(facdepelement)
   struct facdep_rules_type *facdepelement;
   {
     char  *cellpath, *synpath;
@@ -88,7 +88,14 @@ void facdep_rules_reset(facdepelement)
    a particular synchan.
 */
 
-int do_facdep_update(facdepelement, synchan)
+/* This version of do_facdep_update(facdepelement, synchan) is called by the
+   facdep_rules2 object PROCESS action.  It performs the actual update of
+   a synchan with a weight decay at each time step, rather than when the next
+   spike is received. This will be slower, but avoids a problem when spike come
+   in pulses.
+*/
+
+int do_facdep_update2(facdepelement, synchan)
     register struct facdep_rules_type *facdepelement;
     register struct Synchan_type *synchan;
 {
@@ -128,34 +135,32 @@ int do_facdep_update(facdepelement, synchan)
 
 	if (last_pre_spike >= 0.0) /* otherwise skip the rest - never fired */
 	{
-	  /* was the spike received in the current facdep_dt time step? */
-	  if ((curr_step < round ((last_pre_spike + facdep_dt)/dt))
-             && (curr_step >= round (last_pre_spike/dt)))
-	  {
+          lastupdate =  synchan->synapse[i].lastupdate;
 
 	    /* when were the synapse weight, Aplus, and Aminus fields
-	     last updated?
-	    */
-	    lastupdate =  synchan->synapse[i].lastupdate;
-	    if (lastupdate < 0.0) /* initialize lastupdate, go on to next synapse */
+	     last updated? */
+
+	    if (lastupdate < 0.0) /* first spike to arrive - initialize lastupdate */
 		synchan->synapse[i].lastupdate = last_pre_spike;
+            /* go on to next synapse */
 	    else /* perform the update */
 	    {
 		delta_t = curr_time - lastupdate;
 	        /* get current values of weight, Aplus, Aminus */
 		c_weight = synchan->synapse[i].weight;
-		if (debug_level > 2)
-		{
-		    printf("*** delta_t = %f lastupdate = %f\n", delta_t, lastupdate);
-		}
-
 		if (!use_depdep) /* use F (fac) for Aplus and D1 (dep 1) for Aminus */
 		  {
 		     F = synchan->synapse[i].Aplus;
 		     D1 = synchan->synapse[i].Aminus;
 		     orig_weight = c_weight/(F*D1);
-		     /* update the facdep variables and adjust weight */
-		     F = F + dF; D1 = D1*dD1; /* depression is multiplicative */
+   	             /* was the spike received in the current facdep_dt time step? */
+	             if ((curr_step < round ((last_pre_spike + facdep_dt)/dt))
+                          && (curr_step >= round (last_pre_spike/dt)))
+	                {
+          		     F = F + dF; D1 = D1*dD1; /* increment/scale the facdep variables */
+                        }
+
+	             /* In any case, apply decay to the fac/dep variables and adjust weight */
 		     F = 1 + (F -1) * (float) exp(-delta_t/tau_F);
 		     D1 = 1 - (1 -D1) * (float) exp(-delta_t/tau_D1); /*decay to this */
 		     c_weight = orig_weight*F*D1; /* will be used for the next spike */
@@ -167,13 +172,17 @@ int do_facdep_update(facdepelement, synchan)
 		       printf("F = %f  D1 = %f  weight =  %f\n", F, D1, c_weight);
 		     }
                   }
-		  else  /* use D1 (dep 1) for Aplus and D2 (dep 2) for Aminus */
+		else  /* use D1 (dep 1) for Aplus and D2 (dep 2) for Aminus */
 		    {
 		     D1 = synchan->synapse[i].Aplus;
 		     D2 = synchan->synapse[i].Aminus;
 		     orig_weight = c_weight/(D1*D2);
-		     /* update the facdep variables and adjust weight */
-		     D1 = D1*dD1; D2 = D2*dD2; /* depression is multiplicative */
+	             if ((curr_step < round ((last_pre_spike + facdep_dt)/dt))
+                          && (curr_step >= round (last_pre_spike/dt)))
+	                {
+			  D1 = D1*dD1;  D2=D2*dD2; /* scale the facdep variables */
+                        }
+		     /* In any case, apply decay to the fac/dep variables and adjust the weight */
 		     D1 = 1 - (1 - D1) * (float) exp(-delta_t/tau_D1); /*decay to this */
 		     D2 = 1 - (1 - D2) * (float) exp(-delta_t/tau_D2); /*decay to this */
 		     c_weight = orig_weight*D1*D2; /* will be used for the next spike */
@@ -185,16 +194,16 @@ int do_facdep_update(facdepelement, synchan)
 		     if (debug_level > 2) {
 		       printf("D1 = %f  D2 = %f  weight =  %f\n", D1, D2, c_weight);
 		     }
-		    } /* end else use depdep */
-
+	        } /* end else use depdep */
 	    } /* end else perform update */
-	  } /* was spike received in the current facdep_dt time step? */
 	} /* if the cell has fired before */
     }  /* loop over synapses */
     return(1);
 }
 
-int FacdepRules(facdepelement, action)
+
+/* This version of the object uses the improved (but slower) do_facdep_update2 */
+int FacdepRules2(facdepelement, action)
     register struct facdep_rules_type *facdepelement;
     Action *action;
 {
@@ -231,7 +240,7 @@ int FacdepRules(facdepelement, action)
 	break;
 
     case RESET:
-	facdep_rules_reset(facdepelement);
+	facdep_rules_reset2(facdepelement);
 	break;
 
     case PROCESS:
@@ -257,7 +266,7 @@ int FacdepRules(facdepelement, action)
 		printf("cell number = %d\n", n);
 		printf("full synpath = %s\n",fullsynpath );
 	    }
-	    do_facdep_update(facdepelement, synchan);
+	    do_facdep_update2(facdepelement, synchan);
 	}
 	break;
 
@@ -268,4 +277,3 @@ int FacdepRules(facdepelement, action)
     }
     return (1);
 }
-
