@@ -1,0 +1,100 @@
+Object Type:    efield2
+
+Description: 
+
+A version of efield that, like the original, calculates the field
+potential from summed current sources according to their inverse
+distance from the recording electrode.  However, when the source is an
+hsolve element, the distance is taken from incoming messages, rather
+than being calculated from the message source coordinates.
+
+Author:         M. Wilson, Caltech (2/89), D. Beeman (3/2018)
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  efield_type  [in src/device/dev_struct.h]
+
+Fields:         scale
+                field
+		x, y, z 		z
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:       ExtracellularRecordingElectrode_hs  [in src/device/efield2.c]
+
+Classes:        device
+
+Actions:        PROCESS
+                RESET
+                RECALC
+
+Messages:       CURRENT current 0.0
+
+------------------------------------------------------------------------------
+
+Notes:
+
+See the documentation for efield for most of the details of how to use the
+efield and efield2 objects. The use of the CURRENT message needs some
+additional clarification. In principle, it sends the Im or Ik field of a
+compartment or channel and its distance from the electrode at
+(x,y,z). But the efield object ignores this distance, even when it is
+given, and calculates it from the coordinates of the message source.
+
+This provides some efficiency, and is why the examples show the distance as 0.0.
+
+However, if the message is coming from an hsolve element, the original
+efield object uses the coordinates of the hsolve element. It is usually
+located near soma coordinates. This does not provide the coordinates of the
+comartment or channel that was taken over by the hsolve solver element.
+For large multi-compartment models, this will not give the proper location
+of the current sources and sinks that produce the extracellular field.
+
+efield2 avoids this problem by checking to see if the source is of type
+hsolve. If so, it does not ignore the the distance in the message and
+and calculate it. Insttead the calling script must provide it in the
+message, as in the example. Otherwise, it functions as the
+original efield, and can be used as a replacement for efield.
+
+Example: For fields in a network of cells, using efield2
+
+    float scale = -0.32 // invert sign of trans-membrane currents
+    create efield2 {name}
+    setfield {name} x {x} y {y} z {z}
+    setfield {name} scale {scale}
+
+    for (i = 0; i < Ex_NX*Ex_NY; i = i + 1)
+        src = {cellpath} @ "[" @ {i} @ "]"
+
+        if({hflag} && {hsolve_chanmode > 1})
+            foreach compt ({el {src}/#[OBJECT=compartment]})
+	        if (use_syn_currents)
+		   foreach chan  ({el {compt}/#[OBJECT=synchan]})
+                       cx = {getfield {chan} x}
+                       cy = {getfield {chan} y}
+                       cz= {getfield {chan} z}
+                       distance = {sqrt { {pow {{cx} - {x}} 2.0} + \
+                          {pow {{cy} - {y}} 2.0} + \
+                          {pow {{cz} - {z}} 2.0} }}
+                       addmsg {src}/{solver} {name} CURRENT \
+                          {findsolvefield {src}/{solver} {chan} Ik} {distance}
+                  end // foreach
+               else // Use Im to give axial currents
+                  scale = 0.32 // axial currents are positive-in
+                  setfield {name} scale {scale}
+                  /* Assume that efield_cells has updated the hsolved compt Im.
+		     Then, either efield or efield2 will calculate the distance.
+		  */
+                  addmsg {compt} {name} CURRENT Im 0.0
+                end
+            end // loop over compts
+        end // if({hflag} && {hsolve_chanmode > 1})
+        setfield {name} scale {scale}
+      end // loop over cells
+      useclock {name} 1 // clock at out_dt
+
+See also: efield, efield_cells

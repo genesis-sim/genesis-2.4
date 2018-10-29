@@ -25,6 +25,11 @@ The July 8, 2017 update contains source code and documentation for
 A new version of genesis/src/sys/system.c fixes compilation problems with
 recent versions of glibc.
 
+The October 29, 2018 update contains two new objects and documentation
+for calculating extracellular field potentials when the sources are cells
+that have been taken over by the fast hsolve solver object.
+See Doc/efield2.txt and Doc/efield_cells.txt for details.
+
 The 'genesis-binaries' directory contains pre-compilied binary
 distributions, such as 'genesis-binaries/genesis-2.4-Cygwin-bin.tar.gz'.
 

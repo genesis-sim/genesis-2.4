@@ -30,6 +30,19 @@ struct efield_type {
     float	scale;
 };
 
+struct efield_cells_type
+{
+  ELEMENT_TYPE
+  /* Fields that are set by the user */
+  char *cellpath; /* full wildcard path to the group or network of cells */
+  char *solvepath;  /* relative path to solver, e.g. 'solve' */
+  double field;
+  float	scale;
+  short debug_level; /* flag: 0 = no messages, 1 = some messages, 2 = more messages */
+  /* Fields that are set by the 'efield_cells' element */
+  ElementList *celllist; /* GENESIS ElementList of cells */
+};
+
 struct expthresh_type {
     ELEMENT_TYPE
     float	theta_s;

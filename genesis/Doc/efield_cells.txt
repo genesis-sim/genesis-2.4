@@ -1,0 +1,87 @@
+Object Type: efield_cells
+
+Description: 
+
+A clocked object to correctly calculate the Im value
+(axial current) in all compartments in a set of hsolved cells.
+Im is then used to calculate the extracellular field potential, as
+with the efield object. The updated Im is also placed into the
+original compartments that were taken over by hsolve.
+This object is to be used only with hsolve chanmodes > 1.
+
+Author:             Dave Beeman, January 2018.
+
+------------------------------------------------------------------------------
+
+ELEMENT PARAMETERS
+
+DataStructure:  efield_cells_type  [in src/device/dev_struct.h]
+
+Fields:
+    cellpath        full wildcard path to the network of cells
+    solvepath       relative path to hsolve element for the cell,
+                    e.g. 'solver'
+    field           calculated extracellular field
+    scale           scale factor = 1/(4*pi*conductivity)
+    debug_level     flag: 0 = no messages, 1 = some messages, 2 = more
+    celllist        GENESIS ElementList of cells to modify (read-only)
+                    This is created on RESET.
+
+------------------------------------------------------------------------------
+
+SIMULATION PARAMETERS
+
+Function:       EfieldCells  [in src/device/efield_cells.c]
+
+Classes:        device
+
+Actions:        PROCESS
+                RESET
+
+Messages: None
+
+------------------------------------------------------------------------------
+
+Notes:
+
+When using the original efield object to calculate extracellular fields
+from a network of cells, one often needs to calculate all fields from
+each compartment, including all tranmembrane currents and capacitive currents.
+These must equal the net axial current flowing into or out of the compartment,
+which is given by the Im field. Unfortunately the efficient higher modes of
+hsolve ignore the capacitive currents in the calculation of Im.
+
+efield_cells calculates the efield from the axial currents of all
+hsolved cells in a specified wildcard 'cellpath', performing the summation
+that is normally performed in a script that creates an efield object.
+
+It has the additional useful side effect of updating the compartment
+Im fields in all the cells that were taken over by hsolve. This
+feature makes it possible to have multiple electrodes to measure the
+field from Im at different locations, using the ordinary efield or
+efield2 element as if the compartment were not hsolved. All that is
+needed is to create a single electrode with electrode_cells before
+adding the others.
+
+Example:
+
+Function make_electrode_cells(name, cellpath, solvepath, x, y, z)
+    str name        // electrode name
+    str  cellpath, solvepath // here cellpath is {cellpath}[]
+    /* Example:
+       make_electrode_cells "Electrode_cells_Im" {cellpath}[] 'solve' \
+       {(Ex_NX-1)*Ex_SEP_X/2.0} {39.5*Ex_SEP_Y} 0.001 // use efield_cells
+    */
+    float x, y, z   // electrode position
+    create neutral /electrodes
+    pushe /electrodes
+    create efield_cells {name}
+    setfield {name} x {x} y {y} z {z}
+    setfield {name} cellpath {cellpath}
+    setfield {name} solvepath {solvepath}
+    setfield {name} debug_level 0
+    pope
+    useclock /electrodes/{name} 1 // clock at out_dt = 0.0001 sec
+end // function make_electrode_cells
+
+See also: efield, efield2

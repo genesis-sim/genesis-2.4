@@ -110,7 +110,7 @@ INTERP 		= ../shell
 INSTALL_LIB 	= 	$(INSTALLDIR)/lib
 INSTALL_INCLUDE	= 	$(INSTALLDIR)/include
 INSTALL_STARTUP	= 	$(INSTALLDIR)/startup
-SIMINCLUDE 	= -I. -I$(SYS) -I$(SS) -I$(SIM) -I$(INTERP)
+SIMINCLUDE 	= -I. -I$(SYS) -I$(SS) -I$(SIM) -I$(INTERP) -I../segment -I../hines
 
 LIBRARY_NAME 	= devices
 FUNCTIONS 	= devfuncs
@@ -139,6 +139,8 @@ OBJECTS = 	\
 		acxc.o \
 		diffamp.o \
 		efield.o \
+		efield2.o \
+		efield_cells.o \
 		event_tofile.o \
 		frequency.o \
 		new_frequency.o \

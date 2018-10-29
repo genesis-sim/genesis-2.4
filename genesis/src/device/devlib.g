@@ -68,9 +68,37 @@ object	efield		efield_type ExtracellularRecordingElectrode device \
 	-messages	CURRENT 0	2 current 0.0 \
 	-fields		scale field \
 	-description	"sums current sources according to their" \
-			"inverse distance from the recording electrode" \
+			"(calculated) inverse distance from the recording electrode" \
 			"to produce an estimate of the field potential" \
 			"at that point."
+
+object	efield2		efield_type ExtracellularRecordingElectrode_hs device \
+	-author 	"M.Wilson Caltech 2/89; Dave Beeman 12/2017" \
+	-actions	RESET PROCESS RECALC \
+	-messages	CURRENT 0	2 current 0.0 \
+	-fields		scale field \
+	-description "A version of efield that, like the original, calculates the" \
+            "field potential from summed current sources according to" \
+			"their inverse distance from the recording electrode." \
+			"However, when the source is an hsolve element, the distance is" \
+            "taken from incoming messages, rather than being calculated from" \
+            "the message source coordinates."
+
+object	efield_cells efield_cells_type EfieldCells device \
+	-author 	"Dave Beeman Jan 2018" \
+	-actions	CREATE RESET PROCESS RECALC \
+	-readwrite   cellpath	  "full wildcard path to the network of cells" \
+	-readwrite   solvepath	  "relative path to hsolve element for the cell" \
+	-readwrite   debug_level "flag: 0 = no messages, 1 = some messages, 2 = more" \
+  -readwrite   field  "calculated extracellular field"\
+  -readwrite   scale  "scale factor = 1/(4*pi*conductivity)" \
+  -readonly    celllist     "GENESIS ElementList of cells to modify" \
+	-description  "a clocked object to correctly calculate the Im value" \
+        "(axial current) in all compartments in a set of hsolved cells." \
+        "Im is then used to calulate the extracellular field potential, as" \
+        "with the efield object. The updated Im is also placed into the" \
+        "original compartments that were taken over by hsolve." \
+        "This object is to be used only with hsolve chanmodes > 1."
 
 object	expthresh	expthresh_type ExpThresh device \
 	-author 	"M.Wilson Caltech 8/89" \
