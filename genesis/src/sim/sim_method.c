@@ -205,7 +205,7 @@ int check_method(method)
 		}
 
 	if (valid && IsSilent() < 1) {
-	    printf(methodstr);
+	    printf("%s", methodstr);
 	}
 
 	return(valid);
