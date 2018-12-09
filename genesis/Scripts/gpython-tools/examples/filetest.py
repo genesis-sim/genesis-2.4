@@ -1,18 +1,18 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import sys, os
 import pylab
 
 def process_file():
-    print 'Reading %s' % filename
+    print('Reading %s' % filename)
     fp = open(filename, 'r')
     for line in fp.readlines():
         data = line.split()
         # print data
         for x in data:
-            print x,
-        print
-    print "Processing finished"
+            print(x, end=' ')
+        print()
+    print("Processing finished")
 
 if __name__ == "__main__":
     try:
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         if os.path.exists(filename):            
             process_file()
         else:
-            print '**Error: Incorrect file name!'
+            print('**Error: Incorrect file name!')
     except:
-        print '**Error: Exception raised!'
+        print('**Error: Exception raised!')
         sys.exit()

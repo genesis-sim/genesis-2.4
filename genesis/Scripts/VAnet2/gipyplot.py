@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 """
 Creates a frame with a toolbar and graph for plotting
 """
@@ -106,7 +106,7 @@ class G3Plot(wx.Frame):
         self.xmax = xmax
 
         if self.verbose:
-           print "xmin, xmax, ymin, ymax: ", self.xmin, self.xmax, self.ymin, self.ymax
+           print("xmin, xmax, ymin, ymax: ", self.xmin, self.xmax, self.ymin, self.ymax)
 
         self.subplot = []
         # Give the figure size in inches, and rez
@@ -159,7 +159,7 @@ class G3Plot(wx.Frame):
 
         if self.verbose:
 
-            print "Processing %d files." % len(file_list)
+            print("Processing %d files." % len(file_list))
             
         for f in file_list:
 
@@ -171,13 +171,13 @@ class G3Plot(wx.Frame):
                     
                     self._PlotFile(this_file)
 
-                except Exception, e:
+                except Exception as e:
 
                     sys.exit("Error plotting files: %s" % e)
                 
             else:
 
-                print "File Error: '%s' is not found." % this_file
+                print("File Error: '%s' is not found." % this_file)
                 
 #----------------------------------------------------------------------
 
@@ -194,7 +194,7 @@ class G3Plot(wx.Frame):
         
         if self.verbose:
 
-            print "Plotting file: %s" % f
+            print("Plotting file: %s" % f)
   
 
         this_file = os.path.abspath(f)
@@ -223,9 +223,9 @@ class G3Plot(wx.Frame):
                         
                             plot_data[indx].append(d)
 
-                        except IndexError, e:
+                        except IndexError as e:
 
-                            print "Error processing data line for index %d" % indx
+                            print("Error processing data line for index %d" % indx)
 
             # Now we plot all of the data we collected.
             t = plot_data[0]
@@ -236,12 +236,12 @@ class G3Plot(wx.Frame):
 
                     num_plots = len(plot_data[1:])
                         
-                    print "\tPlotting data set %d of %d" % (indx+1, num_plots)
+                    print("\tPlotting data set %d of %d" % (indx+1, num_plots))
                 self._AddSubplot(t, x)
 
         else:
 
-            print "File Error: '%s' is not found." % this_file
+            print("File Error: '%s' is not found." % this_file)
 
 #----------------------------------------------------------------------
 

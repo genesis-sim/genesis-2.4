@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # A prototype of a stand-alone application for plotting the output of
 # GENESIS 3 models.  This uses a basic wxPython frame to hold a matplotlib
@@ -226,10 +226,10 @@ class PlotFrame(wx.Frame):
                         self.plot_file()
                         plotnum += 1
                     else:
-                        print '*** Error: Incorrect file name or path specified'
+                        print('*** Error: Incorrect file name or path specified')
                 # I need to do better error handling!
                 except:
-                    print 'An error ocurred'
+                    print('An error ocurred')
                     # sys.exit()
         else:
             # bring up a warning dialog
