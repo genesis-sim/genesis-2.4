@@ -146,7 +146,7 @@ void do_lump_cell(argc,argv)
 		case '\n' :
 		case '\r' :
 		case '\0' :
-		    fprintf(fn,line);
+		    fprintf(fn,"%s",line);
 		    continue;
 		case '/' :
 		    if (line[1] == '/') {
