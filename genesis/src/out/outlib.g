@@ -104,7 +104,7 @@ object	par_asc_file	ascfile_type 	ParAscFileOutput	output \
 	-author 	"G.Hood PSC 5/96" \
 	-messages	SAVE 0 		2 index data \
 	-fields		notime \
-	-actions	CREATE RESET PROCESS DELETE SAVE FLUSH
+	-actions	CREATE RESET PROCESS DELETE SAVE FLUSH OUT_OPEN OUT_WRITE
 
 object	res_asc_file	res_ascfile_type 	ResAscFileOutput 	output \
 	-author 	"E. De Schutter Caltech 11/92" \

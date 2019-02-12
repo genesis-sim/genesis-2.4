@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: out_ascfile.c,v 1.6 2006/03/08 05:03:38 svitak Exp $
 
 /*
 ** $Log: out_ascfile.c,v $
+**
+** 2019/02/09 dbeeman
+** Added OUT_OPEN and OUT_WRITE actions to par_asc_file
+**
 ** Revision 1.6  2006/03/08 05:03:38  svitak
 ** Changed output values to double precision.
 **
@@ -227,6 +231,7 @@ void ParAscFileOutput(output,action)
 struct ascfile_type *output;
 Action		*action;
 {
+    int i;
     switch(action->type){
     case CREATE:
 	output->float_format = "%g";
@@ -240,6 +245,31 @@ Action		*action;
 	    output->initialize = TRUE;
 	}
 	break;
+
+    case OUT_OPEN:
+        /* Manually initialize the file. */
+        AscSetupFile(output);
+        break;
+
+    case OUT_WRITE:
+        /* Write strings to a data file. */
+        if (output->fp == NULL)
+        {
+            Error();
+            printf("ascfile %s: output file is not open!\n",
+                   Pathname(output));
+            return 0;
+        }
+
+        fflush(output->fp);
+        for (i = 0; i < action->argc; i++)
+            fprintf(output->fp, "%s ", action->argv[i]);
+
+        fprintf(output->fp, "\n");
+        fflush(output->fp);
+
+        break;
+
     case PROCESS:
 	/*
 	** has the file been initialized?
