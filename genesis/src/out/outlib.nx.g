@@ -24,7 +24,9 @@
 //
 
 newclass	output
-
+addaction       FLUSH     1001
+addaction       OUT_OPEN  1002
+addaction       OUT_WRITE 1003
 
 /*
 *************************************************************************
@@ -63,13 +65,13 @@ object	asc_file	ascfile_type 	AscFileOutput 	output \
 	-author 	"M.Wilson Caltech 4/89" \
 	-messages	SAVE 0 		1  data \
 	-fields		notime \
-	-actions	CREATE RESET PROCESS DELETE SAVE
+	-actions	CREATE RESET PROCESS DELETE SAVE FLUSH OUT_OPEN OUT_WRITE
 
 object	par_asc_file	ascfile_type 	ParAscFileOutput	output \
 	-author 	"G.Hood PSC 5/96" \
 	-messages	SAVE 0 		2 index data \
 	-fields		notime \
-	-actions	CREATE RESET PROCESS DELETE SAVE
+	-actions	CREATE RESET PROCESS DELETE SAVE FLUSH OUT_OPEN OUT_WRITE
 
 object	res_asc_file	res_ascfile_type 	ResAscFileOutput 	output \
 	-author 	"E. De Schutter Caltech 11/92" \
@@ -92,6 +94,11 @@ object  spikehistory    spikehistory_type       SpikeHistory    output \
 *************************************************************************
 */
 addfunc         asciidata               do_ascii_convert
-addfunc         delete_output_data      do_delete_output_data
+// deleteoutputdata seems to be out of date and can cause core dumps
+// when applied to elements of class output which are not based on the
+// OUTPUT_TYPE element structure.  I'm leaving this here in case anyone
+// misses this command and wants to know why it was removed.
+
+//addfunc         delete_output_data      do_delete_output_data
 //addfunc         simplot                 do_simplot
 //addfunc         graphpts                do_graph_pts
