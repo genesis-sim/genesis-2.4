@@ -1,3 +1,19 @@
+/****************************************************************************
+ * Original SynG object included into Genesis 2.3.
+ *******************
+ * Modified on 10-24-2008 by Anca Doloc-Mihu to keep the postvoltage from 
+ * membrane for the next step (see code on case INIT). Before, this will 
+ * become 0 at each new step, which was making SynG not work properly.
+ *******************
+ * Modified on 10-29-2008 by Anca Doloc-Mihu to implement a new form of the 
+ * Ca current function, suggested by Andrey Olipher. Old function is 
+ * I_Ca = max(0, -ICaF-ICaS-A), see pp.300, Hill et al.2001, JCN 10.
+ * New function is I_Ca = x / (1 + exp(-500 * x)), with x = -ICaF-ICaS-A.
+ * This new form is suppose to smooth things out; the step function is 
+ * replaced by a continuous function (see code on case PROCESS).
+ ****************************************************************************
+ */
+
 static char rcsid[] = "$Id: SynG.c,v 1.1 2006/01/09 16:35:29 svitak Exp $";
 #define VOLTAGE 0
 #define CAF   1
@@ -43,7 +59,10 @@ int SynG(channel,action)
    SELECT_ACTION(action)
    {
    case INIT:
-      channel->Gk = 0;
+      /*** commented out by ADM to keep the postvoltage from membrane for 
+       *** the next step
+       *** //channel->Gk = 0;
+       ***/
       break;
  
    case PROCESS:
@@ -75,12 +94,20 @@ int SynG(channel,action)
 
       Ainf=channel->A1+channel->A2/(1+exp(channel->A3*(V+channel->A4)));
       channel->A=(channel->A)*exp(-dt/channel->A5)+Ainf*(1-exp(-dt/channel->A5));
+     
+      /***  modified by ADM to implement a smoothing form of the Ca current 
+       ***  function, suggested by Andrey Olipher.
+       ***  DECIDED TO NOT USE IT!!!
+       ***/
+      //double aux = ICaF + ICaS - (channel->A);  
+      //I_Ca = aux / (1 + exp(-500 * aux));
+      //printf("Ca currents: I_Ca = %1.20f... ICaF = %1.20f... ICaS = %1.20f... A = %1.20f \n", I_Ca, ICaF, ICaS, (channel->A));
 
-      I_Ca=ICaF+ICaS-(channel->A);  
+      //back to old function 
+      I_Ca = ICaF + ICaS - (channel->A);
+      if (I_Ca < 0) I_Ca = 0.0;
 
-      if (I_Ca < 0) I_Ca=0.0;
-
-	  /* the following statement causes memory allocation error */
+      /* the following statement causes memory allocation error */
       channel->P=(channel->P)*exp(-(channel->B)*dt)+ \
       I_Ca/(channel->B)*(1-exp(-(channel->B)*dt));
       tmp=pow(channel->P, channel->POWER);

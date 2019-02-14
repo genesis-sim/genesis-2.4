@@ -40,7 +40,7 @@ int SynE(channel,action)
    SELECT_ACTION(action)
    {
    case INIT:
-      channel->Ik = 0;
+      //channel->Ik = 0; //ADM to correct it
       break;
  
    case PROCESS:
