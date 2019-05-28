@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # weight_hist.py ver 1.0 - a command line utility to plot a wildcarded argument
 # list of files containing a line of connection weight values as a histogram.
@@ -21,7 +21,7 @@ def print_help():
     If there is more than one file, the data are plotted as separately
     colored and labeled bars.
     """
-    print msg
+    print(msg)
 
 def do_plot_files(filenames):
         formats = ['r', 'g', 'b', 'k', 'm', 'c']
@@ -34,17 +34,17 @@ def do_plot_files(filenames):
             if os.path.exists(file):
                     fp = open(file, 'r')
                     values = np.loadtxt(fp,  dtype='float')
-                    print format, plotnum
+                    print(format, plotnum)
                     nvalues = len(values)
-                    print 'Number of values = %d' % nvalues
+                    print('Number of values = %d' % nvalues)
                     datasets.append(values)
                     colors.append(format)
                     ndatasets = len(datasets)
-                    print 'Number of datasets = %d' % ndatasets
-                    print 'Plotting %s' % file
+                    print('Number of datasets = %d' % ndatasets)
+                    print('Plotting %s' % file)
                     plotnum = plotnum + 1
             else:
-                    print '*** Error: Incorrect file name or path specified ***'
+                    print('*** Error: Incorrect file name or path specified ***')
                     sys.exit()
             # I need to do better error handling!
         # Now make the histogram with the data in values
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     if len(filenames) == 0:
         print_help()
         sys.exit()
-    print filenames
+    print(filenames)
     # Generate a RUNID from a string like "W128ex32inh_0.20.txt"
     fn1 = sys.argv[1]
     fnbase,ext = os.path.splitext(fn1)

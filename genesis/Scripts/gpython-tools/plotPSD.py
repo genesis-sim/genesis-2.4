@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # plotPSD ver 0.0 - a command line utility to plot a wildcarded argument
 # list of files containing time series data, and plot the
@@ -14,17 +14,17 @@ def do_plot_files(filenames):
   if len(filenames) > 0:
       plotnum = 0
       for file in filenames:
-          print file, plotnum
-          print 'Reading %s' % file
+          print(file, plotnum)
+          print('Reading %s' % file)
           fp = open(file, 'r')
           count = len(fp.readlines())
-          print count, " lines"
+          print(count, " lines")
           fp.close()
           if (plotnum == 0):
-              print plotnum
+              print(plotnum)
               tn = np.zeros(count)
               yn = np.zeros(count)
-              print len(tn)
+              print(len(tn))
           fp = open(file, 'r')
           i=0
           for line in fp.readlines():
@@ -34,9 +34,9 @@ def do_plot_files(filenames):
               i += 1
           plotnum += 1
   else:
-    print "No files were specified for plotting!"
-    print "Please give one or more filenames as arguments, e.g.\n"
-    print "    plotSpectra EPSC_sum_0004sj.txt EPSC_sum_M0004*.txt \n"
+    print("No files were specified for plotting!")
+    print("Please give one or more filenames as arguments, e.g.\n")
+    print("    plotSpectra EPSC_sum_0004sj.txt EPSC_sum_M0004*.txt \n")
     sys.exit()   
 
   # Now do the plotting of the averaged array data
@@ -60,16 +60,16 @@ def do_plot_files(filenames):
   nfft = len(tn)//4
   overlap = nfft//2
 
-  print npts, nfft
-  print startpt, len(yn)
+  print(npts, nfft)
+  print(startpt, len(yn))
 
-  print 'Plottting average of ', plotnum, ' runs from series ', runid
+  print('Plottting average of ', plotnum, ' runs from series ', runid)
 
   pxx,freqs=mlab.psd(yn,NFFT=nfft,Fs=fs,noverlap=overlap,window=mlab.window_none)
   pxx[0] = 0.0
   ax2.plot(freqs,pxx)
-  print freqs[0], freqs[1], freqs[10], freqs[400]
-  print pxx[0], pxx[1], pxx[10], pxx[400]
+  print(freqs[0], freqs[1], freqs[10], freqs[400])
+  print(pxx[0], pxx[1], pxx[10], pxx[400])
 
 if __name__ == "__main__":
     # Get the arguments (possibly wildcarded) into a list of filenames
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     # get string following final '_' and remove 1 char suffix
     runid = fnbase.split('_')[-1][:-1]
 
-    print filenames, runid
+    print(filenames, runid)
     global tn
     global yn
 

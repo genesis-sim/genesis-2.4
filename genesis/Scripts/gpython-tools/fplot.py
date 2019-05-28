@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import sys, os
 import pylab
 
 def plot(filename):
-    print 'Plotting %s' % filename
+    print('Plotting %s' % filename)
     pylab.plotfile(filename, cols=(0,1), delimiter=' ', subplots=False)
     pylab.show()
 
@@ -14,9 +14,9 @@ if __name__ == "__main__":
         if os.path.exists(filename):            
             plot(filename)
         else:
-            print '**Error: Incorrect file name or path specified.'
+            print('**Error: Incorrect file name or path specified.')
     except:
-        print 'incorrect filename'
+        print('incorrect filename')
         sys.exit()
 
     

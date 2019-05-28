@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # rowrateplot - a command line utility to generate spike frequency vs.
 # time for groups of neurons.  It takes a single filename
@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_file():
-    print 'Plotting %s' % filename
+    print('Plotting %s' % filename)
     fp = open(filename, 'r')
  
     # The first line is a header with the total number of lines in file
@@ -42,7 +42,7 @@ def plot_file():
     # The x-axis will display the time values read from the file and added
     xvalues = []
     # The y-axis will display the group number, from 1 through ngroups
-    yvalues = range(1,ngroups + 1,1)
+    yvalues = list(range(1,ngroups + 1,1))
 
     line_num = 0 # following lines will have data
     # print "array filled with zeroes"
@@ -75,7 +75,7 @@ def plot_file():
     # An alternate color map
     # cm = plt.hot()
     cb = plt.colorbar()
-    print "Plot finished"
+    print("Plot finished")
 
 if __name__ == "__main__":
     '''
@@ -110,11 +110,11 @@ if __name__ == "__main__":
         if os.path.exists(filename):            
             plot_file()
         else:
-            print '**Error: Incorrect file name or path specified.\n'
-            print 'Usage: freqplot filename'
+            print('**Error: Incorrect file name or path specified.\n')
+            print('Usage: freqplot filename')
             sys.exit()
     except:
-        print 'Bad file, or other error'
+        print('Bad file, or other error')
         sys.exit()
     plt.show()
 

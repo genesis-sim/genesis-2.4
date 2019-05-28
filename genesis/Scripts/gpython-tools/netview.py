@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # Basic wxPython frame to hold a matplotlib figure for plotting
 # It defines some basic menu items with bindings to functions to execute
@@ -314,8 +314,8 @@ class PlotFrame(wx.Frame):
 		self.dt = float(pdentry.dt_dialog.entry.GetValue())
                 self.NX	= int(pdentry.NX_dialog.entry.GetValue())
                 self.NY = int(pdentry.NY_dialog.entry.GetValue())
-                print 'Ntimes = ', self.Ntimes, ' t_min = ', self.t_min
-                print 'NX = ', self.NX, ' NY = ', self.NY
+                print('Ntimes = ', self.Ntimes, ' t_min = ', self.t_min)
+                print('NX = ', self.NX, ' NY = ', self.NY)
             pdentry.Destroy()
         self.t_max = (self.Ntimes - 1)*self.dt
         # reset slider max and min
@@ -439,7 +439,7 @@ class PlotFrame(wx.Frame):
         # axes legends, etc.  The draw_artist(artist), and blit
         # are much faster than canvas.draw() and are sufficient.
 
-        print 'system time (seconds) = ', time.time()
+        print('system time (seconds) = ', time.time())
 
         # round frame_min down and frame_max up for the time window
         frame_min = int(self.t_min/self.dt)
@@ -468,7 +468,7 @@ class PlotFrame(wx.Frame):
             self.axes.draw_artist(self.im)
             self.canvas.blit(self.axes.bbox)
 
-        print 'system time (seconds) = ', time.time()
+        print('system time (seconds) = ', time.time())
 
     #  ------------------------------------------------------------------
     #	Define the classes and functions for getting parameter values

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 # rasterplot - a command line utility to generate rasterplots of
 # firing times for a group of neurons.  It takes a single filename
@@ -11,7 +11,7 @@ import sys, os
 import matplotlib.pyplot as plt
 
 def plot_file():
-    print 'Plotting %s' % filename
+    print('Plotting %s' % filename)
     fp = open(filename, 'r')
     format = 'b.'
     cell_num = 0
@@ -22,7 +22,7 @@ def plot_file():
         # print data[0], data[1], data[2], data[3]
         for x in data:
             axes.plot(x, y, format)
-    print "Processing finished"
+    print("Processing finished")
 
 if __name__ == "__main__":
     '''
@@ -40,11 +40,11 @@ if __name__ == "__main__":
         if os.path.exists(filename):            
             plot_file()
         else:
-            print '**Error: Incorrect file name or path specified.\n'
-            print 'Usage: rasterplot filename'
+            print('**Error: Incorrect file name or path specified.\n')
+            print('Usage: rasterplot filename')
             sys.exit()
     except:
-        print 'Bad file, or other error'
+        print('Bad file, or other error')
         sys.exit()
     axes.set_title('Raster Plot: '+filename)
     axes.set_xlabel('Seconds')
