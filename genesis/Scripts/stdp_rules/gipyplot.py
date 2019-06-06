@@ -1,4 +1,5 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
+
 """
 Creates a frame with a toolbar and graph for plotting
 """
@@ -17,6 +18,7 @@ from optparse import OptionParser
 # wxversion.ensureMinimal('2.8')
 
 import matplotlib
+import numpy as np
 
 # 
 #matplotlib.use('WXAgg')
@@ -41,9 +43,9 @@ class MyNavigationToolbar(NavigationToolbar2WxAgg):
 
         # for simplicity I'm going to reuse a bitmap from wx, you'll
         # probably want to add your own.
-        self.AddSimpleTool(self.ON_CUSTOM, _load_bitmap('stock_left.xpm'),
-                           'Click me', 'Activate custom contol')
-        wx.EVT_TOOL(self, self.ON_CUSTOM, self._on_custom)
+        # self.AddSimpleTool(self.ON_CUSTOM, _load_bitmap('matplotlib.png'),
+        #                   'Click me', 'Activate custom contol')
+        # wx.EVT_TOOL(self, self.ON_CUSTOM, self._on_custom)
 
 #----------------------------------------------------------------------
 
@@ -85,7 +87,7 @@ class G3Plot(wx.Frame):
         
         wx.Frame.__init__(self, None, -1, "G3 Plot", pos, size)
 
-        self.SetBackgroundColour(wx.NamedColor("WHITE"))
+        # self.SetBackgroundColour(wx.NamedColor("WHITE"))
 
         self.panel = None
         self.dpi = None
@@ -106,7 +108,7 @@ class G3Plot(wx.Frame):
         self.xmax = xmax
 
         if self.verbose:
-           print("xmin, xmax, ymin, ymax: ", self.xmin, self.xmax, self.ymin, self.ymax)
+           print('xmin, xmax, ymin, ymax: ', self.xmin, self.xmax, self.ymin, self.ymax)
 
         self.subplot = []
         # Give the figure size in inches, and rez
@@ -123,7 +125,7 @@ class G3Plot(wx.Frame):
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add(self.canvas, 1, wx.TOP | wx.LEFT | wx.EXPAND)
         # Capture the paint message
-        wx.EVT_PAINT(self, self.OnPaint)
+        # wx.EVT_PAINT(self, self.OnPaint)
 
         self.toolbar = MyNavigationToolbar(self.canvas, True)
         self.toolbar.Realize()
@@ -135,8 +137,8 @@ class G3Plot(wx.Frame):
         else:
             # On Windows platform, default window size is incorrect, so set
             # toolbar width to figure width.
-            tw, th = self.toolbar.GetSizeTuple()
-            fw, fh = self.canvas.GetSizeTuple()
+            tw, th = self.toolbar.GetSize()
+            fw, fh = self.canvas.GetSize()
             # By adding toolbar in sizer, we are able to put it at the bottom
             # of the frame - so appearance is closer to GTK version.
             # As noted above, doesn't work for Mac.
@@ -233,11 +235,11 @@ class G3Plot(wx.Frame):
             for indx, x in enumerate(plot_data[1:]):
 
                 if self.verbose:
-
                     num_plots = len(plot_data[1:])
-                        
                     print("\tPlotting data set %d of %d" % (indx+1, num_plots))
-                self._AddSubplot(t, x)
+
+                xa = np.asarray(t,dtype=float); ya = np.asarray(x,dtype=float);
+                self._AddSubplot(xa, ya)
 
         else:
 
@@ -384,8 +386,8 @@ file names are accepted.
             ymax=options.ymax)
 
         frame.Show()
-	self.SetTopWindow(frame)
-	return True
+        self.SetTopWindow(frame)
+        return True
 
 #----------------------------------------------------------------------
             

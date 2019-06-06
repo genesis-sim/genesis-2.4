@@ -6,10 +6,7 @@ Background
 
 The original G-3 'g3plot' was implemented as a g-tube component by
 Mando Rodriguez, based on a stand-alone program G3Plot.py, written
-by David Beeman.  G3Plot.py is found in::
-
-    ~/neurospaces_project/gshell/source/snapshots/0/bin
-    ~/neurospaces_project/g-tube/source/snapshots/0/gtube/plot
+by David Beeman for GENESIS 3.
 
 *G3Plot.py* is a plotting program that wraps Matplotlib plots within a
 wxPhython GUI.  This has several fancy Help menu features and plotting
@@ -44,10 +41,10 @@ the option parsing and help messages, previously non-functional command
 options were implemented, and others were added for axis scaling.  The
 current options are::
 
-    $ g3plot2.py -h
+    $ gipyplot.py -h
     Usage: %s [OPTIONS] <files>
 
-    g3plot creates a frame with a toolbar that holds a G-3 graph (a 2D y vs x
+    gipyplot creates a frame with a toolbar that holds a G-3 graph (a 2D y vs x
     plot).  The graph allows multiple plots from multicolumn data 'x, y1, y2,
     ...' given at successive x-values, given in one or more files. Wildcard
     file names are accepted.
@@ -79,7 +76,7 @@ Example
 
 ::
 
-  $g3plot2.py -v -t 'Purkinje RUN: 1234' -x seconds -y volts edsjb1994_pulse_inject.out
+  $gipyplot.py -v -t 'Purkinje RUN: 1234' -x seconds -y volts edsjb1994_pulse_inject.out
   xmin, xmax, ymin, ymax:  None None None None
   Processing 1 files.
   Plotting file: /home/dbeeman/info/python/GXgraph/edsjb1994_pulse_inject.out
@@ -91,3 +88,4 @@ Example
 
 Dave Beeman
 Tue May 14 17:21:21 MDT 2013
+Updated Mon May 27 13:35:54 MDT 2019 with Python 3 modifications by Ankur Sinha

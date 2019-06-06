@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 # Basic wxPython frame to hold a matplotlib figure for plotting
 # It defines some basic menu items with bindings to functions to execute
@@ -9,7 +9,7 @@ import sys, os, glob, time, math, bz2
 
 import wx
 import wx.html
-import	wx.lib.dialogs
+import  wx.lib.dialogs
 from wx.lib.stattext import GenStaticText
 
 import matplotlib
@@ -29,24 +29,24 @@ import numpy as np
 # Class for fancy labeled text entry widget
 class XDialog(wx.Panel):
     def __init__(self, parent, *args, **kwargs):
-	wx.Panel.__init__(self, parent, *args, **kwargs)
-	self.entry_label = GenStaticText(self, wx.ID_ANY,
+        wx.Panel.__init__(self, parent, *args, **kwargs)
+        self.entry_label = GenStaticText(self, wx.ID_ANY,
             label=" default label ", size=(-1,30))
-	# Use the default width (-1) and 30 pixel height
-	# Set the background color to palegoldenrod
-	self.entry_label.SetBackgroundColour('#EEE8AA')
+        # Use the default width (-1) and 30 pixel height
+        # Set the background color to palegoldenrod
+        self.entry_label.SetBackgroundColour('#EEE8AA')
 
-	self.entry = wx.TextCtrl(self, wx.ID_ANY, '')
+        self.entry = wx.TextCtrl(self, wx.ID_ANY, '')
         self.entry.SetBackgroundColour('#EEE8AA')
-	self.entry.SetWindowStyleFlag(wx.TE_PROCESS_ENTER)
+        self.entry.SetWindowStyleFlag(wx.TE_PROCESS_ENTER)
 
         # Arrange the widgets in a horizontal BoxSizer
-	dlg_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        dlg_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-	dlg_sizer.Add(self.entry_label, 1, border=0)
-	dlg_sizer.Add(self.entry, 1, wx.EXPAND, border=0)
+        dlg_sizer.Add(self.entry_label, 1, border=0)
+        dlg_sizer.Add(self.entry, 1, wx.EXPAND, border=0)
 
-	self.SetSizer(dlg_sizer)
+        self.SetSizer(dlg_sizer)
     
 # custom frame to hold the panel with a Figure and WxAgg backend canvas
 class PlotFrame(wx.Frame):
@@ -87,13 +87,13 @@ class PlotFrame(wx.Frame):
         self.create_main_panel()  # creates canvas and contents
 
         # Then add wxPython widgets below the MPL canvas
-	# Layout with box sizers
+        # Layout with box sizers
 
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-	self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.EXPAND)
-	self.sizer.AddSpacer(10)
-	self.sizer.Add(self.toolbar, 0, wx.EXPAND)
-	self.sizer.AddSpacer(10)
+        self.sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.EXPAND)
+        self.sizer.AddSpacer(10)
+        self.sizer.Add(self.toolbar, 0, wx.EXPAND)
+        self.sizer.AddSpacer(10)
 
         #    Make the control panel with a row of buttons
         self.create_button_bar()
@@ -106,7 +106,7 @@ class PlotFrame(wx.Frame):
         self.SetStatusText("Frame created ...")
 
         # -------------------------------------------------------
-        #	       set up the Menu Bar
+        #              set up the Menu Bar
         # -------------------------------------------------------
         menuBar = wx.MenuBar()
 
@@ -136,9 +136,9 @@ class PlotFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnSave, id=3)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=10)
         self.Bind(wx.EVT_MENU, self.OnAbout, id=11)
-	self.Bind(wx.EVT_MENU, self.OnUsage, id=12)
+        self.Bind(wx.EVT_MENU, self.OnUsage, id=12)
         self.Bind(wx.EVT_MENU, self.OnInfo, id=13)
-	
+        
         # methods defined below to get and plot the data
         # Normally do the plot on request, and not here
         # self.get_data_params()
@@ -146,7 +146,7 @@ class PlotFrame(wx.Frame):
         # self.get_xyt_data()
         # plot_data()
 
-	# ---------- end of __init__ ----------------------------
+        # ---------- end of __init__ ----------------------------
 
     # -------------------------------------------------------
     #   Function to make the main Matplotlib panel for plots
@@ -212,38 +212,38 @@ class PlotFrame(wx.Frame):
         self.stmax.reset()
 
     def create_button_bar(self):
-	"""
-	create_button_bar makes a control panel bar with buttons and
-	toggles for
+        """
+        create_button_bar makes a control panel bar with buttons and
+        toggles for
 
-	New Data - Play - STOP - Single Step - Forward/Back - Normal/Fast
+        New Data - Play - STOP - Single Step - Forward/Back - Normal/Fast
 
-	It does not create a Panel container, but simply creates Button
-	objects with bindings, and adds  them to a horizontal BoxSizer
-	self.button_bar_sizer.	This is added to the PlotFrame vertical
-	BoxSizer, after the MPL canvas, during initialization of the frame.
+        It does not create a Panel container, but simply creates Button
+        objects with bindings, and adds  them to a horizontal BoxSizer
+        self.button_bar_sizer.  This is added to the PlotFrame vertical
+        BoxSizer, after the MPL canvas, during initialization of the frame.
 
-	"""
-	rewind_button = wx.Button(self.panel, -1, "New Data")
-	self.Bind(wx.EVT_BUTTON, self.OnRewind, rewind_button)
+        """
+        rewind_button = wx.Button(self.panel, -1, "New Data")
+        self.Bind(wx.EVT_BUTTON, self.OnRewind, rewind_button)
 
-	replot_button = wx.Button(self.panel, -1, "Play")
-	self.Bind(wx.EVT_BUTTON, self.OnReplot, replot_button)
+        replot_button = wx.Button(self.panel, -1, "Play")
+        self.Bind(wx.EVT_BUTTON, self.OnReplot, replot_button)
 
-	sstep_button = wx.Button(self.panel, -1, "Single Step")
-	self.Bind(wx.EVT_BUTTON, self.OnSstep, sstep_button)
+        sstep_button = wx.Button(self.panel, -1, "Single Step")
+        self.Bind(wx.EVT_BUTTON, self.OnSstep, sstep_button)
 
-	stop_button = wx.Button(self.panel, -1, "STOP")
-	self.Bind(wx.EVT_BUTTON, self.OnStop, stop_button)
+        stop_button = wx.Button(self.panel, -1, "STOP")
+        self.Bind(wx.EVT_BUTTON, self.OnStop, stop_button)
 
-	# The toggle buttons need to be globally accessible
+        # The toggle buttons need to be globally accessible
 
-	self.forward_toggle = wx.ToggleButton(self.panel, -1, "Forward")
-	self.forward_toggle.SetValue(True)
-	self.forward_toggle.SetLabel("Forward")
-	self.Bind(wx.EVT_TOGGLEBUTTON, self.OnForward, self.forward_toggle)
+        self.forward_toggle = wx.ToggleButton(self.panel, -1, "Forward")
+        self.forward_toggle.SetValue(True)
+        self.forward_toggle.SetLabel("Forward")
+        self.Bind(wx.EVT_TOGGLEBUTTON, self.OnForward, self.forward_toggle)
 
-	self.fast_toggle = wx.ToggleButton(self.panel, -1, " Normal ")
+        self.fast_toggle = wx.ToggleButton(self.panel, -1, " Normal ")
         self.fast_toggle.SetValue(True)
         self.fast_toggle.SetLabel(" Normal ")
         self.Bind(wx.EVT_TOGGLEBUTTON, self.OnFast, self.fast_toggle)
@@ -271,7 +271,7 @@ class PlotFrame(wx.Frame):
         self.button_bar_sizer.Add(self.fast_toggle, 0, border=3, flag=flags)
 
     # -------------------------------------------------------
-    #	Functions to generate or read (x,y) data and plot it
+    #   Functions to generate or read (x,y) data and plot it
     # -------------------------------------------------------
 
     def get_data_params(self):
@@ -289,12 +289,12 @@ class PlotFrame(wx.Frame):
 
         # assume it is a bzip2 compressed file
         try:
-      	    fp = bz2.BZ2File(self.filename)
-	    line = fp.readline()
+            fp = bz2.BZ2File(self.filename)
+            line = fp.readline()
         except IOError:
             # then assume plain text
             fp = open(self.filename)
-	    line = fp.readline()
+            line = fp.readline()
        
         fp.close()
 
@@ -310,9 +310,9 @@ class PlotFrame(wx.Frame):
             pdentry = self.ParamEntryDialog()
             if pdentry.ShowModal() ==  wx.ID_OK:
                 self.Ntimes = int(pdentry.Ntimes_dialog.entry.GetValue())
-		self.t_min = float(pdentry.tmin_dialog.entry.GetValue())
-		self.dt = float(pdentry.dt_dialog.entry.GetValue())
-                self.NX	= int(pdentry.NX_dialog.entry.GetValue())
+                self.t_min = float(pdentry.tmin_dialog.entry.GetValue())
+                self.dt = float(pdentry.dt_dialog.entry.GetValue())
+                self.NX = int(pdentry.NX_dialog.entry.GetValue())
                 self.NY = int(pdentry.NY_dialog.entry.GetValue())
                 print('Ntimes = ', self.Ntimes, ' t_min = ', self.t_min)
                 print('NX = ', self.NX, ' NY = ', self.NY)
@@ -331,11 +331,11 @@ class PlotFrame(wx.Frame):
     def init_plot(self):
         ''' 
         init_plot creates the initial plot display. A normal MPL plot
-	would be created here with a command "self.axes.plot(x, y)" in
-	order to create a plot of points in the x and y arrays on the
-	Axes subplot.  Here, we create an AxesImage instance with
-	imshow(), instead.  The initial image is a blank one of the
-	proper dimensions, filled with zeroes.
+        would be created here with a command "self.axes.plot(x, y)" in
+        order to create a plot of points in the x and y arrays on the
+        Axes subplot.  Here, we create an AxesImage instance with
+        imshow(), instead.  The initial image is a blank one of the
+        proper dimensions, filled with zeroes.
 
         '''
         self.t_max = (self.Ntimes - 1)*self.dt
@@ -471,28 +471,28 @@ class PlotFrame(wx.Frame):
         print('system time (seconds) = ', time.time())
 
     #  ------------------------------------------------------------------
-    #	Define the classes and functions for getting parameter values
+    #   Define the classes and functions for getting parameter values
     #  --------------------------------------------------------------
 
     class ParamEntryDialog(wx.Dialog):
         def __init__(self):
-	    wx.Dialog.__init__(self, None, wx.ID_ANY)
-	    self.SetSize((250, 200))
-	    self.SetTitle('Enter Data File Parameters')
-	    vbox = wx.BoxSizer(wx.VERTICAL)
-	    self.Ntimes_dialog = XDialog(self)
-	    self.Ntimes_dialog.entry_label.SetLabel('Number of entries')
-	    self.Ntimes_dialog.entry.ChangeValue(str(2501))
-	    self.tmin_dialog = XDialog(self)
-	    self.tmin_dialog.entry_label.SetLabel('Start time (sec)')
-	    self.tmin_dialog.entry.ChangeValue(str(0.0))
+            wx.Dialog.__init__(self, None, wx.ID_ANY)
+            self.SetSize((250, 200))
+            self.SetTitle('Enter Data File Parameters')
+            vbox = wx.BoxSizer(wx.VERTICAL)
+            self.Ntimes_dialog = XDialog(self)
+            self.Ntimes_dialog.entry_label.SetLabel('Number of entries')
+            self.Ntimes_dialog.entry.ChangeValue(str(2501))
+            self.tmin_dialog = XDialog(self)
+            self.tmin_dialog.entry_label.SetLabel('Start time (sec)')
+            self.tmin_dialog.entry.ChangeValue(str(0.0))
 
-	    self.dt_dialog = XDialog(self)
-	    self.dt_dialog.entry_label.SetLabel('Output time step (sec)')
-	    self.dt_dialog.entry.ChangeValue(str(0.0002))
+            self.dt_dialog = XDialog(self)
+            self.dt_dialog.entry_label.SetLabel('Output time step (sec)')
+            self.dt_dialog.entry.ChangeValue(str(0.0002))
 
-	    self.NX_dialog = XDialog(self)
-	    self.NX_dialog.entry_label.SetLabel('Number of cells on x-axis')
+            self.NX_dialog = XDialog(self)
+            self.NX_dialog.entry_label.SetLabel('Number of cells on x-axis')
             self.NX_dialog.entry.ChangeValue(str(32))
             self.NY_dialog = XDialog(self)
             self.NY_dialog.entry_label.SetLabel('Number of cells on y-axis')
@@ -505,24 +505,24 @@ class PlotFrame(wx.Frame):
             vbox.Add(self.NY_dialog, 0, wx.EXPAND|wx.ALL, border=5)
 
             okButton = wx.Button(self, wx.ID_OK,'Ok')
-	    # vbox.Add(okButton,flag=wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, border=10)
-	    vbox.Add(okButton,flag=wx.ALIGN_CENTER, border=10)
+            # vbox.Add(okButton,flag=wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, border=10)
+            vbox.Add(okButton,flag=wx.ALIGN_CENTER, border=10)
 
             self.SetSizer(vbox)
-	    self.SetSizerAndFit(vbox)
+            self.SetSizerAndFit(vbox)
 
     #  ------------------------------------------------------------------
-    #	Define the functions executed on menu choices
+    #   Define the functions executed on menu choices
     #  ---------------------------------------------------------------
          
     def OnQuit(self, event):
         self.Close()
 
     def OnSave(self, event):
-	file_choices = "PNG (*.png)|*.png"
+        file_choices = "PNG (*.png)|*.png"
         dlg = wx.FileDialog(
-	    self, 
-	    message="Save plot as...",
+            self, 
+            message="Save plot as...",
             defaultDir=os.getcwd(),
             defaultFile="plot.png",
             wildcard=file_choices,
@@ -534,7 +534,7 @@ class PlotFrame(wx.Frame):
             # self.flash_status_message("Saved to %s" % path)
          
     def OnAbout(self, event):
-	msg = """
+        msg = """
 
                       G-3 Netview ver. 1.7
 
@@ -559,15 +559,15 @@ objects and functions, and the wxPython and matplotlib
 classes used here.
 
 Dave Beeman, August 2012
-	"""
+        """
         dlg = wx.MessageDialog(self, msg, "About G-3 Netview",
             wx.OK | wx.ICON_QUESTION)
-	dlg.ShowModal()
-	dlg.Destroy()
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def OnOpen(self, event):
         dlg = wx.TextEntryDialog(self, "File with x,y data to plot",
-	    "File Open", self.filename, style=wx.OK|wx.CANCEL)
+            "File Open", self.filename, style=wx.OK|wx.CANCEL)
         if dlg.ShowModal() == wx.ID_OK:
             self.filename = dlg.GetValue()
             # A new filename has been entered, but the data has not been read
@@ -683,7 +683,7 @@ repeat with <strong>New Data</strong> and <strong>Play</strong>.</p>
             self.SetSizer(sizer)
             self.Layout()
 
-	def OnCloseMe(self, event):
+        def OnCloseMe(self, event):
             self.Close(True)
 
         # ----------- end of class UsageFrame ---------------
@@ -703,7 +703,7 @@ repeat with <strong>New Data</strong> and <strong>Play</strong>.</p>
         dlg.ShowModal()
 
     #  ---------------------------------------------------------------
-    #	Define the functions executed on control button click
+    #   Define the functions executed on control button click
     #  ---------------------------------------------------------------
 
     def OnRewind(self,event):
@@ -739,7 +739,7 @@ repeat with <strong>New Data</strong> and <strong>Play</strong>.</p>
         self.STOP = 'True'
 
     def OnForward(self,event):
-        state =	 self.forward_toggle.GetValue()
+        state =  self.forward_toggle.GetValue()
         if state:
             self.reverse_play = False
             self.forward_toggle.SetLabel("Forward ")
@@ -752,7 +752,7 @@ repeat with <strong>New Data</strong> and <strong>Play</strong>.</p>
             self.forward_toggle.SetBackgroundColour('green')
 
     def OnFast(self,event):
-        state =	 self.fast_toggle.GetValue()
+        state =  self.fast_toggle.GetValue()
         if state:
             # print state
             self.fast_toggle.SetLabel(" Normal ")

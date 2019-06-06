@@ -342,7 +342,7 @@ ul.auto-toc {
 
 
 <div class="section" id="genesis-python-tools-ver-1-2">
-<h1>GENESIS Python Tools ver. 1.2</h1>
+<h1>GENESIS Python Tools ver. 1.3</h1>
 <p>This is a collection of stand-alone Python-based graphical utilities
 for plotting the output of GENESIS 2 and GENESIS 3 (G-3) simulations.
 The simulations use the asc_file object to write simulation variables
@@ -356,13 +356,16 @@ designed to be easily 'hacked' for other uses and other simulators.</p>
 capability of Matplotlib, which easily generates a wide variety of plots,
 accompanied by a Navigation Toolbar that allows for panning and zooming of
 plots, and saving to publication quality PNG format images.</p>
+
 <p>In order to run these scripts, you will need python version 2.5 or later,
 and the Matplotlib library for python, which can be downloaded from
-<a class="reference external" href="http://sourceforge.net/projects/matplotlib">http://sourceforge.net/projects/matplotlib</a>.  The installation instructions
+  <a class="reference external" href="http://sourceforge.net/projects/matplotlib">http://sourceforge.net/projects/matplotlib</a>. In this release, they have
+been updated to use either Python 2 or 3. The installation instructions
 explain other requirememts, such as NumPy (numerical libraries for python)
 that are usually installed along with python on most Linux systems.</p>
 <p>The main script of this package, G3Plot.py also requires wxPython, the
 python implemention of the wxWidgets widget set used by GENESIS 3.</p>
+
 <p>The use of these python libraries is described in the Frontiers in
 Neuroinformatics special issue on Python in Neuroscience
 at <a class="reference external" href="http://frontiersin.org/neuroscience/neuroinformatics/specialtopics/8/">http://frontiersin.org/neuroscience/neuroinformatics/specialtopics/8/</a>.
@@ -383,7 +386,7 @@ plotVm.py Vm.out pyr4*.out
 handy for quickly comparing the results of current injection simulations.
 The (x,y) coordinates of a point on the graph can be displayed in the
 Navigation Toolbat by positioning the cursor over it.</p>
-<p>gipyplot.py - A much improved and more general version of plotVm, that
+<p><em>gipyplot.py</em> - A much improved and more general version of plotVm, that
 can overplot multi-column data from single or multiple files.  It also
 has command line options, including '-h' for help.  More details are
 given in the file <a class="reference external" href="README-gipyplot.html">README-gipyplot.html</a>.</p>
@@ -490,7 +493,7 @@ for plotting histograms for other types of data.</p>
 <p>A set of wxPython 'widgets' has been developed to mimic the appearance
 of the basic GENESIS 2 XODUS widget set.  This makes it possible to
 build similar GUIs for simulations in G-3 or other simulators.</p>
-<p>The tutorial <a class="reference external" href="http://genesis-sim.org/userdocs/tutorial-python-gui/tutorial-python-gui.html">Creating a G-3 GUI with Python</a>
+<p>The tutorial <a class="reference external" href="http://genesis-sim.org/userdocs_data/tutorial-python-gui/tutorial-python-gui.html">Creating a G-3 GUI with Python</a>
 contains the Python code for the widgets, and describes how to add a
 graphical environment to a Python G-3 simulation, similar to the GENESIS
 2.3 XODUS version.</p>
@@ -530,6 +533,9 @@ the Toolbar built in.  Possibly, there is a setting to enable this feature
 hidden somewhere in NavigationToolbar2WxAgg.</p>
 <p>Dave Beeman
 Tue Jul  8 16:35:40 MDT 2014</p>
+<p>
+Updated Tue May 28 12:12:46 MDT 2019 with Python 3 modifications by Ankur Sinha
+
 </div>
 </div>
 </body>

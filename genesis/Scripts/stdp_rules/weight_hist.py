@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 # weight_hist.py ver 1.0 - a command line utility to plot a wildcarded argument
 # list of files containing a line of connection weight values as a histogram.

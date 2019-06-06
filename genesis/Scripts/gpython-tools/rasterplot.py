@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 # rasterplot - a command line utility to generate rasterplots of
 # firing times for a group of neurons.  It takes a single filename
@@ -21,7 +21,7 @@ def plot_file():
         data = line.split()
         # print data[0], data[1], data[2], data[3]
         for x in data:
-            axes.plot(x, y, format)
+            axes.plot(float(x), y, format)
     print("Processing finished")
 
 if __name__ == "__main__":

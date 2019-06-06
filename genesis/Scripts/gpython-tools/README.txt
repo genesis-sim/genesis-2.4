@@ -1,4 +1,4 @@
-GENESIS Python Tools ver. 1.2
+GENESIS Python Tools ver. 1.3
 -----------------------------
 
 This is a collection of stand-alone Python-based graphical utilities
@@ -18,7 +18,8 @@ plots, and saving to publication quality PNG format images.
 
 In order to run these scripts, you will need python version 2.5 or later,
 and the Matplotlib library for python, which can be downloaded from
-http://sourceforge.net/projects/matplotlib.  The installation instructions
+http://sourceforge.net/projects/matplotlib. In this release, they have
+been updated to use either Python 2 or 3. The installation instructions
 explain other requirememts, such as NumPy (numerical libraries for python)
 that are usually installed along with python on most Linux systems.
 
@@ -172,7 +173,7 @@ of the basic GENESIS 2 XODUS widget set.  This makes it possible to
 build similar GUIs for simulations in G-3 or other simulators.
 
 The tutorial `Creating a G-3 GUI with Python
-<http://genesis-sim.org/userdocs/tutorial-python-gui/tutorial-python-gui.html>`_
+<http://genesis-sim.org/userdocs_data/tutorial-python-gui/tutorial-python-gui.html>`_
 contains the Python code for the widgets, and describes how to add a
 graphical environment to a Python G-3 simulation, similar to the GENESIS
 2.3 XODUS version.
@@ -221,5 +222,5 @@ hidden somewhere in NavigationToolbar2WxAgg.
 
 Dave Beeman
 Tue Jul  8 16:35:40 MDT 2014
-
+Updated Tue May 28 12:12:46 MDT 2019 with Python 3 modifications by Ankur Sinha
 

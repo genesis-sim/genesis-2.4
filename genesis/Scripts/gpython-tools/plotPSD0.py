@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 # plotPSD0 ver 0.0 - a command line utility to plot a wildcarded argument
 # list of files containing time series data, and plot the

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 # A prototype of a stand-alone application for plotting the output of
 # GENESIS 3 models.  This uses a basic wxPython frame to hold a matplotlib
@@ -34,7 +34,7 @@ class MainApp(wx.App):
 class PlotFrame(wx.Frame):
     """
         PlotFrame is a custom wxPython frame to hold the panel with a
-	Figure and WxAgg backend canvas for matplotlib plots or other
+        Figure and WxAgg backend canvas for matplotlib plots or other
         figures.  In this frame:
 
         self is an instance of a wxFrame;
@@ -213,9 +213,12 @@ class PlotFrame(wx.Frame):
         for line in fp.readlines():
             data = line.split(" ")
             x.append(data[0]); y.append(data[1])
-        self.axes.plot(x, y, self.plot_format)
+
+        xa = np.asarray(x,dtype=float); ya = np.asarray(y,dtype=float);
+        self.axes.plot(xa, ya, self.plot_format)
 
     def plot_data_files(self):
+        
         formats = ['k', 'r', 'b', 'g', 'm', 'c']
         plotnum = 0
         if len(self.filenames) > 0:
@@ -309,8 +312,8 @@ Dave Beeman, April 2010
         """
         dlg = wx.MessageDialog(self, msg, "About G3 Plot and PlotFrame",
             wx.OK | wx.ICON_QUESTION)
-	dlg.ShowModal()
-	dlg.Destroy()
+        dlg.ShowModal()
+        dlg.Destroy()
 
     class UsageFrame(wx.Frame):
         text = """
@@ -357,7 +360,7 @@ in the file or files in the <i>filenames</i> list.
     plot.
 
     <LI><B>Save</B> - Set filename, browse for directory, and save the
-	   current plot in a PNG format file.
+           current plot in a PNG format file.
 
     <LI><B>Exit</B>  - Exit the program
 
@@ -461,7 +464,7 @@ by using the Pan or Zoom buttons.
         msg += self.create_button_bar.__doc__
         dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg,
             "PlotFrame Documentation")
-	dlg.ShowModal()
+        dlg.ShowModal()
 
     #  ---------------------------------------------------------------        
     #   Define the functions executed on control button click
@@ -489,7 +492,7 @@ by using the Pan or Zoom buttons.
             self.axes.hold(False)
 
     def OnAutoscale(self,event):
-	state =	 self.autoscale_button.GetValue()
+        state =  self.autoscale_button.GetValue()
         if state:
             self.autoscale_button.SetLabel("   Vm plot  ")
             self.autoscale_button.SetForegroundColour('red')

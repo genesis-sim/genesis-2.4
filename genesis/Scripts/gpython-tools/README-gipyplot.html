@@ -317,11 +317,8 @@ ul.auto-toc {
 <h1>Background</h1>
 <p>The original G-3 'g3plot' was implemented as a g-tube component by
 Mando Rodriguez, based on a stand-alone program G3Plot.py, written
-by David Beeman.  G3Plot.py is found in:</p>
-<pre class="literal-block">
-~/neurospaces_project/gshell/source/snapshots/0/bin
-~/neurospaces_project/g-tube/source/snapshots/0/gtube/plot
-</pre>
+by David Beeman for GENESIS 3.
+
 <p><em>G3Plot.py</em> is a plotting program that wraps Matplotlib plots within a
 wxPhython GUI.  This has several fancy Help menu features and plotting
 options to illustrate the capabilities of wxWidgets as a GUI for displaying
@@ -351,10 +348,10 @@ the option parsing and help messages, previously non-functional command
 options were implemented, and others were added for axis scaling.  The
 current options are:</p>
 <pre class="literal-block">
-$ g3plot2.py -h
+$ gipyplot.py -h
 Usage: %s [OPTIONS] &lt;files&gt;
 
-g3plot creates a frame with a toolbar that holds a G-3 graph (a 2D y vs x
+gipyplot creates a frame with a toolbar that holds a G-3 graph (a 2D y vs x
 plot).  The graph allows multiple plots from multicolumn data 'x, y1, y2,
 ...' given at successive x-values, given in one or more files. Wildcard
 file names are accepted.
@@ -385,7 +382,7 @@ Autoscaling is used unless both min and max values are given:
 <div class="section" id="example">
 <h1>Example</h1>
 <pre class="literal-block">
-$g3plot2.py -v -t 'Purkinje RUN: 1234' -x seconds -y volts edsjb1994_pulse_inject.out
+$gipyplot.py -v -t 'Purkinje RUN: 1234' -x seconds -y volts edsjb1994_pulse_inject.out
 xmin, xmax, ymin, ymax:  None None None None
 Processing 1 files.
 Plotting file: /home/dbeeman/info/python/GXgraph/edsjb1994_pulse_inject.out
@@ -396,7 +393,9 @@ Plotting file: /home/dbeeman/info/python/GXgraph/edsjb1994_pulse_inject.out
       Plotting data set 5 of 5
 </pre>
 <p>Dave Beeman
-Tue May 14 17:21:21 MDT 2013</p>
+  Tue May 14 17:21:21 MDT 2013</p>
+<p>
+Updated Mon May 27 13:35:54 MDT 2019 with Python 3 modifications by Ankur Sinha
 </div>
 </div>
 </body>

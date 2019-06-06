@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 
 # rowrateplot - a command line utility to generate spike frequency vs.
 # time for groups of neurons.  It takes a single filename
