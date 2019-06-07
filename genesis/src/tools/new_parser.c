@@ -2,6 +2,11 @@ static char rcsid[] = "$Id: new_parser.c,v 1.4 2006/01/09 16:28:50 svitak Exp $"
 
 /*
 ** $Log: new_parser.c,v $
+**
+** Revision 1.5  2019/01/15 13:50:00  jcrone
+** Added check during parsing to prevent buffer overflow in do_read_cell()
+** Added check in read_script() to make sure string value is read properly
+**
 ** Revision 1.4  2006/01/09 16:28:50  svitak
 ** Increases in size of storage for comparment names. These can be very long
 ** when cvapp converts from Neurolucida format.
@@ -1294,6 +1299,10 @@ void do_read_cell(argc,argv)
 	    endit = fgets(rawline,INPUT_LINELEN,fp), i++ ) {
 		line = chomp_leading_spaces(rawline);
 		len = strlen(line);
+
+		if (len < 2)
+                  continue;
+		
 		while (line[len-2] == '\\' && endit != NULL) {
 			line[len-2] = ' ';
 			endit = fgets(templine,INPUT_LINELEN,fp);
@@ -1615,13 +1624,16 @@ void read_script(line,lineno,flags)
 	char	POSTFIX[NAMELEN];
 	char	strvalue[NAMELEN];
 	float	value;
-	int	fvalue;
+	int	fvalue=0;
 	int	i,nargs;
 	struct symcompartment_type  *compt;
 	char	*oname;
 
 	nargs = sscanf(line,"%s %s %s",command,field,strvalue);
-	fvalue = sscanf(strvalue, "%f", &value) == 1;
+
+	if (nargs > 2)
+	  fvalue = sscanf(strvalue, "%f", &value) == 1;
+
 	if (strcmp(command,"*add_spines") == 0) {
 		/* Extra membrane surface will be added to all dendritic
 		** compartments with d<=DENDR_DIAM, "collapses" spines

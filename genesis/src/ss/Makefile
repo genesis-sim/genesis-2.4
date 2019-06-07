@@ -1,5 +1,8 @@
 # $Id: Makefile,v 1.2 2005/07/29 15:52:47 svitak Exp $
 # $Log: Makefile,v $
+# Revision 1.3  2018/08/08 15:52:00 jcrone
+# pgenesis now needs result.h so added a line to copy it during install
+#
 # Revision 1.2  2005/07/29 15:52:47  svitak
 # Changed INSTALL to INSTALLDIR to avoid confusion with commonly used INSTALL
 # executable.
@@ -159,6 +162,7 @@ realclean:
 install:
 	-cp $(TARGET_OBJ) $(INSTALLDIR)/lib
 	-$(LIBORDER) $(INSTALLDIR)/lib/$(TARGET_OBJ)
+	-cp result.h $(INSTALLDIR)/include
 
 freeze:
 	rcsclean

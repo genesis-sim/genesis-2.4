@@ -1,6 +1,10 @@
 /*
 ** $Id: header.h,v 1.4 2005/06/27 19:01:15 svitak Exp $
 ** $Log: header.h,v $
+**
+** Revision 1.5  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.4  2005/06/27 19:01:15  svitak
 ** Added explicit types to untyped functions and fixed return values as
 ** appropriate. Initialized values explicitly when it was unclear if
@@ -67,6 +71,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include "printoptusage.h"
+#include "gcmalloc_ext.h"
 
 #define INVALID		0
 #define CHAR		1

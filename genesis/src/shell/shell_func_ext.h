@@ -1,6 +1,12 @@
 /*
 ** $Id: shell_func_ext.h,v 1.7 2005/07/07 19:03:54 svitak Exp $
 ** $Log: shell_func_ext.h,v $
+** Revision 1.8  2018/08/08 15:40:00 jcrone
+** Added explict function declaration for FieldHashFind() and
+** FieldHashFindAndCopy(). Rare segmentation fault was encountered
+** when an incorrect return type was assumed. These declarations 
+** fixed the issue
+**
 ** Revision 1.7  2005/07/07 19:03:54  svitak
 ** Eliminated traces of old TraceScript function so as not to confuse it
 ** with the newer, less usable TraceScript found in ss/eval.c.
@@ -155,6 +161,8 @@ extern void     Error();
 extern void     ExecuteCleanups();
 extern Result   ExecuteCommand();
 extern void     ExecuteJobs();
+extern char *   FieldHashFind(char *);
+extern char *   FieldHashFindAndCopy(char *);
 extern void     FreeArgv();
 extern void     FreeArgv();
 extern void     FreeString();

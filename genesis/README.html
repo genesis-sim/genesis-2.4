@@ -1,189 +1,223 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
-<title></title>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<META NAME="generator" CONTENT="txt2html v1.28">
+</HEAD>
+<BODY>
 
-</head>
-<body>
-<div class="document">
+<PRE>
+                           G E N E S I S
+                   The GEneral NEural Simulation System
+                     Version 2.4 May 2019 Update
+           Last edited: Tue May 28 17:26:35 MDT 2019
+
+</PRE>
+
+<H1><A NAME="section-1.">Introduction</A></H1>
 
 <P>
-<a href="index.html"><img src="images/back2.gif" align="middle"
- hspace=12>Return to the GENESIS main index</a>
+This directory contains the 'genesis' portion of the combined May 2019
+GENESIS 2.4 Update and the PGENESIS 2.4 Final Release. You can view an
+index to this distribution by pointing your browser to index.html. The
+HTML version of this document <A HREF="README.html">README.html</A>
+contains links to the documentation and web sites that are mentioned
+below.
+
 <P>
-<HR>
+The November 2014 release of GENESIS 2.4 was intended to be the last
+packaged GENESIS distribution for download from the GENESIS web site
+<A HREF="http://www.genesis-sim.org/GENESIS">
+  http://www.genesis-sim.org/GENESIS</A>. Updates to GENESIS and
+PGENESIS are now obtained from the Repository for Continued
+Development of the GENESIS 2.4 Neural Simulator
+(<A HREF="https://github.com/genesis-sim/genesis-2.4">
+https://github.com/genesis-sim/genesis-2.4</A>).
+
 <P>
+Although the version number has not changed, recent user-contributed updates are
+significant enough to warrant this new packaged distribution
+"genesis-pgenesis-2.4-05-2019.tar.gz" on the GENESIS web site.  Recent
+updates to GENESIS and a merge of the GENESIS/PGENESIS development
+branch from the U.S. Army Research Laboratory have addressed a number
+of issues that limited its scalability for modeling very large networks
+on high performance computing resources. Optional installation of a
+garbage collector library drastically reduces memory usage, allowing
+for models of millions of neurons. Various run-time errors and integer
+overflow issues were eliminated. Changes in PGENESIS insured the
+repeatability of random connections between simulation runs. Updates
+of GENESIS since the 2014 release allow the fast "hsolve" solver to be
+used with new synaptic plasticity models and electric field
+measurements.
 
-<pre class="literal-block">
-                G E N E S I S
-        The GEneral NEural Simulation System
-                   Version 2.4
-Last edited: $Date: Tue Nov 11 13:00:14 MST 2014 $
-</pre>
-<div class="section" id="introduction">
-<h1>Introduction</h1>
-<p>This directory contains the distribution of GENESIS version 2.4.</p>
+<P>
+If you would like to run large-scale GENESIS models on supercomputers such
+as those at the Neuroscience Gateway Portal (<A HREF="https://www.nsgportal.org/">
+ https://www.nsgportal.org</A>) be sure to read the documentation in the
+genesis-2.4/pgenesis directory.
 
-<p>A detailed list of source code changes from previous versions is provided in
-<A HREF="ChangeLog.txt">ChangeLog.txt</A>.  New features of version
-2.3 and 2.4 are described in <A HREF="Doc/Changes.txt">Doc/Changes.txt</A>.</p>
+<P>
+A detailed list of source code changes from previous versions is in
+<A HREF="ChangeLog.txt">ChangeLog.txt</A>. New features of version 2.3 and 2.4
+are described in <A HREF="Doc/Changes.txt">Doc/Changes.txt</A> and
+<A HREF="Hyperdoc/Manual-2.html">Hyperdoc/Manual-2.html</A>.
 
-<p>Directions for installing binary distributions may be found in README.bindist
-in this directory. Directions for building and installing source distributions
-are in src/README.  Be sure to read the directions
-concerning the installation of the &quot;.simrc&quot; file.  Directions for printing
-and using the documentation may be found in Doc/README.  The
-Scripts/README file describes the demonstration and tutorial simulations
-which are included with this distribution.</p>
-</div>
-<div class="section" id="description-of-genesis">
-<h1>Description of GENESIS</h1>
-<p>GENESIS is a general purpose simulation platform which was developed to
-support the simulation of neural systems ranging from complex models of
-single neurons to simulations of large networks made up of more abstract
-neuronal components.  Most current GENESIS applications involve realistic
-simulations of biological neural systems.  Although the software can also
-model more abstract networks, there exist other simulation packages that
-are more suitable for backpropagation and similar connectionist modeling.</p>
-<p>A detailed guide to the GENESIS neuroscience tutorials and the construction
-of GENESIS simulations is given in:</p>
-<blockquote>
+<P>
+Directions for installing binary distributions may be found in README.bindist
+in the top directory. Directions for building and installing source distributions
+are in <A HREF="src/README.html">src/README.html</A>. Be sure to read the directions
+concerning the installation of the ".simrc" file. Directions for printing
+and using the documentation may be found in <A HREF="Doc/README.txt">
+Doc/README.txt</A>. The <A HREF="Scripts/README.html">
+Scripts/README.html</A> file describes the demonstration and tutorial
+simulations that are included with this distribution.
+
+<H1><A NAME="section-2.">Description of GENESIS</A></H1>
+
+<P>
+GENESIS is a general purpose simulation platform which was developed
+to support the simulation of neural systems ranging from complex
+models of single neurons to simulations of large networks made up of
+more abstract neuronal components. Most GENESIS applications involve
+realistic simulations of biological neural systems. Currently GENESIS
+and the parallel version PGENESIS are used on parallel supercomputers
+to simulate cortical networks that contain millions of
+mult-compartmental neurons. Although the software can also model more
+abstract networks, there exist other simulation packages that are more
+suitable for networks of point integrate-and-fire neurons, or
+connectionist modeling.
+
+<P>
+A detailed guide to the GENESIS neuroscience tutorials and the construction
+of GENESIS simulations is given in:
+
+<P>
 The Book of GENESIS: Exploring Realistic Neural Models with the GEneral
 NEural SImulation System, Second Edition, by James M. Bower and David
-Beeman, Springer-Verlag (1998).  The free Internet Edition is available
-at <a class="reference external" href="http://www.genesis-sim.org/GENESIS/bog/bog.html">http://www.genesis-sim.org/GENESIS/bog/bog.html</a></blockquote>
-<p>Additional hypertext documentation, including a beginners guide to
-UNIX/Linux commands, can be found in genesis/Tutorials.</p>
-<p>Source code contributed by GENESIS users which must be compiled is found in
-src/contrib; other contributions, such as scripts and utilities are in contrib.</p>
-</div>
-<div class="section" id="obtaining-genesis">
-<h1>Obtaining GENESIS</h1>
-<p>GENESIS source and binary distributions can be obtained from:
-<a class="reference external" href="http://genesis-sim.org">http://genesis-sim.org</a>, or from the Sourceforge GENESIS 2 development
-site <a class="reference external" href="http://sourceforge.net/projects/genesis-sim">http://sourceforge.net/projects/genesis-sim</a>.</p>
-</div>
-<div class="section" id="machine-dependence">
-<h1>Machine dependence</h1>
-<p>GENESIS and its graphical front-end XODUS are written in C and are
-known to run under many UNIX-based systems with the X Window System
-(X11R5, X11R6, Xorg), as well as OSX and Windows with Cygwin. Most
-recent experiences are with Fedora and Ubuntu. It has also been used
-under various MS Windows virtual environments for running Linux.</p>
-<p>The current GENESIS 2.4 version has been tested on various recent Linux
-distributions including Debian, Ubuntu, and Fedora, on Mac OSX (intel),
-and Cygwin (32 bit version, which works with 64 bit Windows).</p>
-<p>Here is a partial list of older platforms tested for version 2.3:</p>
-<ul>
-<li><dl class="first docutils">
-<dt>x86-based Linux systems:</dt>
-<dd><ul class="first last simple">
-<li>Debian Linux with kernel 2.x</li>
-<li>Fedora Core 2, 3, and 4</li>
-<li>Gentoo</li>
-<li>Mandrake Linux 7, 8, and 9.1 (but not 9.0)</li>
-<li>Red Hat Linux 5, 6, 7, 8, and 9</li>
-<li>Slackware 10</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>64 bit Linuces:</dt>
-<dd><ul class="first last simple">
-<li>Fedora Core 3 and 4, Fedora 10 - 19.</li>
-<li>Red Hat Enterprise</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p class="first">x86-based FreeBSD 4.1</p>
-</li>
-<li><p class="first">Alpha with Debian 3.0</p>
-</li>
-<li><p class="first">IBM SP2 systems running AIX 4.2 and 4.3</p>
-</li>
-<li><p class="first">PPC-based Linux systems running LinuxPPC, SUSE 7.0, and OSX</p>
-</li>
-<li><p class="first">SGI MIPS-based systems running IRIX 5.x and 6.5.x</p>
-</li>
-<li><p class="first">Sun SPARC and x86 systems running Solaris 2.6, and 2.7</p>
-</li>
-</ul>
-<p>It is quite likely that GENESIS will also work on systems running other
-versions of the operating systems listed above; however, the GENESIS
-developers only have direct experience with the particular systems listed.</p>
-<p>GENESIS may <em>fail</em> to work on DEC Alpha-based systems. Please let us know of
-any experiences with this platform.</p>
-<p>GENESIS has in the past worked on the following systems, but the developers
-do not have these systems available for full testing and have not been able
-to adequately verify that GENESIS 2.3 compiles and runs properly:</p>
-<ul class="simple">
-<li>Sun SPARC-based systems running SunOS 4.1.x</li>
-<li>Sun SPARC-based running Solaris 2.5/2.5.1</li>
-<li>HP-UX systems</li>
-<li>Intel Paragon</li>
-<li>DECStation running Ultrix 4.x or 3.x</li>
-<li>Cray T3E and T3D</li>
-</ul>
-<p>We welcome feedback on experiences with these platforms.  If you attempt to
-use GENESIS on these systems and have problem reports (or even better,
-fixes), please contact the GENESIS maintainers.</p>
-</div>
-<div class="section" id="genesis-users-mailing-list">
-<h1>GENESIS Users Mailing List</h1>
-<p>Serious users of GENESIS are advised to join the GENESIS
-genesis-sim-users mailing list at
-<a class="reference external" href="https://lists.sourceforge.net/lists/listinfo/genesis-sim-users">https://lists.sourceforge.net/lists/listinfo/genesis-sim-users</a>.  Find
-the latest new simulations, libraries of cells and channels,
-additional simulator components, new documentation and tutorials, and
-patches at the main GENESIS web site <a class="reference external" href="http://genesis-sim.org">http://genesis-sim.org</a>.</p>
-</div>
-<div class="section" id="disclaimer">
-<h1>Disclaimer</h1>
-<p>It should be understood that this software system is being provided for
+Beeman, Springer-Verlag (1998).  The free Internet Edition is available at
+<A HREF="http://www.genesis-sim.org/GENESIS/bog/bog.html">
+  http://www.genesis-sim.org/GENESIS/bog/bog.html</A>.
+
+<P>
+Additional hypertext documentation, including a beginners guide to
+UNIX/Linux commands, can be found in the Tutorials directory. You can view
+or download (for installation in Tutorials) a set of tutorials on creating
+models in GENESIS at:<BR>
+<A HREF="http://genesis-sim.org/GENESIS/UGTD.html">
+ http://genesis-sim.org/GENESIS/UGTD.html</A>.
+
+<P>
+Source code contributed by GENESIS users which must be compiled is found in
+src/contrib; other contributions, such as scripts and utilities are in contrib.
+
+<H1><A NAME="section-3.">Obtaining GENESIS</A></H1>
+
+<P>
+GENESIS source and binary distributions can be obtained from:<BR>
+<A HREF="http://genesis-sim.org/GENESIS">http://genesis-sim.org/GENESIS</A><BR>
+or the Repository for Continued Development of the GENESIS 2.4 Neural
+Simulator:<BR>
+(<A HREF="https://github.com/genesis-sim/genesis-2.4"> https://github.com/genesis-sim/genesis-2.4</A>).
+
+<H1><A NAME="section-4.">Machine dependence</A></H1>
+
+<P>
+GENESIS and its graphical front-end XODUS are written in C and are
+known to run under many UNIX-based systems with the X Window System,
+as well as Mac OSX and Windows with Cygwin. It has also been used
+under various MS Windows virtual environments for running Linux. Most
+recently, this update with PGENESIS has been used to run large cortical
+network simulations on supercomputer clusters at the San Diego
+Supercomputer Center and the US Army Research Laboratory.
+
+<P>
+The current GENESIS 2.4 version has been tested on various recent
+Linux distributions including Debian, Ubuntu, CentOS, RHEL, and
+Fedora.
+
+<P>
+In the past GENESIS has been successfully installed on Cygwin (32 bit
+version, which works with 64 bit Windows). The file src/Makefile.dist
+has definition for other older UNIX systems tested for version 2.3.
+This includes
+
+<UL>
+  <LI>x86-based FreeBSD 4.1
+  <LI>IBM SP2 systems running AIX 4.2 and 4.3
+  <LI>PPC-based Linux systems running LinuxPPC, SUSE 7.0, and OSX
+  <LI>SGI MIPS-based systems running IRIX 5.x and 6.5.x
+  <LI>Sun SPARC and x86 systems running Solaris 2.6, and 2.7
+  <LI>Sun SPARC-based systems running SunOS 4.1.x
+  <LI>Sun SPARC-based running Solaris 2.5/2.5.1
+  <LI>HP-UX systems
+  <LI>DECStation running Ultrix 4.x or 3.x
+  <LI>Cray T3E and T3D
+
+</UL>
+<P>
+We welcome feedback on experiences with installation of GENESIS and
+PGENESIS. If you have problems, please post a description to the
+GENESIS Users Mailing List.  As always, we are grateful for updates
+and fixes submitted to the Repository for Continued Development of the
+GENESIS 2.4 Neural Simulator at<BR>
+<A HREF="https://github.com/genesis-sim/genesis-2.4">
+  https://github.com/genesis-sim/genesis-2.4</A>.
+
+<H1><A NAME="section-5.">GENESIS Users Mailing List</A></H1>
+
+<P>
+Serious users of GENESIS are advised to join the GENESIS
+genesis-sim-users mailing list at<BR>
+<A HREF="https://lists.sourceforge.net/lists/listinfo/genesis-sim-users">
+  https://lists.sourceforge.net/lists/listinfo/genesis-sim-users</A>.
+
+<H1><A NAME="section-6.">Disclaimer</A></H1>
+
+<P>
+It should be understood that this software system is being provided for
 general distribution as a public service to the neural network and
 computational neuroscience communities.  We make no claims as to the
 quality or functionality of this software for any purpose whatsoever and
 its release does not constitute a commitment on our part to provide support
-of any kind.</p>
-<div class="section" id="copyright-notice">
-<h2>Copyright Notice</h2>
-<blockquote>
-<p>Copyright 1988 - 2001 by the California Institute of Technology</p>
-<p>This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the Free
-Software Foundation.  Portions of this program are in library form.  The
-libraries are also free software; you can redistribute them and/or modify
-them under the terms of the GNU Lesser General Public License as published
-by the Free Software Foundation; either version 2.1 of the License, or (at
-your option) any later version.</p>
-<p>This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License and the
-GNU Lesser General Public License along with this program; if not, write to
-the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
-Boston, MA 02110-1301  USA.</p>
-<p>Recent additions to the GENESIS libraries are copyrighted by other
-institutions or authors, and are covered by the GNU General Public
-License (GPL), GNU Lesser General Public License (LGPL), or by other
-licenses that are compatible with the GPL and that do not restrict the
-free distribution of GENESIS.  These licenses appear with these modules.</p>
-<p>For a statement of the GPL, see the file &quot;GPLicense&quot;.
-For a statement of the LGPL, see the file &quot;LGPLicense&quot;.</p>
-</blockquote>
-</div>
-</div>
-</div>
-<P>
+of any kind.
+
 <HR>
-<P><a href="index.html"><img src="images/back2.gif" align="middle"
- hspace=12>Return to the GENESIS main index</a>
+<H1><A NAME="section-7.">Copyright Notice</A></H1>
+
 <P>
-</body>
-</html>
+  Copyright 1988 - 2001 by the California Institute of Technology
+
+<P>
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by the Free
+  Software Foundation.  Portions of this program are in library form.  The
+  libraries are also free software; you can redistribute them and/or modify
+  them under the terms of the GNU Lesser General Public License as published
+  by the Free Software Foundation; either version 2.1 of the License, or (at
+  your option) any later version.
+
+<P>
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+<P>
+  You should have received a copy of the GNU General Public License and the
+  GNU Lesser General Public License along with this program; if not, write to
+  the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+  Boston, MA 02110-1301  USA.
+
+<P>
+  Recent additions to the GENESIS libraries are copyrighted by other
+  institutions or authors, and are covered by the GNU General Public
+  License (GPL), GNU Lesser General Public License (LGPL), or by other
+  licenses that are compatible with the GPL and that do not restrict the
+  free distribution of GENESIS.  These licenses appear with these modules.
+
+<P>
+  For a statement of the GPL, see the file "GPLicense".
+  For a statement of the LGPL, see the file "LGPLicense".
+
+</BODY>
+</HTML>

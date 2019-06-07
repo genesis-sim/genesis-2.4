@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: nrutil.c,v 1.3 2005/06/20 21:15:48 svitak Exp $";
 
 /*
 ** $Log: nrutil.c,v $
+**
+** Revision 1.4  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.3  2005/06/20 21:15:48  svitak
 ** Removed malloc.h. Added stdlib.h.
 **
@@ -23,6 +27,7 @@ static char rcsid[] = "$Id: nrutil.c,v 1.3 2005/06/20 21:15:48 svitak Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "gcmalloc_ext.h"
 
 void nrerror(error_text)
 char error_text[];

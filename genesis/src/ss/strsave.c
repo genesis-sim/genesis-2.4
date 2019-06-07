@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: strsave.c,v 1.2 2005/06/20 19:31:25 svitak Exp $";
 
 /*
 ** $Log: strsave.c,v $
+**
+** Revision 1.3  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.2  2005/06/20 19:31:25  svitak
 ** Removed malloc.h include and added stdlib.h where necessary. On many
 ** systems (e.g. Darwin), stdlib must be preceeded by stdio so stdio is
@@ -29,6 +33,7 @@ static char rcsid[] = "$Id: strsave.c,v 1.2 2005/06/20 19:31:25 svitak Exp $";
 #include <stdlib.h>
 #include <string.h>
 #include "system_deps.h"
+#include "gcmalloc_ext.h"
 
 extern int errno;
 

@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: sim_malloc.c,v 1.3 2005/06/27 19:01:07 svitak Exp $"
 
 /*
 ** $Log: sim_malloc.c,v $
+**
+** Revision 1.4  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.3  2005/06/27 19:01:07  svitak
 ** Added explicit types to untyped functions and fixed return values as
 ** appropriate. Initialized values explicitly when it was unclear if
@@ -59,6 +63,7 @@ static char rcsid[] = "$Id: sim_malloc.c,v 1.3 2005/06/27 19:01:07 svitak Exp $"
 /* mds3 changes */
 #include "shell_func_ext.h"
 #include "system_deps.h"
+#include "gcmalloc_ext.h"
 
 /*
 ** this blocksize is important in that it avoids a nasty

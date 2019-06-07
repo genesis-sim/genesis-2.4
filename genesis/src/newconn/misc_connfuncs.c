@@ -2,6 +2,11 @@ static char rcsid[] = "$Id: misc_connfuncs.c,v 1.4 2005/07/20 20:02:01 svitak Ex
 
 /*
 ** $Log: misc_connfuncs.c,v $
+**
+** Revision 1.5  2019/10/15 13:30:00 jcrone
+** Removed print statements of '.' and '/n' which resulted in millions
+** of print statements in large scale simulations
+**
 ** Revision 1.4  2005/07/20 20:02:01  svitak
 ** Added standard header files needed by some architectures.
 **
@@ -480,11 +485,7 @@ int AfferentDelay(argc,argv)
 		  }
 	      }
 	  }
-      printf(".");
-      fflush(stdout);
     }
-
-  printf("\n");
   FreeElementList(list);
   OK();
   return(1);
@@ -613,11 +614,8 @@ int AfferentWeight(argc,argv)
 		break;
 	      }
 	}
-      printf(".");
-      fflush(stdout);
     }
 
-  printf("\n");
   FreeElementList(list);
   OK();
   return(1);

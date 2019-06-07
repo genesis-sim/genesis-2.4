@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: symtab.c,v 1.4 2005/07/20 20:01:58 svitak Exp $";
 
 /*
 ** $Log: symtab.c,v $
+**
+** Revision 1.5  2019/01/15 14:40:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.4  2005/07/20 20:01:58  svitak
 ** Added standard header files needed by some architectures.
 **
@@ -50,6 +54,7 @@ static char rcsid[] = "$Id: symtab.c,v 1.4 2005/07/20 20:01:58 svitak Exp $";
 #include "symtab.h"
 
 #include <errno.h>
+#include "gcmalloc_ext.h"
 
 /*
 ** symtab.c

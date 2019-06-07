@@ -1,5 +1,8 @@
 # $Id: Makefile,v 1.5 2005/07/29 15:52:47 svitak Exp $
 # $Log: Makefile,v $
+# Revision 1.6  2019,01/15 14:30:00 jcrone & mvindiola
+# Added gcmalloc
+#
 # Revision 1.5  2005/07/29 15:52:47  svitak
 # Changed INSTALL to INSTALLDIR to avoid confusion with commonly used INSTALL
 # executable.
@@ -114,7 +117,7 @@
 #
 # makefile for utillib.o
 #
-LIBS 		=  	-lm
+LIBS 		=  	$(GCMALLOCLIB) -lm
 CFLAGS 		= 	$(CFLAGS_IN) -D$(OS) -D$(MACHINE)
 SH  		= 	../shell
 SS  		= 	../ss
@@ -128,7 +131,8 @@ LIBEXT		=	o
 TARGET_OBJ	= 	utillib.$(LIBEXT)
 
 OBJECTS = \
-		getopt.o \
+		gcmalloc.o \
+                getopt.o \
 		hash.o \
 		jump.o \
 		popen.o \
@@ -147,7 +151,7 @@ CODE_G_OBJ = code_g.o \
 	     utillib.$(LIBEXT)
 
 code_g: $(CODE_G_OBJ)
-	$(CC) $(CFLAGS) $(CODE_G_LFLAGS) $(CODE_G_OBJ) $(LEXLIB) $(TERMCAP) -lm  -o code_g
+	$(CC) $(CFLAGS) $(CODE_G_LFLAGS) $(CODE_G_OBJ) $(LEXLIB) $(TERMCAP) $(LIBS)  -o code_g
 
 .SUFFIXES: .c,v .c .h,v .h
 
@@ -165,7 +169,7 @@ code_func:
 	$(CC) $(CFLAGS) -D$(OS) -o code_func code_func.c
 
 code_sym:
-	$(CC) $(CFLAGS) -D$(OS) -o code_sym code_sym.c
+	$(CC) $(CFLAGS) -D$(OS) gcmalloc.o $(GCMALLOCLIB) -o code_sym code_sym.c
 
 install:
 	-cp $(TARGET_OBJ) code_lib$(EXE_EXT) code_func$(EXE_EXT) code_sym$(EXE_EXT) code_g$(EXE_EXT) $(INSTALL_LIB)

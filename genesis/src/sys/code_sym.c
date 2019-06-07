@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: code_sym.c,v 1.5 2005/06/29 16:38:34 svitak Exp $";
 
 /*
 ** $Log: code_sym.c,v $
+**
+** Revision 1.6  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.5  2005/06/29 16:38:34  svitak
 ** Removed ifdef SYSV lines. If they don't work in system_deps.h, they won't
 ** work here. Also, removed void in front of generated INFO_ function calls.
@@ -53,6 +57,7 @@ static char rcsid[] = "$Id: code_sym.c,v 1.5 2005/06/29 16:38:34 svitak Exp $";
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
+#include "gcmalloc_ext.h"
 
 #define MAX_DIMENSIONS 4
 

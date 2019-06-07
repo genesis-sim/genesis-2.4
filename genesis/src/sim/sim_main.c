@@ -1,7 +1,9 @@
 static char rcsid[] = "$Id: sim_main.c,v 1.6 2005/10/16 20:48:35 svitak Exp $";
-
 /*
 ** $Log: sim_main.c,v $
+** Revsion 1.7 2019/05/06 14:59:26  dbeeman
+** Added Release Date to DisplayHeader
+**
 ** Revision 1.6  2005/10/16 20:48:35  svitak
 ** Changed hard-coded character arrays from 100 to 256 or malloc'd and freed
 ** memory instead. This was only done where directory paths might have easily
@@ -181,7 +183,8 @@ void DisplayHeader()
 {
 printf("==========================================================================\n");
 printf("                               G E N E S I S\n");
-printf("                           Release Version: %s\n\n", VERSIONSTR);
+printf("                           Release Version: %s\n", VERSIONSTR);
+printf("                           Release Date: %s\n\n", VERSIONDATESTR);
 printf("\n");
 printf("GENESIS is made available under the GNU General Public License,\n");
 printf("GNU Library General Public License, or by the originating institution \n");

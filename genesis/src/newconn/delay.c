@@ -2,6 +2,11 @@ static char rcsid[] = "$Id: delay.c,v 1.3 2005/07/20 20:02:01 svitak Exp $";
 
 /*
 ** $Log: delay.c,v $
+**
+** Revision 1.4  2019/10/15 13:30:00 jcrone
+** Removed print statements of '.' and '/n' which resulted in millions
+** of print statements in large scale simulations
+**
 ** Revision 1.3  2005/07/20 20:02:01  svitak
 ** Added standard header files needed by some architectures.
 **
@@ -333,9 +338,7 @@ static void SetDelays(path, destpath, radial, scale, mode,
 	       }
 	   }
        }
-     printf("."); fflush(stdout);
    }
-  printf("\n");
   FreeElementList(list);
 }
 
@@ -403,7 +406,6 @@ static void SetSynDelays(path, scale, mode, absrandom, randarg1, randarg2, add)
 	    GetSynapseAddress(synchan, j)->delay = delay;
 	}
     }
-  printf("\n");
   FreeElementList(list);
 }
 

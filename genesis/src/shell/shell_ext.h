@@ -1,6 +1,10 @@
 /*
 ** $Id: shell_ext.h,v 1.3 2005/12/16 06:59:26 svitak Exp $
 ** $Log: shell_ext.h,v $
+**
+** Revision 1.4  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.3  2005/12/16 06:59:26  svitak
 ** Included math.h again since there may be dependence on it by
 ** user-compiled libraries and executables.
@@ -36,6 +40,6 @@
 #include "shell_func_ext.h"
 /* mds3 changes */
 #include "system_deps.h"
-
+#include "gcmalloc_ext.h"
 
 #endif /* SHELL_EXT_H */

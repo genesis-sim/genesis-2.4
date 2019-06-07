@@ -2,6 +2,11 @@ static char rcsid[] = "$Id: weight.c,v 1.3 2005/07/20 20:02:01 svitak Exp $";
 
 /*
 ** $Log: weight.c,v $
+**
+** Revision 1.4  2019/10/15 13:30:00 jcrone
+** Removed print statements of '.' and '/n' which resulted in millions
+** of print statements in large scale simulations
+**
 ** Revision 1.3  2005/07/20 20:02:01  svitak
 ** Added standard header files needed by some architectures.
 **
@@ -197,10 +202,7 @@ static void SetWeights(path, destpath, decay, scale, decayarg1, decayarg2,
 		}
 	    
 	  }
-	printf(".");
-	fflush(stdout);
       }
-  printf("\n");
   FreeElementList(list);
 }
 

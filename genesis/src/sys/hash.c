@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: hash.c,v 1.2 2005/06/20 21:20:15 svitak Exp $";
 
 /*
 ** $Log: hash.c,v $
+**
+** Revision 1.3  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.2  2005/06/20 21:20:15  svitak
 ** Fixed compiler warnings re: unused variables and functions with no return type.
 ** Default of int causes compiler to complain about return with no type, so void
@@ -30,6 +34,7 @@ static char rcsid[] = "$Id: hash.c,v 1.2 2005/06/20 21:20:15 svitak Exp $";
 #include <string.h>
 #include "hash.h"
 #include "system_deps.h"
+#include "gcmalloc_ext.h"
 
 /*
 ** put in wraparound during the hash entry and search

@@ -3,6 +3,10 @@ static char parsercsid[] = "$Id: script.y,v 1.3 2005/08/08 13:10:23 svitak Exp $
 
 /*
 ** $Log: script.y,v $
+**
+** Revision 1.4  2019/01/15 14:40:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.3  2005/08/08 13:10:23  svitak
 ** Removed #ifdef around #include y.tab.h.
 **
@@ -62,6 +66,7 @@ static char parsercsid[] = "$Id: script.y,v 1.3 2005/08/08 13:10:23 svitak Exp $
 #include <string.h>
 #include "parse.h"
 #include "symtab.h"
+#include "gcmalloc_ext.h"
 
 /*
 ** General declarations.

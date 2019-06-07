@@ -77,6 +77,8 @@
 # Revision 1.2  1995/01/25  02:10:09  dhb
 # Modified install target to install convert program and X1compat
 # scripts.
+# Revision 1.2 2019/01/15 15:30:00 jcrone & mvindiola
+# Added gcmalloc
 #
 # Revision 1.1  1995/01/13  01:09:48  dhb
 # Initial revision
@@ -94,7 +96,8 @@ OBJ = \
       script.o \
       strsave.o \
       symtab.o \
-      ../sys/getopt.o
+      ../sys/getopt.o \
+      ../sys/gcmalloc.o
 
 default: convert
 
@@ -109,7 +112,7 @@ default: convert
 	rm -f $*.c
 
 convert: $(OBJ)
-	$(CC) $(CFLAGS) $(CONVINCLUDE) $(OBJ) $(LEXLIB) -o convert
+	$(CC) $(CFLAGS) $(CONVINCLUDE) $(OBJ) $(LEXLIB) $(GCMALLOCLIB) -o convert
 
 script.o: y.tab.c lex.yy.c
 	$(CC) -c $(CFLAGS) $(IRIX_HACK) $(CONVINCLUDE) y.tab.c

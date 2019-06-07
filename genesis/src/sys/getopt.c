@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: getopt.c,v 1.6 2005/07/07 19:12:35 svitak Exp $";
 
 /*
 ** $Log: getopt.c,v $
+**
+** Revision 1.7  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.6  2005/07/07 19:12:35  svitak
 ** Removed calls to TraceScript() because 'convert' uses G_getopt but
 ** including all the libraries/files necessary for TraceScript (which
@@ -80,6 +84,7 @@ static char rcsid[] = "$Id: getopt.c,v 1.6 2005/07/07 19:12:35 svitak Exp $";
 #include <stdio.h>
 #include <string.h>
 #include "header.h"
+#include "gcmalloc_ext.h"
 
 #define OPTLIKE(arg) \
 	(arg[0] == '-' && 'a' <= arg[1] && arg[1] <= 'z')

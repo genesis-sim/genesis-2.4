@@ -1,6 +1,10 @@
 /*
 ** $Id: parse.h,v 1.1.1.1 2005/06/14 04:38:32 svitak Exp $
 ** $Log: parse.h,v $
+**
+** Revision 1.4  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.1.1.1  2005/06/14 04:38:32  svitak
 ** Import from snapshot of CalTech CVS tree of June 8, 2005
 **
@@ -24,6 +28,7 @@
 */
 
 #include "result.h"
+#include "gcmalloc_ext.h"
 
 typedef struct _pn
   {

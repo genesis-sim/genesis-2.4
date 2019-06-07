@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: malloc.c,v 1.1.1.1 2005/06/14 04:38:34 svitak Exp $"
 
 /*
 ** $Log: malloc.c,v $
+**
+** Revision 1.4  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.1.1.1  2005/06/14 04:38:34  svitak
 ** Import from snapshot of CalTech CVS tree of June 8, 2005
 **
@@ -14,6 +18,7 @@ static char rcsid[] = "$Id: malloc.c,v 1.1.1.1 2005/06/14 04:38:34 svitak Exp $"
 */
 
 #include <stdio.h>
+#include "gcmalloc_ext.h"
 
 extern char* gc_malloc();
 extern void gc_free();

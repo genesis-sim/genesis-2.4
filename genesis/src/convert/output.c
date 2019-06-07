@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: output.c,v 1.2 2005/06/27 19:00:34 svitak Exp $";
 
 /*
 ** $Log: output.c,v $
+**
+** Revision 1.4  2019/01/15 14:40:0  jcrone
+** Added gcmalloc header file
+**
 ** Revision 1.2  2005/06/27 19:00:34  svitak
 ** Added explicit types to untyped functions and fixed return values as
 ** appropriate. Initialized values explicitly when it was unclear if
@@ -25,6 +29,7 @@ static char rcsid[] = "$Id: output.c,v 1.2 2005/06/27 19:00:34 svitak Exp $";
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "gcmalloc_ext.h"
 
 /*
 ** output.c

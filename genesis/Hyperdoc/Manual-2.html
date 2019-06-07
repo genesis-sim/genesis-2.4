@@ -20,6 +20,48 @@ in order to understand the differences between GENESIS 2 and GENESIS 1.</P>
 release of GENESIS.  Likewise, <EM>Doc/README.changes</EM> lists the
 documentation files that have been added or changed.  
 
+<H2>2.0.0 Changes Introduced in the May 2019 GENESIS 2.4 update</H2>
+
+<P>
+The May 2019 GENESIS 2.4 Update and the PGENESIS 2.4 final release
+have been combined into a single package genesis-pgenesis-2.4-05-2019.tar.gz.
+Although the version number has not changed, recent updates are
+significant enough to warrant this new packaged distribution.
+Recent updates to GENESIS and a merge of the GENESIS/PGENESIS
+development branch from the U.S. Army Research Laboratory have
+addressed a number of issues that limited its scalability for modeling
+very large networks on high performance computing resources. Optional
+installation of a garbage collector library drastically reduces memory
+usage, allowing for models of millions of neurons. Various run-time errors and
+integer overflow issues were eliminated. Changes in PGENESIS insured
+the repeatability of random connections between simulation runs. Updates of
+GENESIS since the 2014 release allow the fast 'hsolve' solver to be used
+with new synaptic plasticity models and electric field measurements.
+<P>
+The objects facdep_rules' and an improved version, 'facdep_rules2',
+provide a new hsolveable short term facilitation/depression synaptic
+plasticity object. Documentation is in
+<A HREF="../Doc/facdep_rules.txt">Doc/facdep_rules.txt</A>.
+
+<P>
+Two new objects 'efield2' and 'efield_cells' are used for calculating
+extracellular field potentials when the sources are cells that have
+been taken over by the fast 'hsolve' solver object. These properly
+calculate field potentials, using all transmembrane and capacitive
+currents. See <A HREF="../Doc/efield2.txt">Doc/efield2.txt</A> and
+<A HREF="../Doc/efield_cells.txt">Doc/efield_cells.txt</A> for details.
+
+<P>
+  The par_asc_file object (part of GENESIS, but used with PGENESIS) now has
+OUT_OPEN and OUT_WRITE actions, as with asc_file.
+
+<P>Information for compiling GENESIS and PGENESIS with the optional
+  garbage collector library can be found in
+  <A HREF="../src/README-GC.txt">src/README-GC.txt</A>
+
+<P>Python scripts in Scripts/gpython-tools have been updated to be compatible
+with Python 3.
+
 <H2><A NAME="ss2.0">2.0 Changes Introduced in GENESIS 2.4</A></H2>
 
 <P>

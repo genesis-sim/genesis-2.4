@@ -2,7 +2,7 @@
 #
 #				G E N E S I S
 #		    The General Neural Simulation System
-#				 Version 2.4
+#			Version 2.4 (May 2019 update)
 #
 VERSION = 2.4
 #
@@ -90,6 +90,18 @@ TMPDIR = /tmp
 # given library here the library will not be compiled or linked into the
 # executable.
 
+# If you wish to enable the use of the "Boehm-Demers-Weiser garbage
+# collector for C and C++, download it from http://hboehm.info/gc/index.html,
+# install it, and indicate its location in the lines below. This should not be
+# necessary unless you have memory issues with very large models > 10,000 cells.
+#
+# Further information is given in the genesis/src/README section
+# "Installing gcmalloc".
+
+# GCMALLOC_FLAG=-DGCMALLOC
+# GCMALLOCLIB=-L$(INSTALLDIR)/locallibs/gcmalloc/lib -lgc
+# GCMALLOCINCLUDE=-I$(INSTALLDIR)/locallibs/gcmalloc/include
+
 #
 # kinetics --- Kinetic modeling library (necessary for kkit)
 #
@@ -111,7 +123,7 @@ CHEMESISOBJ = $(CHEMESISDIR)/chemlib.o
 # The diskio and related objects from this library provide a disk_in
 # disk_out backward compatible interface for netCDF portable binary
 # files.  Comment out the DISKIO and DISKIOLIB macros to exclude the
-# diskio library.  There are currently no kits or tutorials which depend
+# diskio library.  There are currently no kits or tutorials that depend
 # on this library.
 
 # Please note that all the macros here need to be uncommented if diskio
@@ -150,7 +162,7 @@ NETCDFFLAGS = -Dnetcdf
 
 # The following is only necessary for GENESIS 1.4 network models
 # minimally ported to GENESIS 2.x.  NOTE: some of the tutorials/demos
-# utilize this library.
+# utilize this library. Comment these definitions out if they are not wanted.
 
 OLDCONNLIB = axon synapse personal toolconn simconn
 OLDCONNDIR = oldconn
@@ -163,7 +175,10 @@ OLDCONNOBJ = $(OLDCONNDIR)/axon/axonlib.o \
 # 
 # SPRNG -- Improved random number generation
 #
-
+# The use of SPRNG is recommended because it provides a more random and
+# less correlated distribution of random numbers than the default random
+# number generator.
+#
 # The SPRNG library provides five random number generators.  To use
 # SPRNG, you must specify SPRNG as one and only one of lfg, lcg,
 # lcg64, or cmrg here.  Lagged Fibonacci is the default as it is the
@@ -202,6 +217,305 @@ SPRNGLIB   = $(SPRNGDIR)/lib/lib$(SPRNG_LIB).a
 # README. In particular, any gcc options which set -funsafe-math-optimizations
 # (e.g. -ffast-math) will break parts of GENESIS.
 #
+ 
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Linux 1.2.x and up on Intel x86-based, Xeon, and AMD
+#               64-bit systems. This should be used for most Linux versions.
+# Compiler:	GCC
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## 2019-05-04
+## Termcap/ncurses issues: The shell library makes reference to the
+## termcap library. Most Linux distributions have an ncurses library
+## which includes termcap emulation.  GENESIS appears to work
+## properly with the ncurses supplied with recent Red Hat and
+## Ubuntu/Debian Linux libraries.  However, linking with
+## ncurses is known to have resulted in core dumps in GENESIS in older
+## Linux versions.
+##
+## If you encounter problems linking with the TERMCAP flags listed below
+## or the GENESIS command line interface does not work, try the
+## following alternatives:
+##
+## 1) TERMCAP = -ltermcap
+##
+## 2) (If you are using SuSE Linux)
+##    TERMCAP = /usr/lib/termcap/libtermcap.a
+##
+## 3) (If you are using Red Hat Linux prior to version 6.0)
+##    TERMCAP = /usr/lib/libtermcap.a
+##
+## 4) The safest option is to use
+##      TERMCAP=
+##      TERMOPT=-DPLAINTERM
+##    This provides a basic terminal interface to the 'genesis' shell,
+##    but without the ability to recall and edit previous commands.
+##
+
+# MACHINE=Linux
+# OS=BSD
+
+# XINCLUDE=-I/usr/include/X11
+
+## Choose ONE XLIB line to uncomment:
+## For older 32-bit architectures
+# XLIB=/usr/lib
+## For recent 64-bit machines
+#  XLIB=/usr/lib64
+
+## Older versions of Linux that use X11R6 may need one of these:
+## XINCLUDE=-I/usr/X11R6/include
+## XLIB=/usr/X11R6/lib
+## XLIB=/usr/X11R6/lib64
+
+## cc is usually a link to gcc. Provide any alternate compilers here'
+## such as cc or the Intel C Compiler icc.
+## 
+# CC=gcc
+
+## Old (and probably broken) gcc installations may need the full
+## path to cpp (preferably NOT one in /lib). If there isn't a 
+## [link to] cpp in the same directory as 'cc', you should consider
+## [re]installing a newer gcc.
+## Another alternative is to use
+## CPP=gcc -E -P
+
+# CPP=cpp -P
+
+## Choose ONE CFLAGS line to uncomment:
+## For 32-bit architectures
+# CFLAGS=-O2 -D__NO_MATH_INLINES
+## For 64-bit architectures
+# CFLAGS=-O2 -D__NO_MATH_INLINES -DLONGWORDS $(GCMALLOC_FLAG) $(GCMALLOCINCLUDE)
+
+# LD=ld
+
+## !!!
+## Don't uncomment the next line unless you get errors about
+## libraries not being found. Setting this path may interfere with
+## the default (probably correct) operation of the loader, but some
+## 64-bit architectures may need /usr/lib64 here.
+## LDFLAGS=-L/usr/lib
+
+# RANLIB=ranlib
+# AR=ar
+
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-lfl
+
+## If /usr/lib64/libfl.a is not installed, and you need to install it
+## locally, put it in genesis/locallibs and use
+## LEXLIB= -L$(INSTALLDIR)/locallibs -lfl
+
+## Some older linuxes (Gentoo?) may require -lSM and -lICE as well.
+# LIBS= $(LEXLIB) $(GCMALLOCLIB) -lm
+
+# TERMCAP=-lncurses
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	Linux 1.2.x and up on Intel x86-based systems
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Linux 2.x and up on PPC-based systems (LinuxPPC)
+# Compiler:	GCC
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## This configuration was provided by a GENESIS user, Alfonso
+## Delgado-Reyes.  Please make sure that you have up-to-date and
+## complete installations of flex and bison if you are using this
+## configuration.
+
+## If you encounter problems linking with the TERMCAP flags listed below
+## or the GENESIS command line interface does not work, try the
+## following alternatives:
+##
+## 1) TERMCAP = -ltermcap
+##
+## 2) TERMCAP = /usr/lib/termcap/libtermcap.a
+##
+## 3) TERMCAP = /usr/lib/libtermcap.a
+
+# MACHINE=LinuxPPC
+# OS=BSD
+
+# XINCLUDE=-I/usr/X11R6/include
+# XLIB=/usr/X11R6/lib
+
+# CC=cc
+# CPP=/lib/cpp -P
+# CFLAGS=-O2 -D__NO_MATH_INLINES
+
+# LD=ld
+# LDFLAGS=-L/usr/lib
+
+# RANLIB=ranlib
+# AR=ar
+
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-lfl
+# LIBS= $(LEXLIB) -lm
+
+# TERMCAP=-lncurses
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end	Linux 2.x and up on PPC-based systems (LinuxPPC)
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:       Mac OS X and Darwin (PPC and Intel x86 based systems)
+# Compiler:     Apple Computer, Inc. v.gcc-932.1, based on gcc v.2.95.2
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+## This configuration was originally provided by a GENESIS user,
+## Alfonso Delgado-Reyes.  For this GENESIS 2.4 release, Boris Marin
+## and Jan Pieczkowski updated it for Mac OSX > 10.8. We would
+## appreciate comments and feedback from other users of recent
+## versions of MacOS via the genesis-sim-users mailing list.
+##
+## If compilation fails because of errors in netcdf, see the earlier
+## comments on changing the definitions for the netCDF file format, in
+## order to disable it. Recent changes to the src/diskio library may
+## have solved this problem.
+##
+## For most Mac users, the biggest problem will be installing the
+## necessary X window system libraries, and locating where they are
+## installed in order to properly set the Makefile definitions in the
+## section "Mac OS X and Darwin (PPC and Intel x86 based systems)".
+##
+## It is recommended that you first try "make nxgenesis" to see if
+## there are any problems other than with the installation of XODUS.
+## XODUS makes use of the legacy Athena Widget set (Xaw) within the
+## X.org libraries. When building GENESIS with XODUS, you may
+## encounter compilation errors involving the failure to find header
+## files for Xlib.h and Intrinsic.h, which are expected to be in
+## /usr/X11/include/.
+
+## Support for the X.org version of the X11 libraries is often found
+## within the 'Xcode' developer toolset provided by Apple. On newer
+## Macs, there will be a menu within Xcode for installing development
+## packages.  Another option is to visit the web site
+## htp://xquartz.macosforge.org/landing/ for a version of the X.Org X
+## Window System that runs on OS X.
+
+## The paths below for XLIB and XINCLUDE may not be valid, but may not
+## cause problems if the compiler is aware of the actual location of
+## the needed X libraries and include files.
+
+# MACHINE=Darwin
+# OS=BSD
+
+## Older versions may use /usr/X11R6
+# XINCLUDE=-I/usr/X11/include
+# XLIB=/usr/X11/lib
+
+# CC=cc
+# CPP=cpp -P 
+# CFLAGS=-O2 -D__NO_MATH_INLINES
+
+# LD=ld
+# LDFLAGS=
+
+# RANLIB=ranlib
+# AR=ar
+
+## Use 'yacc' or 'bison -y' here.
+# YACC=yacc
+
+## Use lex or 'flex -l' here.
+# LEX=lex
+
+## If using flex, LEXLIB will be '-lfl'.
+# LEXLIB=-ll
+
+## OSX 10.3.9 may require that '-lSM -lICE' be added to LIBS
+# LIBS= $(LEXLIB)
+ 
+# TERMCAP=-lcurses
+# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+## end  Mac OS X and Darwin (PPC and Intel x86 based systems)
+
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Cygwin (32 bit version)
+# Compiler:	gcc
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+##
+## Please note that all files should have Unix-like line terminators.
+## If you get "syntax error"s from code_g or code_sys during compilation,
+## it may be the result of incorrect line terminators. Offending files can
+## be fixed using the dos2unix command.
+##
+
+#MACHINE=Cygwin
+
+## This may need to be BSD
+#OS=SYSV
+
+#XINCLUDE=-I/usr/include/X11
+#XLIB=/usr/lib
+
+#CC=gcc
+#CPP=cpp -P
+#CFLAGS=-O2
+#LD=ld
+#LDFLAGS=
+
+#RANLIB=ranlib
+#AR=ar
+
+#YACC=bison -y
+#LEX=flex -l
+#LEXLIB=-lfl
+#LIBS= $(LEXLIB) -lm
+
+#TERMCAP=-lncurses
+#TERMOPT=-DTERMIO -DDONT_USE_SIGIO
+
+#export CODE_G_LFLAGS=-Wl,--stack,0x400000
+#export EXE_EXT=.exe
+
+# end	CygWin
+
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# System:	Cray XT3 (as installed at Pittsburgh Supercomputing Center)
+# Compiler:	Portland Group cc
+#
+#	see Makefile.xt3 for other important settings
+#
+# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+# MACHINE=xt3
+# OS=BSD
+
+# XINCLUDE=-I/usr/include
+# XLIB=/usr/lib
+
+# CC=cc -target=catamount
+# CPP=cpp -P  # NOTE: we really should be using "cc -E" here, but the PGI cc
+              #   compiler does not recognize files with extension .h as being
+              #   source files, so we use the gcc preprocessor.  We can get
+              #   away with this because the files to which CPP is applied
+              #   do not include any OS-specific .h files
+# CFLAGS=-O3 -Mnontemporal -Mprefetch=distance:8,nta -Minfo=loop -D__NO_MATH_INLINES -DXT3
+# LD=ld
+# RANLIB=echo
+# AR=ar
+# YACC=bison -y
+# LEX=flex -l
+# LEXLIB=-lfl
+# LIBS= $(LEXLIB) -lm
+# TERMCAP=
+# TERMOPT=-DPLAINTERM -DDONT_USE_SIGIO
+
+# end	Cray XT3 (as installed at Pittsburgh Supercomputing Center)
+
+#  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+# Some older systems that have been used in the past
+#  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
 # ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 # System:      SunOS 4.1.x
@@ -780,243 +1094,6 @@ SPRNGLIB   = $(SPRNGDIR)/lib/lib$(SPRNG_LIB).a
 
 
 # ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-# System:	Cray XT3 (as installed at Pittsburgh Supercomputing Center)
-# Compiler:	Portland Group cc
-#
-#	see Makefile.xt3 for other important settings
-#
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
-# MACHINE=xt3
-# OS=BSD
-
-# XINCLUDE=-I/usr/include
-# XLIB=/usr/lib
-
-# CC=cc -target=catamount
-# CPP=cpp -P  # NOTE: we really should be using "cc -E" here, but the PGI cc
-              #   compiler does not recognize files with extension .h as being
-              #   source files, so we use the gcc preprocessor.  We can get
-              #   away with this because the files to which CPP is applied
-              #   do not include any OS-specific .h files
-# CFLAGS=-O3 -Mnontemporal -Mprefetch=distance:8,nta -Minfo=loop -D__NO_MATH_INLINES -DXT3
-# LD=ld
-# RANLIB=echo
-# AR=ar
-# YACC=bison -y
-# LEX=flex -l
-# LEXLIB=-lfl
-# LIBS= $(LEXLIB) -lm
-# TERMCAP=
-# TERMOPT=-DPLAINTERM -DDONT_USE_SIGIO
-
-# end	Cray XT3 (as installed at Pittsburgh Supercomputing Center)
-
-
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-# System:	Linux 1.2.x and up on Intel x86-based, Xeon,
-#           and AMD 64-bit systems.
-# Compiler:	GCC
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
-## 2000-05-23
-## Termcap/ncurses issues: The shell library makes reference to the
-## termcap library.  Some Linux distributions have an ncurses library
-## which includes termcap emulation.  GENESIS appears to work
-## properly with the ncurses supplied with Red Hat Linux 5.1 and higher
-## and Debian Linux (glibc2.1, egcs-2.91.66).  However, linking with
-## ncurses is known to have resulted in core dumps in GENESIS in older
-## Linux versions.
-##
-## If you encounter problems linking with the TERMCAP flags listed below
-## or the GENESIS command line interface does not work, try the
-## following alternatives:
-##
-## 1) TERMCAP = -ltermcap
-##
-## 2) (If you are using SuSE Linux)
-##    TERMCAP = /usr/lib/termcap/libtermcap.a
-##
-## 3) (If you are using Red Hat Linux prior to version 6.0)
-##    TERMCAP = /usr/lib/libtermcap.a
-##
-
-# MACHINE=Linux
-# OS=BSD
-
-# XINCLUDE=-I/usr/include/X11
-
-## Choose ONE XLIB line to uncomment:
-## For 32-bit architectures
-# XLIB=/usr/lib
-## For 64-bit machines
-#  XLIB=/usr/lib64
-
-## Older versions of Linux that use X11R6 may need one of these:
-## XINCLUDE=-I/usr/X11R6/include
-## XLIB=/usr/X11R6/lib
-## XLIB=/usr/X11R6/lib64
-
-# CC=cc
-
-## Old (and probably broken) gcc installations may need the full
-## path to cpp (preferably NOT one in /lib). If there isn't a 
-## [link to] cpp in the same directory as 'cc', you should consider
-## [re]installing a newer gcc.
-
-# CPP=cpp -P
-
-## Choose ONE CFLAGS line to uncomment:
-## For 32-bit architectures
-# CFLAGS=-O2 -D__NO_MATH_INLINES
-## For 64-bit architectures
-# CFLAGS=-O2 -D__NO_MATH_INLINES -DLONGWORDS
-
-# LD=ld
-
-## !!!
-## Don't uncomment the next line unless you get errors about
-## libraries not being found. Setting this path may interfere with
-## the default (probably correct) operation of the loader, but some
-## 64-bit architectures may need /usr/lib64 here.
-## LDFLAGS=-L/usr/lib
-
-# RANLIB=ranlib
-# AR=ar
-
-# YACC=bison -y
-# LEX=flex -l
-# LEXLIB=-lfl
-## Some linuxes (Gentoo?) may require -lSM and -lICE as well.
-# LIBS= $(LEXLIB) -lm
-
-# TERMCAP=-lncurses
-# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
-
-## end	Linux 1.2.x and up on Intel x86-based systems
-
-
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-# System:	Linux 2.x and up on PPC-based systems (LinuxPPC)
-# Compiler:	GCC
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
-## This configuration was provided by a GENESIS user, Alfonso
-## Delgado-Reyes.  Please make sure that you have up-to-date and
-## complete installations of flex and bison if you are using this
-## configuration.
-
-## If you encounter problems linking with the TERMCAP flags listed below
-## or the GENESIS command line interface does not work, try the
-## following alternatives:
-##
-## 1) TERMCAP = -ltermcap
-##
-## 2) TERMCAP = /usr/lib/termcap/libtermcap.a
-##
-## 3) TERMCAP = /usr/lib/libtermcap.a
-
-# MACHINE=LinuxPPC
-# OS=BSD
-
-# XINCLUDE=-I/usr/X11R6/include
-# XLIB=/usr/X11R6/lib
-
-# CC=cc
-# CPP=/lib/cpp -P
-# CFLAGS=-O2 -D__NO_MATH_INLINES
-
-# LD=ld
-# LDFLAGS=-L/usr/lib
-
-# RANLIB=ranlib
-# AR=ar
-
-# YACC=bison -y
-# LEX=flex -l
-# LEXLIB=-lfl
-# LIBS= $(LEXLIB) -lm
-
-# TERMCAP=-lncurses
-# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
-
-## end	Linux 2.x and up on PPC-based systems (LinuxPPC)
-
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-# System:       Mac OS X and Darwin (PPC and Intel x86 based systems)
-# Compiler:     Apple Computer, Inc. v.gcc-932.1, based on gcc v.2.95.2
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
-## This configuration was originally provided by a GENESIS user,
-## Alfonso Delgado-Reyes.  For this GENESIS 2.4 release, Boris Marin
-## and Jan Pieczkowski updated it for Mac OSX > 10.8. We would
-## appreciate comments and feedback from other users of recent
-## versions of MacOS via the genesis-sim-users mailing list.
-##
-## If compilation fails because of errors in netcdf, see the earlier
-## comments on changing the definitions for the netCDF file format, in
-## order to disable it. Recent changes to the src/diskio library may
-## have solved this problem.
-##
-## For most Mac users, the biggest problem will be installing the
-## necessary X window system libraries, and locating where they are
-## installed in order to properly set the Makefile definitions in the
-## section "Mac OS X and Darwin (PPC and Intel x86 based systems)".
-##
-## It is recommended that you first try "make nxgenesis" to see if
-## there are any problems other than with the installation of XODUS.
-## XODUS makes use of the legacy Athena Widget set (Xaw) within the
-## X.org libraries. When building GENESIS with XODUS, you may
-## encounter compilation errors involving the failure to find header
-## files for Xlib.h and Intrinsic.h, which are expected to be in
-## /usr/X11/include/.
-
-## Support for the X.org version of the X11 libraries is often found
-## within the 'Xcode' developer toolset provided by Apple. On newer
-## Macs, there will be a menu within Xcode for installing development
-## packages.  Another option is to visit the web site
-## htp://xquartz.macosforge.org/landing/ for a version of the X.Org X
-## Window System that runs on OS X.
-
-## The paths below for XLIB and XINCLUDE may not be valid, but may not
-## cause problems if the compiler is aware of the actual location of
-## the needed X libraries and include files.
-
-# MACHINE=Darwin
-# OS=BSD
-
-## Older versions may use /usr/X11R6
-# XINCLUDE=-I/usr/X11/include
-# XLIB=/usr/X11/lib
-
-# CC=cc
-# CPP=cpp -P 
-# CFLAGS=-O2 -D__NO_MATH_INLINES
-
-# LD=ld
-# LDFLAGS=
-
-# RANLIB=ranlib
-# AR=ar
-
-## Use 'yacc' or 'bison -y' here.
-# YACC=yacc
-
-## Use lex or 'flex -l' here.
-# LEX=lex
-
-## If using flex, LEXLIB will be '-lfl'.
-# LEXLIB=-ll
-
-## OSX 10.3.9 may require that '-lSM -lICE' be added to LIBS
-# LIBS= $(LEXLIB)
- 
-# TERMCAP=-lcurses
-# TERMOPT=-DTERMIO -DDONT_USE_SIGIO
-
-## end  Mac OS X and Darwin (PPC and Intel x86 based systems)
-
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 # System:	FreeBSD 4.1
 # Compiler:	GCC C compiler
 # ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
@@ -1129,48 +1206,6 @@ SPRNGLIB   = $(SPRNGDIR)/lib/lib$(SPRNG_LIB).a
 # TERMOPT = -DDONT_USE_SIGIO
 
 # end	IBM RS6000 running AIX
-
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-# System:	Cygwin (32 bit version)
-# Compiler:	gcc
-# ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
-##
-## Please note that all files should have Unix-like line terminators.
-## If you get "syntax error"s from code_g or code_sys during compilation,
-## it may be the result of incorrect line terminators. Offending files can
-## be fixed using the dos2unix command.
-##
-
-#MACHINE=Cygwin
-
-## This may need to be BSD
-#OS=SYSV
-
-#XINCLUDE=-I/usr/include/X11
-#XLIB=/usr/lib
-
-#CC=gcc
-#CPP=cpp -P
-#CFLAGS=-O2
-#LD=ld
-#LDFLAGS=
-
-#RANLIB=ranlib
-#AR=ar
-
-#YACC=bison -y
-#LEX=flex -l
-#LEXLIB=-lfl
-#LIBS= $(LEXLIB) -lm
-
-#TERMCAP=-lncurses
-#TERMOPT=-DTERMIO -DDONT_USE_SIGIO
-
-#export CODE_G_LFLAGS=-Wl,--stack,0x400000
-#export EXE_EXT=.exe
-
-# end	CygWin
 
 # ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 # System:	Other UNIX system
@@ -1467,20 +1502,20 @@ genesis: all
 #
 default: liblist
 	@rm -f kinetics/text.o kinetics/kinlib.o
-	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(DISKIOFLAGS) $(SPRNG_FLAG)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" XLIBS="$(XLIBS)" XINCLUDE="$(XINCLUDE)" LIBS="$(LIBS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" MF="$(MF)" SUBDIR="$(SUBDIR)" DISKIOSUBDIR="$(DISKIOSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" XODUS="$(XODUS)"  libs genesis
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" GCMALLOCLIB="$(GCMALLOCLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(DISKIOFLAGS) $(SPRNG_FLAG)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" XLIBS="$(XLIBS)" XINCLUDE="$(XINCLUDE)" LIBS="$(LIBS)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" MF="$(MF)" SUBDIR="$(SUBDIR)" DISKIOSUBDIR="$(DISKIOSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" XODUS="$(XODUS)"  libs genesis
 
 #
 # Remove kinlib.o and text.o in case the last thing made had X11 stuff.
 #
 nxdefault: nxliblist
 	@rm -f kinetics/text.o kinetics/kinlib.o
-	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(DISKIOFLAGS) $(SPRNG_FLAG) -DNO_X" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" DISKIOSUBDIR="$(DISKIOSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" nxlibs nxgenesis
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" GCMALLOCLIB="$(GCMALLOCLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(DISKIOFLAGS) $(SPRNG_FLAG) -DNO_X" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" DISKIOSUBDIR="$(DISKIOSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" nxlibs nxgenesis
 
 mindefault: minliblist
-	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(SPRNG_FLAG)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" minlibs mingenesis
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" AR="$(AR)" RANLIB="$(RANLIB)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" GCMALLOCLIB="$(GCMALLOCLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS) $(SPRNG_FLAG)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" SPRNG_LIB="$(SPRNG_LIB)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" minlibs mingenesis
 
 code_g:
-	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" code_g
+	@make -f $(MF) CC="$(CC)" TMPDIR="$(TMPDIR)" LD="$(LD)" CPP="$(CPP)" YACC="$(YACC)" LEX="$(LEX)" LEXLIB="$(LEXLIB)" GCMALLOCLIB="$(GCMALLOCLIB)" OS="$(OS)" MACHINE="$(MACHINE)" INSTALLDIR="$(INSTALLDIR)" INSTALLBIN="$(INSTALLBIN)" CFLAGS_IN="$(CFLAGS)" IRIX_HACK="$(IRIX_HACK)" LDFLAGS="$(LDFLAGS)" LIBS="$(LIBS)" MF="$(MF)" TERMCAP="$(TERMCAP)" TERMOPT="$(TERMOPT)" SUBDIR="$(SUBDIR)" NXSUBDIR="$(NXSUBDIR)" MINSUBDIR="$(MINSUBDIR)" BASECODE="$(BASECODE)" OBJLIBS="$(OBJLIBS)" EXTRALIBS="$(EXTRALIBS)" code_g
 
 nxgenesis: code_g nxdefault
 nxall: code_g nxdefault
