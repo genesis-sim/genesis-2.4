@@ -1,97 +1,98 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
-<TITLE>Parallel GENESIS (PGENESIS)</TITLE>
+<TITLE></TITLE>
 <META NAME="generator" CONTENT="txt2html v1.28">
 </HEAD>
 <BODY>
+<H1><CENTER><A NAME="section-1.">PGENESIS 2.4 Installation and Use</A></CENTER></H1>
+
+<PRE>
+                   Nigel Goddard &amp; Greg Hood
+                Pittsburgh Supercomputing Center
+
+             (Updated May 28, 2019 for PGENESIS 2.4 final release)
+             (Updated December 9, 2014 for PGENESIS 2.4 preliminary release)
+             (Updated December 18, 2008 for PGENESIS 2.3.1)
+             (Updated March 16, 2006 for PGENESIS 2.3)
+             (Updated March 21, 2003 for PGENESIS 2.2.1)
+
+             Official PGENESIS 2.4 Release - May 31, 2019
+</PRE>
 
 <P>
-<DIV ALIGN=CENTER>
-<H1>README file from the PGENESIS 2.4 distribution</H1>
-<P>
-(Updated from the distribution version on August 6, 2017)
-<P>
+This version of PGENESIS is intended to be installed in the
+'genesis-2.4' directory along with the 'genesis' directory from the
+combined May 2019 GENESIS 2.4 update and the PGENESIS 2.4 final
+release. It replaces the preliminary PGENESIS 2.4 release and contains
+updates, bug fixes, and links to new objects and commands from the May
+2019 update of GENESIS 2.4. In particular, it incorporates a number of
+modifications to both GENESIS and PGENESIS provided by the U. S. Army
+Research Laboratory. These resolve a number of
+issues that limited its scalability to model very large networks on high
+performance computing resources. Optional installation of a garbage
+collector library drastically reduces memory usage for models of over
+10,000 neurons. Various run-time errors and integer overflow issues
+were eliminated. Changes in PGENESIS insured the repeatability of
+random connections between simulation runs.
 
-<H2>PGENESIS 2.4 Installation and Use</H2>
-<P>
-<P>
-                   Nigel Goddard &amp; Greg Hood<BR>
-                Pittsburgh Supercomputing Center<BR>
-                        pgenesis@psc.edu<BR>
-<P>	     (Updated by Dave Beeman, December 9, 2014 for PGENESIS 2.4)<BR>
-             (Updated December 18, 2008 for PGENESIS 2.3.1)<BR>
-             (Updated March 16, 2006 for PGENESIS 2.3)<BR>
-             (Updated March 21, 2003 for PGENESIS 2.2.1)<BR>
-</DIV>
-
-<P>
-  <CENTER>
-    <H3>Preliminary PGENESIS 2.4 Release - December 9, 2014</H3>
-  </CENTER>
-
-<P>This version of PGENESIS is intended to be installed in the 'genesis-2.4'
-directory along with the 'genesis' directory from the GENESIS 2.4
-distribution. It replaces earlier PGENESIS 2.3 and 2.3.1 versions and contains
-bug fixes, updates for new platforms, and new GENESIS 2.4 objects and commands.
-
-<P><B>MISSING in this initial release:</B>
-<P><UL>
-    <LI> The chemesis library (chemlib) has not been linked in.
-    <LI> The new network commands volumeconnect3, volumedelay3, and
-   volumeweight3 have not yet been implemented for the remote versions
-   rvolumeconnect3, etc.
-      
-    <LI> The documentation in pgenesis/Hyperdoc has not yet been updated.
-</UL>
-  
 <P>
 NOTE: Before installing this software, please check that you have the latest
-      version by checking the GENESIS web site:
-<A HREF = "http://genesis-sim.org/">http://genesis-sim.org/</A>.
+      versions of GENESIS and PGENESIS 2.4 by checking the GENESIS web site:
+      <A HREF="http://www.genesis-sim.org/GENESIS/">http://www.genesis-sim.org/GENESIS/</A><BR>
+or the Repository for Continued Development of the GENESIS 2.4
+Neural Simulator <A HREF="https://github.com/genesis-sim/genesis-2.4">
+https://github.com/genesis-sim/genesis-2.4</A>.
+      
+      We *strongly* advise you to download the latest version if you
+      don't already have it. The GENESIS web page also gives contact
+      information and information about the sourceforge
+      genesis-sim-users mailing list.
+
+
+<H2><A NAME="section-1.1.">INTRODUCTION</A></H2>
+
 <P>
-
-      We *strongly* advise you to download the latest version if you don't
-      already have it.
-
-<H1><A NAME="section-1.">INTRODUCTION</A></H1>
-
-<P>
-PGENESIS (Parallel GENESIS) is designed to allow researchers to
-run simulations faster on parallel hardware; it supports both
-running simulations of large networks on multiple processors, and
-running many simulations concurrently (e.g. for parameter searching).
-PGENESIS will also run on a single workstation and this can be useful
-for testing.
+PGENESIS (Parallel GENESIS) is designed to allow researchers to run
+simulations faster on parallel hardware; it supports both running
+simulations of large networks on multiple processors, and running many
+simulations concurrently (e.g. for parameter searching). PGENESIS
+will also run on a single workstation or multi-core PCs, and this can
+be useful for simulation development. Currently, it supports network
+simulations that contain millions of neurons on supercomputer
+clusters.
 
 <P>
 If you have a network model and want to use PGENESIS, you will have to
 partition your model so that specific neurons are created on each of
 the PGENESIS processes, and then connect them up using the PGENESIS
 raddmsg or rvolumeconnect script functions.  Unfortunately, with
-PGENESIS this is not automatic, although the process is well documented.
-
+PGENESIS this is not automatic, although the process is well documented
+with tutorials and example scripts.
 
 <P>
-
-PGENESIS will run on almost any multiple core PC, parallel cluster, SMP,
-supercomputer, or network of workstations where MPI and/or PVM is
-supported, and on which serial GENESIS itself is runnable.  It is much
-easier to run on a network of workstations if they have a shared file
-system so that any workstation can access any file.  If this is not the
-case, you will need to install PGENESIS independently on each workstation
-and you will need to have a copy of the files required by your simulation
+PGENESIS will run on almost any parallel cluster, SMP, supercomputer,
+or network of workstations where MPI and/or PVM is supported, and on
+which serial GENESIS itself is runnable.  It is much easier to run on
+a network of workstations if they have a shared file system so that
+any workstation can access any file.  If this is not the case, you
+will need to install PGENESIS independently on each workstation and
+you will need to have a copy of the files required by your simulation
 (data files, script files, etc) on each workstation, preferably in an
 identically named directory path.
 
-<H1><A NAME="section-2.">COMPATIBILITY WITH REGULAR GENESIS</A></H1>
 
+<H2><A NAME="section-1.2.">COMPATIBILITY WITH REGULAR GENESIS</A></H2>
+
+<P>
 PGENESIS 2.4 is compatible with GENESIS version 2.4, and contains a few
-minor bug fixes to PGENESIS version 2.3 (mostly for the Blue Gene/L
-architecture, and use of Xodus under MPI). Versions of PGENESIS older than
-2.4 will not work with GENESIS 2.4.
+changes in 'Makefile.dist' for modern operating systems.
 
-<H1><A NAME="section-3.">HOW IT WORKS (IN A NUTSHELL)</A></H1>
+<P>
+Versions of PGENESIS older than 2.4 will not work with GENESIS 2.4 or later.
+
+
+<H2><A NAME="section-1.3.">HOW IT WORKS (IN A NUTSHELL)</A></H2>
 
 <P>
 PGENESIS adds a library (parlib) to an installed version of GENESIS,
@@ -101,55 +102,98 @@ commands.  The "postmaster" objects communicate with each other through
 a standard interprocess communication library such as MPI or PVM.
 
 <P>
-For more complete information on how to use PGENESIS, see the PGENESIS
-webpage: http://www.psc.edu/Packages/PGENESIS.  Dave Beeman has also
-put together a mini-tutorial on installing and using PGENESIS on
-multi-core PCs, which may be found in Hyperdoc/pgenesis_on_pcs_part1.html
-in this distribution.
+For more complete information on how to use PGENESIS, see Chapter 21,
+"Large-Scale Simulation using Parallel GENESIS" in The Book of GENESIS
+(<A HREF="http://genesis-sim.org/GENESIS/iBoG/index.html">http://genesis-sim.org/GENESIS/iBoG/index.html</A>).
 
-<H1><A NAME="section-4.">INSTALLING PGENESIS</A></H1>
+<P>
+For a tutorial on converting large network simulations to PGENESIS, see<BR>
+<A HREF="http://genesis-sim.org/GENESIS/UGTD/Tutorials/genprog/par-net-tut.html">
+http://genesis-sim.org/GENESIS/UGTD/Tutorials/genprog/par-net-tut.html</A>.
 
-<OL>
-  <LI><B>Download, compile, and install serial GENESIS version 2.4:</B>
+<H2><A NAME="section-1.4.">INSTALLING PGENESIS</A></H2>
+
+<B>1. Download, compile, and install serial GENESIS version 2.4.</B>
+
+
+<P>
    If you have not obtained GENESIS already, download
-   genesis-2.4-src.tar.gz from the GENESIS web site, or copy
-   it from the CDROM if you have a CDROM distribution.  This is a gzipped
-   tar file which can be extracted with:
+   genesis-pgenesis-2.4-05-2019.tar.gz from the GENESIS web site, and
+   pick a directory where it will be installed. This is a gzipped tar
+   file which can be extracted with:
 
 <PRE>
-        cat genesis-2.4-src.tar.gz | gunzip | tar -xvf -
+        tar xvzf genesis-pgenesis-2.4-05-2019.tar.gz
 </PRE>
 <P>
-   This will produce a directory genesis-2.4/genesis.  Follow the
-   instructions in genesis-2.4/genesis/src/README.  Make sure that after
-   doing a "make" or "make nxall" you also do a "make install" or "make
-   nxinstall".
+This will produce a directory genesis-2.4/genesis and the one
+genesis-2.4/pgenesis, which should be the same as the one with this
+ file. Follow the instructions in genesis-2.4/genesis/src/README.txt.
+(Assuming that you have installed 'genesis' in the directory above, see
+   <A HREF="../genesis/src/README.html">../genesis/src/README.html</A>).
+   Make sure that after doing a "make" or "make nxall" you also do a
+   "make install" or "make nxinstall".
 
 <P>
-<LI> <B>Download and untar PGENESIS</B> (which you probably have already done if you
-   are reading this). PGENESIS can be downloaded from the GENESIS web
-   site, where you can get pgenesis-2.4-src.tar.gz.
-   Extracting this, as described above, produces a genesis-2.4/pgenesis
-   directory; hence it should be extracted in the same place that you
-   extracted your genesis-2.4-src.tar.gz file.  It will not affect your
-   existing genesis subdirectory, it will just add a pgenesis subdirectory
-   next to it.  If you have already untarred it into a different place, you
-   can just use "mv" to move the pgenesis subdirectory (containing this
-   README) into the genesis-2.4 directory.  Henceforth we will refer to the
-   genesis-2.4/pgenesis subdirectory as ~pgenesis.
+<B>2. Prepare to install PGENESIS</B>
 
 <P>
-<LI><B>Ensure either MPI or PVM is installed:</B>
+Now that GENESIS and PGENESIS are distributed in a combined release,
+all that remains is to study the "README" files in the genesis and
+pgenesis directories.
+
+<P>
+The file <A HREF="../genesis/src/README.html">../genesis/src/README.html</A>
+describes the use of the optional Boehm-Demers-Weiser conservative
+garbage collector. Its use with GENESIS and PGENESIS has allowed
+simulations of over one million cells, with little increase in memory
+usage with model size.  However, it shouldn't be necessary for most
+users unless there are memory issues with very large models having
+greater than 10,000 cells. It is enabled with the GCMALLOC
+definitions in the Makefile. Most GENESIS and PGENESIS users will want
+to leave these definitions commented out.
+You can read the instructions relating to flags for the
+garbage collector in <A HREF="../genesis/src/README-GC.txt">
+../genesis/src/README-GC.txt</A>.
+
+<P>
+<B>3. Ensure either MPI or PVM is installed.</B>
+
+<P>
    Most clusters or parallel systems already have an installed MPI
    implementation, so our recommendation is to use that.  (You can
    check if MPI is already there by typing "man MPI", "which mpirun",
-   or looking in typical locations where community software is installed,
-   e.g., /usr/lib/, /usr/local, /usr/local/packages/, /usr/share/,
-   /opt, etc.)  Any MPI implementation that supports MPI version 1
-   functionality should work. In particular the MPICH and LAM
-   implementations are known to be compatible.  If MPI does not appear
+   or looking in typical locations where community software is
+   installed, e.g., /usr/lib64/, /usr/local, /usr/local/packages/,
+   /usr/share/, /opt, etc.)  Any MPI implementation that supports MPI
+   version 1 functionality should work. In particular the MPICH and
+   MPICH2 implementations are known to be compatible. In the past
+   openmpi has been used successfully, although there have been
+   problems with some recent Linux releases.  If MPI does not appear
    to be installed, ask your system administrator to install a version
-   appropriate for your system.
+   appropriate for your system, or install one of these and the development
+   libraries with your package manager.
+
+<P>
+   For recent Linux versions, MPICH will be the easiest MPI
+   implementation to use. Once you have insured that you have the MPI
+   executables and libraries, you will need to set the PATH
+   environment to the place where MPI keeps its executables, such as
+   mpirun.  For example:
+
+<PRE>
+      bashrc:  PATH=$PATH:/usr/lib64/mpich/bin
+      csh or .tcsh:  set path = ($path  /usr/lib64/mpich/bin)
+</PRE>
+<P>
+   It may also be necessary to set the LD_LIBRARY_PATH environment variable
+   to point to the MPI libraries, for example:
+
+<PRE>
+       bash: export LD_LIBRARY_PATH=/usr/lib64/mpich/lib
+       csh or tcsh: setenv LD_LIBRARY_PATH /usr/lib64/mpich/lib
+</PRE>
+
 <P>
    If, instead of MPI, you want to use an existing PVM installation,
    you should have version 3.3.4 or later.  If pvm is already on your
@@ -157,46 +201,54 @@ in this distribution.
 
 <PRE>
         echo version | pvm
-
 </PRE>
+<P>
    Make sure that your environment includes the proper settings for $PVM_ROOT
    and $PVM_ARCH, and that the PVM object libraries are in
    $PVM_ROOT/lib/$PVM_ARCH.
+
 <P>
    If you want to install PVM, you can get the latest version, as well as
    more information about PVM from the PVM home page:
-<P>
-<A
-HREF="http://www.epm.ornl.gov/pvm/pvm_home.html">http://www.epm.ornl.gov/pvm/pvm_home.html</A>
 
-<P>   You do not need the root password to install PVM.  After untarring the
+<A HREF="http://www.epm.ornl.gov/pvm/pvm_home.html">
+ http://www.epm.ornl.gov/pvm/pvm_home.html</A>.
+
+<P>
+   You do not need the root password to install PVM.  After untarring the
    distribution, you will find installation instructions in pvm3/Readme.  A
    PVM manual is is also available from the PVM home page.  A PVM distribution
    and manual is also available from the GENESIS ftp site, but it is not
-   guaranteed to be the most recent version.  See the PVM document Readme.mp
-   for more specific issues about running PVM on multiprocessor machines.
-
+   guaranteed to be the most recent version. Most modern supercomputers
+   are more likely to use MPI.
 
 <P>
-<LI><B>Modify the Makefile:</B>
-   The Makefile.dist file in the ~pgenesis directory should be copied to
-   Makefile, which should then be edited for your platform type as
+<B>4. Modify the Makefile</B>
+
+<P>
+   The Makefile.dist file in the pgenesis directory should be copied
+   to Makefile, which should then be edited for your platform type as
    described by the comments in the Makefile.  Note that this is NOT
-   ~pgenesis/src/Makefile, which should be left as is.  For PVM, you must
-   set PVM_ROOT and PVM_ARCH in the Makefile, unless you have set them in
-   your .cshrc as described in the PVM manual.  The default setting for
-   PVM_ARCH should be correct in almost all cases.  You will have to
-   uncomment one of the machine/compiler dependent options for CC, CPP,
-   CFLAGS, LIBS, SYSLIBS, etc.  The GENESIS and INST_DIR macros should be
-   set to, respectively, the full pathnames of the serial GENESIS
-   installation and the directory in which parallel GENESIS should be
-   installed (usually the PGENESIS root directory).  The PARSRC_DIR
-   should be set to the full pathname of ~pgenesis.  Finally, uncomment
-   the EDITED=yes assignment; the Makefile will not function until this
-   is done.
+   pgenesis/src/Makefile, which should be left as is.  For PVM, you
+   must set PVM_ROOT and PVM_ARCH in the Makefile, unless you have set
+   them in your .cshrc as described in the PVM manual.  The default
+   setting for PVM_ARCH should be correct in almost all cases.  You
+   will have to uncomment one of the machine/compiler dependent
+   options for CC, CPP, CFLAGS, LIBS, SYSLIBS, etc. For an initial
+   installation attempt, we recommend that you leave the GCMALLOC
+   definitions commented out, unless you plan to run very large
+   network models. The GENESIS and INST_DIR macros should be set to,
+   respectively, the full pathnames of the serial GENESIS installation
+   and the directory in which parallel GENESIS should be installed
+   (usually the PGENESIS root directory).  The PARSRC_DIR should be
+   set to the full pathname of pgenesis. Finally, uncomment the
+   EDITED=yes assignment; the Makefile will not function until this is
+   done.
 
 <P>
-<LI><B> Compile the parallel libraries and executables:</B>
+<B>5. Compile the parallel libraries and executables</B>
+
+<P>
    There are several Makefile targets available for compilation:
 
 <PRE>
@@ -215,15 +267,20 @@ HREF="http://www.epm.ornl.gov/pvm/pvm_home.html">http://www.epm.ornl.gov/pvm/pvm
    execute:
 
 <PRE>
-     make install
-
+           make install
 </PRE>
-   If you do not use Xodus, first make nxgenesis for serial GENESIS, and
-   then execute "make nxinstall".
+
+<P>
+   If you do not use Xodus, first make and install nxgenesis for
+   serial GENESIS, and then execute "make nxinstall". If you wish to
+   install both pgenesis and nxpgenesis, follow this by making and
+   installing serial genesis.  Then make and install ("make install")
+   pgenesis. This order insures that the proper serial libraries are
+   linked with the parallel version.
 
 <P>
    If there are errors that are not ignored, then redo this command
-   piping the output into a file and submit it as a bug report.
+   piping the output into a file, and examine it for the source of errors.
 
 <PRE>
      make install &gt; &amp; ! make.out &amp;
@@ -239,56 +296,65 @@ HREF="http://www.epm.ornl.gov/pvm/pvm_home.html">http://www.epm.ornl.gov/pvm/pvm
 
 <PRE>
                 tail -f make.out        [ hit ^C to exit the tail ]
-
 </PRE>
+<P>
    Note that this is done in the pgenesis directory, NOT pgenesis/src.
    Also note that, unlike the case with serial GENESIS, 'make install'
    or 'make nxinstall' is used to both compile and install PGENESIS.
 
 <P>
-   This will create a shell script bin/pgenesis, which can be executed in
-   order to start PVM and run the proper pgenesis binary file.   The pgenesis
-   binary is created in bin/&lt;arch&gt;, where &lt;arch&gt; is one of the architectures
-   supported by PVM (e.g. ALPHA, LINUX, SGI5, SUN4, etc.)  It will also
-   create a .psimrc file that should be copied to your home directory.
+   This will create a shell script bin/pgenesis, which can be executed
+   in order to start MPI or PVM and run the proper pgenesis binary
+   file. The pgenesis binary is created in bin/&lt;arch&gt;, where &lt;arch&gt; is
+   one of the architectures supported by PVM (e.g. Linux, Alpha, SGI5,
+   SUN4, etc.) It will also create a startup/.psimrc file that should be
+   copied to your home directory.
 
 <P>
 If you find that you need to make changes in the Makefile that are not
 described in the Makefile.dist comments, or need to make other corrections
 in order to install and run pgenesis, please report them through the
 genesis-sim-users mailing list.
-</OL>
 
-<H1><A NAME="section-5.">TESTING PGENESIS</A></H1>
+<H2><A NAME="section-1.5.">TESTING PGENESIS</A></H2>
 
 <P>
-After copying .simrc to your home directory, set your path to include
-pgenesis/bin, in order to be able to execute the pgenesis script from any
-directory.  For example, if the Makefile setting for PARSRC_DIR is
-/usr/local/genesis2.4/pgenesis and your shell is tcsh or csh, use:
+After copying genesis/.simrc and pgenesis/startup/.psimrc (or the nx
+versions) to your home directory, set your path to include
+pgenesis/bin, in order to be able to execute the pgenesis script from
+any directory.  For example, if the Makefile setting for PARSRC_DIR is
+/usr/local/genesis-2.4/pgenesis and your shell is tcsh or csh, use:
 
 <PRE>
        set path = ($path /usr/local/genesis-2.4/pgenesis/bin)
-
 </PRE>
+<P>
 If you are using bash as your shell, use
 
 <PRE>
        PATH=$PATH:/usr/local/genesis-2.4/pgenesis/bin
-
 </PRE>
 
 <P>
-You can do a simple test of PGENESIS by running the demo.g simulation
-script in the pgenesis Scripts/orient1 directory.  After changing to this
-directory, start it with "pgenesis demo.g" with PVM, or
-"pgenesis -nodes 3 demo.g" with MPI.
+You can do a simple test of PGENESIS by running the hello.g simulation
+script in the pgenesis Scripts directory.  After changing to this
+directory, start it with "pgenesis -nodes 3 hello.g", or "pgenesis
+-nox -nodes 3 hello.g" to use nxpgenesis. If you are using PVM, the
+command is "pgenesis demo.g". 
 
-<P>This is a 3-way parallel decomposition of the genesis orient_tut
+<P>
+If this runs with no errors, you can try a more complex network
+simulation that uses graphics by running the demo.g simulation script
+in the pgenesis/Scripts/orient1 directory.  After changing to this
+directory, start it with "pgenesis -nodes 3 demo.g" with MPI or
+"pgenesis demo.g" with PVM.
+
+<P>
+This is a 3-way parallel decomposition of the genesis orient_tut
 simulation over 3 nodes.  The default is to create these nodes on a
 single processor.  (Of course, to achieve any advantage of using
 PGENESIS, you will want to use networked workstations or a multiple
-processor machine.  Details for doing this are given in the
+processor machine. Details for doing this are given in the
 documentation.)
 
 <P>
@@ -297,15 +363,11 @@ and clicking on "sweep_horiz" should produce a similar pattern of activity
 and plots.  A log file is created in o.out, so you will need to have write
 permission in the directory that contains this simulation.
 
-<P>
-For an even simpler test, or for debugging, you can try Scripts/hello.g.
-
-
-<H1><A NAME="section-6.">RUNNING PGENESIS</A></H1>
+<H2><A NAME="section-1.6.">RUNNING PGENESIS</A></H2>
 
 <P>
 Each user should be make sure that the PATH is set to include
-~pgenesis/bin, where ~pgenesis is the root of the PGENESIS installation,
+pgenesis/bin, where pgenesis is the root of the PGENESIS installation,
 i.e., the INST_DIR variable in the top level Makefile.  If the script files
 you wish to use are not in your home directory, the examples directory, or
 the directory in which you run parallel GENESIS, you will need to add their
@@ -319,25 +381,96 @@ You can run PGENESIS by typing "pgenesis scriptfile".
 There are several available options, which may be listed by
 typing "pgenesis -help".  The most commonly used of these are:
 <PRE>
+        -nodes &lt;num&gt;  = specifies number of nodes to use (with MPI)
         -config &lt;file&gt;      where &lt;file&gt; is a file containing a list
                               of machines to be used (1 per line)
         -nox                run without Xodus
         -debug tty          create a window for each pgenesis node
-        -browse             browse the documentation using netscape
 </PRE>
 
-
-<H1><A NAME="section-7.">FURTHER DOCUMENTATION</A></H1>
+<H2><A NAME="section-1.7.">RUNNING PGENESIS ON MULTIPROCESSOR MACHINES</A></H2>
 
 <P>
-For any use of PGENESIS beyond the simple test described below, see the
-documentation in the Doc and Hyperdoc directories.  You can access the HTML
-documentation by pointing your browser at Hyperdoc/index.html.  The
-README.mp file gives instructions for use on multiprocessor machines.
+PGENESIS is increasingly being used on supercomputer clusters, that have
+multiple processors, each having multiple cores. The processors are grouped
+into "nodes". Here we call this a "supercomputer node", to distinguish it
+from a "PGENESIS node", which is an MPI process. If suffient computer cores
+are available, each PGENESIS node in a simulation should be assigned to a
+separate core.
+
+<P>
+The installation of the garbage collector (Section 2) may be
+beneficial if running very large simulations or if memory resources are
+becoming an issue.
+<P>
+This version of PGENESIS is now available for running large-scale
+network simulations on supercomputers at the Neuroscience Gateway
+Portal (NSG). For further information, see the
+<A HREF="https://www.nsgportal.org">https://www.nsgportal.org</A> web page.
+
+<P>
+When running PGENESIS on machines such as these, it may be necessary
+to use a resource manager such as the Simple Linux Utility for
+Resource Management (SLURM) batch environment. This allows you to
+allocate the number of supercomputer nodes to be used, as well as the
+number of tasks (MPI processes or PGENESIS nodes) to be assigned to
+each supercomputer node. For a simulation that uses 26 PGENESIS nodes,
+on a machine that has only 24 cores per supercomputer nodes, it could
+be split into 13 cores on each of two supercomputer nodes with SLURM
+commands:
+
+<PRE>
+    #SBATCH --nodes=2<BR>
+    #SBATCH --ntasks-per-node=13
+</PRE>
+<P>
+In some installations, the resource manage will take care of the assigment
+of cores to nodes, and it will be sufficent to use a command like:
+
+<PRE>
+    genesis -nox -batch -notty -nodes 26 par-ACnet23.g
+</PRE>
+<P>
+In other cases, you may need to pass this information directly to
+mpirun (or the ibrun wrapper) instead of the C shell script
+pgenesis/bin/pgenesis. On such a machine, you will likely be using
+nxpgenesis compiled without the overhead of the XODUS libraries, or
+other libraries that are not needed in this environment.  You can use
+a command such as:
+
+<PRE>
+      mpirun -v --ppn 13 $PGENESIS/bin/Linux/nxpgenesis \
+      -altsimrc $PGENESIS/startup/.psimrc -notty -batch par-ACnet23.g
+</PRE>
+
+<P>
+Here "$PGENESIS" is the full path to genesis-2.4/pgenesis and the option
+"--ppn" gives the number of processes per supercomputer node. With ibrun,
+the option is "--npernode".
+
+<H2><A NAME="section-1.8.">FURTHER DOCUMENTATION</A></H2>
+
+<P>
+
+For any use of PGENESIS beyond the simple test described below, see
+the documentation in the pgenesis/Hyperdoc directory.  You can access
+the HTML documentation by pointing your browser
+at <A HREF="Hyperdoc/index.html"> Hyperdoc/index.html</A>. There is a
+very detailed description of the use of PGENESIS in the chapter:
+
+<P>
+"Large-Scale Simulation using Parallel GENESIS", Nigel H. Goddard and
+Greg Hood, Chapter 21 in Bower, J.M., and Beeman, D. (1998). The Book
+of GENESIS: Exploring Realistic Neural Models with the GEneral NEural
+SImulation System (2nd Ed.). Springer-Verlag, NY.
+(Free internet edition at:
+<A HREF="http://genesis-sim.org/GENESIS/bog/bog.html">http://genesis-sim.org/GENESIS/bog/bog.html/</A>)
+
+<P>
 The documentation also describes the use of PGENESIS on a network of
 workstations.  Please report any inaccuracies to the mailing list.
 
-<H1><A NAME="section-8.">DEBUGGING PGENESIS SCRIPTS</A></H1>
+<H2><A NAME="section-1.9.">DEBUGGING PGENESIS SCRIPTS</A></H2>
 
 <P>
 Normally the master node sends its output to your screen and
@@ -407,7 +540,7 @@ Common errors include:
            or some worker(s) hang and eventually timeout.  Examine
            your use of barriers.  Note that some commands contain
            implicit barriers, it is possible there is a bug in
-           the source - if you suspect this mail ngoddard@psc.edu.
+           the source.
 </PRE>
 
 <P>
@@ -415,7 +548,7 @@ For more information on the finer points of using PVM, refer
 to the PVM user guide.
 
 
-<H1><A NAME="section-9.">USER-EXTENDED PGENESIS</A></H1>
+<H2><A NAME="section-1.10.">USER-EXTENDED PGENESIS</A></H2>
 
 <P>
 This section is intended for GENESIS users who have written or are using
@@ -431,7 +564,7 @@ Assuming your libraries are subdirectories of a root directory I'll call
 MYPGEN, these are the steps you follow to create and run extended PGENESIS.
 
 <OL>
-  <LI>Copy ~pgenesis/lib/Usermake to MYPGEN/Makefile.  Modify the Makefile for
+  <LI>Copy pgenesis/lib/Usermake to MYPGEN/Makefile.  Modify the Makefile for
       your platform type as described in the Makefile.  You must set PVM_ROOT
       and PVM_ARCH in the Makefile, unless you have set them in your .cshrc as
       described in the PVM manual.  The default setting for PVM_ARCH should be
@@ -446,26 +579,29 @@ MYPGEN, these are the steps you follow to create and run extended PGENESIS.
       and USERDIR and set the installation root for your extended PGENESIS
       in USERINST.  Execute
 
+</OL>
 <PRE>
         'make nxextended'       to make extended PGENESIS without Xodus
         'make extended'         to make extended PGENESIS with Xodus.
 </PRE>
 
 <P>
-<LI> This should create USERINST/bin and USERINST/lib containing various
+   C. This should create USERINST/bin and USERINST/lib containing various
+<PRE>
       files.  The only one you need to be aware of is USERINST/bin/pgenesis.
       To run your extended PGENESIS, set your path to include USERINST/bin
-      early.  Then invoke extended PGENESIS with  'pgenesis'
+      early.  Then invoke extended PGENESIS with
+
+        'pgenesis'
+
       just as you would for vanilla PGENESIS.
-</OL>
+</PRE>
+
+
+<H2><A NAME="section-1.11.">SYSTEM-SPECIFIC IDIOSYNCRACIES</A></H2>
 
 <P>
-
-
-<H1><A NAME="section-10.">SYSTEM-SPECIFIC IDIOSYNCRACIES</A></H1>
-
-<P>
-When using PVM-based PGENESIS on various SMPs:
+When using PVM-based PGENESIS on various older SMPs:
 
 <P>
    On symmetric multiprocessors (e.g, Solaris multiprocessor, SGI Challenge,
@@ -483,7 +619,7 @@ When using PVM-based PGENESIS on various SMPs:
    On ALPHA and HP SMPs, we have found that PVM does not always release
    the shared memory segments and semaphores it uses.  Unreleased items
    can use up all available shared memory/semaphore resource.  The script
-   ~pgenesis/bin/ipclean attempts to release these resources.  You can use
+   pgenesis/bin/ipclean attempts to release these resources.  You can use
    the command "ipcs" to see the status of the shared memory system.  In
    extreme cases a reboot is necessary to clean it out.
 
@@ -522,6 +658,7 @@ On HPUX SMPs:
      XLIB = /usr/lib/X11R6
 </PRE>
 
+
 <P>
 On Blue Gene/L (BGL) machines:
 
@@ -537,7 +674,6 @@ On Blue Gene/L (BGL) machines:
 <P>
    Also remember to uncomment the "USE_MPI = 1" and following lines
    since PGENESIS needs to use MPI on BGL.
-
 
 </BODY>
 </HTML>

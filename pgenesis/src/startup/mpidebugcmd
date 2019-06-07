@@ -1,0 +1,1 @@
+mpirun -gdb -np $num_nodes $exec $nargv

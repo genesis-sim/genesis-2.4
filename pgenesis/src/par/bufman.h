@@ -1,8 +1,14 @@
 #include <stddef.h>
+#include <stdint.h>
 /* size of chunks in which free lists are realloced */
 #define FREE_BLK 128
 
 /*
+ * Revision 1.1  2018/08/08 15:20:00 jcrone
+ * Redefined types in BufferManager struct to replace short with
+ * int32_t because integer overflow issues were occuring with large
+ * simulation sizes.
+
 
 Buffer manager manages a vector <item> of items that will be accessed
 at runtime by indices into the buffer.  The same indices index <key>
@@ -32,13 +38,13 @@ typedef ptrdiff_t KeyType;	/* ANSI standard in stddef.h */
 typedef struct _blocked_buffer_manager {
   void ** item;			/* the array of arrays of items */
   KeyType ** key;		/* the array of arrays of keys (can be addr) */
-  short siz;			/* the size of the arrays of items/keys */
-  short blkcnt;			/* the size of the arrays <item> and <key> */
-  short blkinc;			/* the size in which item is expanded */
-  short eltsiz;			/* the byte size of an item */
+  int32_t siz;			/* the size of the arrays of items/keys */
+  int32_t blkcnt;		/* the size of the arrays <item> and <key> */
+  int32_t blkinc;		/* the size in which item is expanded */
+  int32_t eltsiz;		/* the byte size of an item */
   IndexType * fre;		/* the array of free indices */
-  int fresiz;			/* the size of the array of free indices */
-  int free_cnt;			/* the number of free indices */
+  int32_t fresiz;		/* the size of the array of free indices */
+  int32_t free_cnt;		/* the number of free indices */
 } BufferManager;
 
 /* NOTE: in these structs it is required that <refs> be the first field! */

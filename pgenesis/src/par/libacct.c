@@ -2,6 +2,10 @@
 
 /*
  * $Log: libacct.c,v $
+**
+** Revision 1.3  2019/01/16 09:00:0  jcrone
+** Added gcmalloc header file
+**
  * Revision 1.2  2005/09/29 23:11:12  ghood
  * removed T3D code
  *
@@ -26,6 +30,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include "acct.h"
+#include "gcmalloc_ext.h"
 
 #define MAX_ACCTS	80
 

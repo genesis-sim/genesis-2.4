@@ -2,6 +2,14 @@ static char rcsid[] = "$Id: par_connect.c,v 1.2 2005/09/29 23:12:01 ghood Exp $"
 
 /*
  * $Log: par_connect.c,v $
+ *
+ * Revision 1.3  2018/08/08 13:13:00 jcrone
+ * Moved generation of random number for determining whether a
+ * connection should be made from the destination node to the source
+ * node. This ensures that the connectivity is repeatable from one
+ * simulation to another.
+ * Fixed memory leak in CompleteRemoteMessages().
+ *
  * Revision 1.2  2005/09/29 23:12:01  ghood
  * updated for PGENESIS 2.3
  *
@@ -25,8 +33,11 @@ static char rcsid[] = "$Id: par_connect.c,v 1.2 2005/09/29 23:12:01 ghood Exp $"
  * Revision 1.11  1997/03/27 06:26:45  ngoddard
  * mods to scale up to larger networks
  *
- * Revision 1.10  1997/02/20 21:13:33  ngoddard
- * support for xpvm; using pvm_trecv for timeout ops; fixed bugs related to futures; provide user warnings when appears stalled; barrer and barrierall take a third argument: how long to wait before stall is assumed; beginnings of performance stats package
+ * Revision 1.10 1997/02/20 21:13:33 ngoddard 
+ * support for xpvm; using pvm_trecv for timeout ops; fixed bugs
+ * related to futures; provide user warnings when appears stalled;
+ * barrer and barrierall take a third argument: how long to wait
+ * before stall is assumed; beginnings of performance stats package
  *
  * Revision 1.9  1997/02/18 04:28:59  ngoddard
  * number literal slots passed once at setup time, no longer on each step
@@ -40,8 +51,8 @@ static char rcsid[] = "$Id: par_connect.c,v 1.2 2005/09/29 23:12:01 ghood Exp $"
  * Revision 1.6  1997/01/21 22:20:19  ngoddard
  * paragon port
  *
- * Revision 1.5  1997/01/21 20:19:42  ngoddard
- * bug fixes for zones, implement string literal fields, first release of pgenesis script
+ * Revision 1.5 1997/01/21 20:19:42 ngoddard bug fixes for zones,
+ * implement string literal fields, first release of pgenesis script
  *
  * Revision 1.4  1996/08/19 21:34:02  ghood
  * Made pvm calls type-consistent with their parameters.
@@ -630,6 +641,7 @@ char * add_remote_msg(argc,argv, async, future, relative, pconnect, src_region,
   short volumeq;
   char res[MAX_RESULT_LEN];
   char *saved_destination;
+  float isConnected;
   
   /* find the postmaster */
   if ((pm = GetPostmaster()) == NULL)
@@ -785,13 +797,21 @@ char * add_remote_msg(argc,argv, async, future, relative, pconnect, src_region,
 	    }
 	}
 
+
+      /* Determine whether a connection is made on the src_node rather */
+      /* than the dest_node */
+      if (pconnect >= 1.0 || urandom() <= pconnect)
+        isConnected = 2.0;
+      else
+        isConnected = 0.0;
+
       /* add the message spec to those being buffered */
       /* this call empties the buffer if it is too full */
       if (!BufferAddMsg(pm, src_list, dst_path, dst_node, typename, nslot,
 			sarray, slotname, slottype,
 			string_val, string_cnt, string_len,
 			src_path, field_map, field_val, future,
-			volumeq, relative, pconnect, src_region,
+			volumeq, relative, isConnected, src_region,
 			nsrc_regions, dst_region, ndst_regions))
 	{
 	  FreeElementList(src_list);
@@ -1416,7 +1436,7 @@ HandleSingleRemoteMessageRequest (pm, src_node)
 					   src_locs[i].x,
 					   src_locs[i].y,
 					   src_locs[i].z) &&
-	      (pconnect >= 1.0 || urandom() <= pconnect))
+	      (pconnect >= 1.0))
 	    {
 	      conn_matrix[i*dst_list->nelements + j] = 1;
 	      any_src_used = TRUE;
@@ -1757,7 +1777,6 @@ char * AssignOutDataField(pm, src_node, idx)
 /**********************************************************************
  *		PHASE 3:  FINAL SETUP AT SOURCE
  **********************************************************************/
-
 CompleteRemoteMessages(pm)
      Postmaster * pm;
 {
@@ -1768,14 +1787,16 @@ CompleteRemoteMessages(pm)
   
   int held_idx, ndsts, rstatus;
   MsgSpec * msg;
+  MsgSpec * prev;
   Implementation * ipm = pm->ipm;
   unsigned int future;
 
   if (pvm_upkint(&held_idx, 1, 1) < 0)
     PvmError();
-  for (msg = (MsgSpec *) ReleasePointer(ipm, held_idx);
+  for (msg = (MsgSpec *) ReleasePointer(ipm, held_idx), prev=NULL;
        msg != NULL;
-       msg = msg->next){
+       prev=msg, msg = msg->next){
+    free(prev);
     if (pvm_upkuint(&future, 1, 1) < 0)
       PvmError();
     else {
@@ -1788,7 +1809,8 @@ CompleteRemoteMessages(pm)
       if (ndsts < 0)
 	fprintf(stderr, "raddmsg: %s to %s@%d failed, no destination found\n",
 		msg->src_path, msg->dst_path, msg->dst_node);
-      ReclaimMsgSpec(msg); continue;
+      ReclaimMsgSpec(msg); 
+      continue;
       /* TODO recover fields from pending field map */
     }
     if (pvm_upkint(&rstatus, 1, 1) < 0)
@@ -1804,6 +1826,7 @@ CompleteRemoteMessages(pm)
     /* reclaim space */
     ReclaimMsgSpec(msg);
   }				/* for each msg */
+  free(prev);
   return 1;
 }
 

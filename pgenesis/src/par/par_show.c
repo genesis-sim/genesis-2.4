@@ -2,6 +2,10 @@ static char rcsid[] = "$Id: par_show.c,v 1.2 2005/09/29 23:17:47 ghood Exp $";
 
 /*
  * $Log: par_show.c,v $
+ * Revision 1.3  2018/08/08 15:45:00 jcrone
+ * Added header for explict function declaration of FieldHashFind(). This 
+ * eliminated a rare segmentation fault we were encountering
+ *
  * Revision 1.2  2005/09/29 23:17:47  ghood
  * added several free() calls to fix memory leaks
  *
@@ -56,7 +60,7 @@ static char rcsid[] = "$Id: par_show.c,v 1.2 2005/09/29 23:17:47 ghood Exp $";
 #include "newconn_defs.h"
 #include "newconn_struct.h"
 #include "pvm-defs.h"
-
+#include "shell_func_ext.h"
 
 /* EXTERNAL DECLARATIONS */
 /* It would be better to just include newconn_ext.h, but that includes sim_ext,

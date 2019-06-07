@@ -4,11 +4,11 @@
 #
 # USAGE:
 #   pgenesis [-config <spec>]     # where spec is a filename containing the
-#                                 #   list of machines to be used (1 per line) --
+#                                 #   list of machines to be used (1 per line)
 #				  #   this should be in the format of a PVM
 #				  #   hostfile, since it will be passed to the
 #				  #   PVM daemon upon startup
-#            [-skip]              # says skip all the checking and cleaning --
+#            [-skip]              # says skip all the checking and cleaning
 #				  #   just execute parallel genesis
 #            [-nohalt]            # says don't halt pvm or clean up after
 #                                 #   pgenesis has run
@@ -21,11 +21,15 @@
 #		     [totalview]  #    debugger on workers, gdb = use GNU gdb
 #                                 #    debugger on workers, totalview = use
 #				  #    Cray totalview debugger
-#	     [-nodes <num>]       # (PARAGON-only) specifies partition size to use
-#	     [-partition <name>   # (PARAGON-only) partition to use (default: open)
+#	     [-nodes <num>]       # (PARAGON and T3D/E-only) specifies
+#				  #    partition size to use
+#	     [-partition <name>   # (PARAGON only) partition to use
+#				  #    (default: open)
+#	     [-browse]		  # attempt to run netscape on the html docs
 #
 #  Users may also modify the behavior of this script by setting the following
 #         environment variables:
+#     PGENESIS_ROOT:  specifies the directory
 #     PVM_ROOT:	      specifies which PVM to use
 
 # 
@@ -38,6 +42,18 @@
 #	Apr 97 -- made more site-independent, Greg Hood
 #	Jun 97 -- Paragon support, Nigel Goddard
 #	Jul 97 -- user extended PGENESIS support, Nigel Goddard
+#       Aug 97 -- improved default handling, Greg Hood
+#       May 00 -- added "quit" to all piped commands to pvm console to
+#                   avoid segmentation faults on LINUX, Greg Hood
+#       Dec 01 -- removed "quit" because it no longer seems to be needed
+#                   with LINUX, and actually breaks things on other
+#                   architectures; also added "sleep 1" after pvm daemon
+#                   startup because there is apparently a race condition
+#                   where pgenesis will generate "pvm_trecv(): Can't contact
+#                   local daemon" messages if it starts up before the
+#                   pvm daemon has finished its own initialization, Greg Hood
+#       Aug 05 -- removed support for Paragon, Cray T3D/T3E; added support
+#                   for MPI-based architectures, including Cray XT3
 #
 # Phases:
 # 1. determine default directories
@@ -47,7 +63,7 @@
 # 5. process command line arguments
 # 6. general initialization
 # 7. architecture-specific initialization
-# 8. check .cshrc don't print to tty
+# 8. check that .cshrc or .bashrc doesn't print to tty
 # 9. check pvm links are set and accessible
 # 10. make sure .simrc file is present
 # 11. check .rhosts set correctly
@@ -58,17 +74,18 @@
 
 #---------------------------------------------------------------------------*
 # VARIABLES WHICH MAY BE MODIFIED AFTER INSTALLATION AT PARTICULAR SITES
-#      after installation the default locations should be set to those
-#      used during the installation 
+#      the installation process sets these default locations to actual
+#      directories when creating the pgenesis script, so it is likely that
+#      nothing will have to be modified
 #---------------------------------------------------------------------------*
 
 #     PGENESIS_SRC: the location of vanilla PGENESIS source
-setenv PGENESIS_SRC /home/book2/ngoddard/dr2.1.2/pgenesis
+setenv PGENESIS_SRC /usr/local/genesis-2.4/pgenesis
 
 #     PGENESIS_INST: the location of vanilla PGENESIS installation (libs, bins)
-setenv PGENESIS_INST /home/book2/ngoddard/dr2.1.2/install
+setenv PGENESIS_INST /usr/local/genesis-2.4/pgenesis
 
-#     PGENESIS_EXTENDED: the location of extended PGENESIS source
+#     PGENESIS_EXTSRC: the location of extended PGENESIS source
 setenv PGENESIS_EXTSRC _extpgenesis-src_
 
 #     PGENESIS_EXTLIBS: the names of the extension library directories
@@ -78,17 +95,54 @@ setenv PGENESIS_EXTLIBS _extpgenesis-libs_
 setenv PGENESIS_EXTINST _extpgenesis-inst_
 
 #     GENESIS_DEFAULT: the location for serial genesis
-setenv GENESIS_DEFAULT	/home/book2/ngoddard/dr2.1.2/genesis
+setenv GENESIS_DEFAULT	/usr/local/genesis-2.4/genesis
+
+#     USE_MPI: set to 1 if we are using MPI
+setenv USE_MPI          01
+
+#     USE_PVM: set to 1 if we are using PVM
+setenv USE_PVM          0
 
 #     PVM_DEFAULT: the PVM root directory on the local machine
-setenv PVM_DEFAULT	/usr/local/pvm3
+setenv PVM_DEFAULT	/usr/local/genesis-2.4/pgenesis
+
+#     PVM_ARCH: the PVM architecture type
+setenv PVM_ARCH		Linux
 
 #     PGENESIS_TMP: the area pgenesis uses for scratch files
 setenv PGENESIS_TMP	/tmp
 
+
 #---------------------------------------------------------------------------*
 # Phase 1: determine default directories
+#            PGENESIS_ROOT
+#            PGENESIS_CODE
+#            GENESIS_ROOT
+#            PVM_ROOT
 #---------------------------------------------------------------------------*
+
+# if PGENESIS_ROOT is not defined, assume it is one directory above where
+# this executable was found
+if (! $?PGENESIS_ROOT) then
+    set executable=$0
+    if ($executable == pgenesis) then
+	set thisdir=.
+    else
+	set thisdir=$executable:h
+    endif
+    setenv PGENESIS_ROOT `cd $thisdir/..; pwd`
+endif
+
+#   if these variables were not set by installation, then set them here
+if ( `echo $PGENESIS_SRC | sed s/_/+/g` == +pgenesis-src+ ) then
+    setenv PGENESIS_SRC $PGENESIS_ROOT
+endif
+if ( `echo $PGENESIS_INST | sed s/_/+/g` == +pgenesis-inst+ ) then
+    setenv PGENESIS_INST $PGENESIS_ROOT
+endif
+if ( `echo $PVM_DEFAULT | sed s/_/+/g` == +pvm+ ) then
+    setenv PVM_DEFAULT $PGENESIS_ROOT/../pvm3
+endif
 
 #	PGENESIS_ROOT is where the binaries are held
 #	PGENESIS_CODE is a path list for gdb to find sources
@@ -116,60 +170,54 @@ if (! -r $PGENESIS_TMP) then
 endif
 
 if (! $?GENESIS_ROOT) then
-	setenv GENESIS_ROOT $GENESIS_DEFAULT
-endif
-if (! -r $GENESIS_ROOT) then
-	echo "GENESIS_ROOT (currently $GENESIS_ROOT) must be set to a"
-	echo "valid directory"
-	exit
+# try to set it
+	if ( `echo $GENESIS_DEFAULT | sed s/_/+/g` == +genesis+ ) then
+		if ( -r $PGENESIS_ROOT/../genesis ) then
+			setenv GENESIS_ROOT $PGENESIS_ROOT/../genesis
+		else
+			echo "Warning: GENESIS_ROOT not set.  You need to set
+it to the location"
+			echo "of serial GENESIS.  Otherwise serial GENESIS scripts will be unavailable."
+			setenv GENESIS_ROOT $PGENESIS_ROOT
+		endif
+	else
+		setenv GENESIS_ROOT $GENESIS_DEFAULT
+	endif
 endif
 
 #     if the user has not explicitly specified PVM_ROOT
 #	then the defaults will be used
-if (! $?PVM_ROOT) then
+if ( $USE_PVM ) then
+  if (! $?PVM_ROOT) then
 	setenv PVM_ROOT $PVM_DEFAULT
-endif
-if (! -r $PVM_ROOT) then
+  endif
+  if (! -r $PVM_ROOT) then
 	echo "PVM_ROOT (currently $PVM_ROOT) must be set to a"
 	echo "valid directory"
 	exit
+  endif
 endif
 
 #---------------------------------------------------------------------------*
 # Phase 2: determine architecture type
 #---------------------------------------------------------------------------*
 
-if (! $?PVM_ARCH) then
+if ( $USE_PVM) then
+  if (! $?PVM_ARCH) then
     if (-x $PVM_ROOT/lib/pvmgetarch) then
         setenv PVM_ARCH `$PVM_ROOT/lib/pvmgetarch`
     else
         echo "Cannot execute $PVM_ROOT/lib/pvmgetarch"
         exit
     endif
+  endif
+
+  test $PVM_ARCH != ALPHA
+  set alpha=$status
+  test $PVM_ARCH != SGI5
+  set sgi5=$status
 endif
 
-# check if this CRAY is really a T3E
-if ( $PVM_ARCH == CRAY ) then
-    if (-x /etc/diag/olperi) then
-	setenv PVM_ARCH T3E
-    endif
-endif
-
-test $PVM_ARCH != PGON
-set pgon=$status
-test $PVM_ARCH != CRAY
-set cray=$status
-test $PVM_ARCH != ALPHA
-set alpha=$status
-test $PVM_ARCH != SGI5
-set sgi5=$status
-test $PVM_ARCH != T3E
-set t3e=$status
-if ($cray || $t3e) then
-    set t3x=1
-else
-    set t3x=0
-endif
 
 #---------------------------------------------------------------------------*
 # Phase 3: set general defaults
@@ -194,15 +242,6 @@ set remote=
 # Phase 4: set architecture-specific defaults
 #---------------------------------------------------------------------------*
 
-if ($pgon) then
-  if ($?NX_DFLT_SIZE) then
-	set num_nodes=$NX_DFLT_SIZE
-  else
-	set num_nodes=0
-  endif
-  set partition="open"
-endif
-
 #---------------------------------------------------------------------------*
 # Phase 5: process command line arguments
 #---------------------------------------------------------------------------*
@@ -211,9 +250,8 @@ while ($#argv > 0)
 	switch ($1)
 	case -help:
 		echo "pgenesis takes the usual genesis flags plus these additional flags:"
-		if ($pgon) then
-		  echo "  -nodes <num>  = specifies partition size to use"
-		  echo "  -partition <name>  = partition to use (default: open)"
+		if ($USE_MPI) then
+		  echo "  -nodes <num>  = specifies number of nodes to use"
 		else
 		  echo "  -config <file> =  specifies a file listing the cpus to use"
 		endif
@@ -224,6 +262,7 @@ while ($#argv > 0)
 		echo "  -debug [tty|dbx|gdb|totalview] = each node has a window:"
 		echo "         plain, under dbx, under emacs/gdb, or via totalview"
 		echo "  -help  = print this information"
+		echo "  -browse  = browse the PGENESIS documentation with netscape"
 		exit
 		breaksw
 	case -debug:
@@ -234,7 +273,7 @@ while ($#argv > 0)
 			echo "valid debug modes are tty, dbx, gdb and totalview, $1 not recognized, using tty"
 			set debug="tty"
 		endif
-		setenv PGENESIS_DEBUG
+		setenv PGENESIS_DEBUG 1
 		breaksw
 	case -nox:
 		set nox=1
@@ -246,53 +285,26 @@ while ($#argv > 0)
 		set nohalt=1
 		breaksw
 	case -config:
-		if ($pgon) then
-		  echo -config option is not valid on PARAGON.
-		  echo Use -nodes and -partition options instead.
-		  exit
-		else if ($t3x) then
-		  echo -config option is not valid on T3D/T3E.
-		  echo Use -nodes option instead.
-		  exit
-		else		
-		  shift
-		  set single=0
-			# strip comments and change * to @
-		  set p=`cat $1 | sed 's/#.*//g' | sed s/'*'/@/g`
-			# strip out components with * or @ or =, leaving cpus
-		  while ($#p > 0)
-			echo $p[1] | grep '[@=]' >& /dev/null
-			if ($status) then
-				set remote = "$remote $p[1]"
-			endif
-			shift p
-		  end
-		  set config=$1
-		endif
+		shift
+		set single=0
+		# strip comments and change * to @
+		set p=`cat $1 | sed 's/#.*//g' | sed s/'*'/@/g`
+		# strip out components with * or @ or =, leaving cpus
+		while ($#p > 0)
+		  echo $p[1] | grep '[@=]' >& /dev/null
+		  if ($status) then
+		    set remote = "$remote $p[1]"
+                  endif
+		  shift p
+		end
+		set config=$1
 		breaksw
 	case -nodes:
-		if ($pgon) then
+	        if ($USE_MPI) then
 		  shift
 		  set num_nodes=$1
-		  if ($?NX_DFLT_SIZE) then
-			echo resetting NX_DFLT_SIZE to $num_nodes
-		  endif
-		  setenv NX_DFLT_SIZE $num_nodes
-		else if ($t3x) then
-		  shift
-		  set num_nodes=$1
-		  setenv MPP_NPES $num_nodes
-		else
-		  echo -nodes option is only valid for PARAGON and T3D/T3E
-		  exit
-		endif
-		breaksw
-	case -partition:
-		if ($pgon) then
-		  shift
-		  set partition=$1
-		else
-		  echo -partition option is only valid for PARAGON
+  		else
+                  echo -nodes option is only valid for MPI-based installations
 		endif
 		breaksw
 	case -altsimrc:
@@ -304,6 +316,10 @@ while ($#argv > 0)
 		breaksw
 	case -v:
 		set vrbose=1
+		breaksw
+	case -browse:
+		netscape $PGENESIS_ROOT/Hyperdoc/welcome.html &
+		exit
 		breaksw
 	default:
 		set nargv="$nargv $1"
@@ -318,9 +334,11 @@ end
 # Phase 6: general initialization
 #---------------------------------------------------------------------------*
 
-if ($vrbose) then
+if ($USE_PVM) then
+  if ($vrbose) then
 	echo PVM_ROOT: $PVM_ROOT
 	echo PVM_ARCH: $PVM_ARCH
+  endif
 endif
 
 # add default .psimrc if not specified
@@ -329,58 +347,37 @@ if (! $altsimrc) then
 	@ nargc+=2
 endif
 
+#check that GENESIS_ROOT is valid if debugging with gdb
+if (x$debug == xgdb && ! -r $GENESIS_ROOT) then
+    echo "GENESIS_ROOT (currently $GENESIS_ROOT) must be set to a"
+    echo "valid directory"
+    exit
+endif
 
 #---------------------------------------------------------------------------*
 # Phase 7: architecture-specific initialization
 #---------------------------------------------------------------------------*
 
-if ($pgon) then
-	setup paragon >& /dev/null
-	setup pvm >& /dev/null
-endif
-
-if ($t3x) then
-    if (! $nox) then
-	echo "Assuming -nox on the T3D/T3E"
-	set nox=1
-    endif
-    if ( x$debug != x) then
-	if ($debug != totalview) then
-	    echo "Only the totalview debugger may be used on the T3D/T3E"
-	    exit
-	endif
-    endif
-else
-    if ( x$debug == xtotalview) then
-	echo "The totalview debugger is only available on the T3D/T3E"
-	exit
-    endif
-endif
-
+#---------------------------------------------------------------------------*
+# Phase 8: check that .cshrc doesn't produce output
+#---------------------------------------------------------------------------*
 if (! $skip) then
   if ($vrbose) then
 	echo number of args: $nargc
 	echo which are: $nargv
 	echo simrc is: $simrc
-	if ($pgon) then
-	  echo number nodes: $num_nodes
-	else
-	  echo remote cpus: $remote
-	endif
+	echo remote cpus: $remote
   endif
 
-#---------------------------------------------------------------------------*
-# Phase 8: check .cshrc don't produce output
-#---------------------------------------------------------------------------*
- echo "performing checks..."	
- if (! $pgon && ! $t3x) then
-  if ($vrbose) then
+  echo "performing checks..."	
+  if ($USE_PVM) then
+    if ($vrbose) then
 	echo "checking .cshrc ..."
-  endif
-  csh -f $HOME/.cshrc  </dev/null >$tmp
-  if ( ! -z $tmp) then
-	echo 'Your ~/.cshrc produces output for non-interactive shells\!'
-	echo 'Edit your .cshrc to remedy this, e.g. add'
+    endif
+    csh -f $HOME/.cshrc  </dev/null >$tmp
+    if ( ! -z $tmp) then
+        echo 'Your ~/.cshrc produces output for non-interactive shells\!'
+  	echo 'Edit your .cshrc to remedy this, e.g. add'
 	echo '     if (! $?prompt ) then'
 	echo '         ...'
         echo '     endif'
@@ -388,90 +385,72 @@ if (! $skip) then
 	echo 'To check, verify that "(csh -f ~/.cshrc)" prints nothing'
 	rm -f $tmp
 	exit
+    rm -f $tmp
   endif
-
-  rm -f $tmp
- endif  # ! $pgon && ! $t3x
+endif
 
 #---------------------------------------------------------------------------*
 # Phase 9: check pvm links are set and have proper permissions              *
 #---------------------------------------------------------------------------*
- if (! $t3x) then
-  if (! $?PVM_EXPORT) then
+if (! $skip) then
+  if ($USE_PVM) then
+    if (! $?PVM_EXPORT) then
 	setenv PVM_EXPORT DISPLAY
-  endif
-  setenv PVM $PVM_ROOT/lib/pvm
-  if (! -x $PVM) then
-	echo "can't find pvm executable: $PVM"
+    endif
+    setenv PVM $PVM_ROOT/lib/pvm
+    if (! -x $PVM) then
+  	echo "can't find pvm executable: $PVM"
 	exit
-  endif
-  if ($pgon) then
-	setenv PVMD $PVM_ROOT/lib/$PVM_ARCH/pvmd3
-	if (! -x $PVMD ) then
-	  echo "can't find pvmd3 executable: $PVMD"
-	  exit
-	endif
-  endif
-  # set the debugger if it isn't set
-  if (! $?PVM_DEBUGGER) then
+    endif
+    # set the debugger if it isn't set
+    if (! $?PVM_DEBUGGER) then
 	if (x$debug != x) then	# set it to a PGENESIS debugger
 		setenv PVM_DEBUGGER $PGENESIS_ROOT/lib/$debug"debugger"
 	else			# set it to the default debugger
 		setenv PVM_DEBUGGER debugger
 	endif
-  endif
-  if (! -x $PVM_DEBUGGER && ! -x $PVM_ROOT/lib/$PVM_DEBUGGER) then
+    endif
+    if (! -x $PVM_DEBUGGER && ! -x $PVM_ROOT/lib/$PVM_DEBUGGER) then
 	echo "can't find executable pvm debugger : $PVM_DEBUGGER"
 	echo "	nor: $PVM_ROOT/lib/$PVM_DEBUGGER"
 	exit
-  endif
+    endif
 
-  setenv PVM_EXPORT "PVM_DEBUGGER:$PVM_EXPORT"
-  if ($vrbose) then
+    setenv PVM_EXPORT "PVM_DEBUGGER:$PVM_EXPORT"
+    if ($vrbose) then
 	echo "using $PVM_DEBUGGER to debug workers..."
 	echo "PVM_EXPORT is: $PVM_EXPORT"
-  endif
+    endif
 
-  if ($vrbose) then
-	echo "checking executables are accessible to PVM..."
-  endif
+    if ($vrbose) then
+  	echo "checking executables are accessible to PVM..."
+    endif
 
-  # make PVM_ROOT directories as needed
-  if ( ! -d ~/pvm3) then
-	mkdir -p ~/pvm3
-  endif
-  setenv MY_PVM_ROOT ~/pvm3
+    # make PVM_ROOT directories as needed
+    if ( ! -d ~/pvm3) then
+  	mkdir -p ~/pvm3
+    endif
+    setenv MY_PVM_ROOT ~/pvm3
 
-  # link executables to where PVM can find them
-  if ($pgon) then
-    set EXE_EXT=.node
-  else
-    set EXE_EXT=
-  endif
-  if ( -d $PGENESIS_ROOT/bin/$PVM_ARCH) then
-	if (! -d $MY_PVM_ROOT/bin/$PVM_ARCH) then
+    # link executables to where PVM can find them
+    if ( -d $PGENESIS_ROOT/bin/$PVM_ARCH) then
+      if (! -d $MY_PVM_ROOT/bin/$PVM_ARCH) then
 		mkdir -p $MY_PVM_ROOT/bin/$PVM_ARCH
+      endif
+      foreach exe (minpgenesis nxpgenesis pgenesis)
+	if (-x $PGENESIS_ROOT/bin/$PVM_ARCH/$exe ) then
+	  if ($vrbose) then
+	    echo "ln -s $PGENESIS_ROOT/bin/$PVM_ARCH/$exe $MY_PVM_ROOT/bin/$PVM_ARCH/$exe"
+          endif
+          rm -f $MY_PVM_ROOT/bin/$PVM_ARCH/$exe
+	  ln -s $PGENESIS_ROOT/bin/$PVM_ARCH/$exe $MY_PVM_ROOT/bin/$PVM_ARCH/$exe
 	endif
-	foreach exe (minpgenesis nxpgenesis pgenesis)
-		if (-x $PGENESIS_ROOT/bin/$PVM_ARCH/$exe$EXE_EXT ) then
-			if ($vrbose) then
-				echo "ln -s $PGENESIS_ROOT/bin/$PVM_ARCH/$exe$EXE_EXT $MY_PVM_ROOT/bin/$PVM_ARCH/$exe"
-			endif
-			rm -f $MY_PVM_ROOT/bin/$PVM_ARCH/$exe
-			ln -s $PGENESIS_ROOT/bin/$PVM_ARCH/$exe$EXE_EXT $MY_PVM_ROOT/bin/$PVM_ARCH/$exe
-		endif
-	end
-  endif
+      end
+    endif
 
-  # set regular Unix permissions
-  echo "making your home directory world-readable..."
-  foreach d (~/pvm3 ~/pvm3/bin ~/pvm3/bin/$PVM_ARCH)
-	chmod a+rx $d
-  end
-
-  # set AFS permissions if this appears to be an AFS directory
-  set lead=`(cd $HOME; pwd) | sed s+/+' '+g | awk '{print $1}'`
-  if ($lead == "afs") then
+    # set AFS permissions if this appears to be an AFS directory
+    set lead=`(cd $MY_PVM_ROOT; pwd) | sed s+/+' '+g | awk '{print $1}'`
+    if ($lead == "afs") then
 	if ($vrbose) then
 		echo "checking afs permissions"
 	endif
@@ -487,18 +466,19 @@ if (! $skip) then
 	endif
         cat $tmp | grep system:anyuser | grep rl >& /dev/null
 	if ($status) then
-		echo "Setting your home directory world readable for pvm"
-		$fs sa $HOME system:anyuser rl
+           echo "Your home directory may need to be made world-readable for pvm"
 	endif
 	foreach d (~/pvm3 ~/pvm3/bin ~/pvm3/bin/$PVM_ARCH)
-		$fs sa $d "system:anyuser" rl
+           $fs sa $d "system:anyuser" rl
 	end
+    endif
   endif
- endif   # ! $t3x
+endif
 
 #---------------------------------------------------------------------------*
 # Phase 10: make sure .simrc file is present                                 *
 #---------------------------------------------------------------------------*
+if (! $skip) then
   if ($vrbose) then
 	echo checking for simrc ...
   endif
@@ -515,64 +495,29 @@ if (! $skip) then
 		echo "found simrc"
 	endif
   endif
+endif
 
 #---------------------------------------------------------------------------*
 # Phase 11: check .rhosts set appropriately
 #---------------------------------------------------------------------------*
 
- if (! $t3x) then
-  if ($vrbose) then
-  	echo "checking these cpus accessible to PVM: `hostname` $remote ..."
-  endif
-  if ( ! -r ~/.rhosts ) then
-	echo "Creating .rhosts file in your home directory..."
-	cat </dev/null >~/.rhosts
-  endif
-  rm -f $tmp
-  cat </dev/null >$tmp2
-  foreach m (`hostname` $remote)
-	grep $m ~/.rhosts |grep $USER >& /dev/null
-	if ($status) then
-	    if (-r $PGENESIS_INST/startup/rhosts.map) then
-		awk '$1 == "'$m'" {print $2, "'$USER'"}' $PGENESIS_INST/startup/rhosts.map >> $tmp
-		if (-z $tmp) then
-		    echo $m $USER >> $tmp2
-		else
-		    cat $tmp >> $tmp2
-		endif
-	    else
-		echo $m $USER >> $tmp2
-	    endif
-	endif
-  end
-  if (! -z $tmp2) then
-	echo "Adding the following lines to your .rhosts file:"
-	cat $tmp2
-	echo "---End of additions---"
-	cat $tmp2 >> ~/.rhosts 
-  endif
- endif   # ! $t3x
+# obsolete -- everyone should be using ssh-based PVM for security reasons!
 
 #---------------------------------------------------------------------------*
 # Phase 12: start pvm daemon
 #---------------------------------------------------------------------------*
 
- if (! $t3x) then
+if (! $skip && $USE_PVM) then
   if ($vrbose) then
-	echo "starting PVM daemon ($PVM)..."
+    echo "starting PVM daemon ($PVM)..."
   endif
 
-# catch interrupts, shut down pvmd and therefore all workers
+  # catch interrupts, shut down pvmd and therefore all workers
   onintr shutdown
-# start the local pvm daemon, obtain configuration
-  if ($pgon) then
-    # NX_DFLT_SIZE set above tells how many nodes to use
-    $PVMD -pn $partition &
-    sleep 3
-  endif
-  echo conf | $PVM $config >& $tmp
+  # start the local pvm daemon, obtain configuration
+  echo "conf" | $PVM $config >& $tmp
   if ($vrbose) then
-	echo version | $PVM
+	echo "version" | $PVM
   endif
   grep ' running' $tmp >& /dev/null
   if ($status) then
@@ -581,72 +526,72 @@ if (! $skip) then
 	exit
   endif
 
-# if multiple cpus, clean up ones not already running pvm daemon
+  # if multiple cpus, clean up ones not already running pvm daemon
   if (! $single) then
-	if ($vrbose) then
-		echo "checking if pvm already running on remote hosts..."
+    if ($vrbose) then
+      echo "checking if pvm already running on remote hosts..."
+    endif
+    foreach m ($remote)
+      grep $m $tmp >& /dev/null
+      if ($status) then
+	if ($vrbose) then 
+          echo "cleaning on $m..."
 	endif
-	foreach m ($remote)
-		grep $m $tmp >& /dev/null
-		if ($status) then
-			if ($vrbose) then 
-				echo "cleaning on $m..."
-			endif
-			rsh $m "rm -f /tmp/pvml.* /tmp/pvmd.*" >& /dev/null
-		endif
-	end
+	ssh $m "rm -f /tmp/pvml.* /tmp/pvmd.*" >& /dev/null
+      endif
+    end
   endif
 
-# now try to start the daemon on all remote cpus
+  # now try to start the daemon on all remote cpus
   if (! $single) then
-	echo add $remote | $PVM >& $tmp
-	foreach m ($remote)
-		grep $m $tmp >& /dev/null
-		if ($status) then
-			echo "pvm daemon failed to start on $m, continuing..."
-		endif
-	end
+    echo "add $remote" | $PVM >& $tmp
+    foreach m ($remote)
+      grep $m $tmp >& /dev/null
+      if ($status) then
+	echo "pvm daemon failed to start on $m, continuing..."
+      endif
+    end
   endif
   if ($vrbose) then
-	echo conf | $PVM >& $tmp
+	echo "conf" | $PVM >& $tmp
 	echo "PVM console reports daemon running on these hosts:"
 	cat $tmp
   endif
   if ($vrbose) then
-	echo resetting PVM daemons...
+    echo resetting PVM daemons...
   endif
-  echo reset | $PVM >& /dev/null	
+  echo "reset" | $PVM >& /dev/null
   rm -f $tmp
- endif   # ! $t3x
+  sleep 1
+
+endif
 
 #---------------------------------------------------------------------------*
 # Phase 13: fire up genesis
 #---------------------------------------------------------------------------*
 
+if (! $skip) then
   echo "starting pgenesis executable"
-endif # !skip
-
-if ($nox) then
-	set exec=$PGENESIS_ROOT/bin/$PVM_ARCH/nxpgenesis
-else
-	set exec=$PGENESIS_ROOT/bin/$PVM_ARCH/pgenesis
 endif
 
-if ( $cray ) then
-  # run it on the T3D
-  if ( x$debug == x) then
-	$exec $nargv
-  else
-	totalview # FIX this
-  endif	
-else if ( $t3e ) then
-  # run it on the T3E
-  if ( x$debug == x) then
-	mpprun -n $num_nodes $exec $nargv
-  else
-	totalview -X $num_nodes $exec -a $nargv
-  endif
+if ($nox) then
+  set exec=$PGENESIS_ROOT/bin/$PVM_ARCH/nxpgenesis
 else
+  set exec=$PGENESIS_ROOT/bin/$PVM_ARCH/pgenesis
+endif
+
+if ($USE_MPI) then
+  if ( x$debug == x) then
+    echo Going to run on $num_nodes nodes: $exec $nargv
+# MPI_CMD
+mpirun -np $num_nodes $exec $nargv
+  else
+    echo Going to debug on $num_nodes nodes: $exec $nargv
+# MPI_DEBUG_CMD
+mpirun -gdb -np $num_nodes $exec $nargv
+  endif
+
+else if ($USE_PVM) then
   # run it under the debugger or not
   if ( x$debug == x || $debug == tty) then
 	if ($vrbose) then
@@ -669,8 +614,9 @@ else
 	echo "use these flags: $nargv"
 	$debug $exec
   endif
+else
+  echo "Installation error: neither USE_MPI nor USE_PVM is set"
 endif
-
 
 #---------------------------------------------------------------------------*
 # Phase 14: clean up
@@ -678,15 +624,17 @@ endif
 
 shutdown:
 
-if (! $t3x) then
-  if (! $skip  && ! $nohalt) then
-    echo "halting PVM daemon and cleaning up ..."
-    echo halt | $PVM >& /dev/null
-    rm -f /tmp/pvml.* /tmp/pvmd.* >& /dev/null
-    if (! $single) then
-	foreach m ($remote)
-		rsh $m "rm -f /tmp/pvml.* /tmp/pvmd.*" >& /dev/null
-	end
-    endif
+if ($USE_PVM && ! $skip  && ! $nohalt) then
+  echo "halting PVM daemon and cleaning up ..."
+  echo halt | $PVM >& /dev/null
+  rm -f /tmp/pvml.* /tmp/pvmd.* >& /dev/null
+  if (! $single) then
+    foreach m ($remote)
+      ssh $m "rm -f /tmp/pvml.* /tmp/pvmd.*" >& /dev/null
+    end
+  endif
+  if ($PVM_ARCH == ALPHAMP || $PVM_ARCH == HPPAMP || \
+      $PVM_ARCH == SUNMP || $PVM_ARCH == SGIMP64) then
+    $PGENESIS_INST/bin/ipclean
   endif
 endif
