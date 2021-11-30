@@ -79,4 +79,4 @@ Unless you want to install pgenesis also, you can delete it and the
 genesis-binaries tree.
 
 Alternatively, if you are familiar with using git and want to clone your
-own copy of the repository, you may do that.
+own copy of the repository, you may do that
