@@ -9,12 +9,14 @@
 // same cell once more under its OWN hsolve, as the reference. After the run it
 // compares every cell's soma and far-end Vm with the reference.
 //
-//   nxgenesis -nosimrc -notty -batch hsolve_many_cells.g [N_CELLS] [NCOMP] [METHOD] [STEPS]
+//   nxgenesis -nosimrc -notty -batch hsolve_many_cells.g [N_CELLS] [NCOMP] [METHOD] [STEPS] [BRANCH]
 //
 //   N_CELLS  cells under the shared hsolve (default 8)
 //   NCOMP    compartments per cell (default 1: a single soma)
 //   METHOD   10 backward Euler, 11 Crank-Nicolson (default 11)
 //   STEPS    time steps of 10 us (default 2000: 20 ms, several spikes)
+//   BRANCH   1: compartments 1 and 2 both hang off the soma, so each cell
+//            branches at its root; 0 (default): an unbranched line
 //
 // Prints "HSOLVE_MANY_CELLS: PASS" when every cell agrees with the reference
 // within 1e-9 V, otherwise "FAIL" and the cells that do not.
@@ -29,6 +31,7 @@ int   N_CELLS = 8
 int   NCOMP   = 1
 int   METHOD  = 11
 int   STEPS   = 2000
+int   BRANCH  = 0
 if ({argc} > 0)
     N_CELLS = {argv 1}
 end
@@ -40,6 +43,9 @@ if ({argc} > 2)
 end
 if ({argc} > 3)
     STEPS = {argv 4}
+end
+if ({argc} > 4)
+    BRANCH = {argv 5}
 end
 
 float DT        = 10e-6
@@ -59,7 +65,7 @@ float DEND_D    = 2e-6
 
 include genesis/src/startup/schedule.g
 
-echo "=== hsolve_many_cells: N_CELLS=" {N_CELLS} " NCOMP=" {NCOMP} " METHOD=" {METHOD} " STEPS=" {STEPS} " ==="
+echo "=== hsolve_many_cells: N_CELLS=" {N_CELLS} " NCOMP=" {NCOMP} " METHOD=" {METHOD} " STEPS=" {STEPS} " BRANCH=" {BRANCH} " ==="
 
 create neutral /library
 pushe /library
@@ -104,6 +110,9 @@ function make_cell(path)
     for (c = 1; c < {NCOMP}; c = c + 1)
         comp = {path} @ "/c" @ {c}
         prev = {path} @ "/c" @ {c - 1}
+        if ({BRANCH} && {c} <= 2)
+            prev = {path} @ "/c0"
+        end
         create compartment {comp}
         setfield {comp} Em {ELEAK} initVm {EREST_ACT} \
             Rm {RM_DENS / dend_area} Cm {CM_DENS * dend_area} Ra {RA_DENS * DEND_L / dend_xarea}
