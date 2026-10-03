@@ -34,6 +34,8 @@ Element		*ptr;
     */
     if(parent->child == element){
 	parent->child = element->next;
+	if(parent->childtail == element)
+	    parent->childtail = NULL;
 	element->next = NULL;
 	element->parent = NULL;
 	return(1);
@@ -41,6 +43,8 @@ Element		*ptr;
     for(ptr=parent->child;ptr;ptr=ptr->next){
 	if(ptr->next == element){
 	    ptr->next = element->next;
+	    if(parent->childtail == element)
+		parent->childtail = ptr;
 	    element->next = NULL;
 	    element->parent = NULL;
 	    return(1);

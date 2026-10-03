@@ -293,6 +293,7 @@ int i,j,n;
 
 	new_element = next_element;
     }
+    parent->childtail = last_element;
 
     if (warn){
 	Warning();

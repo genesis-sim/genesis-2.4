@@ -186,6 +186,7 @@ int		size;
     */
     new_element->next = NULL;
     new_element->child = NULL;
+    new_element->childtail = NULL;
     new_element->parent = NULL;
     new_element->componentof = NULL;
     /*

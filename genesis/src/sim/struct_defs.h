@@ -78,6 +78,7 @@
     Element 					*componentof;\
     Element 					*parent;\
     Element					*child;\
+    Element					*childtail;\
     Element					*next;
 
 #define		GELEMENT_TYPE \
