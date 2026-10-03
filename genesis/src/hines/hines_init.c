@@ -895,6 +895,12 @@ int h_funcs_init(hsolve)
 	    compt=compts[comptindex];
 	    Cm=compt->Cm;
 	    parentno=parents[comptindex];
+	    /* A row with no parent is the root of a cell other than the last:
+	    ** with several cells under one hsolve, each cell's root sits inside
+	    ** this loop. Its parent and sibling terms do not exist, and
+	    ** indexing nkids/kids/compts/hnum with parentno == -1 read outside
+	    ** the arrays (Crank-Nicolson then diverged and crashed). */
+	    if (parentno != -1) {
 	    if (symflag) {
 		nkid=nkids[parentno];
 		for (j=0; j<nkid; j++) {
@@ -994,6 +1000,7 @@ int h_funcs_init(hsolve)
 		    }
 		}
 	    }
+	    } /* parentno != -1 */
 	    /*
 	    **  Compute final result:
 	    **   code to execute: results[i] =  results[i+1]/diagonal[i+1];

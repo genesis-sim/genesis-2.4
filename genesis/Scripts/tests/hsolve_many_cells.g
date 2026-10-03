@@ -138,9 +138,8 @@ useclock /ref/solver 0
 reset
 step {STEPS}
 
+// chanmode 1 keeps the elements' Vm fields current, so no HGET is needed
 str far = "/c" @ {NCOMP - 1}
-call /ref/solver HGET /ref/cell/c0
-call /ref/solver HGET /ref/cell{far}
 float ref_soma = {getfield /ref/cell/c0 Vm}
 float ref_far  = {getfield /ref/cell{far} Vm}
 echo "reference: soma Vm " {ref_soma} "  far Vm " {ref_far}
@@ -148,8 +147,6 @@ echo "reference: soma Vm " {ref_soma} "  far Vm " {ref_far}
 int bad = 0
 float d1, d2
 for (n = 0; n < {N_CELLS}; n = n + 1)
-    call /net/solver HGET /net/cell{n}/c0
-    call /net/solver HGET /net/cell{n}{far}
     d1 = {abs {{getfield /net/cell{n}/c0 Vm} - {ref_soma}}}
     d2 = {abs {{getfield /net/cell{n}{far} Vm} - {ref_far}}}
     if ({d1} > 1e-9 || {d2} > 1e-9)
