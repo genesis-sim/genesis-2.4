@@ -219,14 +219,13 @@ int h_init(hsolve)
 	    }
 	}
 
-	/* find the soma */
+	/* Hines-number every tree. An hsolve may hold several unconnected
+	** cells, each with its own root (parentless compartment); numbering
+	** only the first left the others' rows unassigned. */
+	hnumcount = ncompts-1;
 	for (i=0;i<ncompts;i++){
 	    if (parents[i] == -1) {
-	    /* This is the trunk element. Usually it will be the soma */
-		hnumcount = ncompts-1;
-		/* Do Hines numbering */
 		do_hnum(hsolve,i,&hnumcount,elmnum);
-		break;
 	    }
 	}
 	/* sort the kids by Hines number (useful for h_funcs_init ) */
