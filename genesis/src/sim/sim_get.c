@@ -118,7 +118,41 @@ extern Element*	ElementHashFind();
 	    */
 	    element = RecentElement();
 	} else {
-	    element = (Element *)GetChildElement(element,name,count);
+	    /*
+	    ** Try the element hash table for this specific child before
+	    ** falling back to GetChildElement()'s O(n) scan of the
+	    ** sibling list.  This matters because the whole-path hash
+	    ** lookup above only ever hits when the FULL target path
+	    ** already exists; do_copy()'s destination-path probe (and
+	    ** any other lookup of a not-yet-created leaf) always misses
+	    ** it and falls through to here -- which, without this,
+	    ** re-walks every INTERMEDIATE segment (e.g. "/net/cellN"
+	    ** while resolving "/net/cellN/soma/Na_chan") via a raw scan
+	    ** of that segment's siblings, even though cellN itself is
+	    ** already hashed.  Only a genuinely nonexistent child falls
+	    ** through to GetChildElement() here, which is the correct,
+	    ** rare case (and returns NULL exactly as before).
+	    */
+	    Element	*hashed;
+	    char	childpath[300];
+
+	    if (element->parent == NULL) {
+		/* element is root; Pathname(root) is "/", avoid "//" */
+		if (count != 0)
+		    sprintf(childpath, "/%s[%d]", name, count);
+		else
+		    sprintf(childpath, "/%s", name);
+	    } else {
+		if (count != 0)
+		    sprintf(childpath, "%s/%s[%d]", Pathname(element), name, count);
+		else
+		    sprintf(childpath, "%s/%s", Pathname(element), name);
+	    }
+	    hashed = ElementHashFind(childpath);
+	    if (hashed != NULL && hashed->parent == element && VISIBLE(hashed))
+		element = hashed;
+	    else
+		element = (Element *)GetChildElement(element,name,count);
 	}
 	tree_ptr = AdvancePathname(tree_ptr);
     }
