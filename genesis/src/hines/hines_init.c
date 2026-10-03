@@ -15,6 +15,28 @@
 
 #include "hines_ext.h"
 
+/* Element -> compts[] index, so that h_init finds the index of an AXIAL
+** message's source without scanning every compartment (which made SETUP
+** quadratic in the number of compartments). Linear probing over a
+** power-of-two table. */
+typedef struct { Element *key; int idx; } CidxEntry;
+
+static int CidxLookup(cidx, cidx_size, key)
+CidxEntry	*cidx;
+int		cidx_size;
+Element		*key;
+{
+int hi;
+
+    hi = (int)(((unsigned long)key >> 4) & (cidx_size-1));
+    while (cidx[hi].key != NULL) {
+	if (cidx[hi].key == key)
+	    return cidx[hi].idx;
+	hi = (hi+1) & (cidx_size-1);
+    }
+    return -1;
+}
+
 int h_init(hsolve)
 	Hsolve	*hsolve;
 {
@@ -89,6 +111,20 @@ int h_init(hsolve)
 	    return(ERR);
 	}
 	hsolve->symflag=symflag;
+	{
+	CidxEntry	*cidx;
+	int		cidx_size, ci, hi;
+
+	    cidx_size = 1;
+	    while (cidx_size < ncompts*2) cidx_size *= 2;
+	    cidx = (CidxEntry *)calloc(cidx_size, sizeof(CidxEntry));
+	    for (ci=0; ci<ncompts; ci++) {
+		Element *key = (Element *)compts[ci];
+		hi = (int)(((unsigned long)key >> 4) & (cidx_size-1));
+		while (cidx[hi].key != NULL) hi = (hi+1) & (cidx_size-1);
+		cidx[hi].key = key;
+		cidx[hi].idx = ci;
+	    }
 	/* AXIALs go from parent to kid compts */
 	for (i=0;i<ncompts;i++){
 	    compt = compts[i];
@@ -122,24 +158,22 @@ int h_init(hsolve)
 	    case AXIAL: /* 2 : is same as CONNECTHEAD */
 		if (Strindex(BaseObject(msgin->src)->name,"compartment")>=0)
 		{
-		    for (j=0;j<ncompts;j++)
+		    j = CidxLookup(cidx, cidx_size, msgin->src);
+		    if (j != -1)
 		    {
-			if (msgin->src == (Element *)compts[j])
+			/* the jth elment is a parent of the ith element */
+			if (parents[i] != -1)
 			{
-			    /* the jth elment is a parent of the ith element */
-			    if (parents[i] != -1)
-			    {
-				Error();
-				printf
-				    (" during SETUP of %s: multiple parents for compartment '%s'.\n",
-				     Pathname(hsolve),
-				     Pathname(compt));
-				return(ERR);
-			    }
-			    parents[i] = j;
-			    nkids[j] += 1;
-			    break;
+			    Error();
+			    printf
+				(" during SETUP of %s: multiple parents for compartment '%s'.\n",
+				 Pathname(hsolve),
+				 Pathname(compt));
+			    free(cidx);
+			    return(ERR);
 			}
+			parents[i] = j;
+			nkids[j] += 1;
 		    }
 		}
 
@@ -203,20 +237,29 @@ int h_init(hsolve)
 		((Ncomp *)compt)->coeff2 = (1 + Ra_sum2)/2.0;
 	    }
 	}
-	/* Fill in indices for kids */
-	for (i=0;i<ncompts;i++){
-	    k=0;
-	    if (nkids[i] == 0) {
-		kids[i] = NULL; /* a terminal branch */
-	    } else {
-		kids[i]=(int *)calloc(nkids[i],sizeof(int));
-		for (j=0;j<ncompts;j++) {
-		    if (parents[j] == i) {
-			kids[i][k] = j;
-			k++;
-		    }
+	free(cidx);
+	}
+	/* Fill in indices for kids: one pass over the compartments instead of
+	** a scan of all of them per parent (quadratic). nkids[] is known from
+	** the loop above, so each list is allocated first and then filled in
+	** compartment order, as before. */
+	{
+	int *kidcursor = (int *)calloc(ncompts, sizeof(int));
+
+	    for (i=0;i<ncompts;i++){
+		if (nkids[i] == 0) {
+		    kids[i] = NULL; /* a terminal branch */
+		} else {
+		    kids[i]=(int *)calloc(nkids[i],sizeof(int));
 		}
 	    }
+	    for (j=0;j<ncompts;j++) {
+		if (parents[j] != -1) {
+		    k = parents[j];
+		    kids[k][kidcursor[k]++] = j;
+		}
+	    }
+	    free(kidcursor);
 	}
 
 	/* Hines-number every tree. An hsolve may hold several unconnected
