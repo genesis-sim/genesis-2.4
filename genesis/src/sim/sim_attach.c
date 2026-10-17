@@ -32,6 +32,8 @@ static char rcsid[] = "$Id: sim_attach.c,v 1.1.1.1 2005/06/14 04:38:28 svitak Ex
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "sim_ext.h"
 #include "shell_func_ext.h"
 
@@ -59,7 +61,7 @@ Element *child;
 Element *prev;
 Element *ptr;
 Element *current;
-char	childpath[300];
+char	*childpath;
 int status;
 
 
@@ -90,8 +92,16 @@ int status;
 	** (used for its comparisons), so the key must be copied out first
 	** -- exactly the precaution ElementHashRemove() already takes.
 	*/
+	/* a copy as long as the pathname, which can exceed any fixed buffer */
+	childpath = (char *) malloc(strlen(Pathname(child)) + 1);
+	if (childpath == NULL) {
+	    Error();
+	    printf("Attach: out of memory\n");
+	    return(0);
+	}
 	strcpy(childpath, Pathname(child));
 	current = ElementHashFind(childpath);
+	free(childpath);
 	if(current == NULL){
 	    /*
 	    ** genuinely new: O(1) append via the tracked tail

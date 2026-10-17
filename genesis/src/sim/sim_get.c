@@ -55,6 +55,8 @@ static char rcsid[] = "$Id: sim_get.c,v 1.2 2005/06/27 19:01:07 svitak Exp $";
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "shell_func_ext.h"
 #include "sim_ext.h"
 
@@ -134,21 +136,21 @@ extern Element*	ElementHashFind();
 	    ** rare case (and returns NULL exactly as before).
 	    */
 	    Element	*hashed;
-	    char	childpath[300];
+	    char	*childpath;
+	    char	*parentpath;
 
-	    if (element->parent == NULL) {
-		/* element is root; Pathname(root) is "/", avoid "//" */
-		if (count != 0)
-		    sprintf(childpath, "/%s[%d]", name, count);
-		else
-		    sprintf(childpath, "/%s", name);
-	    } else {
-		if (count != 0)
-		    sprintf(childpath, "%s/%s[%d]", Pathname(element), name, count);
-		else
-		    sprintf(childpath, "%s/%s", Pathname(element), name);
-	    }
+	    /* sized to the pathname, which can exceed any fixed buffer */
+	    parentpath = element->parent == NULL ? "" : Pathname(element);
+	    childpath = (char *) malloc(strlen(parentpath) + strlen(name) + 32);
+	    if (childpath == NULL)
+		return(NULL);
+	    /* element is root: Pathname(root) is "/", so parentpath is "" */
+	    if (count != 0)
+		sprintf(childpath, "%s/%s[%d]", parentpath, name, count);
+	    else
+		sprintf(childpath, "%s/%s", parentpath, name);
 	    hashed = ElementHashFind(childpath);
+	    free(childpath);
 	    if (hashed != NULL && hashed->parent == element && VISIBLE(hashed))
 		element = hashed;
 	    else
