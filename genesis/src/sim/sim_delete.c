@@ -247,12 +247,16 @@ Element *parent;
 
     if(child == element){
 	    parent->child = element->next;
-    } else 
+	    if(parent->childtail == element)
+		parent->childtail = NULL;
+    } else
     /*
     ** a match was found
     */
     if(child->next == element){
 	child->next = element->next;
+	if(parent->childtail == element)
+	    parent->childtail = child;
     } else {
 	return(0);
     }

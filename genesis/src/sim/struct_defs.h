@@ -78,6 +78,7 @@
     Element 					*componentof;\
     Element 					*parent;\
     Element					*child;\
+    Element					*childtail;\
     Element					*next;
 
 #define		GELEMENT_TYPE \
@@ -100,6 +101,7 @@
     Element 					*componentof;\
     Element 					*parent;\
     Element					*child;\
+    Element					*childtail;\
     Element					*next; \
     float					x0;\
     float					y0;\

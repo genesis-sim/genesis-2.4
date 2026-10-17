@@ -91,7 +91,70 @@ int factor = 1;
 
 /*
 ** Hash table utilities: element_hash_table
+**
+** The table grows (roughly 10x, always to a prime size) whenever the
+** average chain length would exceed ELEMENT_HASH_LOAD_FACTOR.  Without
+** this, a fixed-size table degrades toward O(n) per lookup/insert once
+** the element count much exceeds the initial bucket count, which turns
+** every O(1)-amortized Attach()/create into an O(n) operation again --
+** i.e. building a large flat population of elements (e.g. many neurons
+** under one parent) would still cost O(n^2) overall, just with a smaller
+** constant than the linear sibling-list scan this table was added to
+** replace.
 */
+
+#define ELEMENT_HASH_LOAD_FACTOR 4
+
+static int element_hash_count = 0;
+static int element_hash_rehashing = 0;
+
+static int NextHashSize(old)
+int old;
+{
+static int primes[] = {10007, 100003, 1000003, 10000019, 100000007};
+int i;
+
+    for (i = 0; i < sizeof(primes)/sizeof(primes[0]); i++) {
+	if (primes[i] > old)
+	    return primes[i];
+    }
+    /* fallback for models larger than anything realistically hashed here */
+    return old * 2 + 1;
+}
+
+static void ElementHashRehash()
+{
+HASH		*old_table;
+int		old_size;
+int		i;
+ELMENTRY	*item, *next;
+int		is_head;
+
+    old_table = element_hash_table;
+    old_size = old_table->size;
+
+    element_hash_table = hash_create(NextHashSize(old_size));
+    element_hash_rehashing = 1;
+
+    for (i = 0; i < old_size; i++) {
+	item = (ELMENTRY*) old_table->entry + i;
+	is_head = 1;
+	while (item != NULL) {
+	    if (item->data != NULL)
+		ElementHashPut(item->data);
+	    next = item->next;
+	    if (!is_head)
+		free(item);
+	    is_head = 0;
+	    item = next;
+	}
+    }
+
+    element_hash_rehashing = 0;
+    free(old_table->entry);
+    free(old_table);
+}
+
 void ElementHashInit()
 {
 HASH *hash_create();
@@ -100,6 +163,7 @@ HASH *hash_create();
 	* create the table
 	*/
 	element_hash_table = hash_create(10007);
+	element_hash_count = 0;
 }
 
 int ElementHashPut(elm)
@@ -108,8 +172,28 @@ Element *elm;
 ELMENTRY	*item;
 int		hashIndex;
 
+    if (!element_hash_rehashing &&
+    element_hash_count >= element_hash_table->size * ELEMENT_HASH_LOAD_FACTOR){
+	ElementHashRehash();
+    }
+
     hashIndex = Ehash_function(Pathname(elm), element_hash_table);
     item = (ELMENTRY*) element_hash_table->entry + hashIndex;
+    /*
+    ** Putting an element that is already in the table does nothing: Attach()
+    ** hashes every element it attaches below the root, and callers such as
+    ** do_create() and do_copy() then put the whole tree again.  A second entry
+    ** for the same element would outlive ElementHashRemove(), which removes
+    ** one, and point at freed memory once the element is deleted.
+    */
+    if (item->data != NULL)
+      {
+	ELMENTRY*	e;
+
+	for (e = item; e != NULL; e = e->next)
+	    if (e->data == elm)
+		return(1);
+      }
     if (item->data == NULL)
 	item->data = elm;
     else
@@ -127,6 +211,9 @@ int		hashIndex;
 	new->next = item->next;
 	item->next = new;
       }
+
+    if (!element_hash_rehashing)
+	element_hash_count++;
 
     return(1);
 }
@@ -186,6 +273,7 @@ Element*	elm;
 		    free(item);
 		}
 
+		element_hash_count--;
 		break;
 	      }
 

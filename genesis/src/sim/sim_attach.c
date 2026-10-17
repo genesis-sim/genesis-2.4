@@ -32,8 +32,24 @@ static char rcsid[] = "$Id: sim_attach.c,v 1.1.1.1 2005/06/14 04:38:28 svitak Ex
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "sim_ext.h"
 #include "shell_func_ext.h"
+
+/*
+** Is the element connected to the root?  A tree still being built (a copy
+** before CopyElementTree's caller attaches it) has no final pathname yet and
+** must not enter the element hash table under a provisional one; its caller
+** puts the whole tree once it is in place.
+*/
+static int Rooted(element)
+Element *element;
+{
+    while (element->parent != NULL)
+	element = element->parent;
+    return element == RootElement();
+}
 
 /*
 ** add the element pointer to the parents list of children
@@ -42,80 +58,116 @@ int Attach(parent,child)
 Element *parent;
 Element *child;
 {
-Element *ptr;
 Element *prev;
+Element *ptr;
 Element *current;
+char	*childpath;
 int status;
-	
+
 
     if(parent == NULL || child == NULL) return(0);
     /*
-    ** find the append/insert point in the child list
+    ** name/index must be final before we can compute child's pathname
+    ** (Pathname() walks up via ->parent, which Create() has not set yet)
     */
+    child->parent = parent;
     status = 0;
     if(parent->child == NULL){
 	/*
-	** the child list is empty so just append to the head 
+	** the child list is empty so just append to the head
 	*/
-	parent->child =  child;
-    } else{
-	prev = NULL;
-	for(ptr=parent->child;ptr;ptr=ptr->next){
-	    current = ptr;
-	    if(ptr->index == child->index &&
-	    (strcmp(ptr->name,child->name) == 0)){
-		/*
-		** found an identical child so replace it
-		*/
-		break;
-	    }
-	    prev = ptr;
+	parent->child = child;
+	parent->childtail = child;
+    } else {
+	/*
+	** O(1) duplicate check via the global element hash table instead
+	** of an O(n) linear scan of the sibling list -- do_create() always
+	** calls ElementHashPutTree() right after Attach() returns, so the
+	** hash table already holds every previously-attached sibling by
+	** the time we get here.  Pathname(child) is globally unique, so a
+	** hit can only be the existing child at this exact name+index.
+	**
+	** Pathname() returns a pointer into a static buffer that gets
+	** overwritten by ElementHashFind()'s own internal Pathname() calls
+	** (used for its comparisons), so the key must be copied out first
+	** -- exactly the precaution ElementHashRemove() already takes.
+	*/
+	/* a copy as long as the pathname, which can exceed any fixed buffer */
+	childpath = (char *) malloc(strlen(Pathname(child)) + 1);
+	if (childpath == NULL) {
+	    Error();
+	    printf("Attach: out of memory\n");
+	    return(0);
 	}
-	if(ptr == NULL){
+	strcpy(childpath, Pathname(child));
+	current = ElementHashFind(childpath);
+	free(childpath);
+	if(current == NULL){
 	    /*
-	    ** append the child to the parent list
+	    ** genuinely new: O(1) append via the tracked tail
+	    ** (mirrors AttachToEnd, which does the same thing when the
+	    ** caller tracks the tail itself, e.g. CopyElementTree/createmap)
 	    */
-	    prev->next = child;
+	    parent->childtail->next = child;
+	    parent->childtail = child;
 	    status = 1;
 	} else {
-
-	/*
-	** this isn't the best place for this, but if an element
-	** is overwritten it needs to be removed the the hash table.
-	*/
-	ElementHashRemoveTree(current);
-	if(prev == NULL){
 	    /*
-	    ** replace current with new
+	    ** rare path: an identical child already exists and must be
+	    ** replaced.  Finding its predecessor still needs a scan, but
+	    ** this is the cold "overwriting" branch, not every create.
 	    */
+	    prev = NULL;
+	    for(ptr=parent->child;ptr && ptr != current;ptr=ptr->next){
+		prev = ptr;
+	    }
+	    /*
+	    ** this isn't the best place for this, but if an element
+	    ** is overwritten it needs to be removed the the hash table.
+	    */
+	    ElementHashRemoveTree(current);
 	    child->next = current->next;
-	    parent->child = child;
+	    if(prev == NULL){
+		parent->child = child;
+	    } else {
+		prev->next = child;
+	    }
+	    if(parent->childtail == current){
+		parent->childtail = child;
+	    }
 	    status = 2;
 	    Warning();
 	    printf("overwriting an existing element '%s'\n",
 	    Pathname(current));
 	    current->next = NULL;
 	    FreeTree(current);
-	} else {
-	    /*
-	    ** replace current with new
-	    */
-	    child->next = current->next;
-	    prev->next = child;
-	    status = 2;
-	    Warning();
-	    printf("overwriting an existing element '%s'\n",
-	    Pathname(current));
-	    current->next = NULL;
-	    FreeTree(current);
-	}
 	}
     }
     /*
-    ** inform the child about who just adopted it
+    ** Every attached element is in the hash table, so that the duplicate check
+    ** above sees every sibling.  Otherwise only the elements that do_create(),
+    ** do_copy() and do_move() put there would be, and re-creating an element
+    ** made by any other path (/output at start-up, readcell, createmap) would
+    ** append a second element of the same name instead of replacing it.
     */
-    child->parent = parent;
+    if (Rooted(parent))
+	ElementHashPut(child);
     return(status);
+}
+
+/*
+** Point parent->childtail at the last child again, for code that edits a
+** child list directly instead of through Attach() (readcell's *makeproto).
+*/
+void ResetChildTail(parent)
+Element *parent;
+{
+Element *ptr;
+
+    if(parent == NULL) return;
+    parent->childtail = parent->child;
+    for(ptr = parent->child; ptr != NULL; ptr = ptr->next)
+	parent->childtail = ptr;
 }
 
 /*
@@ -135,6 +187,7 @@ Element *child;
 	parent->child = child;
     else
 	last_child->next = child;
+    parent->childtail = child;
     /*
     ** inform the child about who just adopted it
     */

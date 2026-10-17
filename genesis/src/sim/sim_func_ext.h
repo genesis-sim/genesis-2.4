@@ -160,6 +160,7 @@ extern int             ComputeIndirection();
 extern char            *CalculateAddress();
 extern int             Attach();
 extern int             AttachToEnd();
+extern void            ResetChildTail();
 extern void            OK();
 extern void            FAILED();
 extern void            SetSimFlags();
