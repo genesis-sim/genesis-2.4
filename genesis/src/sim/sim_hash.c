@@ -179,6 +179,21 @@ int		hashIndex;
 
     hashIndex = Ehash_function(Pathname(elm), element_hash_table);
     item = (ELMENTRY*) element_hash_table->entry + hashIndex;
+    /*
+    ** Putting an element that is already in the table does nothing: Attach()
+    ** hashes every element it attaches below the root, and callers such as
+    ** do_create() and do_copy() then put the whole tree again.  A second entry
+    ** for the same element would outlive ElementHashRemove(), which removes
+    ** one, and point at freed memory once the element is deleted.
+    */
+    if (item->data != NULL)
+      {
+	ELMENTRY*	e;
+
+	for (e = item; e != NULL; e = e->next)
+	    if (e->data == elm)
+		return(1);
+      }
     if (item->data == NULL)
 	item->data = elm;
     else

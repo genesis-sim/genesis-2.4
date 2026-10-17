@@ -36,6 +36,20 @@ static char rcsid[] = "$Id: sim_attach.c,v 1.1.1.1 2005/06/14 04:38:28 svitak Ex
 #include "shell_func_ext.h"
 
 /*
+** Is the element connected to the root?  A tree still being built (a copy
+** before CopyElementTree's caller attaches it) has no final pathname yet and
+** must not enter the element hash table under a provisional one; its caller
+** puts the whole tree once it is in place.
+*/
+static int Rooted(element)
+Element *element;
+{
+    while (element->parent != NULL)
+	element = element->parent;
+    return element == RootElement();
+}
+
+/*
 ** add the element pointer to the parents list of children
 */
 int Attach(parent,child)
@@ -119,6 +133,15 @@ int status;
 	    FreeTree(current);
 	}
     }
+    /*
+    ** Every attached element is in the hash table, so that the duplicate check
+    ** above sees every sibling.  Otherwise only the elements that do_create(),
+    ** do_copy() and do_move() put there would be, and re-creating an element
+    ** made by any other path (/output at start-up, readcell, createmap) would
+    ** append a second element of the same name instead of replacing it.
+    */
+    if (Rooted(parent))
+	ElementHashPut(child);
     return(status);
 }
 
