@@ -537,7 +537,12 @@ int h_funcs_init(hsolve)
 	    if (skipdiag) {
 		skipdiag=0;
 /*  OPTIMIZE FOR DOUBLE SKIP */
-	    } else if (nkid || hassiblefts) {
+	    } else if (nkid || hassiblefts || parentno == -1) {
+		/* parentno == -1: this row is the root of its own cell, as when
+		** several cells share one hsolve. It cannot be paired with the
+		** next row by SKIP_DIAG (the unbranched-cable optimisation
+		** below assumes a parent absorbs it); on the last row that
+		** would step past the end of results[]. */
 		if (i>1) {	/* first SET_DIAG always done */
 		    if (justcount) {
 			nfuncs++;

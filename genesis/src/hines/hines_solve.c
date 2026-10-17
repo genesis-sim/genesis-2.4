@@ -54,7 +54,7 @@ void do_fast_hsolve(hsolve)
     register double  *resultvalue;
 
     op= *funcs++;
-    if (op == FINISH) {	/* one compartment only! */
+    if (hsolve->ncompts == 1) {	/* one compartment only! */
 	*results = *results / *(results+1);
 	return;
     } else {
@@ -150,7 +150,7 @@ void do_crank_hsolve(hsolve)
     register double  *resultvalue;
 
     op= *funcs++;
-    if (op == FINISH) {	/* one compartment only! */
+    if (hsolve->ncompts == 1) {	/* one compartment only! */
 	resultval = *results / *(results+1);
 	*vm = resultval + resultval - *vm;
 	return;
@@ -233,7 +233,7 @@ void do_euler_hsolve(hsolve)
     register double  *resultvalue;
 
     op= *funcs++;
-    if (op == FINISH) {	/* one compartment only! */
+    if (hsolve->ncompts == 1) {	/* one compartment only! */
 	*vm = *results / *(results+1) - *vm;
 	return;
     } else {
