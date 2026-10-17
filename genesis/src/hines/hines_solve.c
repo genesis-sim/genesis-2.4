@@ -234,7 +234,7 @@ void do_euler_hsolve(hsolve)
 
     op= *funcs++;
     if (hsolve->ncompts == 1) {	/* one compartment only! */
-	*vm = *results / *(results+1) - *vm;
+	*vm = *results / *(results+1);
 	return;
     } else {
 	/* Do forwards elimination starting at row 1 (row 0 skipped) */
