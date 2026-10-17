@@ -146,6 +146,21 @@ int status;
 }
 
 /*
+** Point parent->childtail at the last child again, for code that edits a
+** child list directly instead of through Attach() (readcell's *makeproto).
+*/
+void ResetChildTail(parent)
+Element *parent;
+{
+Element *ptr;
+
+    if(parent == NULL) return;
+    parent->childtail = parent->child;
+    for(ptr = parent->child; ptr != NULL; ptr = ptr->next)
+	parent->childtail = ptr;
+}
+
+/*
 ** add the element pointer to the parents list of children
 */
 int AttachToEnd(parent,last_child,child)

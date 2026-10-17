@@ -1327,6 +1327,14 @@ makeproto_func(field)
 		printf("could not find cell %s\n",field);
 		return;
 	}
+	/*
+	** The juggling below changes the pathnames of the proto and of every
+	** compartment of elm. Take the tree out of the element hash table while
+	** the old pathnames can still be computed; it goes back in under the new
+	** ones at the end (otherwise the table keeps a pointer to the freed elm,
+	** and the lists' tail pointers go stale).
+	*/
+	ElementHashRemoveTree(elm);
 
 	/* Removing proto from elm's childlist */
 	if (strcmp(elm->child->name,elm->name) == 0) {
@@ -1343,6 +1351,7 @@ makeproto_func(field)
 		}
 	}
 	if (!proto) {
+		ElementHashPutTree(elm);
 		printf("could not find compartment %s\n",field);
 		return;
 	}
@@ -1359,6 +1368,10 @@ makeproto_func(field)
 		}
 	}
 
+	/* elm's compartments now belong to proto; elm is freed below */
+	for (child=elm->child;child;child=child->next)
+		child->parent = proto;
+
 	/* Replace elm by proto */
 	if (elm == elm->parent->child) {
 		elm->parent->child = proto;
@@ -1374,10 +1387,13 @@ makeproto_func(field)
 			}
 		}
 	}
+	ResetChildTail(proto);
+	ResetChildTail(proto->parent);
 	elm->next = NULL;
 	elm->parent = NULL;
 	elm->child = NULL;
 	sfree(elm);
+	ElementHashPutTree(proto);
 }
 
 set_compt_field(compt,field,value,len,dia,flags)
