@@ -158,7 +158,8 @@ float d1, d2
 for (n = 0; n < {N_CELLS}; n = n + 1)
     d1 = {abs {{getfield /net/cell{n}/c0 Vm} - {ref_soma}}}
     d2 = {abs {{getfield /net/cell{n}{far} Vm} - {ref_far}}}
-    if ({d1} > 1e-9 || {d2} > 1e-9)
+    // written so that a NaN difference fails: every comparison with NaN is false
+    if (!({d1} <= 1e-9 && {d2} <= 1e-9))
         echo "cell" {n} ": soma Vm " {getfield /net/cell{n}/c0 Vm} "  far Vm " {getfield /net/cell{n}{far} Vm} "  differs"
         bad = {bad} + 1
     end

@@ -6,7 +6,7 @@
 #
 # Run from the top of the source tree.
 BIN=${1:-./genesis/src/nxgenesis}
-shift 2>/dev/null
+[ $# -gt 0 ] && shift    # a bare shift with no arguments ends a POSIX sh script
 NLIST=${*:-"1000 2000 4000 8000"}
 T=genesis/Scripts/tests/construction_scaling.g
 for n in $NLIST; do
